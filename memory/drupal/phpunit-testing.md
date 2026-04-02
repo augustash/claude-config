@@ -24,11 +24,11 @@ type: reference
 **Critical:** Run from `web/` directory, not project root. Kernel tests spawn subprocesses that look for `phpunit.xml` relative to `core/`, so running from project root causes "Could not read phpunit.xml" errors.
 
 ```bash
-# Run a specific module's tests
-ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core modules/community/ash_facet_protection/tests/"
+# Run a specific module's tests (path varies: modules/custom/, modules/contrib/, etc.)
+ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core modules/{custom,contrib}/my_module/tests/"
 
 # Run a specific test class
-ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core modules/community/my_module/tests/src/Kernel/MyTest.php"
+ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core modules/custom/my_module/tests/src/Kernel/MyTest.php"
 
 # Run by group
 ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group my_group"
