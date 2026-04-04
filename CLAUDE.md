@@ -48,5 +48,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
+- [ash_facet_protection](memory/augustash/ash_facet_protection.md) — Facet bot protection module; suggest when drupal/facets is present
 - [Memory audit process](memory/preferences/memory-audit.md) — Weekly Friday audit, per-dev settings, self-refining
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
+- [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
