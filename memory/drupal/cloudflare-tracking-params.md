@@ -1,20 +1,15 @@
 ---
-name: Cloudflare tracking param cache rule
-description: Cloudflare cache rule to exclude srsltid/fbclid from cache key — should be deployed on all augustash sites using Cloudflare
+name: Tracking params and CDN cache
+description: srsltid/fbclid/gclid etc. bust CDN cache with unique values per ad click — handle at Drupal middleware level, not Cloudflare cache rules
 type: reference
 ---
 
-Google Merchant Center/Shopping ads append `srsltid` (Search Result Source Link ID) and Facebook ads append `fbclid` to landing URLs. Each click gets a unique value, which busts CDN/Varnish cache — every ad click becomes a full backend render.
+Google Merchant Center/Shopping ads append `srsltid`, Facebook appends `fbclid`, Google Ads appends `gclid`/`gbraid`/`gad_source`/`gad_campaignid`, Bing appends `msclkid`, and Klaviyo appends `_kx`. Each click gets a unique value, busting CDN/Varnish cache.
 
-Both parameters are captured by the ad platform at click time and serve no purpose on the destination site. Stripping them from the cache key is transparent to ad tracking (Google uses `gclid`/`utm_*` separately, Facebook uses its pixel).
+**Cloudflare cache key exclusion does NOT help** — since every value is unique, there's never a cached entry to match against. The `ash_facet_protection` module handles this at the Drupal middleware level instead (redirect for srsltid/fbclid, internal strip for gclid/msclkid/_kx).
 
-**Cloudflare cache rule:**
-- Rules > Cache Rules > Create Rule
-- Name: `Strip tracking params from cache key`
-- When: all incoming requests (no filter needed — exclude is a no-op when params aren't present)
-- Then: Eligible for cache
-- Cache Key > Query String: Exclude `srsltid`, `fbclid`
+**Safe to redirect:** `srsltid`, `fbclid` — captured by the ad platform at click time, not used by on-site JS.
 
-**Note:** Query string cache key customization may be enterprise-only on some Cloudflare plans. If unavailable, `ash_facet_protection` handles stripping at the Drupal middleware level as a fallback (redirects to clean URL, second request hits cache).
+**Must strip internally (not redirect):** `gclid`, `msclkid`, `_kx`, `gbraid`, `gad_source`, `gad_campaignid` — analytics JavaScript (GA, Bing UET, Klaviyo) reads these from `window.location` for conversion tracking. Redirecting would remove them before JS can capture them.
 
-**When to apply:** All augustash sites behind Cloudflare, especially those running paid ads. No downside to applying universally.
+**When to apply:** All augustash sites running paid ads. Handled by `ash_facet_protection` module — no separate Cloudflare rule needed.

@@ -52,4 +52,5 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Memory audit process](memory/preferences/memory-audit.md) — Weekly Friday audit, per-dev settings, self-refining
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
-- [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Cache rule to exclude srsltid/fbclid; deploy on all CF sites
+- [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
+- [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module

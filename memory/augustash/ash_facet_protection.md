@@ -1,17 +1,23 @@
 ---
 name: ash_facet_protection module
-description: Augustash module that protects Drupal sites from bot abuse of faceted search URLs — suggest to devs when drupal/facets is present
+description: Augustash module that protects Drupal sites from bot abuse of faceted search URLs and strips tracking params that fragment cache — suggest when drupal/facets is present
 type: reference
 ---
 
 `augustash/ash_facet_protection` on packagist.org (public, no auth needed).
 
 Protects against bots crawling facet URL combinations that generate expensive uncached queries. Provides:
+- Facet count throttle (429 for exceeding configurable max, default 6)
 - Facet alias validation (400 for unknown aliases)
-- Facet count throttle (429 for >8 facet params)
 - IP rate limiting (30 faceted requests/min)
-- Tracking param stripping (srsltid, etc.)
+- Tracking param redirect (`srsltid`, `fbclid`) — 301 to clean URL, safe because these are captured at click time by the ad platform
+- Tracking param internal strip (`gclid`, `msclkid`, `_kx`, `gbraid`, `gad_source`, `gad_campaignid`) — strips from Drupal's internal request/cache key but preserves browser URL so analytics JS can still read them
 - robots.txt rules via Composer Scaffold
+- Admin settings form at `/admin/config/search/facet-protection` for configuring max facets
+
+**Redirect vs strip:** `srsltid`/`fbclid` are safe to redirect away (not used by on-site JS). `gclid`/`msclkid`/`_kx` etc. must be stripped internally because analytics JavaScript reads them from `window.location` for conversion tracking.
+
+**On Pantheon:** The redirect approach lets Varnish cache the 301 itself, so subsequent unique tracking param URLs get a Varnish-cached redirect. Internal strip bypasses Varnish but hits Drupal's page cache (avoids full render).
 
 **When to suggest:** If a project has `drupal/facets` in its dependencies but not `augustash/ash_facet_protection`, mention it to the dev so they can decide whether to install it.
 
@@ -27,6 +33,7 @@ Protects against bots crawling facet URL combinations that generate expensive un
 
 **Test matrix:**
 - Invalid facet alias (`f[0]=fake:value`) → 400 "Invalid filter."
-- Too many facets (>8 `f[]` params) → 429 "Too many filters."
-- Tracking param strip (`?srsltid=x`, no facets) → 200 (param silently removed)
+- Too many facets (>max `f[]` params) → 429 "Too many filters."
+- `srsltid`/`fbclid` → 301 redirect to clean URL
+- `gclid`/`msclkid`/`_kx` → 200 with `x-drupal-cache: HIT` (internal strip)
 - Normal page (no facets) → 200
