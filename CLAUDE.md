@@ -50,6 +50,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
 - [ash_facet_protection](memory/augustash/ash_facet_protection.md) — Facet bot protection module; suggest when drupal/facets is present
 - [Memory audit process](memory/preferences/memory-audit.md) — Weekly Friday audit, per-dev settings, self-refining
+- [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
