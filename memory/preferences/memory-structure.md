@@ -11,6 +11,8 @@ Example: `apis/convertcart.md`, `apis/commerce.md`, `modules/update-audit.md`
 
 **Per-project memories go in the project repo** (`.claude/memory/`) and should be committed so all developers on the project share the same context.
 
+**User-specific preferences go in `~/.claude/CLAUDE.md`** — never in `~/claude-config/` or per-project `.claude/memory/`. Both of those are git-committed and shared with the team. Things like "this dev is strong in X, learning Y", personal workflow preferences, or individual communication style belong in the user's own home `~/.claude/CLAUDE.md`, which Claude Code loads into every session for that user only. If a memory file has `type: user` in its frontmatter, it does not belong in team-shared memory by definition.
+
 **Where to find project context:** Every project stores its memories at `.claude/memory/` in the project root, with a `MEMORY.md` index. When starting work on a project, check `.claude/memory/MEMORY.md` for existing context before asking the user to re-explain things.
 
 **What to save:** The purpose of memory is to retain context that would take significant effort to re-discover — saving duplicate work across sessions and developers. Before saving, ask: "Would another dev (or a future session) spend real time re-piecing this together?" If the answer is in the code or a quick `git log`, skip it.
