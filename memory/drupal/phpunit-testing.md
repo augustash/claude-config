@@ -40,6 +40,12 @@ ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core modules
 ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group my_group"
 ```
 
+## Service decoration gotcha
+
+When you decorate a tagged service in Drupal 10+ / Symfony 5+, **tags on the decorated service are copied to the decorator automatically**. Do not redeclare them on the decorator — the decorator ends up registered twice for every tag, which for things like order processors means every promotion applies twice, every event handler fires twice, etc. The symptom in tests is "asserted size 1, actual size 2" on adjustments or event-driven collections. If you discover this mid-refactor, removing the redundant `tags:` block from the decorator's services.yml is the fix.
+
+## Do not use `--list-groups`
+
 **Do not use `--list-groups`** to explore available groups. It scans every test file in the tree, including contrib modules, and commonly dies on poorly-maintained contrib test files (missing trait references, undefined variables in Unit tests, etc.). Target a specific path instead — kernel/unit tests under `modules/custom` or `modules/contrib/{module}/tests/src/Kernel` run fine because phpunit only loads the files it actually needs.
 
 Source: https://www.drupal.org/docs/develop/automated-testing/phpunit-in-drupal/running-phpunit-tests
