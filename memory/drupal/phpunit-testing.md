@@ -6,6 +6,8 @@ type: reference
 
 ## Setup
 
+**Projects typically do not ship with `drupal/core-dev` in `require-dev`.** Check `composer.json` before attempting to run tests — you'll usually need to add it. Symptom: `vendor/bin/phpunit` missing, `composer show phpunit/phpunit` reports "not found." This has come up repeatedly; confirm the install state before writing tests so you can flag it early.
+
 1. **Install test dependencies — pin to the project's drupal/core major.minor:**
    ```
    ddev composer require --dev "drupal/core-dev:^10.6" --no-update

@@ -1,28 +1,37 @@
 ---
-name: Weekly memory audit process
-description: How and when to run the active memory audit — Friday sessions, per-dev settings, what to review
+name: Memory audit — event-driven, not scheduled
+description: When and how to audit ~/claude-config/ and per-project memories. Triggered by natural moments in the work, not by a fixed cadence.
 type: feedback
 ---
 
 ## When
 
-Weekly, on Fridays. At the start of the first session on a Friday, check `~/claude-config/.settings.json` for the `last_audit` date. If it's been 7+ days (or never run), offer to run the audit before proceeding with the dev's request.
+**Audit when the work prompts it, not on a schedule.** Calendar-driven audits become either rote or skipped — the dev has already said they don't want a strict timeline. Trigger off real moments instead:
+
+- **After a memory-heavy session.** When several memories have been added, updated, or restructured in one sitting (e.g., a new topic area got built out), do a quick sweep at the end to make sure nothing duplicates or contradicts existing notes. *Don't make this a separate ceremony — fold it into the session.*
+- **When something stale surfaces during normal work.** If you reach for a memory and it references a function/file/flag that no longer exists, fix it on the spot or flag it. No formal audit required for one-off fixes.
+- **When the dev asks for one.** Direct request → run a full audit in the current project's context.
+- **When the index gets hard to skim.** If `CLAUDE.md` or `MEMORY.md` is creeping toward unreadable, suggest a consolidation pass.
+
+## Pre-check
+
+Before doing any review work, check whether anything has actually changed. Use `git log --since=<last_audit>` on `~/claude-config/` and the current project's `.claude/memory/` (settings holds `last_audit`). If neither has changed, skip the review, update `last_audit`, and move on.
 
 ## Settings
 
-`~/claude-config/.settings.json` (gitignored, per-dev). Create it on first use if it doesn't exist.
+`~/claude-config/.settings.json` (gitignored, per-dev). Create on first use:
 
 ```json
 {
   "audit": {
     "participate_in_review": true,
-    "last_audit": "2026-03-28"
+    "last_audit": "2026-04-22"
   }
 }
 ```
 
-- `participate_in_review` — if true, present proposed changes for approval before applying. If false, apply cleanup silently and summarize what changed.
-- `last_audit` — updated after each audit completes.
+- `participate_in_review` — if true, present proposed changes for approval before applying. If false, apply cleanup silently and summarize.
+- `last_audit` — updated after each audit completes (lets the next event-driven audit know what's changed since).
 
 On first audit, ask the dev their preference and save it. Don't ask again unless they bring it up.
 
@@ -33,21 +42,14 @@ On first audit, ask the dev their preference and save it. Don't ask again unless
 - Are any memories now obvious from the codebase and no longer worth keeping?
 - Are memories concise, or have they grown bloated?
 - Can any be consolidated?
+- Do any conflict with [mission.md](mission.md) or [follow-site-conventions.md](follow-site-conventions.md)? (i.e. diary-shape rather than watch-and-suggest)
 
 **Per-project memories (`.claude/memory/` in the current project):**
-- Same staleness and conciseness checks as global.
-- Does any project-specific knowledge show up across multiple projects and deserve promotion to global?
+- Same staleness and conciseness checks.
+- Does any project-specific knowledge show up across multiple projects and deserve promotion to global? (Promotion criteria is "useful in ≥2 projects" per [patches.md](../drupal/patches.md) — same rule.)
 
-**Personal projects:** If `.claude/.personal` exists in a project, it is a personal project. Still apply staleness and conciseness checks, but never promote its memories to global.
-
-## How
-
-**Pre-check:** Before doing any review, check whether anything has actually changed. Use `git log --since` on both `~/claude-config/` and the current project's `.claude/memory/` to see if memory files were modified since `last_audit`. If nothing changed in either location, skip the audit, update `last_audit`, and move on. Don't waste the dev's time reviewing unchanged files.
-
-Run the audit in the context of whatever project the session started in. This means per-project review covers the current project only — over time, different projects get audited as devs open Friday sessions in different repos.
-
-After completing the audit, update `last_audit` in settings.json.
+**Personal projects:** If `.claude/.personal` exists, never promote its memories to global, but still apply staleness/conciseness checks.
 
 ## Self-refinement
 
-If the audit process itself needs adjustment — too noisy, missing things, wrong cadence — update this file. The process should improve over time based on what's actually useful.
+If the audit pattern itself needs adjustment — wrong triggers, too noisy, missing something — update this file. The process should evolve based on what actually catches issues.

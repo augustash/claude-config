@@ -43,13 +43,17 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 
 ### Current global memories
 
+- [Mission](memory/preferences/mission.md) — shared team resource, proactive guidance, watch-and-suggest posture (read first; informs how other memories should be written)
+- [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is handled in the codebase before writing in it; surface divergence from established patterns
 - [Memory structure](memory/preferences/memory-structure.md) — idea/specific.md pattern, organization conventions
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
+- [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at ~/claude-config/patches/
+- [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
-- [Memory audit process](memory/preferences/memory-audit.md) — Weekly Friday audit, per-dev settings, self-refining
+- [Memory audit process](memory/preferences/memory-audit.md) — event-driven (not scheduled), per-dev settings, self-refining
 - [Comment style](memory/preferences/comments.md) — Efficient, not one-liner-only; multi-line OK when WHY is non-obvious
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix

@@ -1,0 +1,31 @@
+Backport of drupal/core#3421202 (only nightwatch.conf.js hunks).
+
+Makes Nightwatch respect the DRUPAL_TEST_WEBDRIVER_W3C env var so modern
+Selenium/chromedriver (W3C-only) can be used. Default behavior is unchanged
+when the env var isn't set. The fix landed in 11.1.x; no 10.x backport was
+ever finished (per issue comment #70).
+
+Upstream commit: 9eb4cb9d5b377f51e237ca2c3f71ab67d8fc6f7d
+Issue: https://www.drupal.org/project/drupal/issues/3421202
+
+diff --git a/core/tests/Drupal/Nightwatch/nightwatch.conf.js b/core/tests/Drupal/Nightwatch/nightwatch.conf.js
+--- a/core/tests/Drupal/Nightwatch/nightwatch.conf.js
++++ b/core/tests/Drupal/Nightwatch/nightwatch.conf.js
+@@ -69,7 +69,7 @@ module.exports = {
+         browserName: 'chrome',
+         acceptSslCerts: true,
+         'goog:chromeOptions': {
+-          w3c: false,
++          w3c: !!process.env.DRUPAL_TEST_WEBDRIVER_W3C,
+           args: process.env.DRUPAL_TEST_WEBDRIVER_CHROME_ARGS
+             ? process.env.DRUPAL_TEST_WEBDRIVER_CHROME_ARGS.split(' ')
+             : [],
+@@ -96,7 +96,7 @@ module.exports = {
+         browserName: 'chrome',
+         acceptSslCerts: true,
+         'goog:chromeOptions': {
+-          w3c: false,
++          w3c: !!process.env.DRUPAL_TEST_WEBDRIVER_W3C,
+           args: process.env.DRUPAL_TEST_WEBDRIVER_CHROME_ARGS
+             ? process.env.DRUPAL_TEST_WEBDRIVER_CHROME_ARGS.split(' ')
+             : [],
