@@ -43,6 +43,23 @@ ddev exec 'cd /var/www/html/web/core && yarn test:nightwatch /var/www/html/web/m
 ddev exec 'cd /var/www/html/web/core && yarn test:nightwatch --tag my_group'
 ```
 
+## Tag convention
+
+Every Nightwatch test in an augustash project must carry **`aai`** as its first tag — the team-wide umbrella — plus at least one module/feature-specific sub-tag. Example:
+
+```js
+module.exports = {
+  '@tags': ['aai', 'mymsp_search_filtering', 'child'],
+  // ...
+};
+```
+
+**Why the umbrella:** there's no native way to say "run all custom tests" — bare `yarn test:nightwatch` will pick up contrib and core module Nightwatch suites (google_tag, quicklink, navigation, toolbar, ckeditor5, etc.), which are slow and not our concern. A shared `aai` tag gives one stable target: `--tag aai` runs exactly the augustash-authored tests and nothing else.
+
+**Why sub-tags:** they let a dev run a narrower slice during focused work — `--tag mymsp_search_filtering` for one module, `--tag child` across modules that share a concern. Don't drop them in favor of just `aai`.
+
+**Applying to new tests:** `aai` first, then module-scoped tag (typically the module machine name), then any finer slice. Adding a new module with tests? Just include `aai` in the tag list and the post-update notice continues to work with no edits.
+
 ## Test structure
 
 Tests live at `<module>/tests/src/Nightwatch/Tests/*.js` and run against the live DDEV site — no drupalInstall/Uninstall — so they exercise the real theme, JS libraries, and content. Tests must not mutate site state or there's nothing to clean up.
