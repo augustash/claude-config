@@ -18,8 +18,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/utils.sh"
 
-IMPORT_LINE="@~/claude-config/CLAUDE.md"
-AGENTS_IMPORT_LINE="See \`~/claude-config/AGENTS.md\` for shared augustash team conventions."
 COUNT_FILE="$SCRIPT_DIR/.dircount"
 
 # Regenerate the global AGENTS.md from CLAUDE.md. Idempotent: skips the write
@@ -87,7 +85,7 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
       personal=$((personal + 1))
       project_name=$(basename "$project_dir")
       for candidate in "$project_dir/.claude/CLAUDE.md" "$project_dir/CLAUDE.md"; do
-        if prune_import "$candidate" "$IMPORT_LINE"; then
+        if prune_import "$candidate" "$CLAUDE_IMPORT_LINE"; then
           echo "  Pruned CLAUDE.md import from $project_name"
           pruned=$((pruned + 1))
         fi
@@ -108,42 +106,23 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
     fi
 
     project_name=$(basename "$project_dir")
-    claude_dir="$project_dir/.claude"
-    claude_md="$claude_dir/CLAUDE.md"
-    agents_md="$project_dir/AGENTS.md"
+    claude_md="$project_dir/.claude/CLAUDE.md"
     did_something=0
 
-    # CLAUDE.md import: skip if already present in either location.
-    claude_has_import=0
-    if [[ -f "$claude_md" ]] && grep -qF "$IMPORT_LINE" "$claude_md" 2>/dev/null; then
-      claude_has_import=1
-    fi
-    if [[ -f "$project_dir/CLAUDE.md" ]] && grep -qF "$IMPORT_LINE" "$project_dir/CLAUDE.md" 2>/dev/null; then
-      claude_has_import=1
-    fi
-
-    if (( claude_has_import == 0 )); then
-      mkdir -p "$claude_dir"
-      if [[ -f "$claude_md" ]] && [[ -s "$claude_md" ]]; then
-        echo "" >> "$claude_md"
-        echo "$IMPORT_LINE" >> "$claude_md"
-      else
-        echo "$IMPORT_LINE" > "$claude_md"
-      fi
+    # CLAUDE.md import lives at .claude/CLAUDE.md, but a legacy root-level
+    # CLAUDE.md with the import also counts as already-configured — skip
+    # adding in that case rather than writing a second copy.
+    if [[ -f "$project_dir/CLAUDE.md" ]] && grep -qF "$CLAUDE_IMPORT_LINE" "$project_dir/CLAUDE.md" 2>/dev/null; then
+      :
+    elif add_import "$claude_md" "$CLAUDE_IMPORT_LINE"; then
       echo "  Added CLAUDE.md import to $project_name"
       did_something=1
     fi
 
     # AGENTS.md pointer: repo-root convention honored by Cursor/Codex/Aider/etc.
-    # Small reference line — the real content lives at ~/claude-config/AGENTS.md
+    # Small reference line — real content lives at ~/claude-config/AGENTS.md
     # so other tools read one source of truth rather than a local copy.
-    if [[ ! -f "$agents_md" ]] || ! grep -qF "$AGENTS_IMPORT_LINE" "$agents_md" 2>/dev/null; then
-      if [[ -f "$agents_md" ]] && [[ -s "$agents_md" ]]; then
-        echo "" >> "$agents_md"
-        echo "$AGENTS_IMPORT_LINE" >> "$agents_md"
-      else
-        echo "$AGENTS_IMPORT_LINE" > "$agents_md"
-      fi
+    if add_import "$project_dir/AGENTS.md" "$AGENTS_IMPORT_LINE"; then
       echo "  Added AGENTS.md pointer to $project_name"
       did_something=1
     fi

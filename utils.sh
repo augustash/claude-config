@@ -3,6 +3,11 @@
 # Shared utilities for claude-config scripts.
 #
 
+# Lines written into downstream projects to wire up the shared config.
+# Keep as single-line strings so prune_import's exact-line match still works.
+CLAUDE_IMPORT_LINE="@~/claude-config/CLAUDE.md"
+AGENTS_IMPORT_LINE="See \`~/claude-config/AGENTS.md\` for shared augustash team conventions."
+
 # Ensure Homebrew is installed, offer to install if not
 require_brew() {
   if command -v brew &>/dev/null; then
@@ -194,6 +199,25 @@ is_augustash() {
   fi
 
   return 1
+}
+
+# Add a shared-config line to a file if not already present. Creates the file
+# (and parent directory) when missing; appends with a blank-line separator
+# when the file already has content. Returns 0 if the line was added,
+# 1 if it was already present.
+# Usage: add_import <file> <line>
+add_import() {
+  local file="$1" line="$2"
+  if [[ -f "$file" ]] && grep -qF "$line" "$file" 2>/dev/null; then
+    return 1
+  fi
+  mkdir -p "$(dirname "$file")"
+  if [[ -f "$file" ]] && [[ -s "$file" ]]; then
+    printf '\n%s\n' "$line" >> "$file"
+  else
+    printf '%s\n' "$line" > "$file"
+  fi
+  return 0
 }
 
 # Remove a shared-config import line from a CLAUDE.md; delete the file

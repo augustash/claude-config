@@ -152,9 +152,9 @@ for d in "$PROJECTS_DIR"/*/; do
   if [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]]; then continue; fi
   rm -f "$d/.claude/.personal" "$d/.claude/.opt-in"
   for candidate in "$d/.claude/CLAUDE.md" "$d/CLAUDE.md"; do
-    prune_import "$candidate" "@~/claude-config/CLAUDE.md" 2>/dev/null || true
+    prune_import "$candidate" "$CLAUDE_IMPORT_LINE" 2>/dev/null || true
   done
-  prune_import "$d/AGENTS.md" "See \`~/claude-config/AGENTS.md\` for shared augustash team conventions." 2>/dev/null || true
+  prune_import "$d/AGENTS.md" "$AGENTS_IMPORT_LINE" 2>/dev/null || true
 done
 
 # Pass 1: discover personal github orgs. Any github origin that isn't

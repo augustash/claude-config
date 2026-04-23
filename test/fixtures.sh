@@ -5,8 +5,7 @@
 # Call: build_fixture <target_dir>
 #
 
-IMPORT_LINE="@~/claude-config/CLAUDE.md"
-AGENTS_POINTER_LINE="See \`~/claude-config/AGENTS.md\` for shared augustash team conventions."
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/utils.sh"
 
 # Turn a directory into a minimal git repo from setup.sh's perspective.
 # setup.sh only checks for .git/ existence, so an empty dir is enough.
@@ -60,8 +59,8 @@ build_fixture() {
   _fake_git "$d"
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
-  echo "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
-  echo "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
+  echo "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  echo "$AGENTS_IMPORT_LINE" > "$d/AGENTS.md"
 
   # 4. Augustash site with unrelated existing content in both files.
   #    setup.sh should append the import/pointer with a blank-line separator.
@@ -87,8 +86,8 @@ build_fixture() {
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal"
-  echo "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
-  echo "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
+  echo "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  echo "$AGENTS_IMPORT_LINE" > "$d/AGENTS.md"
 
   # 7. Personal site with mixed content + stale import in both files.
   #    setup.sh should strip the import/pointer line but keep the rest.
@@ -97,8 +96,8 @@ build_fixture() {
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal"
-  printf 'Personal notes.\n\n%s\n' "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
-  printf 'Personal agent notes.\n\n%s\n' "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
+  printf 'Personal notes.\n\n%s\n' "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  printf 'Personal agent notes.\n\n%s\n' "$AGENTS_IMPORT_LINE" > "$d/AGENTS.md"
 
   # 8. Personal with opt-in, no CLAUDE.md yet.
   #    setup.sh should treat it like augustash and add the import.
@@ -115,7 +114,7 @@ build_fixture() {
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal" "$d/.claude/.opt-in"
-  echo "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  echo "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
 
   # 10. Not a git repo — setup.sh must skip.
   d="$root/not-a-repo"
