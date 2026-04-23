@@ -50,6 +50,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at ~/claude-config/patches/
+- [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present

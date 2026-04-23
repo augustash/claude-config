@@ -46,6 +46,20 @@ ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group
 
 When you decorate a tagged service in Drupal 10+ / Symfony 5+, **tags on the decorated service are copied to the decorator automatically**. Do not redeclare them on the decorator — the decorator ends up registered twice for every tag, which for things like order processors means every promotion applies twice, every event handler fires twice, etc. The symptom in tests is "asserted size 1, actual size 2" on adjustments or event-driven collections. If you discover this mid-refactor, removing the redundant `tags:` block from the decorator's services.yml is the fix.
 
+## Group convention
+
+Every custom test carries `@group aai` as its umbrella plus at least one module-specific group — see [test-tags.md](test-tags.md) for the cross-runner convention (also applies to Nightwatch).
+
+```php
+/**
+ * @group aai
+ * @group my_module
+ */
+class MyTest extends KernelTestBase { ... }
+```
+
+Run all custom PHPUnit: `ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group aai"`
+
 ## Do not use `--list-groups`
 
 **Do not use `--list-groups`** to explore available groups. It scans every test file in the tree, including contrib modules, and commonly dies on poorly-maintained contrib test files (missing trait references, undefined variables in Unit tests, etc.). Target a specific path instead — kernel/unit tests under `modules/custom` or `modules/contrib/{module}/tests/src/Kernel` run fine because phpunit only loads the files it actually needs.
