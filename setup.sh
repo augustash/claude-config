@@ -19,7 +19,17 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/utils.sh"
 
 IMPORT_LINE="@~/claude-config/CLAUDE.md"
+AGENTS_IMPORT_LINE="See \`~/claude-config/AGENTS.md\` for shared augustash team conventions."
 COUNT_FILE="$SCRIPT_DIR/.dircount"
+
+# Regenerate the global AGENTS.md from CLAUDE.md. Idempotent: skips the write
+# when content is unchanged, so this is cheap to call on every setup pass.
+# Runs before the dircount early-exit so memory changes to CLAUDE.md flow
+# through even when no projects were added/removed.
+if [[ -x "$SCRIPT_DIR/generate-agents.py" ]]; then
+  "$SCRIPT_DIR/generate-agents.py" >/dev/null || \
+    echo "Warning: generate-agents.py failed; continuing." >&2
+fi
 
 # Directories to scan for projects (default: ~/Projects)
 if [[ $# -gt 0 ]]; then
@@ -78,10 +88,14 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
       project_name=$(basename "$project_dir")
       for candidate in "$project_dir/.claude/CLAUDE.md" "$project_dir/CLAUDE.md"; do
         if prune_import "$candidate" "$IMPORT_LINE"; then
-          echo "  Pruned import from $project_name"
+          echo "  Pruned CLAUDE.md import from $project_name"
           pruned=$((pruned + 1))
         fi
       done
+      if prune_import "$project_dir/AGENTS.md" "$AGENTS_IMPORT_LINE"; then
+        echo "  Pruned AGENTS.md pointer from $project_name"
+        pruned=$((pruned + 1))
+      fi
       continue
     fi
 
@@ -96,33 +110,49 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
     project_name=$(basename "$project_dir")
     claude_dir="$project_dir/.claude"
     claude_md="$claude_dir/CLAUDE.md"
+    agents_md="$project_dir/AGENTS.md"
+    did_something=0
 
-    # Check if import already exists in either location
+    # CLAUDE.md import: skip if already present in either location.
+    claude_has_import=0
     if [[ -f "$claude_md" ]] && grep -qF "$IMPORT_LINE" "$claude_md" 2>/dev/null; then
-      skipped=$((skipped + 1))
-      continue
+      claude_has_import=1
     fi
-
     if [[ -f "$project_dir/CLAUDE.md" ]] && grep -qF "$IMPORT_LINE" "$project_dir/CLAUDE.md" 2>/dev/null; then
-      skipped=$((skipped + 1))
-      continue
+      claude_has_import=1
     fi
 
-    # Create .claude directory if needed
-    mkdir -p "$claude_dir"
+    if (( claude_has_import == 0 )); then
+      mkdir -p "$claude_dir"
+      if [[ -f "$claude_md" ]] && [[ -s "$claude_md" ]]; then
+        echo "" >> "$claude_md"
+        echo "$IMPORT_LINE" >> "$claude_md"
+      else
+        echo "$IMPORT_LINE" > "$claude_md"
+      fi
+      echo "  Added CLAUDE.md import to $project_name"
+      did_something=1
+    fi
 
-    # Append import line (create file if needed, add newline before if file exists and isn't empty)
-    if [[ -f "$claude_md" ]] && [[ -s "$claude_md" ]]; then
-      # File exists and has content -- append with blank line separator
-      echo "" >> "$claude_md"
-      echo "$IMPORT_LINE" >> "$claude_md"
+    # AGENTS.md pointer: repo-root convention honored by Cursor/Codex/Aider/etc.
+    # Small reference line — the real content lives at ~/claude-config/AGENTS.md
+    # so other tools read one source of truth rather than a local copy.
+    if [[ ! -f "$agents_md" ]] || ! grep -qF "$AGENTS_IMPORT_LINE" "$agents_md" 2>/dev/null; then
+      if [[ -f "$agents_md" ]] && [[ -s "$agents_md" ]]; then
+        echo "" >> "$agents_md"
+        echo "$AGENTS_IMPORT_LINE" >> "$agents_md"
+      else
+        echo "$AGENTS_IMPORT_LINE" > "$agents_md"
+      fi
+      echo "  Added AGENTS.md pointer to $project_name"
+      did_something=1
+    fi
+
+    if (( did_something )); then
+      added=$((added + 1))
     else
-      # New file or empty file
-      echo "$IMPORT_LINE" > "$claude_md"
+      skipped=$((skipped + 1))
     fi
-
-    echo "  Added import to $project_name"
-    added=$((added + 1))
   done
 done
 

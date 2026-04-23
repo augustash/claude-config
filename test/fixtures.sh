@@ -6,6 +6,7 @@
 #
 
 IMPORT_LINE="@~/claude-config/CLAUDE.md"
+AGENTS_POINTER_LINE="See \`~/claude-config/AGENTS.md\` for shared augustash team conventions."
 
 # Turn a directory into a minimal git repo from setup.sh's perspective.
 # setup.sh only checks for .git/ existence, so an empty dir is enough.
@@ -53,21 +54,23 @@ build_fixture() {
   _fake_git "$d"
   _fake_composer "$d" "project"
 
-  # 3. Augustash site where the import is already there.
-  #    setup.sh should leave it alone (already-configured skip).
+  # 3. Augustash site where both import and pointer are already present.
+  #    setup.sh should leave both alone (already-configured skip).
   d="$root/augustash-existing-import"
   _fake_git "$d"
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   echo "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  echo "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
 
-  # 4. Augustash site with unrelated existing content, no import.
-  #    setup.sh should append the import with a blank-line separator.
+  # 4. Augustash site with unrelated existing content in both files.
+  #    setup.sh should append the import/pointer with a blank-line separator.
   d="$root/augustash-mixed-content"
   _fake_git "$d"
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   printf 'Project-specific notes.\n' > "$d/.claude/CLAUDE.md"
+  printf 'Project-specific agent notes.\n' > "$d/AGENTS.md"
 
   # 5. Personal site, no import present.
   #    setup.sh should skip it (personal counter++, no file created).
@@ -77,23 +80,25 @@ build_fixture() {
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal"
 
-  # 6. Personal site with a stale import-only CLAUDE.md.
-  #    setup.sh should prune → file deleted entirely.
+  # 6. Personal site with stale pointer-only CLAUDE.md AND AGENTS.md.
+  #    setup.sh should prune both → both files deleted entirely.
   d="$root/personal-stale-import"
   _fake_git "$d"
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal"
   echo "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  echo "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
 
-  # 7. Personal site with mixed content + stale import.
-  #    setup.sh should strip the import line but keep the rest.
+  # 7. Personal site with mixed content + stale import in both files.
+  #    setup.sh should strip the import/pointer line but keep the rest.
   d="$root/personal-mixed-stale"
   _fake_git "$d"
   _fake_composer "$d" "project"
   mkdir -p "$d/.claude"
   touch "$d/.claude/.personal"
   printf 'Personal notes.\n\n%s\n' "$IMPORT_LINE" > "$d/.claude/CLAUDE.md"
+  printf 'Personal agent notes.\n\n%s\n' "$AGENTS_POINTER_LINE" > "$d/AGENTS.md"
 
   # 8. Personal with opt-in, no CLAUDE.md yet.
   #    setup.sh should treat it like augustash and add the import.
