@@ -16,6 +16,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/utils.sh"
+
 IMPORT_LINE="@~/claude-config/CLAUDE.md"
 COUNT_FILE="$SCRIPT_DIR/.dircount"
 
@@ -43,6 +45,9 @@ SELF_DIR="$(cd "$SCRIPT_DIR" && pwd)"
 added=0
 skipped=0
 not_git=0
+personal=0
+pruned=0
+non_site=0
 
 for scan_dir in "${SCAN_DIRS[@]}"; do
   scan_dir="${scan_dir/#\~/$HOME}"
@@ -64,6 +69,27 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
     # Only process git repos
     if [[ ! -d "$project_dir/.git" ]]; then
       not_git=$((not_git + 1))
+      continue
+    fi
+
+    # Personal projects without opt-in: skip and prune any stale import line
+    if [[ -f "$project_dir/.claude/.personal" ]] && [[ ! -f "$project_dir/.claude/.opt-in" ]]; then
+      personal=$((personal + 1))
+      project_name=$(basename "$project_dir")
+      for candidate in "$project_dir/.claude/CLAUDE.md" "$project_dir/CLAUDE.md"; do
+        if prune_import "$candidate" "$IMPORT_LINE"; then
+          echo "  Pruned import from $project_name"
+          pruned=$((pruned + 1))
+        fi
+      done
+      continue
+    fi
+
+    # Only apply to actual sites. Modules, themes, libraries, tools don't
+    # belong in shared claude-config territory.
+    if is_module_type "$(composer_type "$project_dir/composer.json")" \
+       || ! is_site "$project_dir"; then
+      non_site=$((non_site + 1))
       continue
     fi
 
@@ -104,4 +130,4 @@ done
 echo "$current_count" > "$COUNT_FILE"
 
 echo ""
-echo "Done. Added: $added | Already configured: $skipped | Skipped (not git): $not_git"
+echo "Done. Added: $added | Pruned: $pruned | Already configured: $skipped | Skipped (not git): $not_git | Skipped (non-site): $non_site | Skipped (personal): $personal"

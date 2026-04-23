@@ -117,7 +117,12 @@ echo "Detecting project types..."
 # Detect framework from ddev config type, fall back to file signatures
 detect_framework() {
   local dir="$1"
-  local ddev_type=$(grep -E '^\s*type:\s*' "$dir/.ddev/config.yaml" 2>/dev/null | head -1 | sed 's/.*type:\s*//' | tr -d '[:space:]')
+  local ddev_type_line ddev_type=""
+  ddev_type_line=$(grep -E '^\s*type:\s*' "$dir/.ddev/config.yaml" 2>/dev/null | head -1 || true)
+  if [[ -n "$ddev_type_line" ]]; then
+    # Strip through "type:", then read trims surrounding whitespace.
+    read -r ddev_type <<< "${ddev_type_line##*type:}"
+  fi
 
   case "$ddev_type" in
     drupal*) echo "drupal"; return ;;
@@ -126,84 +131,174 @@ detect_framework() {
   esac
 
   # File signature fallback (no ddev or unrecognized type)
-  [[ -f "$dir/wp-config.php" ]] || [[ -d "$dir/wp-content" ]] && echo "wordpress" && return
-  [[ -f "$dir/web/core/lib/Drupal.php" ]] || [[ -f "$dir/core/lib/Drupal.php" ]] && echo "drupal" && return
-  [[ -f "$dir/bin/magento" ]] || [[ -f "$dir/app/etc/env.php" ]] && echo "magento" && return
+  if [[ -f "$dir/wp-config.php" || -d "$dir/wp-content" ]]; then
+    echo "wordpress"; return
+  fi
+  if [[ -f "$dir/web/core/lib/Drupal.php" || -f "$dir/core/lib/Drupal.php" ]]; then
+    echo "drupal"; return
+  fi
+  if [[ -f "$dir/bin/magento" || -f "$dir/app/etc/env.php" ]]; then
+    echo "magento"; return
+  fi
 
   echo ""
 }
 
-aai_projects=()
-framework_review=()
-non_framework=()
-
+# Clean slate: wipe prior markers and any existing import lines so this run's
+# decisions are authoritative. setup.sh at the end will re-apply imports.
+echo "  Clearing prior classification markers..."
 for d in "$PROJECTS_DIR"/*/; do
   [[ -d "$d/.git" ]] || continue
-  [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]] && continue
-  name="$(basename "$d")"
-  framework=$(detect_framework "$d")
-  site=$(grep -E '^\s*-\s*(DDEV_PANTHEON_SITE|PANTHEON_SITE)=' "$d/.ddev/config.yaml" 2>/dev/null | head -1 | sed 's/.*=//')
+  if [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]]; then continue; fi
+  rm -f "$d/.claude/.personal" "$d/.claude/.opt-in"
+  for candidate in "$d/.claude/CLAUDE.md" "$d/CLAUDE.md"; do
+    prune_import "$candidate" "@~/claude-config/CLAUDE.md" 2>/dev/null || true
+  done
+done
 
-  if [[ -n "$site" ]] && [[ "$site" == aai* ]]; then
-    # aai prefix = augustash, no review needed
-    aai_projects+=("$name")
-  elif [[ -n "$framework" ]]; then
-    # Has a known framework but no aai prefix — likely augustash, ask which are personal
-    framework_review+=("$name|$framework|${site:--}")
-  else
-    # No known framework — likely personal, ask which are augustash
-    non_framework+=("$name")
+# Pass 1: discover personal github orgs. Any github origin that isn't
+# augustash is the dev's own org; we use those same namespaces to recognise
+# personal Pantheon sites whose codeserver remotes hide ownership.
+personal_orgs=""
+for d in "$PROJECTS_DIR"/*/; do
+  [[ -d "$d/.git" ]] || continue
+  if [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]]; then continue; fi
+  origin=$(git -C "$d" remote get-url origin 2>/dev/null || true)
+  case "$origin" in
+    *github.com[:/]augustash/*) continue ;;
+  esac
+  org=$(github_org "$origin")
+  if [[ -n "$org" ]]; then
+    case " $personal_orgs " in
+      *" $org "*) ;;
+      *) personal_orgs="${personal_orgs:+$personal_orgs }$org" ;;
+    esac
   fi
 done
 
-echo "  Auto-detected ${#aai_projects[@]} augustash projects (aai* prefix)"
+if [[ -n "$personal_orgs" ]]; then
+  echo "  Personal orgs detected: $personal_orgs"
+fi
 
-# Review framework projects without aai prefix
-if [[ ${#framework_review[@]} -gt 0 ]]; then
+# Pass 2: classify every project.
+aai_projects=()
+auto_personals=()
+unknowns=()
+unknown_names=()
+skipped_modules=0
+skipped_nonsite=0
+
+for d in "$PROJECTS_DIR"/*/; do
+  [[ -d "$d/.git" ]] || continue
+  if [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]]; then continue; fi
+  name="$(basename "$d")"
+
+  origin=$(git -C "$d" remote get-url origin 2>/dev/null || true)
+  ctype=$(composer_type "$d/composer.json")
+
+  # Skip modules/libraries — they are not sites that should host claude-config.
+  if is_module_type "$ctype"; then
+    skipped_modules=$((skipped_modules + 1))
+    continue
+  fi
+
+  # Skip anything that doesn't look like a deployable site.
+  if ! is_site "$d" "$origin"; then
+    skipped_nonsite=$((skipped_nonsite + 1))
+    continue
+  fi
+
+  # Non-augustash github origin → personal.
+  # Composer name namespace matches a personal org (covers Pantheon codeserver
+  # sites owned by the dev — their UUID remote can't tell us but the composer
+  # name can).
+  if is_personal_origin "$d" "$origin" || \
+     is_personal_composer "$d" "$personal_orgs"; then
+    mkdir -p "$d/.claude"
+    touch "$d/.claude/.personal"
+    auto_personals+=("$name")
+    continue
+  fi
+
+  if is_augustash "$d" "$origin"; then
+    aai_projects+=("$name")
+    continue
+  fi
+
+  # Pantheon codeserver remotes whose composer names we couldn't match are
+  # overwhelmingly augustash work. Default them augustash — personal Pantheon
+  # sites have already been caught via is_personal_composer above.
+  case "$origin" in
+    *codeserver.dev.*@codeserver.dev.*)
+      aai_projects+=("$name")
+      continue
+      ;;
+  esac
+
+  # Truly ambiguous (non-github non-Pantheon remote, or no remote at all) —
+  # let the user decide in fzf.
+  framework=$(detect_framework "$d")
+  label="$name"
+  [[ -n "$framework" ]] && label="$label ($framework)"
+  unknowns+=("$label")
+  unknown_names+=("$name")
+done
+
+echo "  Auto-detected ${#aai_projects[@]} augustash projects"
+echo "  Auto-detected ${#auto_personals[@]} personal projects (non-augustash github origin)"
+echo "  Skipped $skipped_modules modules/libraries and $skipped_nonsite non-site directories"
+
+personals=()
+if [[ ${#unknowns[@]} -gt 0 ]]; then
   echo ""
-  echo "Found ${#framework_review[@]} Drupal/WordPress/Magento projects without aai prefix."
+  echo "Found ${#unknowns[@]} other project(s) (assumed augustash by default)."
+  read -p "Mark any as personal? (y/N) " -n 1 -r
+  echo ""
 
-  # Build display labels
-  fw_labels=()
-  for entry in "${framework_review[@]}"; do
-    proj="${entry%%|*}"
-    rest="${entry#*|}"
-    fw="${rest%%|*}"
-    site="${rest##*|}"
-    fw_labels+=("$proj ($fw, site: $site)")
-  done
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    selected=$(multi_select "Which are personal? Tab to select, Enter to confirm" "${unknowns[@]}") || true
 
-  selected=$(multi_select "Are any of these personal projects? Tab to select, Enter to confirm" "${fw_labels[@]}") || true
+    # fzf --multi falls back to the highlighted line when no Tab-selections
+    # were made. Confirm explicitly so an accidental Enter doesn't silently
+    # mark whatever was at the top of the list.
+    if [[ -n "$selected" ]]; then
+      count=$(printf '%s\n' "$selected" | grep -c .)
+      echo ""
+      echo "Selected $count project(s) to mark personal:"
+      printf '  %s\n' "$selected"
+      read -p "Confirm? (Y/n) " -n 1 -r
+      echo ""
+      if [[ $REPLY =~ ^[Nn]$ ]]; then
+        selected=""
+      fi
+    fi
 
-  if [[ -n "$selected" ]]; then
-    while IFS= read -r line; do
-      proj="${line%% (*}"
-      mkdir -p "$PROJECTS_DIR/$proj/.claude"
-      touch "$PROJECTS_DIR/$proj/.claude/.personal"
-      echo "  Marked $proj as personal"
-    done <<< "$selected"
+    if [[ -n "$selected" ]]; then
+      while IFS= read -r line; do
+        proj="${line%% *}"
+        mkdir -p "$PROJECTS_DIR/$proj/.claude"
+        touch "$PROJECTS_DIR/$proj/.claude/.personal"
+        personals+=("$proj")
+        echo "  Marked $proj as personal"
+      done <<< "$selected"
+    fi
   fi
 fi
 
-# Review non-framework projects (likely personal, ask which are augustash)
-if [[ ${#non_framework[@]} -gt 0 ]]; then
+# Opt-in: personals that should still get shared claude-config
+if [[ ${#personals[@]} -gt 0 ]]; then
   echo ""
-  echo "Found ${#non_framework[@]} non-Drupal/WordPress/Magento projects (assumed personal)."
+  read -p "Enable shared claude-config for any of your personal projects? (y/N) " -n 1 -r
+  echo ""
 
-  selected=$(multi_select "Are any of these augustash projects? Tab to select, Enter to confirm" "${non_framework[@]}") || true
-
-  # Mark ALL as personal first
-  for proj in "${non_framework[@]}"; do
-    mkdir -p "$PROJECTS_DIR/$proj/.claude"
-    touch "$PROJECTS_DIR/$proj/.claude/.personal"
-  done
-
-  # Remove marker for any the dev says are augustash
-  if [[ -n "$selected" ]]; then
-    while IFS= read -r proj; do
-      rm -f "$PROJECTS_DIR/$proj/.claude/.personal"
-      echo "  Marked $proj as augustash"
-    done <<< "$selected"
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    opt_in=$(multi_select "Which personal projects should use shared claude-config?" "${personals[@]}") || true
+    if [[ -n "$opt_in" ]]; then
+      while IFS= read -r proj; do
+        touch "$PROJECTS_DIR/$proj/.claude/.opt-in"
+        echo "  Opted in: $proj"
+      done <<< "$opt_in"
+    fi
   fi
 fi
 
@@ -258,7 +353,8 @@ fi
 
 echo "Claude Code permissions configured."
 
-# Run initial setup
+# Run initial setup — force a full pass so the prune step sees fresh markers
+rm -f "$SCRIPT_DIR/.dircount"
 echo ""
 echo "Running initial setup..."
 "$SCRIPT_DIR/setup.sh" "$PROJECTS_DIR"
@@ -294,7 +390,6 @@ launchctl bootout "gui/$(id -u)/$PLIST_NAME" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST_DEST"
 
 echo ""
-echo "Done! Launchd agent installed."
+echo "Done! Watch agent installed."
 echo "  Watching: $PROJECTS_DIR"
 echo "  Setup will run automatically when new projects are added."
-echo "  Log: $SCRIPT_DIR/.last-run.log"
