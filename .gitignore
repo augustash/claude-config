@@ -2,3 +2,4 @@
 .dircount
 .last-run.log
 .settings.json
+test/workdir/
