@@ -61,3 +61,4 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module
 - [Test reminders](memory/preferences/test-reminders.md) — Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
+- [Post-update test notice](memory/preferences/updates.md) — Wire a composer post-update-cmd notice listing the specific test suites installed in each project
