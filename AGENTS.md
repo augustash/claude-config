@@ -19,7 +19,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Memory audit process** — `~/claude-config/memory/preferences/memory-audit.md`  
   event-driven (not scheduled), per-dev settings, self-refining
 - **Comment style** — `~/claude-config/memory/preferences/comments.md`  
-  Efficient, not one-liner-only; multi-line OK when WHY is non-obvious
+  Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Scratch context** — `~/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - **Test reminders** — `~/claude-config/memory/preferences/test-reminders.md`  
