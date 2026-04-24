@@ -390,7 +390,31 @@ EOF
 launchctl bootout "gui/$(id -u)/$PLIST_NAME" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST_DEST"
 
+# Make the `claude-config` command available on PATH. We only add to a shell
+# rc if the directory isn't already on PATH (e.g. re-running install should be
+# idempotent). macOS default shell is zsh; also cover bash for older setups.
+PATH_LINE='export PATH="$HOME/claude-config/bin:$PATH"'
+PATH_MARKER='# Added by claude-config install'
+path_added_to=""
+for rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
+  # Only touch rc files that already exist — don't create one on a user's
+  # behalf, they may have intentionally not set one up.
+  [[ -f "$rc" ]] || continue
+  if grep -qF "$PATH_LINE" "$rc"; then
+    continue
+  fi
+  {
+    printf '\n%s\n%s\n' "$PATH_MARKER" "$PATH_LINE"
+  } >> "$rc"
+  path_added_to="${path_added_to:+$path_added_to, }$rc"
+done
+
 echo ""
 echo "Done! Watch agent installed."
 echo "  Watching: $PROJECTS_DIR"
 echo "  Setup will run automatically when new projects are added."
+if [[ -n "$path_added_to" ]]; then
+  echo ""
+  echo "Added ~/claude-config/bin to PATH in: $path_added_to"
+  echo "  Open a new shell (or 'source' your rc file) to use the 'claude-config' command."
+fi
