@@ -19,6 +19,10 @@ Install will ask for your projects directory, wire up existing projects, and add
 - Classifies projects before wiring — non-site repos, modules, and anything marked personal are skipped
 - A launchd watcher sweeps the projects directory and keeps new projects in sync
 
+### Scope
+
+Designed for agentic / CLI-style AI tools (Claude Code, Cursor, Codex, Aider, Windsurf, Zed) that read `AGENTS.md` and can follow pointers into `~/claude-config/`. **Not yet supported:** GitHub Copilot and JetBrains AI Assistant — they're workspace-scoped and expect self-contained instructions files (`.github/copilot-instructions.md` etc.). We'll address it if/when it becomes a blocker.
+
 ## Managing projects
 
 The watcher handles the common case. To override, use the CLI:
