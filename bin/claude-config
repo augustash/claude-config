@@ -128,14 +128,7 @@ cmd_remove() {
     did_something=1
   fi
 
-  # .personal tells setup.sh to skip-and-prune on future sweeps. Clear any
-  # stale .opt-in too, since it would override .personal and let the watcher
-  # re-add imports.
-  if [[ -f "$project_dir/.claude/.opt-in" ]]; then
-    rm -f "$project_dir/.claude/.opt-in"
-    echo "  Removed .opt-in marker"
-    did_something=1
-  fi
+  # .personal tells setup.sh to skip-and-prune on future sweeps.
   if [[ ! -f "$project_dir/.claude/.personal" ]]; then
     mkdir -p "$project_dir/.claude"
     touch "$project_dir/.claude/.personal"

@@ -150,7 +150,7 @@ echo "  Clearing prior classification markers..."
 for d in "$PROJECTS_DIR"/*/; do
   [[ -d "$d/.git" ]] || continue
   if [[ "$(cd "$d" && pwd)" == "$SCRIPT_DIR" ]]; then continue; fi
-  rm -f "$d/.claude/.personal" "$d/.claude/.opt-in"
+  rm -f "$d/.claude/.personal"
   for candidate in "$d/.claude/CLAUDE.md" "$d/CLAUDE.md"; do
     prune_import "$candidate" "$CLAUDE_IMPORT_LINE" 2>/dev/null || true
   done
@@ -282,23 +282,6 @@ if [[ ${#unknowns[@]} -gt 0 ]]; then
         personals+=("$proj")
         echo "  Marked $proj as personal"
       done <<< "$selected"
-    fi
-  fi
-fi
-
-# Opt-in: personals that should still get shared claude-config
-if [[ ${#personals[@]} -gt 0 ]]; then
-  echo ""
-  read -p "Enable shared claude-config for any of your personal projects? (y/N) " -n 1 -r
-  echo ""
-
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    opt_in=$(multi_select "Which personal projects should use shared claude-config?" "${personals[@]}") || true
-    if [[ -n "$opt_in" ]]; then
-      while IFS= read -r proj; do
-        touch "$PROJECTS_DIR/$proj/.claude/.opt-in"
-        echo "  Opted in: $proj"
-      done <<< "$opt_in"
     fi
   fi
 fi

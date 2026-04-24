@@ -99,38 +99,21 @@ build_fixture() {
   printf 'Personal notes.\n\n%s\n' "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
   printf 'Personal agent notes.\n\n%s\n' "$AGENTS_IMPORT_LINE" > "$d/AGENTS.md"
 
-  # 8. Personal with opt-in, no CLAUDE.md yet.
-  #    setup.sh should treat it like augustash and add the import.
-  d="$root/personal-optin-clean"
-  _fake_git "$d"
-  _fake_composer "$d" "project"
-  mkdir -p "$d/.claude"
-  touch "$d/.claude/.personal" "$d/.claude/.opt-in"
-
-  # 9. Personal with opt-in and the import already in place.
-  #    setup.sh should leave it alone.
-  d="$root/personal-optin-existing"
-  _fake_git "$d"
-  _fake_composer "$d" "project"
-  mkdir -p "$d/.claude"
-  touch "$d/.claude/.personal" "$d/.claude/.opt-in"
-  echo "$CLAUDE_IMPORT_LINE" > "$d/.claude/CLAUDE.md"
-
-  # 10. Not a git repo — setup.sh must skip.
+  # 8. Not a git repo — setup.sh must skip.
   d="$root/not-a-repo"
   mkdir -p "$d"
 
-  # 11. Module (drupal-module) — setup.sh must skip, no .claude/ created.
+  # 9. Module (drupal-module) — setup.sh must skip, no .claude/ created.
   d="$root/drupal-module-thing"
   _fake_git "$d"
   _fake_composer "$d" "drupal-module"
 
-  # 12. Library — setup.sh must skip.
+  # 10. Library — setup.sh must skip.
   d="$root/lib-thing"
   _fake_git "$d"
   _fake_composer "$d" "library"
 
-  # 13. Non-site directory (git repo but no composer/ddev/site signals).
+  # 11. Non-site directory (git repo but no composer/ddev/site signals).
   #     setup.sh must skip.
   d="$root/just-a-tool"
   _fake_git "$d"

@@ -80,8 +80,8 @@ for scan_dir in "${SCAN_DIRS[@]}"; do
       continue
     fi
 
-    # Personal projects without opt-in: skip and prune any stale import line
-    if [[ -f "$project_dir/.claude/.personal" ]] && [[ ! -f "$project_dir/.claude/.opt-in" ]]; then
+    # Personal projects: skip and prune any stale import line.
+    if [[ -f "$project_dir/.claude/.personal" ]]; then
       personal=$((personal + 1))
       project_name=$(basename "$project_dir")
       for candidate in "$project_dir/.claude/CLAUDE.md" "$project_dir/CLAUDE.md"; do

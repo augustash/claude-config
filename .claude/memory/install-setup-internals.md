@@ -33,19 +33,19 @@ The pantheon codeserver → augustash fallback is intentional: the user has hund
 ## Marker semantics
 
 - `.claude/.personal` — user declared this personal; do not apply shared claude-config.
-- `.claude/.opt-in` — personal but wants shared config anyway. Overrides the personal-skip in setup.sh.
 
-setup.sh's behavior per marker combination:
+setup.sh's behavior:
 
-| `.personal` | `.opt-in` | Action |
-|---|---|---|
-| absent | — | Apply import if site, skip if non-site |
-| present | absent | Skip, and prune any stale import |
-| present | present | Apply import (opt-in wins) |
+| `.personal` | Action |
+|---|---|
+| absent | Apply import if site, skip if non-site |
+| present | Skip, and prune any stale import |
+
+To wire a personal project anyway, use `bin/claude-config add <project>`, which clears `.personal`.
 
 ## Clean-slate sweep
 
-Every install run wipes `.personal`, `.opt-in`, and any existing import line from every project before reclassifying. This makes install idempotent and corrects drift — but it temporarily pollutes git diffs in ~150 project repos. setup.sh re-adds imports immediately after, so net content doesn't change for projects that stayed in the same bucket. Projects that *changed* bucket see a real diff.
+Every install run wipes `.personal` and any existing import line from every project before reclassifying. This makes install idempotent and corrects drift — but it temporarily pollutes git diffs in ~150 project repos. setup.sh re-adds imports immediately after, so net content doesn't change for projects that stayed in the same bucket. Projects that *changed* bucket see a real diff.
 
 `install.sh` deletes `.dircount` before invoking setup.sh so the full sweep runs (setup.sh normally short-circuits when the project count is unchanged).
 

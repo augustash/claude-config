@@ -122,23 +122,7 @@ assert_file_not_contains "$PROJECTS_DIR/personal-mixed-stale/AGENTS.md" \
   "$AGENTS_IMPORT_LINE" \
   "personal-mixed-stale: AGENTS.md pointer line pruned"
 
-# 8. personal + opt-in, no existing files → treated like augustash
-assert_file_equals "$PROJECTS_DIR/personal-optin-clean/.claude/CLAUDE.md" \
-  "$CLAUDE_IMPORT_LINE" \
-  "personal-optin-clean: import added despite .personal (opt-in honored)"
-assert_file_equals "$PROJECTS_DIR/personal-optin-clean/AGENTS.md" \
-  "$AGENTS_IMPORT_LINE" \
-  "personal-optin-clean: AGENTS.md pointer added (opt-in honored)"
-
-# 9. personal + opt-in + existing CLAUDE.md import → left alone; AGENTS.md still gets pointer
-assert_file_equals "$PROJECTS_DIR/personal-optin-existing/.claude/CLAUDE.md" \
-  "$CLAUDE_IMPORT_LINE" \
-  "personal-optin-existing: CLAUDE.md unchanged"
-assert_file_equals "$PROJECTS_DIR/personal-optin-existing/AGENTS.md" \
-  "$AGENTS_IMPORT_LINE" \
-  "personal-optin-existing: AGENTS.md pointer added"
-
-# 10. not-a-repo → nothing created
+# 8. not-a-repo → nothing created
 assert_file_missing "$PROJECTS_DIR/not-a-repo/.claude/CLAUDE.md" \
   "not-a-repo: no CLAUDE.md created"
 assert_file_missing "$PROJECTS_DIR/not-a-repo/.claude" \
@@ -146,19 +130,19 @@ assert_file_missing "$PROJECTS_DIR/not-a-repo/.claude" \
 assert_file_missing "$PROJECTS_DIR/not-a-repo/AGENTS.md" \
   "not-a-repo: no AGENTS.md created"
 
-# 11. drupal-module → skipped entirely
+# 9. drupal-module → skipped entirely
 assert_file_missing "$PROJECTS_DIR/drupal-module-thing/.claude" \
   "drupal-module-thing: no .claude dir created"
 assert_file_missing "$PROJECTS_DIR/drupal-module-thing/AGENTS.md" \
   "drupal-module-thing: no AGENTS.md created"
 
-# 12. library → skipped
+# 10. library → skipped
 assert_file_missing "$PROJECTS_DIR/lib-thing/.claude" \
   "lib-thing: no .claude dir created"
 assert_file_missing "$PROJECTS_DIR/lib-thing/AGENTS.md" \
   "lib-thing: no AGENTS.md created"
 
-# 13. non-site tool dir → skipped
+# 11. non-site tool dir → skipped
 assert_file_missing "$PROJECTS_DIR/just-a-tool/.claude" \
   "just-a-tool: no .claude dir created"
 assert_file_missing "$PROJECTS_DIR/just-a-tool/AGENTS.md" \

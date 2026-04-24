@@ -63,11 +63,7 @@ run_cli remove "$PROJECTS_DIR/augustash-existing-import" >/dev/null
 #    rest of each file is preserved. .personal is set.
 run_cli remove "$PROJECTS_DIR/augustash-mixed-content" >/dev/null
 
-# 8. Remove from personal+opt-in+wired project — .opt-in cleared so .personal
-#    actually blocks future sweeps.
-run_cli remove "$PROJECTS_DIR/personal-optin-existing" >/dev/null
-
-# 9. Remove from a not-yet-wired project — still marks .personal so the
+# 8. Remove from a not-yet-wired project — still marks .personal so the
 #    watcher won't add it going forward.
 run_cli remove "$PROJECTS_DIR/lib-thing" >/dev/null
 
@@ -140,17 +136,7 @@ assert_file_not_contains "$PROJECTS_DIR/augustash-mixed-content/AGENTS.md" \
 assert_file_exists "$PROJECTS_DIR/augustash-mixed-content/.claude/.personal" \
   "remove augustash-mixed-content: .personal marker set"
 
-# 8. personal-optin-existing remove → .opt-in gone, .personal kept, imports
-#    pruned. This is the case where leaving .opt-in would let the watcher
-#    re-add on next sweep.
-assert_file_missing "$PROJECTS_DIR/personal-optin-existing/.claude/.opt-in" \
-  "remove personal-optin-existing: .opt-in cleared"
-assert_file_exists "$PROJECTS_DIR/personal-optin-existing/.claude/.personal" \
-  "remove personal-optin-existing: .personal preserved"
-assert_file_missing "$PROJECTS_DIR/personal-optin-existing/.claude/CLAUDE.md" \
-  "remove personal-optin-existing: import pruned"
-
-# 9. lib-thing remove → no imports existed; .personal still written so the
+# 8. lib-thing remove → no imports existed; .personal still written so the
 #    watcher leaves it alone going forward.
 assert_file_exists "$PROJECTS_DIR/lib-thing/.claude/.personal" \
   "remove lib-thing: .personal marker set on unwired project"
