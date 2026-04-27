@@ -46,6 +46,22 @@ ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group
 
 When you decorate a tagged service in Drupal 10+ / Symfony 5+, **tags on the decorated service are copied to the decorator automatically**. Do not redeclare them on the decorator — the decorator ends up registered twice for every tag, which for things like order processors means every promotion applies twice, every event handler fires twice, etc. The symptom in tests is "asserted size 1, actual size 2" on adjustments or event-driven collections. If you discover this mid-refactor, removing the redundant `tags:` block from the decorator's services.yml is the fix.
 
+## Mock argument auto-fill gotcha
+
+PHPUnit's generated mocks pass **every signature parameter** to the invocation handler — including ones the caller didn't provide, filled in with their declared defaults. So `$mock->condition('f', 5, '=')` against `condition($field, $value = NULL, $operator = NULL, $langcode = NULL)` records 4 args (`['f', 5, '=', NULL]`), not 3. Same for `sort('changed', 'ASC')` → `['changed', 'ASC', '']` because of `$langcode = ''`.
+
+Bites variadic capture callbacks:
+```php
+$mock->method('condition')->willReturnCallback(fn(...$args) => $calls[] = $args);
+// $calls captures the trailing defaults, not just what the caller passed.
+```
+
+Fix by truncating to the leading N positions you care about (`array_slice($args, 0, 3)`), or assert against the full mock-emitted shape including defaults. **Don't `array_filter` to drop NULLs** — it strips legitimate NULL args too.
+
+Also: PHP arrays return by value. If a helper builds a `$calls = []` and returns it from a closure-mutated variable, the caller gets a snapshot taken at return-time, not the live array. Pass `array &$calls` by reference into the helper instead.
+
+`withConsecutive()` is deprecated in PHPUnit 9.6 (removed in 10). Combined with `failOnWarning="true"` from `phpunit.xml.dist`, it can fail tests on a deprecation notice. Capture-and-assert is the cleaner replacement for verifying multiple calls with different args.
+
 ## Group convention
 
 Every custom test carries `@group aai` as its umbrella plus at least one module-specific group — see [test-tags.md](test-tags.md) for the cross-runner convention (also applies to Nightwatch).
