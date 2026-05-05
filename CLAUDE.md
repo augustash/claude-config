@@ -63,4 +63,5 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
+- [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
 - [Test reminders](memory/preferences/test-reminders.md) — Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes

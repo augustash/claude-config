@@ -47,6 +47,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig
 - **Exo modifier checkbox + class** — `~/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
   Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
+- **Exo slider mobile overflow** — `~/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
+  Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
 
 ## Augustash internal modules
 
