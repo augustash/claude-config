@@ -6,6 +6,10 @@ type: project
 
 To add a checkbox to an exo_alchemist component (or each item in a sequence) that toggles a class on the markup:
 
+**Check for a built-in `modifier_globals.status` flag first.** Several common toggles (`invert`, `border_radius`, `color_bg`, `text_shadow`, `overlay`, `height`, `containment_content`, `margin_v`, `padding_v`) are built-in `ClassAttribute` properties — see `Plugin/ExoComponentProperty/`. Flipping them to `TRUE` in the component's `modifier_globals.status` block enables a per-instance editor checkbox and auto-adds a class like `.exo-modifier--invert` to the wrapper — no custom YAML modifier, no PHP handler, no twig change. Modifier values are stored on the component entity's `exo_modifiers` field, so toggles are per layout-builder placement (instance-level), not theme-wide. Before reaching for the custom pattern below, grep the component CSS for the built-in class to confirm it's not already in use.
+
+Only use the custom pattern below when (a) no built-in covers the semantics, (b) the built-in's class name is already taken by other CSS, or (c) you need the class on a non-wrapper element.
+
 **1. YAML — declare it as a modifier property** (NOT a sub-field):
 
 Top-level (whole component):
@@ -66,6 +70,6 @@ public function viewAlter(array &$values, ExoComponentDefinition $definition, Co
 - Adding to `$feature['#wrapper_attributes']['class']` propagates to `feature.attributes` in twig — no template change required.
 - Cache rebuild required after adding a new modifier property or handler file.
 
-**Why:** synthesized while wiring per-feature `invert` toggle on `features_icon` (sisal). The lookup chain (modifier YAML → auto-registered property info → `modifier_<name>_value` key → per-item access) spans `ExoComponentPropertyManager`, `Sequence::viewValue`, and the handler discovery in `ExoComponentDefinition::getHandler()` — a fresh session would have to re-traverse all of that.
+**Why:** synthesized while wiring an `invert` toggle on `features_icon` (sisal). First-pass instinct was a custom modifier + handler; turned out the built-in `invert` global covered it. The lookup chain (modifier YAML → auto-registered property info → `modifier_<name>_value` key → per-item access) spans `ExoComponentPropertyManager`, `Sequence::viewValue`, and the handler discovery in `ExoComponentDefinition::getHandler()` — worth knowing for the cases where the built-in really doesn't fit.
 
-**How to apply:** when an editor asks for a checkbox toggle that adds a class, reach for this pattern instead of inventing a sub-field + propertyInfoAlter combo. Decide top-level vs per-item by whether the toggle is on the component or each sequence row.
+**How to apply:** when an editor asks for a checkbox toggle that adds a class, first check `modifier_globals.status` for a built-in flag and the component's CSS for an unused `.exo-modifier--<name>` class. Reach for the custom YAML modifier + PascalCase handler pattern only when the built-in doesn't cover the semantics. Decide top-level vs per-item by whether the toggle is on the component or each sequence row.
