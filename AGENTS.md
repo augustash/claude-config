@@ -45,6 +45,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   cachetags table has no GC, needs periodic truncation; build a module
 - **Exo optional link field** — `~/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
   `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig
+- **Exo modifier checkbox + class** — `~/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
+  `type: custom` + `property_widget: checkbox` modifier, read `modifier_<group>_value.<prop>` in PascalCase handler
 
 ## Augustash internal modules
 

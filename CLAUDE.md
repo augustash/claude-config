@@ -62,4 +62,5 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig
+- [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — `type: custom` + `property_widget: checkbox` modifier, read `modifier_<group>_value.<prop>` in PascalCase handler
 - [Test reminders](memory/preferences/test-reminders.md) — Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
