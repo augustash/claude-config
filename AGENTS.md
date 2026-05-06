@@ -49,6 +49,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
 - **Exo slider mobile overflow** — `~/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
+- **Vimeo background=1 embed param** — `~/claude-config/memory/drupal/vimeo-background-param.md`  
+  `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
+- **LiveChat widget click-trap** — `~/claude-config/memory/drupal/livechat-click-trap.md`  
+  third-party rules (e.g. ConvertCart's `cc-ftr-menu`) force `#chat-widget-container`'s height beyond its bubble, the empty area then traps clicks; presents as "menu broken in normal Chrome/Edge, fine in private/Safari"; fix with higher-specificity CSS or JS observer
 
 ## Augustash internal modules
 
