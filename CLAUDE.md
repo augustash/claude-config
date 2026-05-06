@@ -65,3 +65,4 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
 - [Test reminders](memory/preferences/test-reminders.md) — Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
+- [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
