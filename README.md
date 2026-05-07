@@ -19,7 +19,7 @@ The first half writes a per-project preference into the project's `composer.json
 - Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup
 - Prints a notice if the package was installed via dist (no `.git/`) and tells you how to switch to source
 
-The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch.
+The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch. This avoids forcing a tag-and-release cycle just to share memory updates — push to `master`, other projects pull on their next `composer update`.
 
 ## Remove
 
