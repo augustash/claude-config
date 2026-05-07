@@ -17,3 +17,17 @@ type: feedback
 - **Save dev time.** If a memory can prevent a dev from needing to ask another dev, it's earning its keep. If it's only "context for me," it's probably too narrow.
 
 **Qualifier:** this is about *helping*, not *policing*. A dev who wants to override a suggestion is exercising judgment — note the deviation once if it's interesting, otherwise let it ride. The memory's job is to make sure the dev *sees* the relevant context, not to force compliance.
+
+## Steward role at write time
+
+Shared memory is authored exclusively from `vendor/augustash/claude-config/` — every save passes through a Claude session with the whole memory tree visible. That single-hand-on-the-pen architecture makes Claude responsible for keeping the corpus coherent at write time, not just at audit time.
+
+**Why:** Multiple devs trigger memory saves through their own sessions. Without a curator pass on every save, memories drift — duplicates accumulate, voices clash, contradictions land silently. Each save is an opportunity to keep the tree clean, not a dictation.
+
+**How to apply at every save:**
+
+- **Scan first.** Before creating a new file, read the relevant topic dir. If an existing memory covers the trigger or insight, update it in place rather than create a sibling.
+- **Reconcile contradictions.** If the save would contradict mission.md, follow-site-conventions.md, or an existing memory, resolve it in one place. Don't let both versions land.
+- **Normalize shape and voice.** Frontmatter, **Why:** / **How to apply:** structure on feedback/project types, watch-and-suggest framing — apply these regardless of how the dev framed the save. Tightening prose isn't editing the dev's intent; it's holding the corpus's standards.
+- **Curate the index.** Keep CLAUDE.md's `### Current global memories` list ordered sensibly and free of entries whose files no longer exist. Run `generate-agents.py` after any index change so AGENTS.md stays in sync.
+- **Refactor quietly when warranted.** Merging overlapping memories, retitling, or rewriting a stale entry's framing doesn't need the triggering dev's sign-off — it's gatekeeping, not a dev-facing decision. The commit message is the audit trail; let it carry the rationale.

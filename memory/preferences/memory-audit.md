@@ -1,21 +1,28 @@
 ---
-name: Memory audit — event-driven, not scheduled
-description: When and how to audit shared (augustash/claude-config) and per-project memories. Triggered by natural moments in the work, not by a fixed cadence.
+name: Memory audit — opportunistic with a daily floor
+description: When and how to audit shared (augustash/claude-config) and per-project memories. Driven by signals from the work; a daily pre-check is the safety floor so nothing rots more than 24h.
 type: feedback
 ---
 
 ## When
 
-**Audit when the work prompts it, not on a schedule.** Calendar-driven audits become either rote or skipped — the dev has already said they don't want a strict timeline. Trigger off real moments instead:
+**Opportunistic — audit when the work surfaces a reason.** The shared package is write-gated through Claude (every save flows through `vendor/augustash/claude-config/`), so most of the maintenance work folds naturally into save-time stewardship (see [mission.md → Steward role at write time](mission.md)). A formal audit pass is for moments when more than save-time normalization is warranted:
 
-- **After a memory-heavy session.** When several memories have been added, updated, or restructured in one sitting (e.g., a new topic area got built out), do a quick sweep at the end to make sure nothing duplicates or contradicts existing notes. *Don't make this a separate ceremony — fold it into the session.*
-- **When something stale surfaces during normal work.** If you reach for a memory and it references a function/file/flag that no longer exists, fix it on the spot or flag it. No formal audit required for one-off fixes.
-- **When the dev asks for one.** Direct request → run a full audit in the current project's context.
-- **When the index gets hard to skim.** If `CLAUDE.md` or `MEMORY.md` is creeping toward unreadable, suggest a consolidation pass.
+- **After a memory-heavy session.** Several memories added, updated, or restructured in one sitting → quick sweep before wrapping. Don't make it a separate ceremony; fold it in.
+- **When something stale surfaces during normal work.** A memory references a function/file/flag that no longer exists → fix on the spot or flag.
+- **When the dev asks for one.** Direct request → full audit in the current project's context.
+- **When the index gets hard to skim.** `CLAUDE.md`'s memory list or a `MEMORY.md` is creeping toward unreadable → consolidation pass.
+
+**Daily floor.** As a safety net, run the pre-check at most once a day even when nothing above triggered it — so the corpus never drifts more than 24 hours without a glance. Under heavy team use this often catches a pile-up; on quiet days the pre-check no-ops in milliseconds. The floor is a minimum, not a ceiling — opportunistic audits run whenever the signals fire, regardless of the floor's clock.
 
 ## Pre-check
 
-Before doing any review work, check whether anything has actually changed. Use `git log --since=<last_audit>` on the `augustash/claude-config` checkout used for authoring (or on `vendor/augustash/claude-config/` in the current project) and the current project's `.claude/memory/` (settings holds `last_audit`). If neither has changed, skip the review, update `last_audit`, and move on.
+Before doing any review work, check whether anything has actually changed since `last_audit`:
+
+- Shared: `git -C vendor/augustash/claude-config log --since=<last_audit>`
+- Per-project: `git log --since=<last_audit> -- .claude/memory/`
+
+If neither has changed, skip the review, update `last_audit`, and move on. The cost of a daily cadence is the pre-check — keep it cheap.
 
 ## Settings
 
@@ -31,7 +38,7 @@ Before doing any review work, check whether anything has actually changed. Use `
 ```
 
 - `participate_in_review` — if true, present proposed changes for approval before applying. If false, apply cleanup silently and summarize.
-- `last_audit` — updated after each audit completes (lets the next event-driven audit know what's changed since).
+- `last_audit` — updated after each audit completes (lets the next daily pre-check know what's changed since).
 
 On first audit, ask the dev their preference and save it. Don't ask again unless they bring it up.
 

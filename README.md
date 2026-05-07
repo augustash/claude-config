@@ -6,17 +6,18 @@ Designed for agentic / CLI-style AI tools (Claude Code, Cursor, Codex, Aider, Wi
 
 ## Install
 
-In any augustash project:
+In the project:
 
 ```bash
-composer require augustash/claude-config
+composer config preferred-install.augustash/claude-config source && composer require augustash/claude-config
 ```
 
-That's it. A composer plugin wires the project on install:
+The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package and triggers the plugin, which:
 
 - Adds `@vendor/augustash/claude-config/CLAUDE.md` to the project's `.claude/CLAUDE.md`
 - Adds an `AGENTS.md` pointer to `vendor/augustash/claude-config/AGENTS.md`
 - Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup
+- Prints a notice if the package was installed via dist (no `.git/`) and tells you how to switch to source
 
 ## Remove
 
@@ -25,19 +26,6 @@ composer remove augustash/claude-config
 ```
 
 The plugin prunes its import lines from `.claude/CLAUDE.md` and `AGENTS.md` before the package is uninstalled. Composer cleans up `vendor/augustash/claude-config/` on its own.
-
-## Authoring shared memory
-
-Memory lives inside this package. To add or update a shared memory:
-
-1. Clone this repo somewhere (it doesn't matter where — it's a composer package, not a global tool anymore).
-2. Edit or add files under `memory/{topic}/{specific}.md`.
-3. Update the `### Current global memories` index in `CLAUDE.md`.
-4. Run `python3 generate-agents.py` so `AGENTS.md` stays in sync.
-5. Commit and push.
-6. Run `composer update augustash/claude-config` in any project that needs the new content.
-
-**Don't edit files inside a project's `vendor/augustash/claude-config/`** — composer overwrites them.
 
 ## Shared conventions
 

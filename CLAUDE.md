@@ -12,7 +12,14 @@ Knowledge that transcends any single project. Augustash internal modules and reu
 
 Organize as `{topic}/{specific}.md` — see [memory structure](memory/preferences/memory-structure.md).
 
-**Authoring happens in the package repo** (`augustash/claude-config`), not inside a consuming project's `vendor/` directory. Edit there, commit, push, then `composer update augustash/claude-config` in any project that needs the new content. Vendor edits get blown away on the next composer run.
+**Writing shared memory.** `vendor/augustash/claude-config/` is a real git working copy (the project installs the package via composer's prefer-source). To save a shared memory:
+
+1. Write or edit the file under `vendor/augustash/claude-config/memory/{topic}/{specific}.md`.
+2. Update the `### Current global memories` index in `vendor/augustash/claude-config/CLAUDE.md` to match.
+3. Run `python3 vendor/augustash/claude-config/generate-agents.py` so `AGENTS.md` stays in sync with the index.
+4. From inside `vendor/augustash/claude-config/`: `git add -A && git commit -m "..." && git push`. Other projects pick up the change on their next `composer update augustash/claude-config`.
+
+Sanity-check before writing: if `vendor/augustash/claude-config/.git` is missing (the package was installed via dist instead of source), don't write — edits will be clobbered on the next composer run. Surface that to the user and ask them to reinstall with `composer reinstall augustash/claude-config --prefer-source` first.
 
 ### Per-project — `.claude/memory/` in the project repo
 
@@ -35,13 +42,13 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 
 ### Maintenance
 
-**Passive:** When saving or encountering memories during normal work, keep them concise and focused. If a memory is verbose, outdated, or now obvious from the code, tidy or remove it on the spot. Claude normalizes quality — regardless of how information was communicated, memories should be clean and direct.
+**Passive:** Every shared-memory save is a curator pass — scan the relevant topic dir for existing coverage, normalize shape and voice, reconcile any contradictions in one place, and keep the index in sync. See [mission.md → Steward role at write time](memory/preferences/mission.md) for the full posture.
 
-**Active audit:** Weekly on Fridays. See [memory audit process](memory/preferences/memory-audit.md).
+**Active audit:** Opportunistic — triggered by signals like a memory-heavy session, stale refs surfacing, or dev request. Daily pre-check as a floor so the corpus never drifts more than 24h. See [memory audit process](memory/preferences/memory-audit.md).
 
 ### Current global memories
 
-- [Mission](memory/preferences/mission.md) — shared team resource, proactive guidance, watch-and-suggest posture (read first; informs how other memories should be written)
+- [Mission](memory/preferences/mission.md) — shared team resource, proactive guidance, watch-and-suggest posture, Claude as steward at write time (read first; informs how other memories should be written)
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is handled in the codebase before writing in it; surface divergence from established patterns
 - [Memory structure](memory/preferences/memory-structure.md) — idea/specific.md pattern, organization conventions
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
@@ -52,7 +59,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
-- [Memory audit process](memory/preferences/memory-audit.md) — event-driven (not scheduled), per-dev settings, self-refining
+- [Memory audit process](memory/preferences/memory-audit.md) — opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
 - [Comment style](memory/preferences/comments.md) — Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix

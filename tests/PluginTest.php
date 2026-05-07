@@ -199,6 +199,27 @@ class PluginTest extends TestCase
         $this->assertSame("# AGENTS\n\nProject specifics.\n", file_get_contents($this->tmp . '/AGENTS.md'));
     }
 
+    public function testIsGitWorkingCopyDetectsGitDir(): void
+    {
+        $this->assertFalse(Plugin::isGitWorkingCopy($this->tmp));
+        mkdir($this->tmp . '/.git');
+        $this->assertTrue(Plugin::isGitWorkingCopy($this->tmp));
+    }
+
+    public function testIsGitWorkingCopyHandlesEmptyPath(): void
+    {
+        $this->assertFalse(Plugin::isGitWorkingCopy(''));
+    }
+
+    public function testIsGitWorkingCopyFalseWhenGitIsAFile(): void
+    {
+        // A .git file (not a directory) means a worktree or submodule pointer.
+        // For our purposes — authoring memory in place — we want a real
+        // working copy with its own .git dir, so a file should be false.
+        file_put_contents($this->tmp . '/.git', "gitdir: /elsewhere\n");
+        $this->assertFalse(Plugin::isGitWorkingCopy($this->tmp));
+    }
+
     public function testPruneDeletesFilesIfImportWasOnlyContent(): void
     {
         mkdir($this->tmp . '/.claude');

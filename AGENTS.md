@@ -9,7 +9,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Preferences & collaboration
 
 - **Mission** — `vendor/augustash/claude-config/memory/preferences/mission.md`  
-  shared team resource, proactive guidance, watch-and-suggest posture (read first; informs how other memories should be written)
+  shared team resource, proactive guidance, watch-and-suggest posture, Claude as steward at write time (read first; informs how other memories should be written)
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is handled in the codebase before writing in it; surface divergence from established patterns
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
@@ -17,7 +17,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **DDEV workflow** — `vendor/augustash/claude-config/memory/preferences/ddev-workflow.md`  
   Always use ddev for CLI commands
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
-  event-driven (not scheduled), per-dev settings, self-refining
+  opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  

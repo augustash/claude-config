@@ -13,6 +13,7 @@ use Composer\Factory;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 
 /**
@@ -32,10 +33,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public const LEGACY_AGENTS_IMPORT_LINE = 'See `~/claude-config/AGENTS.md` for shared augustash team conventions.';
 
     private ?IOInterface $io = null;
+    private ?Composer $composer = null;
 
     public function activate(Composer $composer, IOInterface $io): void
     {
         $this->io = $io;
+        $this->composer = $composer;
     }
 
     public function deactivate(Composer $composer, IOInterface $io): void
@@ -61,10 +64,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (!$op instanceof InstallOperation) {
             return;
         }
-        if ($op->getPackage()->getName() !== self::PACKAGE_NAME) {
+        $package = $op->getPackage();
+        if ($package->getName() !== self::PACKAGE_NAME) {
             return;
         }
         $this->wire($this->projectRoot());
+        $this->checkInstallSource($this->packageInstallPath($package));
     }
 
     public function onPostPackageUpdate(PackageEvent $event): void
@@ -73,10 +78,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (!$op instanceof UpdateOperation) {
             return;
         }
-        if ($op->getTargetPackage()->getName() !== self::PACKAGE_NAME) {
+        $package = $op->getTargetPackage();
+        if ($package->getName() !== self::PACKAGE_NAME) {
             return;
         }
         $this->wire($this->projectRoot());
+        $this->checkInstallSource($this->packageInstallPath($package));
     }
 
     public function onPrePackageUninstall(PackageEvent $event): void
@@ -113,6 +120,34 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (self::pruneImport($root . '/AGENTS.md', self::LEGACY_AGENTS_IMPORT_LINE)) {
             $this->info('pruned legacy AGENTS.md pointer');
         }
+    }
+
+    /**
+     * Print guidance when the package was installed via dist (zip extract)
+     * instead of source (git clone). Without prefer-source the vendor copy
+     * isn't a git working copy, so in-place memory authoring isn't possible
+     * — devs would have to keep a separate clone to commit/push changes.
+     */
+    public function checkInstallSource(string $installPath): void
+    {
+        if ($installPath === '' || self::isGitWorkingCopy($installPath)) {
+            return;
+        }
+        if ($this->io === null) {
+            return;
+        }
+        $this->io->write('');
+        $this->io->write('  <comment>claude-config:</comment> installed via dist — vendor copy is not a git working copy.');
+        $this->io->write('  To author shared memory in place from any project, run:');
+        $this->io->write('    <info>composer reinstall augustash/claude-config --prefer-source</info>');
+        $this->io->write('  Or set it once globally:');
+        $this->io->write('    <info>composer global config preferred-install.augustash/claude-config source</info>');
+        $this->io->write('');
+    }
+
+    public static function isGitWorkingCopy(string $path): bool
+    {
+        return $path !== '' && is_dir($path . '/.git');
     }
 
     /**
@@ -216,6 +251,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private function projectRoot(): string
     {
         return dirname(Factory::getComposerFile());
+    }
+
+    private function packageInstallPath(PackageInterface $package): string
+    {
+        if ($this->composer === null) {
+            return '';
+        }
+        $path = $this->composer->getInstallationManager()->getInstallPath($package);
+        return $path !== null ? (string) $path : '';
     }
 
     private function info(string $message): void
