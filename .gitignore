@@ -1,5 +1,3 @@
-.config
-.dircount
-.last-run.log
-.settings.json
-test/workdir/
+/vendor/
+composer.lock
+.phpunit.result.cache

@@ -1,6 +1,6 @@
 ---
 name: Memory audit — event-driven, not scheduled
-description: When and how to audit ~/claude-config/ and per-project memories. Triggered by natural moments in the work, not by a fixed cadence.
+description: When and how to audit shared (augustash/claude-config) and per-project memories. Triggered by natural moments in the work, not by a fixed cadence.
 type: feedback
 ---
 
@@ -15,11 +15,11 @@ type: feedback
 
 ## Pre-check
 
-Before doing any review work, check whether anything has actually changed. Use `git log --since=<last_audit>` on `~/claude-config/` and the current project's `.claude/memory/` (settings holds `last_audit`). If neither has changed, skip the review, update `last_audit`, and move on.
+Before doing any review work, check whether anything has actually changed. Use `git log --since=<last_audit>` on the `augustash/claude-config` checkout used for authoring (or on `vendor/augustash/claude-config/` in the current project) and the current project's `.claude/memory/` (settings holds `last_audit`). If neither has changed, skip the review, update `last_audit`, and move on.
 
 ## Settings
 
-`~/claude-config/.settings.json` (gitignored, per-dev). Create on first use:
+`~/.claude/claude-config-audit.json` (per-dev, lives outside any project so it survives composer updates). Create on first use:
 
 ```json
 {
@@ -37,7 +37,7 @@ On first audit, ask the dev their preference and save it. Don't ask again unless
 
 ## What to audit
 
-**Global memories (`~/claude-config/memory/`):**
+**Shared memories (authored in `augustash/claude-config`, shipped to projects as `vendor/augustash/claude-config/memory/`):**
 - Are referenced files, functions, or modules still accurate?
 - Are any memories now obvious from the codebase and no longer worth keeping?
 - Are memories concise, or have they grown bloated?
@@ -46,9 +46,7 @@ On first audit, ask the dev their preference and save it. Don't ask again unless
 
 **Per-project memories (`.claude/memory/` in the current project):**
 - Same staleness and conciseness checks.
-- Does any project-specific knowledge show up across multiple projects and deserve promotion to global? (Promotion criteria is "useful in ≥2 projects" per [patches.md](../drupal/patches.md) — same rule.)
-
-**Personal projects:** If `.claude/.personal` exists, never promote its memories to global, but still apply staleness/conciseness checks.
+- Does any project-specific knowledge show up across multiple projects and deserve promotion to shared? (Promotion criteria is "useful in ≥2 projects" per [patches.md](../drupal/patches.md) — same rule.) Promotion means authoring it in the `augustash/claude-config` repo, not editing the local `vendor/` copy.
 
 ## Self-refinement
 

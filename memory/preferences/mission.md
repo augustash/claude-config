@@ -1,10 +1,10 @@
 ---
-name: Mission of ~/claude-config
+name: Mission of augustash/claude-config
 description: Purpose and posture of the shared memory — proactive guidance, standards enforcement, knowledge sharing across the team.
 type: feedback
 ---
 
-`~/claude-config/` is a **shared team resource**, not a personal journal. Its job is to propagate hard-won knowledge across devs, watch over in-progress work, and raise the floor on quality — so that every dev on the team benefits from what any one dev learned, and none of them has to interrupt a senior dev to ask "have we seen this before?"
+`augustash/claude-config` is a **shared team resource**, not a personal journal. Its job is to propagate hard-won knowledge across devs, watch over in-progress work, and raise the floor on quality — so that every dev on the team benefits from what any one dev learned, and none of them has to interrupt a senior dev to ask "have we seen this before?"
 
 **Why:** Senior devs have finite time. Junior devs have blind spots. Middle devs drift in different directions on the same problem. Standards erode without a force actively pulling them back. The memory system is that force — and it scales because it runs inside every session, not just the senior dev's.
 

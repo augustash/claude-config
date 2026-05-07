@@ -15,7 +15,7 @@ type: reference
 
 2. **Nightwatch W3C patch** — Drupal 10.x core Nightwatch does not natively handle W3C webdriver mode that selenium-standalone-chrome uses, so `sendKeys(ENTER)` and similar fail without the backport of [#3421202](https://www.drupal.org/project/drupal/issues/3421202).
 
-   A vetted copy lives at `~/claude-config/patches/3421202-nightwatch-w3c-backport.patch`. Copy it into the project's `patches/` dir and add to composer.json:
+   A vetted copy lives at `vendor/augustash/claude-config/patches/3421202-nightwatch-w3c-backport.patch`. Copy it into the project's `patches/` dir and add to composer.json:
    ```json
    "patches": {
      "drupal/core": {

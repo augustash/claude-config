@@ -6,19 +6,17 @@ Team-wide conventions and preferences for Claude Code.
 
 Two shared memory tiers, both committed to git so the whole team benefits. **Both are writable — save directly to these locations.** Prefer these over Claude's local auto-memory (`~/.claude/projects/`) for any knowledge worth sharing.
 
-### Global — `~/claude-config/memory/`
+### Global — `vendor/augustash/claude-config/memory/`
 
-Knowledge that transcends any single project. Augustash internal modules and reusable code, cross-project debugging approaches, team tooling conventions, shared patterns.
+Knowledge that transcends any single project. Augustash internal modules and reusable code, cross-project debugging approaches, team tooling conventions, shared patterns. Lives inside this composer package and ships into every project that requires it.
 
 Organize as `{topic}/{specific}.md` — see [memory structure](memory/preferences/memory-structure.md).
 
-**After any changes to `~/claude-config/` (memory writes, audit cleanup, etc.), pull, commit, and push.** If a pull produces merge conflicts, synthesize — read both versions, understand what each learned, and write the best possible version. That might be one side, a merge of both, or something better that neither had alone.
+**Authoring happens in the package repo** (`augustash/claude-config`), not inside a consuming project's `vendor/` directory. Edit there, commit, push, then `composer update augustash/claude-config` in any project that needs the new content. Vendor edits get blown away on the next composer run.
 
 ### Per-project — `.claude/memory/` in the project repo
 
 Knowledge specific to this codebase — integration details, architectural decisions, non-obvious configuration.
-
-**Personal projects:** If `.claude/.personal` exists, the project is personal (not augustash). Memories stay project-local — never promote to global. The marker is set during install.
 
 ### Qualification
 
@@ -39,7 +37,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 
 **Passive:** When saving or encountering memories during normal work, keep them concise and focused. If a memory is verbose, outdated, or now obvious from the code, tidy or remove it on the spot. Claude normalizes quality — regardless of how information was communicated, memories should be clean and direct.
 
-**Active audit:** Weekly on Fridays. See [memory audit process](memory/preferences/memory-audit.md). Check `~/claude-config/.settings.json` for per-dev preferences (this file is gitignored — local to each developer).
+**Active audit:** Weekly on Fridays. See [memory audit process](memory/preferences/memory-audit.md).
 
 ### Current global memories
 
@@ -49,7 +47,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
-- [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at ~/claude-config/patches/
+- [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch

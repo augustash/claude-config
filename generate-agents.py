@@ -2,12 +2,13 @@
 """Generate AGENTS.md from CLAUDE.md's memory index.
 
 AGENTS.md is the emerging cross-tool convention (Cursor, Codex, Aider, and
-others respect a root AGENTS.md). We emit a single global one at
-~/claude-config/AGENTS.md; setup.sh drops a reference pointer into each
-augustash project so non-Claude tools see the shared team context.
+others respect a root AGENTS.md). We ship one inside this composer package;
+the Plugin drops a pointer line into each consuming project's AGENTS.md so
+non-Claude tools find the shared team context at vendor/augustash/claude-config/AGENTS.md.
 
 Source of truth is CLAUDE.md's "### Current global memories" bullet list.
-Edit CLAUDE.md, rerun this script (or let setup.sh run it).
+Edit CLAUDE.md and rerun this script. Consider wiring it into a pre-commit
+hook in this repo so the two files never drift.
 """
 
 import re
@@ -97,13 +98,14 @@ def render(groups):
     lines.append(
         "These files are authoritative and kept current by the team. Prefer "
         "conventions here over generic defaults. When you learn something "
-        "worth sharing, update or add a file under `~/claude-config/memory/` "
-        "and commit it — everyone on the team benefits."
+        "worth sharing, update or add a file in the `augustash/claude-config` "
+        "repo's `memory/` directory and commit it — everyone on the team "
+        "benefits on their next `composer update`."
     )
     lines.append("")
     lines.append(
         "> *Generated from `CLAUDE.md`. Don't edit this file directly — edit "
-        "`CLAUDE.md` and rerun `generate-agents.py` (or let `setup.sh` do it).*"
+        "`CLAUDE.md` and rerun `generate-agents.py`.*"
     )
     lines.append("")
 
@@ -111,7 +113,7 @@ def render(groups):
         lines.append(f"## {topic_title(topic)}")
         lines.append("")
         for title, path, desc in items:
-            lines.append(f"- **{title}** — `~/claude-config/{path}`  ")
+            lines.append(f"- **{title}** — `vendor/augustash/claude-config/{path}`  ")
             lines.append(f"  {desc}")
         lines.append("")
 

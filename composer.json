@@ -1,0 +1,36 @@
+{
+    "name": "augustash/claude-config",
+    "description": "Shared AI assistant conventions and memory for August Ash projects.",
+    "type": "composer-plugin",
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.4",
+        "composer-plugin-api": "^2.0"
+    },
+    "require-dev": {
+        "composer/composer": "^2.0",
+        "phpunit/phpunit": "^9.6 || ^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Augustash\\ClaudeConfig\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Augustash\\ClaudeConfig\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "class": "Augustash\\ClaudeConfig\\Plugin"
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "augustash/claude-config": true
+        }
+    }
+}
