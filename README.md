@@ -57,12 +57,7 @@ Two tiers, both committed to git so the whole team benefits:
 If you previously ran the launchd-based installer, after switching:
 
 ```bash
-# Stop and remove the old launchd watcher
-launchctl bootout gui/$(id -u)/com.augustash.claude-config 2>/dev/null || true
-rm -f ~/Library/LaunchAgents/com.augustash.claude-config.plist
-
-# Optional: drop the old global clone (no longer used)
-rm -rf ~/claude-config
+launchctl bootout gui/$(id -u)/com.augustash.claude-config 2>/dev/null; rm -f ~/Library/LaunchAgents/com.augustash.claude-config.plist; rm -rf ~/claude-config
 ```
 
 In each project, `composer require augustash/claude-config` will auto-prune the old `~/claude-config/` references on first install.
