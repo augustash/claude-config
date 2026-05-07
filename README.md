@@ -9,7 +9,7 @@ Designed for agentic / CLI-style AI tools (Claude Code, Cursor, Codex, Aider, Wi
 In the project:
 
 ```bash
-composer config preferred-install.augustash/claude-config source && composer require --dev 'augustash/claude-config:dev-master'
+ddev composer config preferred-install.augustash/claude-config source && ddev composer require --dev 'augustash/claude-config:dev-master'
 ```
 
 The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package as a dev dependency and triggers the plugin, which:
@@ -19,12 +19,12 @@ The first half writes a per-project preference into the project's `composer.json
 - Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup
 - Prints a notice if the package was installed via dist (no `.git/`) and tells you how to switch to source
 
-The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch. This avoids forcing a tag-and-release cycle just to share memory updates — push to `master`, other projects pull on their next `composer update`.
+The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `ddev composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch. This avoids forcing a tag-and-release cycle just to share memory updates — push to `master`, other projects pull on their next `ddev composer update`.
 
 ## Remove
 
 ```bash
-composer remove augustash/claude-config
+ddev composer remove augustash/claude-config
 ```
 
 The plugin prunes its import lines from `.claude/CLAUDE.md` and `AGENTS.md` before the package is uninstalled. Composer cleans up `vendor/augustash/claude-config/` on its own.
@@ -62,13 +62,13 @@ If you previously ran the launchd-based installer, after switching:
 launchctl bootout gui/$(id -u)/com.augustash.claude-config 2>/dev/null; rm -f ~/Library/LaunchAgents/com.augustash.claude-config.plist; rm -rf ~/claude-config
 ```
 
-In each project, `composer require augustash/claude-config` will auto-prune the old `~/claude-config/` references on first install.
+In each project, `ddev composer require augustash/claude-config` will auto-prune the old `~/claude-config/` references on first install.
 
 ## Tests
 
 ```bash
-composer install
-composer test
+ddev composer install
+ddev composer test
 ```
 
 PHPUnit covers the plugin's add/prune behavior and the wire/prune flows on a temp project root.
