@@ -19,7 +19,10 @@ Organize as `{topic}/{specific}.md` — see [memory structure](memory/preference
 3. Run `python3 vendor/augustash/claude-config/generate-agents.py` so `AGENTS.md` stays in sync with the index.
 4. From inside `vendor/augustash/claude-config/`: `git add -A && git commit -m "..." && git push`. Other projects pick up the change on their next `composer update augustash/claude-config`.
 
-Sanity-check before writing: if `vendor/augustash/claude-config/.git` is missing (the package was installed via dist instead of source), don't write — edits will be clobbered on the next composer run. Surface that to the user and ask them to reinstall with `composer reinstall augustash/claude-config --prefer-source` first.
+Sanity-check before writing:
+
+- If `vendor/augustash/claude-config/.git` is missing (the package was installed via dist instead of source), don't write — edits will be clobbered on the next composer run. Surface that and ask the user to reinstall with `composer reinstall augustash/claude-config --prefer-source` first.
+- If `git status` inside the vendor copy shows `HEAD detached` (the project still uses a tagged version constraint), commits won't push to a branch. This package is distributed via `dev-master`, not tagged releases — surface that and ask the user to switch their project's constraint to `dev-master` and run `composer update augustash/claude-config` first.
 
 ### Per-project — `.claude/memory/` in the project repo
 

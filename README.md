@@ -9,15 +9,17 @@ Designed for agentic / CLI-style AI tools (Claude Code, Cursor, Codex, Aider, Wi
 In the project:
 
 ```bash
-composer config preferred-install.augustash/claude-config source && composer require augustash/claude-config
+composer config preferred-install.augustash/claude-config source && composer require --dev 'augustash/claude-config:dev-master'
 ```
 
-The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package and triggers the plugin, which:
+The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package as a dev dependency and triggers the plugin, which:
 
 - Adds `@vendor/augustash/claude-config/CLAUDE.md` to the project's `.claude/CLAUDE.md`
 - Adds an `AGENTS.md` pointer to `vendor/augustash/claude-config/AGENTS.md`
 - Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup
 - Prints a notice if the package was installed via dist (no `.git/`) and tells you how to switch to source
+
+The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch.
 
 ## Remove
 
