@@ -74,7 +74,15 @@ Every custom test carries `@group aai` as its umbrella plus at least one module-
 class MyTest extends KernelTestBase { ... }
 ```
 
-Run all custom PHPUnit: `ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group aai"`
+**Always pass explicit paths to `--group aai` — every dir under `modules/` *except* `contrib`.** Bare `--group aai` forces phpunit to scan the entire test tree (core + every contrib) just to discover groups, and one broken contrib test file kills the run — `rdf`'s migrate tests are a known offender (`Declaration of ::testMigrateUpgradeReviewPage() must be compatible with ...`). When running our tests we never want contrib/core tests anyway.
+
+Typical augustash projects split modules across `modules/custom` and `modules/community`; some have extra dirs. Pass each non-contrib path:
+
+```bash
+ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group aai modules/custom modules/community"
+```
+
+Check `ls web/modules/` before running — if the project has other non-contrib dirs alongside `custom`/`community`, add them too. The rule is "everything except `contrib`."
 
 ## Do not use `--list-groups`
 
