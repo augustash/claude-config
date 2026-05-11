@@ -110,6 +110,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (self::addImport($root . '/AGENTS.md', self::AGENTS_IMPORT_LINE)) {
             $this->info('added AGENTS.md pointer');
         }
+        if (self::ensureGitignore($root, ['/.claude/CLAUDE.md', '/AGENTS.md'])) {
+            $this->info('added .gitignore entries for managed files');
+        }
 
         // One-time migration: prune legacy ~/claude-config/ references.
         foreach ([$root . '/.claude/CLAUDE.md', $root . '/CLAUDE.md'] as $candidate) {
@@ -235,6 +238,47 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             return true;
         }
         file_put_contents($file, $out);
+        return true;
+    }
+
+    /**
+     * Ensure the project root's .gitignore lists the plugin-managed files.
+     *
+     * Without this, projects that committed .claude/CLAUDE.md or AGENTS.md
+     * before the plugin was added will fail Pantheon-style production builds:
+     * `composer install --no-dev` removes this package, the uninstall hook
+     * empties or deletes those files, and Pantheon aborts on the unexpected
+     * tracked-file modification. Gitignoring them sidesteps the whole class
+     * of failure since they are entirely plugin output.
+     *
+     * @param string[] $lines
+     * @return bool True if the file was changed; false if all lines were already present.
+     */
+    public static function ensureGitignore(string $root, array $lines): bool
+    {
+        $file = $root . '/.gitignore';
+        $existing = is_file($file) ? (string) file_get_contents($file) : '';
+        $missing = [];
+        foreach ($lines as $line) {
+            if (!self::containsLine($existing, $line)) {
+                $missing[] = $line;
+            }
+        }
+        if ($missing === []) {
+            return false;
+        }
+        $prefix = '';
+        if ($existing !== '' && substr($existing, -1) !== "\n") {
+            $prefix .= "\n";
+        }
+        if ($existing !== '') {
+            $prefix .= "\n";
+        }
+        $block = $prefix
+            . "# Managed by augustash/claude-config; safe to remove if you want to commit\n"
+            . "# project-specific content in these files instead of .claude/memory/.\n"
+            . implode("\n", $missing) . "\n";
+        file_put_contents($file, $existing . $block);
         return true;
     }
 
