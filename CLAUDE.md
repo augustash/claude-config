@@ -19,6 +19,8 @@ Organize as `{topic}/{specific}.md` — see [memory structure](memory/preference
 3. Run `python3 vendor/augustash/claude-config/generate-agents.py` so `AGENTS.md` stays in sync with the index.
 4. From inside `vendor/augustash/claude-config/`: `git add -A && git commit -m "..." && git push`. Other projects pick up the change on their next `composer update augustash/claude-config`.
 
+**Commit handoff convention.** Steps 1–3 are Claude's job and happen automatically as part of every shared-memory edit — generating `AGENTS.md` is not an optional follow-up, it's part of the write. Step 4 (commit + push) is also Claude's job for this repo specifically, because it's a self-contained shared package other projects depend on, so leaving local-only edits would defeat the purpose. This differs from project-level work, where the developer commits. Always show the diff before committing so the developer can flag anything off before it propagates.
+
 Sanity-check before writing:
 
 - If `vendor/augustash/claude-config/.git` is missing (the package was installed via dist instead of source), don't write — edits will be clobbered on the next composer run. Surface that and ask the user to reinstall with `composer reinstall augustash/claude-config --prefer-source` first.
