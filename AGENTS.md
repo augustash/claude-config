@@ -26,6 +26,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Default to `git pull --no-rebase` when integrating remote work; only rebase when explicitly asked
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
   Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
+- **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
+  always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 
