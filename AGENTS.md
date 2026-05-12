@@ -61,7 +61,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs (augustash, jacerider) to check before building from scratch
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
+  Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev
 

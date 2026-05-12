@@ -63,7 +63,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev
 - [Memory audit process](memory/preferences/memory-audit.md) — opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
 - [Comment style](memory/preferences/comments.md) — Concise; skip comments when the code is obvious, explain the WHY when it isn't
