@@ -24,6 +24,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   Default to `git pull --no-rebase` when integrating remote work; only rebase when explicitly asked
+- **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
+  Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 
