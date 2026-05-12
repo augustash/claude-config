@@ -77,3 +77,5 @@ ddev drush en -y drupal_cache_protection_search   # if any search route is expos
 - `srsltid`/`fbclid` → 301 redirect to clean URL
 - `gclid`/`msclkid`/`_kx`/`hsa_acc` → 200 with `x-drupal-cache: HIT` (internal strip)
 - Normal page (no facets) → 200
+
+**Smoke test script.** Local at `~/.claude/scratch/cache-protection-smoke.sh` — runs the test matrix against any deployed environment. Usage: `~/.claude/scratch/cache-protection-smoke.sh https://www.example.com`. Worth promoting into the module repo as `tests/smoke.sh` if it sees regular use.
