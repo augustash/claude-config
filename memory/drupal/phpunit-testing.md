@@ -74,15 +74,17 @@ Every custom test carries `@group aai` as its umbrella plus at least one module-
 class MyTest extends KernelTestBase { ... }
 ```
 
-**Always pass explicit paths to `--group aai` — every dir under `modules/` *except* `contrib`.** Bare `--group aai` forces phpunit to scan the entire test tree (core + every contrib) just to discover groups, and one broken contrib test file kills the run — `rdf`'s migrate tests are a known offender (`Declaration of ::testMigrateUpgradeReviewPage() must be compatible with ...`). When running our tests we never want contrib/core tests anyway.
-
-Typical augustash projects split modules across `modules/custom` and `modules/community`; some have extra dirs. Pass each non-contrib path:
+Run all custom tests with bare `--group aai` — no path needed:
 
 ```bash
-ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group aai modules/custom modules/community"
+ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group aai"
 ```
 
-Check `ls web/modules/` before running — if the project has other non-contrib dirs alongside `custom`/`community`, add them too. The rule is "everything except `contrib`."
+**Why:** phpunit scans the whole test tree to discover groups, so the run breaks if *any* contrib test file fails to load (PHP fatals at class declaration fire before group filtering). The classic offender was `drupal/rdf`'s `NoMultilingualReviewPageTest` (`Declaration of ::testMigrateUpgradeReviewPage() must be compatible with ...`). If you hit a broken contrib test, the right fix is usually to remove the module — most contrib modules with broken tests are deprecated/unused (rdf is gone in D11, replaced by metatag/schema_metatag for SEO). If the module is actually needed, fall back to passing explicit non-contrib paths (looping per dir, since phpunit 9 only honors one positional path arg):
+
+```bash
+ddev exec bash -c 'cd /var/www/html/web && for d in $(find modules -mindepth 1 -maxdepth 1 -type d ! -name contrib); do ../vendor/bin/phpunit -c core --group aai "$d" || exit; done'
+```
 
 ## Do not use `--list-groups`
 
