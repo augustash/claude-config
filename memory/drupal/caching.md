@@ -21,6 +21,8 @@ Any module that starts a PHP session for anonymous users will poison CDN/Varnish
 
 Without BigPipe enabled, `#lazy_builder` provides no caching or deferral benefit — content renders inline in the standard pipeline. It's only a code organization pattern (enforces scalar args, static callable). Don't use lazy builders expecting performance gains unless BigPipe is installed and enabled. For volatile/churning cache tags on non-BigPipe sites, use AJAX placeholders instead.
 
+**On Pantheon this is permanent.** Pantheon's edge cache is incompatible with BigPipe's chunked streaming, so BigPipe can't be enabled in production — see [[bigpipe-pantheon]]. Treat `#lazy_builder` as a no-op on every augustash Pantheon site and reach for AJAX placeholders or tighter block visibility instead.
+
 ## Exo Alchemist component cache
 
 Components with `cache: false` in their YAML definition will trigger `page_cache_kill_switch` for anonymous users, killing page cache on any page that renders the component. Audit component definitions (`{theme}/components/{name}/{name}.yml`) if cache issues appear on specific pages.

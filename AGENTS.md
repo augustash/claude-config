@@ -35,6 +35,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Drupal caching** — `vendor/augustash/claude-config/memory/drupal/caching.md`  
   Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
+- **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
+  Pantheon's edge breaks under BigPipe's chunked streaming → lazy_builder is a no-op on every augustash Pantheon site → use AJAX placeholders for max-age 0 forms
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   Setup and running PHPUnit kernel/unit tests in DDEV
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
