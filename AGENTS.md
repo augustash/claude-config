@@ -24,6 +24,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   Default to `git pull --no-rebase` when integrating remote work; only rebase when explicitly asked
+- **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
+  Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
+- **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
+  always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 
@@ -61,9 +65,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs (augustash, jacerider) to check before building from scratch
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
+  Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev
+- **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
+  augustash/ddev-drupal exports Pantheon site as `PANTHEON_SITE` (older) or `DDEV_PANTHEON_SITE` (newer) in `.ddev/config.yaml`; grep both
 
 ## WordPress
 

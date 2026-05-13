@@ -63,12 +63,15 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param middleware; facets submodule for bot protection; suggest when paid ads or drupal/facets present
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev
+- [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — augustash/ddev-drupal exports Pantheon site as `PANTHEON_SITE` (older) or `DDEV_PANTHEON_SITE` (newer) in `.ddev/config.yaml`; grep both
 - [Memory audit process](memory/preferences/memory-audit.md) — opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
 - [Comment style](memory/preferences/comments.md) — Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — Default to `git pull --no-rebase` when integrating remote work; only rebase when explicitly asked
+- [Commit handoff](memory/preferences/commit-handoff.md) — Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
+- [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules

@@ -26,7 +26,7 @@ If neither has changed, skip the review, update `last_audit`, and move on. The c
 
 ## Settings
 
-`~/.claude/claude-config-audit.json` (per-dev, lives outside any project so it survives composer updates). Create on first use:
+`.claude/claude-config-audit.json` at the project root (per-dev, gitignored so it stays out of the project repo, lives outside `vendor/` so it survives `composer update`). Each augustash project gets its own audit cadence and state. Create on first use:
 
 ```json
 {
