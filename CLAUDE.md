@@ -58,7 +58,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Memory structure](memory/preferences/memory-structure.md) — idea/specific.md pattern, organization conventions
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
-- [BigPipe is not viable on Pantheon](memory/drupal/bigpipe-pantheon.md) — Pantheon's edge breaks under BigPipe's chunked streaming → lazy_builder is a no-op on every augustash Pantheon site → use AJAX placeholders for max-age 0 forms
+- [BigPipe is not viable on Pantheon](memory/drupal/bigpipe-pantheon.md) — BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
