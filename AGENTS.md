@@ -36,7 +36,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Drupal
 
 - **Drupal caching** — `vendor/augustash/claude-config/memory/drupal/caching.md`  
-  Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache
+  Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
 - **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
   BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  

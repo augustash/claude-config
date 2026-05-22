@@ -32,3 +32,21 @@ Components with `cache: false` in their YAML definition will trigger `page_cache
 - `*_list` entity tags (e.g., `recently_read_list`, `node_list`) invalidate on ANY entity create/update/delete of that type — avoid these on high-traffic pages
 - Check `cachetags` table: `SELECT tag, invalidations FROM cachetags WHERE tag = 'some_tag'`
 - `search_api_list:global` only invalidates when items are actually indexed, not on every cron run
+
+## Redis compress_length default is too low
+
+The boilerplate `$settings['redis_compress_length'] = 100` (lifted from Pantheon's Redis docs and propagated by copy-paste across augustash sites) gzips every cache entry over 100 bytes — which is essentially everything Drupal caches: config, render arrays, plugin defs, views data, theme registry, search_api fields. Every read and write pays gzip CPU.
+
+The cost is most visible during cold-cache rebuilds after a Pantheon container shuffle: workers spend seconds in `gzuncompress() → CacheBase::expandEntry()` while populating Redis from scratch, and with Pantheon's small FPM pools a dogpile of cold-rebuild workers stalls the whole site. Confirmed on MSP 2026-05-21 via php-slow.log — a 5.5s slow request was caught with its top frame in `gzuncompress`.
+
+Raise to 4096. Compression only kicks in for entries large enough that the size savings outweigh the decompression CPU; smaller entries skip it entirely.
+
+```php
+$settings['redis_compress_length'] = 4096;
+```
+
+**Audit other sites** — anything ≤ 1024 is too low for a typical Drupal site:
+
+```bash
+grep -rn "redis_compress_length" ~/Projects/*/web/sites/default/settings.php
+```
