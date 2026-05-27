@@ -28,6 +28,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
+- **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
+  sequential one-at-a-time review of server logs (access → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
