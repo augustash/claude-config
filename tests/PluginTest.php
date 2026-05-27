@@ -148,6 +148,70 @@ class PluginTest extends TestCase
         $this->assertStringNotContainsString(Plugin::LEGACY_AGENTS_IMPORT_LINE, $agents);
     }
 
+    public function testWireMigratesSupersededRelativeImport(): void
+    {
+        // Regression guard for the bug that motivated the ../vendor form:
+        // a project wired by an older plugin carries the root-relative
+        // @vendor/... line, which Claude Code resolves against .claude/
+        // (=> .claude/vendor/..., a silent no-op). wire() must REPLACE it with
+        // the ../vendor form — not append a second line beside the dead one.
+        // assertSame on the full file content catches both a missed migration
+        // and accidental duplication.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            Plugin::SUPERSEDED_CLAUDE_IMPORT_LINE . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireMigratesSupersededImportPreservingProjectContent(): void
+    {
+        // The migration must not eat project-specific instructions sharing the
+        // file. Prune-then-add should leave the heading + a single blank
+        // separator before the corrected import.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            "# Project notes\n\n" . Plugin::SUPERSEDED_CLAUDE_IMPORT_LINE . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            "# Project notes\n\n" . Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireLeavesRootLevelVendorImportUntouched(): void
+    {
+        // A root-level CLAUDE.md with @vendor/... is CORRECT (resolved from the
+        // project root), so the superseded-form migration must not touch it.
+        // wire() still adds its managed .claude/CLAUDE.md alongside.
+        file_put_contents(
+            $this->tmp . '/CLAUDE.md',
+            Plugin::SUPERSEDED_CLAUDE_IMPORT_LINE . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            Plugin::SUPERSEDED_CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/CLAUDE.md')
+        );
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
     public function testWireOnEmptyProjectCreatesBothFiles(): void
     {
         (new Plugin())->wire($this->tmp);

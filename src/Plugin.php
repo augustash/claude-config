@@ -19,15 +19,26 @@ use Composer\Plugin\PluginInterface;
 /**
  * Wires the project's CLAUDE.md / AGENTS.md to the installed package on
  * composer require, and prunes those references on composer remove. Also
- * migrates legacy ~/claude-config/ references from the previous global-clone
- * layout the first time the package is installed.
+ * migrates outdated import forms on each install/update: legacy
+ * ~/claude-config/ references from the old global-clone layout, and the
+ * superseded @vendor/... form that silently failed to load from
+ * .claude/CLAUDE.md (see SUPERSEDED_CLAUDE_IMPORT_LINE).
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     public const PACKAGE_NAME = 'augustash/claude-config';
 
-    public const CLAUDE_IMPORT_LINE = '@vendor/augustash/claude-config/CLAUDE.md';
+    public const CLAUDE_IMPORT_LINE = '@../vendor/augustash/claude-config/CLAUDE.md';
     public const AGENTS_IMPORT_LINE = 'See `vendor/augustash/claude-config/AGENTS.md` for shared augustash team conventions.';
+
+    // Superseded import form. Claude Code resolves `@` imports relative to the
+    // importing file's own directory, not the project root — so `@vendor/...`
+    // written into .claude/CLAUDE.md resolved to .claude/vendor/..., which
+    // doesn't exist, and the import silently no-op'd (shared memory never
+    // loaded). The fix is the ../vendor form above. wire() prunes this from
+    // .claude/CLAUDE.md and replaces it. Note a *root-level* CLAUDE.md with
+    // `@vendor/...` is correct, so this is only ever pruned from .claude/.
+    public const SUPERSEDED_CLAUDE_IMPORT_LINE = '@vendor/augustash/claude-config/CLAUDE.md';
 
     public const LEGACY_CLAUDE_IMPORT_LINE = '@~/claude-config/CLAUDE.md';
     public const LEGACY_AGENTS_IMPORT_LINE = 'See `~/claude-config/AGENTS.md` for shared augustash team conventions.';
@@ -104,7 +115,27 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function wire(string $root): void
     {
-        if (self::addImport($root . '/.claude/CLAUDE.md', self::CLAUDE_IMPORT_LINE)) {
+        $claude = $root . '/.claude/CLAUDE.md';
+
+        // Migrate outdated import forms *before* adding the current one, so a
+        // file carrying a stale line is rewritten cleanly rather than left with
+        // both the old and new lines stacked together.
+        if (self::pruneImport($claude, self::SUPERSEDED_CLAUDE_IMPORT_LINE)) {
+            $this->info('migrated superseded CLAUDE.md import to ../vendor form');
+        }
+        // Legacy ~/claude-config/ references from the old global-clone installer.
+        // The legacy installer could target either .claude/CLAUDE.md or a
+        // root-level CLAUDE.md, so prune both candidates.
+        foreach ([$claude, $root . '/CLAUDE.md'] as $candidate) {
+            if (self::pruneImport($candidate, self::LEGACY_CLAUDE_IMPORT_LINE)) {
+                $this->info('pruned legacy CLAUDE.md import (' . $candidate . ')');
+            }
+        }
+        if (self::pruneImport($root . '/AGENTS.md', self::LEGACY_AGENTS_IMPORT_LINE)) {
+            $this->info('pruned legacy AGENTS.md pointer');
+        }
+
+        if (self::addImport($claude, self::CLAUDE_IMPORT_LINE)) {
             $this->info('added CLAUDE.md import');
         }
         if (self::addImport($root . '/AGENTS.md', self::AGENTS_IMPORT_LINE)) {
@@ -112,16 +143,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         if (self::ensureGitignore($root, ['/.claude/CLAUDE.md', '/AGENTS.md'])) {
             $this->info('added .gitignore entries for managed files');
-        }
-
-        // One-time migration: prune legacy ~/claude-config/ references.
-        foreach ([$root . '/.claude/CLAUDE.md', $root . '/CLAUDE.md'] as $candidate) {
-            if (self::pruneImport($candidate, self::LEGACY_CLAUDE_IMPORT_LINE)) {
-                $this->info('pruned legacy CLAUDE.md import (' . $candidate . ')');
-            }
-        }
-        if (self::pruneImport($root . '/AGENTS.md', self::LEGACY_AGENTS_IMPORT_LINE)) {
-            $this->info('pruned legacy AGENTS.md pointer');
         }
     }
 
