@@ -45,6 +45,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Setup and running PHPUnit kernel/unit tests in DDEV
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
   Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
+- **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
+  skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
 - **Test tag/group convention** — `vendor/augustash/claude-config/memory/drupal/test-tags.md`  
   `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
