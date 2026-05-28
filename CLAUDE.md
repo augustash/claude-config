@@ -56,6 +56,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Mission](memory/preferences/mission.md) — shared team resource, proactive guidance, watch-and-suggest posture, Claude as steward at write time (read first; informs how other memories should be written)
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is handled in the codebase before writing in it; surface divergence from established patterns
 - [Memory structure](memory/preferences/memory-structure.md) — idea/specific.md pattern, organization conventions
+- [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — store scripts as tracked files (templates/) and link by path; never paste code bodies into notes, even small ones
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
 - [BigPipe is not viable on Pantheon](memory/drupal/bigpipe-pantheon.md) — BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
@@ -77,6 +78,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Log audit](memory/preferences/log-audit.md) — sequential one-at-a-time review of server logs (access → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
+- [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig

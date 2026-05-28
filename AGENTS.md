@@ -14,6 +14,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   scan how a domain is handled in the codebase before writing in it; surface divergence from established patterns
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
   idea/specific.md pattern, organization conventions
+- **Reference scripts, don't embed** — `vendor/augustash/claude-config/memory/preferences/reference-scripts-not-embeds.md`  
+  store scripts as tracked files (templates/) and link by path; never paste code bodies into notes, even small ones
 - **DDEV workflow** — `vendor/augustash/claude-config/memory/preferences/ddev-workflow.md`  
   Always use ddev for CLI commands
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
@@ -53,6 +55,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   index of local .patch files + vetted remote URLs to reuse across projects
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   Custom disallow rules via Composer scaffold append
+- **Pantheon Quicksilver cache warmer** — `vendor/augustash/claude-config/memory/drupal/pantheon-quicksilver-cache-warmer.md`  
+  drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
   Tracking param handling via ash_facet_protection, not CF cache rules
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
