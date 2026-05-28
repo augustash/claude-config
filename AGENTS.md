@@ -38,6 +38,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
   Only cover the seam we own; don't re-verify Drupal core/contrib behavior in our suite
+- **No time-based test waits** — `vendor/augustash/claude-config/memory/preferences/no-time-based-test-waits.md`  
+  wait on the real condition (element state, response, count), never a fixed delay; time waits are flaky and slow
 
 ## Drupal
 
