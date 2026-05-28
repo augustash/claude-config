@@ -30,6 +30,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
+- **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
+  temporary/dev config overrides (aggregation, flags) go in settings.local.php, never `cset`/UI, so they can't be exported to live
 - **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
   sequential one-at-a-time review of server logs (access → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
