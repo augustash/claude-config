@@ -40,6 +40,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Only cover the seam we own; don't re-verify Drupal core/contrib behavior in our suite
 - **No time-based test waits** — `vendor/augustash/claude-config/memory/preferences/no-time-based-test-waits.md`  
   wait on the real condition (element state, response, count), never a fixed delay; time waits are flaky and slow
+- **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
+  surface/offer to fix non-blocking warnings, dead code, orphaned artifacts near the work; "it still works" isn't good enough; keep cleanup scoped + its own commit
 
 ## Drupal
 
