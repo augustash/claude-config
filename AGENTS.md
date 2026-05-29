@@ -33,7 +33,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
   temporary/dev config overrides (aggregation, flags) go in settings.local.php, never `cset`/UI, so they can't be exported to live
 - **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
-  sequential one-at-a-time review of server logs (access → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
+  sequential one-at-a-time review of server logs, grouped nginx-then-php (nginx access → nginx error → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  

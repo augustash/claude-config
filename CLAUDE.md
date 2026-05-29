@@ -77,7 +77,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Commit handoff](memory/preferences/commit-handoff.md) — Claude commits + pushes shared claude-config memory; dev reviews + commits + pushes all project work
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before `terminus ... {site}.live` or `.test`; can be batched for read-only command lists
 - [Local config in settings.local.php](memory/preferences/local-config-in-settings-local.md) — temporary/dev config overrides (aggregation, flags) go in settings.local.php, never `cset`/UI, so they can't be exported to live
-- [Log audit](memory/preferences/log-audit.md) — sequential one-at-a-time review of server logs (access → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
+- [Log audit](memory/preferences/log-audit.md) — sequential one-at-a-time review of server logs, grouped nginx-then-php (nginx access → nginx error → php-error → fpm-error → slow → newrelic); analyze locally, never exfiltrate log contents
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — ash-woocommerce-cookies plugin for Varnish cache-busting fix
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
