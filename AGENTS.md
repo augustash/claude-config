@@ -90,6 +90,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotcha: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   augustash/ddev-drupal exports Pantheon site as `project=<site>.<env>` (oldest), `PANTHEON_SITE` (older), or `DDEV_PANTHEON_SITE` (newer) in `.ddev/config.yaml`; grep all three. `Ddev::migratePantheonEnv()` auto-migrates them forward on `-u`
+- **ddev-setup post-update-cmd wiring** — `vendor/augustash/claude-config/memory/augustash/ddev-setup-post-update-cmd.md`  
+  wiring the `Augustash\Ddev::postUpdate` hook via `ddev composer config --json '[...]'` mangles the namespace backslashes into a quoted string, so `composer update` dies with `Class "[\"Augustash\Ddev ... is not autoloadable`. Set it scalar or edit composer.json by hand; preserve any existing Pantheon `DrupalComposerManaged` hook
 
 ## WordPress
 
