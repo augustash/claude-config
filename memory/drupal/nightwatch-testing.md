@@ -29,6 +29,11 @@ type: reference
    ```
    ddev exec 'cd /var/www/html/web/core && yarn install'
    ```
+   **Drupal 11 only:** D11 core pins `yarn@4.x` via the `packageManager` field in `web/core/package.json`, which requires Corepack. The container's global Yarn 1 refuses with a `"packageManager" … the current global version of Yarn is 1.x` error. Enable Corepack first (one-time per container), then install:
+   ```
+   ddev exec 'corepack enable && cd /var/www/html/web/core && yarn install'
+   ```
+   D10 ships Yarn 1, so the plain `yarn install` above works there — this Corepack step is D11-specific.
 
 4. **`drupal/core-dev`** — Nightwatch also depends on `drupal/core-dev` being installed (see `drupal/phpunit-testing.md` for the install-with-pinned-major-minor recipe). Projects typically don't ship with it.
 
