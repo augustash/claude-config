@@ -12,7 +12,7 @@ The fix is a **Quicksilver `deploy: after` webphp hook** that curls the heaviest
 - **Live only.** Dev/test/multidev deploys are too frequent and their cold pain isn't user-facing.
 - **Hit `pantheonsite.io` origin, not the custom domain.** A Cloudflare-/CDN-fronted custom domain may serve the warm request from the edge and never reach origin, so it wouldn't populate Drupal's caches. The platform URL goes straight to origin.
 - **Sequential, with timeout headroom.** Earlier pages populate shared caches (theme registry, views data, plugin defs) that later pages reuse. Set `CURLOPT_TIMEOUT` above your slowest cold page.
-- **Scope is deploy-time only.** A mid-day cache purge (commerce cache-tag invalidation, cron flush) colliding with a traffic burst is *not* covered — that's an app-level concern (e.g. paging a heavy page so even a cold render is cheap). A deploy is "on us"; warming it is the cheap, predictable win.
+- **Scope is deploy-time only.** A mid-day cache purge (commerce cache-tag invalidation, cron flush) colliding with a traffic burst is *not* covered by this hook — that's an app-level concern. For the specific case of a cron that periodically evicts an uncacheable form-page's anonymous `page_cache` entry, see [page-cache-cron-reprime.md](page-cache-cron-reprime.md) (cron re-primes the entry off-path, atomic swap, never a cold hole). A deploy is "on us"; warming it is the cheap, predictable win.
 
 **Drop-in script:** [`templates/pantheon-quicksilver-cache-warmer.php`](../../templates/pantheon-quicksilver-cache-warmer.php) in this package. Copy it to `web/private/scripts/cache_warm.php` and swap the `$paths` list — everything else (live guard, origin URL, curl loop, logging) is reusable as-is.
 
