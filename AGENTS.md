@@ -37,7 +37,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   Surface existing tests when modifying covered code; flag coverage gaps on new or substantial changes
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
-  Only cover the seam we own; don't re-verify Drupal core/contrib behavior in our suite
+  Only cover the seam we own; don't re-verify Drupal core/contrib behavior in our suite. External service APIs (payment gateways, Klaviyo, ShareASale) are the sharpest "not ours" case — never hit a live API; substitute the on-site/dummy equivalent (e.g. the `manual` gateway for checkout)
 - **No time-based test waits** — `vendor/augustash/claude-config/memory/preferences/no-time-based-test-waits.md`  
   wait on the real condition (element state, response, count), never a fixed delay; time waits are flaky and slow
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
