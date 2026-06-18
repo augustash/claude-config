@@ -17,7 +17,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **DDEV workflow** — `vendor/augustash/claude-config/memory/preferences/ddev-workflow.md`  
   Always use ddev for CLI commands
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
-  opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
+  opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
