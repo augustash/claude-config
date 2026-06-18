@@ -19,14 +19,17 @@ use Composer\Plugin\PluginInterface;
 /**
  * Wires the project's CLAUDE.md / AGENTS.md to the installed package on
  * composer require, and prunes those references on composer remove. Also
- * migrates legacy ~/claude-config/ references from the previous global-clone
- * layout the first time the package is installed.
+ * normalizes the .claude/CLAUDE.md import on each install/update: any
+ * @…claude-config/CLAUDE.md line that isn't the canonical ../vendor form is
+ * pruned and replaced, so a stale or hand-mangled import (the old
+ * ~/claude-config/ clone path, the superseded @vendor/... form, a typo) can't
+ * linger stacked beside the correct line. See pruneStaleClaudeImports().
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     public const PACKAGE_NAME = 'augustash/claude-config';
 
-    public const CLAUDE_IMPORT_LINE = '@vendor/augustash/claude-config/CLAUDE.md';
+    public const CLAUDE_IMPORT_LINE = '@../vendor/augustash/claude-config/CLAUDE.md';
     public const AGENTS_IMPORT_LINE = 'See `vendor/augustash/claude-config/AGENTS.md` for shared augustash team conventions.';
 
     public const LEGACY_CLAUDE_IMPORT_LINE = '@~/claude-config/CLAUDE.md';
@@ -104,7 +107,30 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function wire(string $root): void
     {
-        if (self::addImport($root . '/.claude/CLAUDE.md', self::CLAUDE_IMPORT_LINE)) {
+        $claude = $root . '/.claude/CLAUDE.md';
+
+        // Normalize the .claude/CLAUDE.md import *before* adding the current
+        // one, so a file carrying a stale or garbled line is rewritten cleanly
+        // rather than left with the old and new lines stacked together. This
+        // prunes every @…claude-config/CLAUDE.md variant except the canonical
+        // line — the legacy ~/claude-config/ clone path, the superseded
+        // @vendor/... form, and any hand-mangled path all collapse to one.
+        // Other content in the file is preserved (see pruneStaleClaudeImports).
+        if (self::pruneStaleClaudeImports($claude, self::CLAUDE_IMPORT_LINE)) {
+            $this->info('normalized stale CLAUDE.md import to ../vendor form');
+        }
+        // The legacy ~/claude-config/ form is wrong everywhere, so also prune it
+        // from a root-level CLAUDE.md. A root-level @vendor/... form, by
+        // contrast, is correct (resolved from the project root) and must stay,
+        // which is why the pattern prune above is scoped to .claude/ only.
+        if (self::pruneImport($root . '/CLAUDE.md', self::LEGACY_CLAUDE_IMPORT_LINE)) {
+            $this->info('pruned legacy CLAUDE.md import (' . $root . '/CLAUDE.md)');
+        }
+        if (self::pruneImport($root . '/AGENTS.md', self::LEGACY_AGENTS_IMPORT_LINE)) {
+            $this->info('pruned legacy AGENTS.md pointer');
+        }
+
+        if (self::addImport($claude, self::CLAUDE_IMPORT_LINE)) {
             $this->info('added CLAUDE.md import');
         }
         if (self::addImport($root . '/AGENTS.md', self::AGENTS_IMPORT_LINE)) {
@@ -112,16 +138,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         if (self::ensureGitignore($root, ['/.claude/CLAUDE.md', '/AGENTS.md'])) {
             $this->info('added .gitignore entries for managed files');
-        }
-
-        // One-time migration: prune legacy ~/claude-config/ references.
-        foreach ([$root . '/.claude/CLAUDE.md', $root . '/CLAUDE.md'] as $candidate) {
-            if (self::pruneImport($candidate, self::LEGACY_CLAUDE_IMPORT_LINE)) {
-                $this->info('pruned legacy CLAUDE.md import (' . $candidate . ')');
-            }
-        }
-        if (self::pruneImport($root . '/AGENTS.md', self::LEGACY_AGENTS_IMPORT_LINE)) {
-            $this->info('pruned legacy AGENTS.md pointer');
         }
     }
 
@@ -194,19 +210,54 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Remove an import line from a file. Inter-content blank runs are kept;
-     * trailing blanks left behind by the removal are dropped. Deletes the
+     * Remove an exact import line from a file. Inter-content blank runs are
+     * kept; trailing blanks left behind by the removal are dropped. Deletes the
      * file if nothing remains.
      *
      * @return bool True if the file was changed; false otherwise.
      */
     public static function pruneImport(string $file, string $line): bool
     {
+        return self::removeLines($file, static fn (string $current): bool => $current === $line);
+    }
+
+    /**
+     * Normalize the claude-config import in a managed .claude/CLAUDE.md: prune
+     * every @…claude-config/CLAUDE.md line except the canonical one, so any
+     * stale or hand-mangled variant collapses to a single correct import once
+     * wire() re-adds it. Unrelated content (project-specific instructions) is
+     * preserved. Scope this to .claude/CLAUDE.md only — a root-level CLAUDE.md
+     * legitimately uses the @vendor/... form, which would match the pattern.
+     *
+     * @param string $canonical The import line to keep untouched.
+     * @return bool True if the file was changed; false otherwise.
+     */
+    public static function pruneStaleClaudeImports(string $file, string $canonical): bool
+    {
+        return self::removeLines($file, static function (string $current) use ($canonical): bool {
+            return $current !== $canonical
+                && preg_match('#^@(?:\S*/)?claude-config/CLAUDE\.md$#', $current) === 1;
+        });
+    }
+
+    /**
+     * Remove every line a predicate matches from a file, preserving the rest.
+     * Inter-content blank runs are kept; leading and trailing blanks left
+     * behind by a removal are dropped (so pruning the first or last line can't
+     * strand a blank at the edge of the file). Deletes the file if nothing
+     * remains. The file is only rewritten when at least one line is removed, so
+     * a no-op call never reformats untouched content.
+     *
+     * @param callable(string): bool $matches Returns true for lines to drop.
+     * @return bool True if the file was changed; false otherwise.
+     */
+    private static function removeLines(string $file, callable $matches): bool
+    {
         if (!is_file($file)) {
             return false;
         }
         $contents = file_get_contents($file);
-        if ($contents === false || !self::containsLine($contents, $line)) {
+        if ($contents === false) {
             return false;
         }
 
@@ -216,13 +267,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         $lines = $normalized === '' ? [] : explode("\n", $normalized);
 
-        // Mirror utils.sh: buffer blank runs so blanks stranded after the
-        // removed line don't end up trailing the file. Blanks between content
-        // are flushed when the next non-blank line appears.
+        // Mirror utils.sh: buffer blank runs so blanks stranded after a removed
+        // line don't end up trailing the file. Blanks between content are
+        // flushed when the next non-blank line appears.
         $out = '';
         $buf = '';
+        $removed = false;
         foreach ($lines as $current) {
-            if ($current === $line) {
+            if ($matches($current)) {
+                $removed = true;
                 continue;
             }
             if ($current === '') {
@@ -233,6 +286,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
         }
 
+        if (!$removed) {
+            return false;
+        }
+        // Drop blanks stranded at the top by removing a leading line; the buffer
+        // above already prevents stranded trailing blanks.
+        $out = ltrim($out, "\n");
         if ($out === '') {
             unlink($file);
             return true;

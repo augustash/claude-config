@@ -14,9 +14,9 @@ ddev composer config preferred-install.augustash/claude-config source && ddev co
 
 The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package as a dev dependency and triggers the plugin, which:
 
-- Adds `@vendor/augustash/claude-config/CLAUDE.md` to the project's `.claude/CLAUDE.md`
+- Adds `@../vendor/augustash/claude-config/CLAUDE.md` to the project's `.claude/CLAUDE.md` (the `../` matters — Claude Code resolves `@` imports relative to the importing file's directory, so a bare `@vendor/...` would look for the non-existent `.claude/vendor/...`)
 - Adds an `AGENTS.md` pointer to `vendor/augustash/claude-config/AGENTS.md`
-- Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup
+- Prunes any legacy `~/claude-config/` references left behind by the previous global-clone setup, and migrates the superseded bare `@vendor/...` import to the `../vendor/...` form
 - Prints a notice if the package was installed via dist (no `.git/`) and tells you how to switch to source
 
 The `dev-master` constraint tracks the `master` branch HEAD rather than a tagged release — this package isn't tagged. Updates flow via `ddev composer update augustash/claude-config`, and the vendor copy stays on the `master` branch so memory authored in `vendor/augustash/claude-config/memory/` can be committed and pushed directly without first checking out a branch. This avoids forcing a tag-and-release cycle just to share memory updates — push to `master`, other projects pull on their next `ddev composer update`.

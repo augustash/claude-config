@@ -148,6 +148,143 @@ class PluginTest extends TestCase
         $this->assertStringNotContainsString(Plugin::LEGACY_AGENTS_IMPORT_LINE, $agents);
     }
 
+    public function testWireMigratesSupersededRelativeImport(): void
+    {
+        // Regression guard for the bug that motivated the ../vendor form:
+        // a project wired by an older plugin carries the root-relative
+        // @vendor/... line, which Claude Code resolves against .claude/
+        // (=> .claude/vendor/..., a silent no-op). wire() must REPLACE it with
+        // the ../vendor form — not append a second line beside the dead one.
+        // assertSame on the full file content catches both a missed migration
+        // and accidental duplication.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            '@vendor/augustash/claude-config/CLAUDE.md' . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireMigratesSupersededImportPreservingProjectContent(): void
+    {
+        // The migration must not eat project-specific instructions sharing the
+        // file. Prune-then-add should leave the heading + a single blank
+        // separator before the corrected import.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            "# Project notes\n\n" . '@vendor/augustash/claude-config/CLAUDE.md' . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            "# Project notes\n\n" . Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireLeavesRootLevelVendorImportUntouched(): void
+    {
+        // A root-level CLAUDE.md with @vendor/... is CORRECT (resolved from the
+        // project root), so the superseded-form migration must not touch it.
+        // wire() still adds its managed .claude/CLAUDE.md alongside.
+        file_put_contents(
+            $this->tmp . '/CLAUDE.md',
+            '@vendor/augustash/claude-config/CLAUDE.md' . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            '@vendor/augustash/claude-config/CLAUDE.md' . "\n",
+            file_get_contents($this->tmp . '/CLAUDE.md')
+        );
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireNormalizesGarbledImportMissingVendorSegment(): void
+    {
+        // The case that motivated the pattern prune: a hand-mangled import that
+        // matched none of the old hardcoded variants (here, the vendor path
+        // segment dropped) used to slip past migration, so wire() appended the
+        // correct line beside the dead one. The pattern catches any
+        // @…claude-config/CLAUDE.md form, so this collapses to the canonical.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            "@augustash/claude-config/CLAUDE.md\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testWireCollapsesStackedDuplicateImports(): void
+    {
+        // The exact state a buggy earlier run left behind: the mangled line and
+        // the appended-correct line stacked with a blank between. wire() must
+        // reduce this to a single clean canonical line — no surviving variant,
+        // no stranded leading blank from pruning the first line.
+        mkdir($this->tmp . '/.claude');
+        file_put_contents(
+            $this->tmp . '/.claude/CLAUDE.md',
+            "@augustash/claude-config/CLAUDE.md\n\n" . Plugin::CLAUDE_IMPORT_LINE . "\n"
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n",
+            file_get_contents($this->tmp . '/.claude/CLAUDE.md')
+        );
+    }
+
+    public function testPruneStaleClaudeImportsKeepsCanonicalAndPreservesContent(): void
+    {
+        // Unit-level: a non-canonical variant is removed, project content and
+        // the already-correct line are both preserved untouched. The canonical
+        // line leads here so the dropped trailing variant can't strand a blank
+        // and muddy the assertion — the point is which lines survive, not blank
+        // bookkeeping (covered by the pruneImport blank tests).
+        $file = $this->tmp . '/CLAUDE.md';
+        file_put_contents(
+            $file,
+            Plugin::CLAUDE_IMPORT_LINE . "\n\n# Notes\n\n@vendor/augustash/claude-config/CLAUDE.md\n"
+        );
+
+        $this->assertTrue(Plugin::pruneStaleClaudeImports($file, Plugin::CLAUDE_IMPORT_LINE));
+        $this->assertSame(
+            Plugin::CLAUDE_IMPORT_LINE . "\n\n# Notes\n",
+            file_get_contents($file)
+        );
+    }
+
+    public function testPruneStaleClaudeImportsNoOpWhenOnlyCanonicalPresent(): void
+    {
+        // No non-canonical variant to prune => no change, file left byte-for-byte
+        // (this is what keeps wire() idempotent on an already-correct file).
+        $file = $this->tmp . '/CLAUDE.md';
+        $original = Plugin::CLAUDE_IMPORT_LINE . "\n";
+        file_put_contents($file, $original);
+
+        $this->assertFalse(Plugin::pruneStaleClaudeImports($file, Plugin::CLAUDE_IMPORT_LINE));
+        $this->assertSame($original, file_get_contents($file));
+    }
+
     public function testWireOnEmptyProjectCreatesBothFiles(): void
     {
         (new Plugin())->wire($this->tmp);
