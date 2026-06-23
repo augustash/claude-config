@@ -20,12 +20,29 @@ mkdir -p ~/.config/newrelic/mspairport
 cp nr.env.example ~/.config/newrelic/mspairport/nr.env
 $EDITOR ~/.config/newrelic/mspairport/nr.env      # fill in account id, NRAK- key, app name
 
-# pull:
+# pull data:
 bash nr-pull.sh ~/.config/newrelic/mspairport     # writes JSON to .../mspairport/out/
+
+# build a self-contained HTML report + CSVs from that data:
+python3 nr-report.py ~/.config/newrelic/mspairport  # writes out/report.html + out/data-*.csv
 ```
 
 `nr.env` fields and the full NRQL set are documented in `nr.env.example` and `queries.md`.
-Requires `curl` + `jq`.
+`nr-pull.sh` requires `curl` + `jq`; `nr-report.py` requires only Python 3 stdlib (no internet).
+
+## Building a report (`nr-report.py`)
+
+Turns the pulled JSON into a browser-openable `out/report.html` with **inline SVG charts**
+(no CDN/internet), CSVs of the daily series, and an auto-computed per-period **median /
+worst-day** stats table. Two optional per-site files shape it:
+
+- **`breakpoints.csv`** — `date,label` rows marking deploys/fixes. They draw green markers on
+  every chart and split the stats table into periods. See `breakpoints.csv.example`.
+- **`intro.html`** — your narrative/analysis, injected above the charts. The tool deliberately
+  does **not** auto-write prose — charts and stats are mechanical, the story is yours.
+
+Use **median, not mean**, in any narrative: saturation metrics are spike-driven, so a mean is
+dragged up by a few spike-days and overstates the typical rate.
 
 ## Logs vs New Relic — which to reach for
 

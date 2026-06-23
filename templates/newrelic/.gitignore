@@ -7,3 +7,8 @@ nr.env
 out/
 */out/
 *.json
+# per-site report inputs (the .example versions are committed)
+breakpoints.csv
+*/breakpoints.csv
+intro.html
+*/intro.html
