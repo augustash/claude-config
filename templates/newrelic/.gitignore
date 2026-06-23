@@ -1,0 +1,9 @@
+# Credentials and pulled data must NEVER be committed to this shared package.
+# Site dirs belong OUTSIDE this repo, but ignore these names defensively anyway.
+*.env
+!*.env.example
+nr.env
+*/nr.env
+out/
+*/out/
+*.json
