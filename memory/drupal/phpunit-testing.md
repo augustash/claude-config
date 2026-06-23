@@ -86,6 +86,23 @@ ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c core --group
 ddev exec bash -c 'cd /var/www/html/web && for d in $(find modules -mindepth 1 -maxdepth 1 -type d ! -name contrib); do ../vendor/bin/phpunit -c core --group aai "$d" || exit; done'
 ```
 
+## Named testsuite for one-shot custom runs
+
+For a stable single-command run of every custom test, add a named `<testsuite>` to the project's `phpunit.xml` listing each custom module's `tests/src` dir, then run `--testsuite custom`:
+
+```xml
+<testsuite name="custom">
+  <directory>web/modules/custom/my_module/tests/src</directory>
+  <directory>web/modules/custom/other_module/modules/sub_module/tests/src</directory>
+</testsuite>
+```
+
+```bash
+ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c ../phpunit.xml --testsuite custom"
+```
+
+**Why this over `--group aai`:** a named testsuite only loads the dirs you list, so a broken contrib test file can't fatal the run the way it does under `--group aai` (which scans the whole tree). It also doubles as living documentation of where our coverage lives, and dodges the phpunit-9 "one positional path arg" limitation — no per-dir loop needed. Tradeoff: the dir list is maintained by hand, so a new test module won't be picked up until it's added. Keep `--group aai` as the zero-config option; reach for the testsuite when you want a reliable, repeatable full run. The dir list itself is project-specific and lives in that project's `phpunit.xml`, not here.
+
 ## Do not use `--list-groups`
 
 **Do not use `--list-groups`** to explore available groups. It scans every test file in the tree, including contrib modules, and commonly dies on poorly-maintained contrib test files (missing trait references, undefined variables in Unit tests, etc.). Target a specific path instead — kernel/unit tests under `modules/custom` or `modules/contrib/{module}/tests/src/Kernel` run fine because phpunit only loads the files it actually needs.
