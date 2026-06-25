@@ -77,6 +77,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
+- **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
+  enabling exo_icon in a KernelTestBase (directly or via a module that depends on it) fatals with `Undefined array key "node_type"` (its hook_entity_type_alter assumes a full site); keep `exo_icon()` out of testable logic (return `{icon,text}`, render in preprocess), assert structured output; still declare `exo:exo_icon` in `.info.yml`
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
