@@ -92,6 +92,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotcha: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook
+- **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
+  Terminus-core secrets (`secret:site:set`) store Pantheon-side, read via `pantheon_get_secret()` (scope=web) — a SEPARATE system from the legacy `files/private/secrets.json` file; app reader should prefer the fn, fall back to the file. `--type`/`--scope` only on create. **Multiline values (PEM keys) fail** the arg parser — store base64, decode on read
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   augustash ddev recipes export Pantheon site + env in `.ddev/config.yaml` across 3 generations (`project=`; `PANTHEON_SITE`/`WORKING_ENVIRONMENT`; current `DDEV_PANTHEON_SITE`/`DDEV_PANTHEON_ENVIRONMENT`); grep all forms. `DDEV_` prefix dodges Pantheon's server-side `PANTHEON_ENVIRONMENT` collision; `migratePantheonEnv()` migrates on `-u`. Producers = ddev-drupal/wordpress, consumer = ddev-pantheon-db
 - **ddev-setup post-update-cmd wiring** — `vendor/augustash/claude-config/memory/augustash/ddev-setup-post-update-cmd.md`  
