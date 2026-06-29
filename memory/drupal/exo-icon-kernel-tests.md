@@ -1,3 +1,9 @@
+---
+name: exo_icon breaks kernel tests; decouple it from testable logic
+description: exo_icon's hook_entity_type_alter assumes node_type exists, so enabling it in a KernelTestBase (directly or transitively) blows up the entity-type rebuild — keep it out of kernel test module lists.
+type: feedback
+---
+
 # exo_icon breaks kernel tests; decouple it from testable logic
 
 `exo_icon` (the eXo icon module) is **not kernel-test friendly**. Enabling it in a `KernelTestBase` (directly in `$modules`, or transitively via a module that depends on `exo:exo_icon`) blows up during the entity-type rebuild:

@@ -1,3 +1,9 @@
+---
+name: Pantheon Secrets (Terminus core) — two systems, and the multiline trap
+description: Pantheon secrets moved to Terminus core (4.2.0+); it's a separate system from the legacy files/private/secrets.json — don't conflate them, and watch the multiline-value trap.
+type: reference
+---
+
 # Pantheon Secrets (Terminus core) — two systems, and the multiline trap
 
 Pantheon's secrets feature moved from the deprecated `terminus-secrets-manager-plugin` (and the deprecated `pantheon_secrets` EA Drupal module) into **Terminus core** (4.2.0+). Commands: `terminus secret:site:set|list|delete <site[.env]> <name> <value>`.

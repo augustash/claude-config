@@ -86,7 +86,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — Custom disallow rules via Composer scaffold append
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — uncacheable form-page (CSRF/Turnstile → max-age 0) lives on anon page_cache; a periodic cron eviction dogpiles it (page_cache doesn't coalesce). Cron renders each variant off-path (loopback curl) + overwrites the canonical-cid entry tagless, never deleting → no cold hole. The app-level answer to the mid-day-purge case the deploy warmer punts on
-- [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via ash_facet_protection, not CF cache rules
+- [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — Tracking param handling via drupal_cache_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — cachetags table has no GC, needs periodic truncation; build a module
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op; use `cleanup: FALSE` + `title_type: 'optional'` and check `link.url` in twig
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit

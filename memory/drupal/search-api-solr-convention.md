@@ -15,7 +15,9 @@ Never invent names like `local_solr` / `my_index`. Committed config uses `global
 
 ## How the local server is wired (settings.local.php, not active config)
 
-The `local` server's **connection is injected at runtime** in `web/sites/default/settings.local.php` — never committed into active config (consistent with [local-config-in-settings-local.md](../preferences/local-config-in-settings-local.md)). The committed `search_api.server.local.yml` is just a base (status off / placeholder connection); settings.local.php turns it on and fills the host per-environment:
+**Division of ownership (important):** the `augustash/ddev-drupal` package owns the *infrastructure + override* — it scaffolds the Solr Docker build, the `solrcollection` command, and appends the settings.local.php override block (its `assets/settings.local.solr.append`). It does **NOT** create the `search_api.server.local` or `search_api.index.global` config entities — it assumes they already exist in the site's committed config and just overrides them. **Creating the committed `local` server + `global` index is the site/developer's job** (ddev-drupal README troubleshooting even says: "Server is not a Solr server → create a new solr cloud server"). So: commit a `search_api.server.local` (status FALSE, connector `solr_cloud_basic_auth`, placeholder host/port — all overridden locally) + the `global` index; ddev-drupal handles the rest.
+
+The `local` server's **connection is injected at runtime** in `web/sites/default/settings.local.php` — never committed into active config (consistent with [local-config-in-settings-local.md](../preferences/local-config-in-settings-local.md)). The committed `search_api.server.local.yml` is the base (status FALSE, placeholder connection); the ddev-drupal-appended override turns it on and fills the host per-environment:
 
 ```php
 $config['search_api.index.global']['server'] = 'local';
