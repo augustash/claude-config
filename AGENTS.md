@@ -19,7 +19,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **DDEV workflow** — `vendor/augustash/claude-config/memory/preferences/ddev-workflow.md`  
   Always use ddev for CLI commands
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
-  opportunistic triggers with a daily-floor pre-check, per-dev settings, self-refining
+  opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
@@ -79,6 +79,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
+- **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
+  enabling exo_icon in a KernelTestBase (directly or via a module that depends on it) fatals with `Undefined array key "node_type"` (its hook_entity_type_alter assumes a full site); keep `exo_icon()` out of testable logic (return `{icon,text}`, render in preprocess), assert structured output; still declare `exo:exo_icon` in `.info.yml`
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
@@ -92,10 +94,14 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotcha: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook
+- **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
+  Terminus-core secrets (`secret:site:set`) store Pantheon-side, read via `pantheon_get_secret()` (scope=web) — a SEPARATE system from the legacy `files/private/secrets.json` file; app reader should prefer the fn, fall back to the file. `--type`/`--scope` only on create. **Multiline values (PEM keys) fail** the arg parser — store base64, decode on read
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
-  augustash/ddev-drupal exports Pantheon site as `project=<site>.<env>` (oldest), `PANTHEON_SITE` (older), or `DDEV_PANTHEON_SITE` (newer) in `.ddev/config.yaml`; grep all three. `Ddev::migratePantheonEnv()` auto-migrates them forward on `-u`
+  augustash ddev recipes export Pantheon site + env in `.ddev/config.yaml` across 3 generations (`project=`; `PANTHEON_SITE`/`WORKING_ENVIRONMENT`; current `DDEV_PANTHEON_SITE`/`DDEV_PANTHEON_ENVIRONMENT`); grep all forms. `DDEV_` prefix dodges Pantheon's server-side `PANTHEON_ENVIRONMENT` collision; `migratePantheonEnv()` migrates on `-u`. Producers = ddev-drupal/wordpress, consumer = ddev-pantheon-db
 - **ddev-setup post-update-cmd wiring** — `vendor/augustash/claude-config/memory/augustash/ddev-setup-post-update-cmd.md`  
   wiring the `Augustash\Ddev::postUpdate` hook via `ddev composer config --json '[...]'` mangles the namespace backslashes into a quoted string, so `composer update` dies with `Class "[\"Augustash\Ddev ... is not autoloadable`. Set it scalar or edit composer.json by hand; preserve any existing Pantheon `DrupalComposerManaged` hook
+- **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
+  NerdGraph NRQL puller + HTML/CSV report generator (templates/newrelic/) for Pantheon perf/worker-saturation exhibits; `FROM Metric` retains ~6mo vs `Transaction` ~2wk, no queue-time metric (use FPM max_children logs); report uses median/worst-day + saturating-day counts; complements raw-log audits
 
 ## WordPress
 

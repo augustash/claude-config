@@ -15,32 +15,21 @@ type: feedback
 
 **Daily floor.** As a safety net, run the pre-check at most once a day even when nothing above triggered it — so the corpus never drifts more than 24 hours without a glance. Under heavy team use this often catches a pile-up; on quiet days the pre-check no-ops in milliseconds. The floor is a minimum, not a ceiling — opportunistic audits run whenever the signals fire, regardless of the floor's clock.
 
+## Last audit
+
+`last_audit: 2026-06-18`
+
+Tracked **here in the module** — the corpus being audited is this package, so its audit date lives with it (committed, travels to every project on `composer update`). A project-local file can't track this: it's per-dev and invisible to everyone else, so the shared corpus would have no shared record. Only the date is kept — no history log. Each pass is a fresh-eyes review, not an incremental diff against a fractured timeline.
+
+After completing an audit, update the date above (it's a claude-config edit, so it commits + pushes like any other).
+
 ## Pre-check
 
 Before doing any review work, check whether anything has actually changed since `last_audit`:
 
-- Shared: `git -C vendor/augustash/claude-config log --since=<last_audit>`
-- Per-project: `git log --since=<last_audit> -- .claude/memory/`
+- `git -C vendor/augustash/claude-config log --since=<last_audit>`
 
-If neither has changed, skip the review, update `last_audit`, and move on. The cost of a daily cadence is the pre-check — keep it cheap.
-
-## Settings
-
-`.claude/claude-config-audit.json` at the project root (per-dev, gitignored so it stays out of the project repo, lives outside `vendor/` so it survives `composer update`). Each augustash project gets its own audit cadence and state. Create on first use:
-
-```json
-{
-  "audit": {
-    "participate_in_review": true,
-    "last_audit": "2026-04-22"
-  }
-}
-```
-
-- `participate_in_review` — if true, present proposed changes for approval before applying. If false, apply cleanup silently and summarize.
-- `last_audit` — updated after each audit completes (lets the next daily pre-check know what's changed since).
-
-On first audit, ask the dev their preference and save it. Don't ask again unless they bring it up.
+If nothing has changed, skip the review, bump `last_audit` to today, and move on. The cost of a daily cadence is the pre-check — keep it cheap. (Per-project `.claude/memory/` is reviewed opportunistically in its own project's context, not tracked centrally.)
 
 ## What to audit
 

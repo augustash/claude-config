@@ -1,20 +1,28 @@
 ---
 name: ddev-drupal-pantheon-site-var
-description: augustash/ddev-drupal exports the Pantheon site machine name as `PANTHEON_SITE` in older versions, `DDEV_PANTHEON_SITE` in newer versions, and `project=<site>.<env>` in the oldest. All live in `.ddev/config.yaml` under `web_environment`. Grep for all three when looking up the identifier.
+description: augustash ddev recipes export the Pantheon site + environment as `web_environment` vars in `.ddev/config.yaml`, renamed across three generations (oldest `project=<site>.<env>`; older `PANTHEON_SITE`/`WORKING_ENVIRONMENT`; current `DDEV_PANTHEON_SITE`/`DDEV_PANTHEON_ENVIRONMENT`). `DDEV_`-prefix is current; grep all forms. `Ddev::migratePantheonEnv()` auto-migrates on `-u`.
 metadata:
   type: reference
 ---
 
-`augustash/ddev-drupal` exports the Pantheon site machine name (the `terminus` site identifier) as a `web_environment` variable in `.ddev/config.yaml`:
+`augustash/ddev-drupal` and `augustash/ddev-wordpress` export the Pantheon site machine name (the `terminus` site identifier) and target environment as `web_environment` variables in `.ddev/config.yaml`. Both vars were renamed across three generations:
 
-- **Oldest releases:** `project=<machine-name>.<env>` — a single var packing both the site and the environment, dot-separated (e.g. `project=ar-telos.live`). The original `pantheon.yaml` provider split it with `IFS='.'` → `[0]`=site, `[1]`=env.
-- **Older releases:** `PANTHEON_SITE=<machine-name>` (env in separate `WORKING_ENVIRONMENT=`)
-- **Newer releases:** `DDEV_PANTHEON_SITE=<machine-name>` (env in separate `DDEV_PANTHEON_ENVIRONMENT=`)
+| Generation | Site | Environment |
+|---|---|---|
+| Oldest | `project=<site>.<env>` (single packed var, e.g. `project=ar-telos.live`; original `pantheon.yaml` split it on `IFS='.'`) | — (packed in `project=`) |
+| Older (pre-prefix) | `PANTHEON_SITE=<site>` | `WORKING_ENVIRONMENT=<env>` |
+| Current | `DDEV_PANTHEON_SITE=<site>` | `DDEV_PANTHEON_ENVIRONMENT=<env>` |
 
-The variable was renamed across recipe refreshes; sites that haven't updated the package still carry the old form. All point at the same value (the Pantheon dashboard slug, used in `terminus drush <name>.<env> -- ...` and `https://dashboard.pantheon.io/sites/<name>`).
+All point at the same value (the Pantheon dashboard slug, used in `terminus drush <site>.<env> -- ...` and `https://dashboard.pantheon.io/sites/<site>`).
 
-`Ddev::migratePantheonEnv()` (in the ddev-drupal / ddev-wordpress packages) auto-migrates all of these forward on a `ddev-setup -- -u` run — including splitting the oldest `project=<site>.<env>` into the two `DDEV_`-prefixed vars — so detection and the pantheon-db add-on hook light up without re-prompting.
+**Why the `DDEV_` prefix (current gen):** these track ddev's *stock* `pantheon.yaml` provider, which renamed its vars because the unprefixed names **collide with Pantheon's own server-side env vars** (Pantheon's platform sets `PANTHEON_ENVIRONMENT` to dev/test/live on its containers). ddev namespaced everything under `DDEV_` to kill the collision; augustash followed (ddev-drupal "Update to use new Pantheon variables", 2026-03). The source of truth for the current names is `Ddev::migratePantheonEnv()` in `src/Ddev.php` — not the stock `pantheon.yaml`, which is the upstream ancestor and sits vestigial/unused in projects (pulls go through the augustash `pantheon-db` provider, not stock `pantheon`).
 
-**How to apply:** When you need the Pantheon site identifier on an augustash project, grep `.ddev/config.yaml` for `project=`, `PANTHEON_SITE`, and `DDEV_PANTHEON_SITE` rather than guessing from the repo or live URL — those rarely match the Pantheon machine name.
+**Looks like a migration gap but isn't:** ddev passed through an intermediate env name `PANTHEON_ENVIRONMENT` (the colliding one) before `DDEV_PANTHEON_ENVIRONMENT`. **augustash never shipped `PANTHEON_ENVIRONMENT`** — its lineage went `WORKING_ENVIRONMENT` → `DDEV_PANTHEON_ENVIRONMENT` directly. So `migratePantheonEnv()`'s rename map (`project=`, `PANTHEON_SITE=`, `WORKING_ENVIRONMENT=` → `DDEV_*`) is **exhaustive for augustash configs** even though it omits `PANTHEON_ENVIRONMENT`. Don't "fix" that omission — no augustash project carries that name.
+
+**Producer / consumer split:**
+- **Producers** — `ddev-drupal` / `ddev-wordpress` carry identical `Ddev::migratePantheonEnv()` logic that writes/migrates the vars into `config.yaml` on a `ddev-setup -- -u` run, so detection and the `pantheon-db` add-on hook light up without re-prompting. (The duplicated migration code in both packages is a drift risk — fix one, remember the other.)
+- **Consumer** — `ddev-pantheon-db` (provider `pantheon-db.yaml` + `commands/host/db`) reads only the current `DDEV_PANTHEON_*` names and assumes the producer already migrated. No standalone back-compat shim, so it depends on being paired with ddev-drupal/ddev-wordpress (always the case in practice).
+
+**How to apply:** When you need the Pantheon site identifier or target env on an augustash project, grep `.ddev/config.yaml` for `project=`, `PANTHEON_SITE`/`WORKING_ENVIRONMENT`, and `DDEV_PANTHEON_SITE`/`DDEV_PANTHEON_ENVIRONMENT` rather than guessing from the repo or live URL — those rarely match the Pantheon machine name. Legacy forms migrate forward on a `-u` run.
 
 Related: [[repositories]]
