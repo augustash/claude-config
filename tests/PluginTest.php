@@ -374,4 +374,101 @@ class PluginTest extends TestCase
         $this->assertFileDoesNotExist($this->tmp . '/.claude/CLAUDE.md');
         $this->assertFileDoesNotExist($this->tmp . '/AGENTS.md');
     }
+
+    public function testAddAuditHookCreatesSettingsWhenMissing(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+
+        $this->assertTrue(Plugin::addAuditHook($file));
+
+        $settings = json_decode((string) file_get_contents($file), true);
+        $command = $settings['hooks']['SessionStart'][0]['hooks'][0]['command'];
+        $this->assertSame(Plugin::AUDIT_HOOK_COMMAND, $command);
+        $this->assertSame('command', $settings['hooks']['SessionStart'][0]['hooks'][0]['type']);
+    }
+
+    public function testAddAuditHookIsIdempotent(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+
+        $this->assertTrue(Plugin::addAuditHook($file));
+        $this->assertFalse(Plugin::addAuditHook($file));
+
+        // Exactly one registration, not stacked duplicates.
+        $settings = json_decode((string) file_get_contents($file), true);
+        $this->assertCount(1, $settings['hooks']['SessionStart']);
+    }
+
+    public function testAddAuditHookPreservesExistingSettingsAndHooks(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+        mkdir($this->tmp . '/.claude');
+        file_put_contents($file, json_encode([
+            'permissions' => ['allow' => ['Bash(ls:*)']],
+            'hooks' => [
+                'PreToolUse' => [['matcher' => 'Bash', 'hooks' => [['type' => 'command', 'command' => 'echo hi']]]],
+                'SessionStart' => [['hooks' => [['type' => 'command', 'command' => 'other-thing']]]],
+            ],
+        ]));
+
+        $this->assertTrue(Plugin::addAuditHook($file));
+
+        $settings = json_decode((string) file_get_contents($file), true);
+        // Unrelated settings untouched.
+        $this->assertSame(['Bash(ls:*)'], $settings['permissions']['allow']);
+        $this->assertSame('echo hi', $settings['hooks']['PreToolUse'][0]['hooks'][0]['command']);
+        // Existing SessionStart group kept; ours appended.
+        $this->assertCount(2, $settings['hooks']['SessionStart']);
+        $this->assertSame('other-thing', $settings['hooks']['SessionStart'][0]['hooks'][0]['command']);
+        $this->assertSame(Plugin::AUDIT_HOOK_COMMAND, $settings['hooks']['SessionStart'][1]['hooks'][0]['command']);
+    }
+
+    public function testAddAuditHookLeavesMalformedJsonUntouched(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+        mkdir($this->tmp . '/.claude');
+        file_put_contents($file, "{ not valid json ]");
+
+        $this->assertFalse(Plugin::addAuditHook($file));
+        $this->assertSame("{ not valid json ]", file_get_contents($file));
+    }
+
+    public function testRemoveAuditHookRoundTripsAddAndDropsEmptyKeys(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+
+        Plugin::addAuditHook($file);
+        $this->assertTrue(Plugin::removeAuditHook($file));
+
+        $settings = json_decode((string) file_get_contents($file), true);
+        // Our hook was the only content → hooks key removed entirely, not left empty.
+        $this->assertArrayNotHasKey('hooks', $settings);
+    }
+
+    public function testRemoveAuditHookPreservesSiblingSessionStartHooks(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+        mkdir($this->tmp . '/.claude');
+        file_put_contents($file, json_encode([
+            'hooks' => [
+                'SessionStart' => [['hooks' => [['type' => 'command', 'command' => 'keep-me']]]],
+            ],
+        ]));
+        Plugin::addAuditHook($file);
+
+        $this->assertTrue(Plugin::removeAuditHook($file));
+
+        $settings = json_decode((string) file_get_contents($file), true);
+        $this->assertCount(1, $settings['hooks']['SessionStart']);
+        $this->assertSame('keep-me', $settings['hooks']['SessionStart'][0]['hooks'][0]['command']);
+    }
+
+    public function testRemoveAuditHookNoOpWhenAbsent(): void
+    {
+        $file = $this->tmp . '/.claude/settings.json';
+        mkdir($this->tmp . '/.claude');
+        file_put_contents($file, json_encode(['permissions' => ['allow' => []]]));
+
+        $this->assertFalse(Plugin::removeAuditHook($file));
+    }
 }

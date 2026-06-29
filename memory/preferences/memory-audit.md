@@ -15,9 +15,11 @@ type: feedback
 
 **Daily floor.** As a safety net, run the pre-check at most once a day even when nothing above triggered it — so the corpus never drifts more than 24 hours without a glance. Under heavy team use this often catches a pile-up; on quiet days the pre-check no-ops in milliseconds. The floor is a minimum, not a ceiling — opportunistic audits run whenever the signals fire, regardless of the floor's clock.
 
+**The floor is enforced by a SessionStart hook** (it drifted 11 days once because nothing enforced it). [`templates/memory-audit-check.py`](../../templates/memory-audit-check.py) reads `last_audit` below and, on session start, surfaces a reminder via SessionStart `additionalContext` when it's more than a day stale — silent when fresh. The hook is auto-wired into every project's `.claude/settings.json` by the package's composer Plugin (`addAuditHook()`, idempotent, points at the packaged script via `$CLAUDE_PROJECT_DIR`), so the whole team gets it on `composer require`/`update` with no per-project setup. When the reminder fires, do the pre-check and either bump the date or run a pass — folded into the session, not a separate ceremony.
+
 ## Last audit
 
-`last_audit: 2026-06-18`
+`last_audit: 2026-06-29`
 
 Tracked **here in the module** — the corpus being audited is this package, so its audit date lives with it (committed, travels to every project on `composer update`). A project-local file can't track this: it's per-dev and invisible to everyone else, so the shared corpus would have no shared record. Only the date is kept — no history log. Each pass is a fresh-eyes review, not an incremental diff against a fractured timeline.
 

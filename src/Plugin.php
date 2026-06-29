@@ -35,6 +35,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public const LEGACY_CLAUDE_IMPORT_LINE = '@~/claude-config/CLAUDE.md';
     public const LEGACY_AGENTS_IMPORT_LINE = 'See `~/claude-config/AGENTS.md` for shared augustash team conventions.';
 
+    /**
+     * SessionStart hook command: reminds to run the shared-memory audit when
+     * memory-audit.md's last_audit date is past its daily floor. The script
+     * ships in this package; the command is project-relative via the
+     * Claude-Code-provided $CLAUDE_PROJECT_DIR so it resolves from any clone.
+     */
+    public const AUDIT_HOOK_COMMAND =
+        'python3 "$CLAUDE_PROJECT_DIR/vendor/augustash/claude-config/templates/memory-audit-check.py"';
+
     private ?IOInterface $io = null;
     private ?Composer $composer = null;
 
@@ -139,6 +148,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (self::ensureGitignore($root, ['/.claude/CLAUDE.md', '/AGENTS.md'])) {
             $this->info('added .gitignore entries for managed files');
         }
+        if (self::addAuditHook($root . '/.claude/settings.json')) {
+            $this->info('wired memory-audit SessionStart hook into .claude/settings.json');
+        }
     }
 
     /**
@@ -179,6 +191,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         if (self::pruneImport($root . '/AGENTS.md', self::AGENTS_IMPORT_LINE)) {
             $this->info('pruned AGENTS.md pointer');
+        }
+        if (self::removeAuditHook($root . '/.claude/settings.json')) {
+            $this->info('removed memory-audit SessionStart hook from .claude/settings.json');
         }
     }
 
@@ -339,6 +354,137 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             . implode("\n", $missing) . "\n";
         file_put_contents($file, $existing . $block);
         return true;
+    }
+
+    /**
+     * Idempotently merge the memory-audit SessionStart hook into a project's
+     * .claude/settings.json. Preserves all existing hooks and settings; adds
+     * the hook only if our exact command isn't already registered. Creates the
+     * file (and .claude/) when missing. Leaves malformed JSON untouched rather
+     * than risk clobbering hand-edited settings.
+     *
+     * @return bool True if the file was changed; false if already present or unwritable.
+     */
+    public static function addAuditHook(string $file): bool
+    {
+        $settings = self::readJsonObject($file);
+        if ($settings === null) {
+            // Missing file → start fresh; malformed → bail (don't clobber).
+            if (is_file($file)) {
+                return false;
+            }
+            $settings = [];
+        }
+
+        $hooks = $settings['hooks'] ?? [];
+        $sessionStart = $hooks['SessionStart'] ?? [];
+
+        // Already wired? Scan every matcher group's hook commands for ours.
+        foreach ($sessionStart as $group) {
+            foreach ($group['hooks'] ?? [] as $hook) {
+                if (($hook['command'] ?? null) === self::AUDIT_HOOK_COMMAND) {
+                    return false;
+                }
+            }
+        }
+
+        $sessionStart[] = [
+            'hooks' => [
+                ['type' => 'command', 'command' => self::AUDIT_HOOK_COMMAND],
+            ],
+        ];
+        $hooks['SessionStart'] = $sessionStart;
+        $settings['hooks'] = $hooks;
+
+        return self::writeJsonObject($file, $settings);
+    }
+
+    /**
+     * Remove the memory-audit SessionStart hook from .claude/settings.json,
+     * dropping any matcher group left empty by the removal and the SessionStart
+     * (or hooks) key if it ends up empty. No-op on missing/malformed files.
+     *
+     * @return bool True if the file was changed; false otherwise.
+     */
+    public static function removeAuditHook(string $file): bool
+    {
+        $settings = self::readJsonObject($file);
+        if ($settings === null || !isset($settings['hooks']['SessionStart'])) {
+            return false;
+        }
+
+        $changed = false;
+        $groups = [];
+        foreach ($settings['hooks']['SessionStart'] as $group) {
+            $kept = [];
+            foreach ($group['hooks'] ?? [] as $hook) {
+                if (($hook['command'] ?? null) === self::AUDIT_HOOK_COMMAND) {
+                    $changed = true;
+                    continue;
+                }
+                $kept[] = $hook;
+            }
+            if ($kept !== []) {
+                $group['hooks'] = $kept;
+                $groups[] = $group;
+            } elseif (($group['hooks'] ?? []) === []) {
+                // Group had no hooks to begin with — leave it as-is.
+                $groups[] = $group;
+            }
+        }
+
+        if (!$changed) {
+            return false;
+        }
+
+        if ($groups === []) {
+            unset($settings['hooks']['SessionStart']);
+            if ($settings['hooks'] === []) {
+                unset($settings['hooks']);
+            }
+        } else {
+            $settings['hooks']['SessionStart'] = $groups;
+        }
+
+        return self::writeJsonObject($file, $settings);
+    }
+
+    /**
+     * Read a JSON object file into an associative array. Returns null if the
+     * file is missing, unreadable, or not a valid JSON object.
+     *
+     * @return array<string, mixed>|null
+     */
+    private static function readJsonObject(string $file): ?array
+    {
+        if (!is_file($file)) {
+            return null;
+        }
+        $contents = file_get_contents($file);
+        if ($contents === false || trim($contents) === '') {
+            return null;
+        }
+        $data = json_decode($contents, true);
+        return is_array($data) ? $data : null;
+    }
+
+    /**
+     * Write an associative array as pretty JSON, creating the parent dir when
+     * needed. Matches Claude Code's 2-space settings.json style.
+     *
+     * @param array<string, mixed> $data
+     */
+    private static function writeJsonObject(string $file, array $data): bool
+    {
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            return false;
+        }
+        return file_put_contents($file, $json . "\n") !== false;
     }
 
     private static function containsLine(string $contents, string $line): bool
