@@ -107,6 +107,17 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($op->getPackage()->getName() !== self::PACKAGE_NAME) {
             return;
         }
+        // A production build (Pantheon's `composer install --no-dev`) uninstalls
+        // this require-dev package, which would fire prune() and rewrite the
+        // committed .claude/settings.json (stripping the audit hook) — Pantheon
+        // then aborts on the unexpected tracked-file change. Unlike the
+        // gitignored CLAUDE.md/AGENTS.md outputs, settings.json can hold the
+        // project's own hooks/permissions, so it isn't gitignored and must not
+        // be touched by a deploy. Only clean up on a genuine dev-mode removal
+        // (`composer remove`), never on a no-dev build.
+        if (!$event->isDevMode()) {
+            return;
+        }
         $this->prune($this->projectRoot());
     }
 
