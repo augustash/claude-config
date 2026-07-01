@@ -19,7 +19,7 @@ type: feedback
 
 ## Last audit
 
-`last_audit: 2026-06-29`
+`last_audit: 2026-07-01`
 
 Tracked **here in the module** — the corpus being audited is this package, so its audit date lives with it (committed, travels to every project on `composer update`). A project-local file can't track this: it's per-dev and invisible to everyone else, so the shared corpus would have no shared record. Only the date is kept — no history log. Each pass is a fresh-eyes review, not an incremental diff against a fractured timeline.
 

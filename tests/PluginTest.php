@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Augustash\ClaudeConfig\Tests;
 
 use Augustash\ClaudeConfig\Plugin;
+use Composer\DependencyResolver\Operation\UninstallOperation;
+use Composer\Installer\PackageEvent;
+use Composer\Package\PackageInterface;
 use PHPUnit\Framework\TestCase;
 
 class PluginTest extends TestCase
@@ -19,6 +22,7 @@ class PluginTest extends TestCase
 
     protected function tearDown(): void
     {
+        unset($_SERVER['COMPOSER']);
         $this->rrmdir($this->tmp);
     }
 
@@ -634,5 +638,61 @@ class PluginTest extends TestCase
 
         $gitignore = file_get_contents($this->tmp . '/.gitignore');
         $this->assertStringNotContainsString('claude-config/', $gitignore);
+    }
+
+    /**
+     * Regression: a production build (Pantheon's `composer install --no-dev`)
+     * uninstalls this require-dev package. The uninstall handler must NOT prune
+     * — pruning rewrites the committed .claude/settings.json (stripping the
+     * audit hook), and Pantheon aborts on the tracked-file change.
+     */
+    public function testPrePackageUninstallSkipsPruneOnNoDevBuild(): void
+    {
+        $file = $this->wireFakeProject();
+        $before = file_get_contents($file);
+
+        (new Plugin())->onPrePackageUninstall($this->uninstallEvent(Plugin::PACKAGE_NAME, false));
+
+        $this->assertSame($before, file_get_contents($file), 'no-dev uninstall must leave settings.json byte-for-byte');
+    }
+
+    /**
+     * A genuine dev-mode removal (`composer remove augustash/claude-config`)
+     * still cleans up the wired hook.
+     */
+    public function testPrePackageUninstallPrunesOnDevRemoval(): void
+    {
+        $file = $this->wireFakeProject();
+
+        (new Plugin())->onPrePackageUninstall($this->uninstallEvent(Plugin::PACKAGE_NAME, true));
+
+        $this->assertStringNotContainsString(Plugin::AUDIT_HOOK_COMMAND, (string) file_get_contents($file));
+    }
+
+    /**
+     * Build a fake project root under tmp with a composer.json and a wired
+     * settings.json, and point the plugin's projectRoot() resolution at it via
+     * the COMPOSER env override Composer's Factory honors.
+     *
+     * @return string Path to the wired .claude/settings.json.
+     */
+    private function wireFakeProject(): string
+    {
+        file_put_contents($this->tmp . '/composer.json', '{}');
+        $_SERVER['COMPOSER'] = $this->tmp . '/composer.json';
+        $file = $this->tmp . '/.claude/settings.json';
+        Plugin::addAuditHook($file);
+        return $file;
+    }
+
+    private function uninstallEvent(string $packageName, bool $devMode): PackageEvent
+    {
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn($packageName);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('getOperation')->willReturn(new UninstallOperation($package));
+        $event->method('isDevMode')->willReturn($devMode);
+        return $event;
     }
 }
