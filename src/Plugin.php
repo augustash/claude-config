@@ -44,6 +44,39 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public const AUDIT_HOOK_COMMAND =
         'python3 "$CLAUDE_PROJECT_DIR/vendor/augustash/claude-config/templates/memory-audit-check.py"';
 
+    /**
+     * composer.json require names that mark a project as WordPress. Any
+     * wpackagist-* dependency counts too (see isWordPress()).
+     */
+    public const WORDPRESS_CORE_PACKAGES = [
+        'johnpbloch/wordpress',
+        'johnpbloch/wordpress-core',
+        'roots/wordpress',
+        'roots/wordpress-no-content',
+        'roots/bedrock',
+    ];
+
+    /**
+     * Comment block preceding the plugin-managed .gitignore entries for the
+     * files it writes (CLAUDE.md / AGENTS.md).
+     */
+    private const MANAGED_FILES_GITIGNORE_COMMENT = [
+        '# Managed by augustash/claude-config; safe to remove if you want to commit',
+        '# project-specific content in these files instead of .claude/memory/.',
+    ];
+
+    /**
+     * Comment block preceding the WordPress-only .gitignore entry that keeps
+     * this package's own vendor copy out of a committed vendor/ tree.
+     */
+    private const SELF_GITIGNORE_COMMENT = [
+        '# Managed by augustash/claude-config: dev-only tooling installed via',
+        '# prefer-source, so its vendor copy carries a nested .git. On WordPress',
+        '# projects that commit vendor/, that embedded repo becomes a broken',
+        '# gitlink and fails Pantheon builds — ignore it and let composer install',
+        '# it locally instead.',
+    ];
+
     private ?IOInterface $io = null;
     private ?Composer $composer = null;
 
@@ -80,8 +113,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($package->getName() !== self::PACKAGE_NAME) {
             return;
         }
-        $this->wire($this->projectRoot());
-        $this->checkInstallSource($this->packageInstallPath($package));
+        $installPath = $this->packageInstallPath($package);
+        $this->wire($this->projectRoot(), $installPath);
+        $this->checkInstallSource($installPath);
     }
 
     public function onPostPackageUpdate(PackageEvent $event): void
@@ -94,8 +128,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($package->getName() !== self::PACKAGE_NAME) {
             return;
         }
-        $this->wire($this->projectRoot());
-        $this->checkInstallSource($this->packageInstallPath($package));
+        $installPath = $this->packageInstallPath($package);
+        $this->wire($this->projectRoot(), $installPath);
+        $this->checkInstallSource($installPath);
     }
 
     public function onPrePackageUninstall(PackageEvent $event): void
@@ -114,7 +149,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * Add the package's import lines to a project root and clear any legacy
      * references left behind by the old global-clone installer.
      */
-    public function wire(string $root): void
+    public function wire(string $root, string $installPath = ''): void
     {
         $claude = $root . '/.claude/CLAUDE.md';
 
@@ -147,6 +182,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         if (self::ensureGitignore($root, ['/.claude/CLAUDE.md', '/AGENTS.md'])) {
             $this->info('added .gitignore entries for managed files');
+        }
+        // WordPress projects commit vendor/, so the prefer-source nested .git in
+        // this package's own vendor copy would become a broken gitlink and break
+        // Pantheon builds. Ignore the whole dir there; composer rebuilds it
+        // locally (dev tooling, not needed in the production artifact).
+        if ($installPath !== '' && self::isWordPress($root)) {
+            $line = self::selfIgnoreLine($root, $installPath);
+            if (self::ensureGitignore($root, [$line], self::SELF_GITIGNORE_COMMENT)) {
+                $this->info(
+                    'added .gitignore entry for the vendor copy (' . $line . ') — '
+                    . 'WordPress project keeps the nested repo out of committed vendor/'
+                );
+            }
         }
         if (self::addAuditHook($root . '/.claude/settings.json')) {
             $this->info('wired memory-audit SessionStart hook into .claude/settings.json');
@@ -326,10 +374,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * of failure since they are entirely plugin output.
      *
      * @param string[] $lines
+     * @param string[]|null $comment Comment lines to head the managed block; defaults
+     *   to the managed-files explanation.
      * @return bool True if the file was changed; false if all lines were already present.
      */
-    public static function ensureGitignore(string $root, array $lines): bool
+    public static function ensureGitignore(string $root, array $lines, ?array $comment = null): bool
     {
+        $comment = $comment ?? self::MANAGED_FILES_GITIGNORE_COMMENT;
         $file = $root . '/.gitignore';
         $existing = is_file($file) ? (string) file_get_contents($file) : '';
         $missing = [];
@@ -349,11 +400,61 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $prefix .= "\n";
         }
         $block = $prefix
-            . "# Managed by augustash/claude-config; safe to remove if you want to commit\n"
-            . "# project-specific content in these files instead of .claude/memory/.\n"
+            . implode("\n", $comment) . "\n"
             . implode("\n", $missing) . "\n";
         file_put_contents($file, $existing . $block);
         return true;
+    }
+
+    /**
+     * True when the project root looks like a WordPress install: it requires a
+     * known WordPress core package (or any wpackagist-* dependency), or a
+     * wp-load.php / wp-settings.php sits at the root or a common web subdir.
+     */
+    public static function isWordPress(string $root): bool
+    {
+        $composer = self::readJsonObject($root . '/composer.json');
+        if ($composer !== null) {
+            $requires = array_merge(
+                array_keys((array) ($composer['require'] ?? [])),
+                array_keys((array) ($composer['require-dev'] ?? []))
+            );
+            foreach ($requires as $name) {
+                $name = strtolower((string) $name);
+                if (in_array($name, self::WORDPRESS_CORE_PACKAGES, true)) {
+                    return true;
+                }
+                if (strncmp($name, 'wpackagist-', 11) === 0) {
+                    return true;
+                }
+            }
+        }
+        foreach (['', 'web/', 'public/', 'wp/', 'public_html/'] as $sub) {
+            if (is_file($root . '/' . $sub . 'wp-load.php')
+                || is_file($root . '/' . $sub . 'wp-settings.php')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The .gitignore entry for this package's own vendor copy: the install path
+     * made relative to the project root, anchored (leading slash) and marked as
+     * a directory (trailing slash). Falls back to the conventional
+     * vendor/augustash/claude-config when the install path isn't under the root,
+     * so an absolute path is never written into .gitignore.
+     */
+    public static function selfIgnoreLine(string $root, string $installPath): string
+    {
+        $prefix = rtrim($root, '/') . '/';
+        $installPath = rtrim($installPath, '/');
+        if ($installPath !== '' && strncmp($installPath, $prefix, strlen($prefix)) === 0) {
+            $rel = substr($installPath, strlen($prefix));
+        } else {
+            $rel = 'vendor/' . self::PACKAGE_NAME;
+        }
+        return '/' . trim($rel, '/') . '/';
     }
 
     /**

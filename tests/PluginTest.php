@@ -471,4 +471,168 @@ class PluginTest extends TestCase
 
         $this->assertFalse(Plugin::removeAuditHook($file));
     }
+
+    public function testEnsureGitignoreCreatesManagedBlock(): void
+    {
+        $this->assertTrue(Plugin::ensureGitignore($this->tmp, ['/.claude/CLAUDE.md', '/AGENTS.md']));
+        $this->assertSame(
+            "# Managed by augustash/claude-config; safe to remove if you want to commit\n"
+            . "# project-specific content in these files instead of .claude/memory/.\n"
+            . "/.claude/CLAUDE.md\n/AGENTS.md\n",
+            file_get_contents($this->tmp . '/.gitignore')
+        );
+    }
+
+    public function testEnsureGitignoreAppendsBlockWithBlankSeparator(): void
+    {
+        // An existing .gitignore keeps its content; our block is appended after
+        // a single blank-line separator. This is the second-call path (e.g. the
+        // WordPress self-ignore following the managed-files block).
+        file_put_contents($this->tmp . '/.gitignore', "/node_modules\n");
+
+        $this->assertTrue(Plugin::ensureGitignore($this->tmp, ['/vendor/foo/'], ['# custom']));
+        $this->assertSame(
+            "/node_modules\n\n# custom\n/vendor/foo/\n",
+            file_get_contents($this->tmp . '/.gitignore')
+        );
+    }
+
+    public function testEnsureGitignoreNoOpWhenAllLinesPresent(): void
+    {
+        Plugin::ensureGitignore($this->tmp, ['/AGENTS.md']);
+        $before = file_get_contents($this->tmp . '/.gitignore');
+
+        $this->assertFalse(Plugin::ensureGitignore($this->tmp, ['/AGENTS.md']));
+        $this->assertSame($before, file_get_contents($this->tmp . '/.gitignore'));
+    }
+
+    public function testIsWordPressDetectsCorePackageInRequire(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['php' => '>=8.1', 'johnpbloch/wordpress' => '^6.4']])
+        );
+        $this->assertTrue(Plugin::isWordPress($this->tmp));
+    }
+
+    public function testIsWordPressDetectsWpackagistDependency(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['wpackagist-plugin/woocommerce' => '*']])
+        );
+        $this->assertTrue(Plugin::isWordPress($this->tmp));
+    }
+
+    public function testIsWordPressDetectsWpLoadInWebRoot(): void
+    {
+        // Core managed outside composer (no signal in composer.json), but the
+        // WordPress bootstrap sits in a conventional web subdir.
+        mkdir($this->tmp . '/web');
+        file_put_contents($this->tmp . '/web/wp-load.php', "<?php\n");
+        $this->assertTrue(Plugin::isWordPress($this->tmp));
+    }
+
+    public function testIsWordPressFalseForDrupalProject(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['drupal/core-recommended' => '^10', 'drush/drush' => '^12']])
+        );
+        $this->assertFalse(Plugin::isWordPress($this->tmp));
+    }
+
+    public function testIsWordPressFalseForEmptyProject(): void
+    {
+        $this->assertFalse(Plugin::isWordPress($this->tmp));
+    }
+
+    public function testSelfIgnoreLineIsRootRelativeDirectory(): void
+    {
+        $this->assertSame(
+            '/vendor/augustash/claude-config/',
+            Plugin::selfIgnoreLine('/srv/site', '/srv/site/vendor/augustash/claude-config')
+        );
+    }
+
+    public function testSelfIgnoreLineHonorsCustomVendorLayout(): void
+    {
+        // Bedrock-style: the package lives under a non-default install path. The
+        // ignore entry must track the real location, not a hardcoded vendor/.
+        $this->assertSame(
+            '/web/app/mu-plugins/claude-config/',
+            Plugin::selfIgnoreLine('/srv/site', '/srv/site/web/app/mu-plugins/claude-config')
+        );
+    }
+
+    public function testSelfIgnoreLineFallsBackWhenInstallPathOutsideRoot(): void
+    {
+        // Never emit an absolute path into .gitignore; fall back to convention.
+        $this->assertSame(
+            '/vendor/augustash/claude-config/',
+            Plugin::selfIgnoreLine('/srv/site', '/opt/elsewhere/claude-config')
+        );
+    }
+
+    public function testWireIgnoresVendorCopyOnWordPressProject(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['johnpbloch/wordpress' => '^6.4']])
+        );
+        $installPath = $this->tmp . '/vendor/augustash/claude-config';
+
+        (new Plugin())->wire($this->tmp, $installPath);
+
+        $gitignore = file_get_contents($this->tmp . '/.gitignore');
+        $this->assertStringContainsString('/vendor/augustash/claude-config/', $gitignore);
+        // The managed-files block is still written alongside the self-ignore.
+        $this->assertStringContainsString('/.claude/CLAUDE.md', $gitignore);
+    }
+
+    public function testWireDoesNotIgnoreVendorCopyOnNonWordPressProject(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['drupal/core-recommended' => '^10']])
+        );
+        $installPath = $this->tmp . '/vendor/augustash/claude-config';
+
+        (new Plugin())->wire($this->tmp, $installPath);
+
+        $gitignore = file_get_contents($this->tmp . '/.gitignore');
+        $this->assertStringNotContainsString('/vendor/augustash/claude-config/', $gitignore);
+    }
+
+    public function testWireVendorSelfIgnoreIsIdempotent(): void
+    {
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['johnpbloch/wordpress' => '^6.4']])
+        );
+        $installPath = $this->tmp . '/vendor/augustash/claude-config';
+        $plugin = new Plugin();
+
+        $plugin->wire($this->tmp, $installPath);
+        $first = file_get_contents($this->tmp . '/.gitignore');
+        $plugin->wire($this->tmp, $installPath);
+        $second = file_get_contents($this->tmp . '/.gitignore');
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testWireWithoutInstallPathSkipsVendorSelfIgnore(): void
+    {
+        // The no-arg wire() path (tests, or any caller lacking the install path)
+        // must not attempt a self-ignore even on a WordPress project.
+        file_put_contents(
+            $this->tmp . '/composer.json',
+            json_encode(['require' => ['johnpbloch/wordpress' => '^6.4']])
+        );
+
+        (new Plugin())->wire($this->tmp);
+
+        $gitignore = file_get_contents($this->tmp . '/.gitignore');
+        $this->assertStringNotContainsString('claude-config/', $gitignore);
+    }
 }
