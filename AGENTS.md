@@ -109,3 +109,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
   ash-woocommerce-cookies plugin for Varnish cache-busting fix
+- **RSSSL Pro CSP enforce breaks analytics** — `vendor/augustash/claude-config/memory/wordpress/rsssl-csp-enforce-analytics.md`  
+  Really Simple SSL Pro CSP flipped report-only→enforce silently blackholes GA4/GTM/ads beacons; analytics cliffs overnight while the site looks fine. Not in code (DB `rsssl_options['csp_status']`). `script-src` lets the tag load; `connect-src` gates the beacon — a stricter connect-src drops hits with no console error. Diagnose via `wp_rsssl_csp_log` vs enforced `connect-src` + headless netlog `/g/collect`. Fix = back to Learning mode, complete the Google-host allowlist, then re-enforce
