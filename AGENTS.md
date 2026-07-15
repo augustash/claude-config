@@ -47,8 +47,16 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Drupal caching** — `vendor/augustash/claude-config/memory/drupal/caching.md`  
   Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
+- **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
+  D11.4 adopted Symfony Runtime; `symfony/runtime` allow-plugin must be `true` (not `false`) or `vendor/autoload_runtime.php` never generates and every web request WSODs while drush still bootstraps and hides it. Watch pre-11.4→11.4 bumps carrying a `false` suppression
+- **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
+  pulling an older-Drupal prod DB into newer local code and rebuilding (`cr`/`cim`) before `updatedb` dies on "Unknown column 'alias' in router" (D11.1's `system_update_11201` adds `{router}.alias`, absent in the pulled schema); correct order is `drush deploy` (updatedb→cim→cr). augustash ddev-pantheon-db ≥1.0.5 does this; older = manual `updb` after pull
 - **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
   BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
+- **GTranslate integration — prefer hosted subdomain** — `vendor/augustash/claude-config/memory/drupal/gtranslate-integration.md`  
+  Default to hosted subdomain (CNAME each language to `{server}.tdn.gtranslate.net`); zero app load. The self-hosted subdirectory PHP addon is a synchronous per-request TDN proxy with no curl timeout — it saturates PHP-FPM (Pantheon = 6 workers) and serves empty cached 200s. Only argument for subdirectory is SEO. No DNS control → reuse mymspconnect's off-request store rebuild, never a kernel.request fetch. Reference build: reell.com.
+- **Cache bin that survives drush cr** — `vendor/augustash/claude-config/memory/drupal/persistent-cache-bin.md`  
+  Keep a warm store bin from being wiped by drupal_flush_all_caches: untagged bin (omit `cache.bin`; only when cron/dedicated-tag owns freshness — msp flights board) vs decorator backend that no-ops deleteAll/invalidateAll but stays tagged so real content-tag invalidation still works (mymspconnect gtranslate store). Pick by who owns freshness.
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard names: index `global`, servers `pantheon_search` (prod) + `local` (DDEV); local server connection injected by settings.local.php against the standardized DDEV Solr Docker build (Solr 8.11 Cloud, `solr_cloud_basic_auth`, `ddev solrcollection` to upload configset). Don't hand-roll off-convention names.
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
@@ -81,6 +89,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
   enabling exo_icon in a KernelTestBase (directly or via a module that depends on it) fatals with `Undefined array key "node_type"` (its hook_entity_type_alter assumes a full site); keep `exo_icon()` out of testable logic (return `{icon,text}`, render in preprocess), assert structured output; still declare `exo:exo_icon` in `.info.yml`
+- **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
+  D11.4 added an 11th arg (`ImageDerivativeUtilities`) to core `ImageFormatter::__construct`; exo formatters subclassing it (`ExoImagineFormatter`, `ExoImageFormatter`) ArgumentCountError on image render (+ untyped `$currentUser`/`$imageStyleStorage` redeclarations fatal on load). Fix = drop the `__construct` override, inject exo services via `create()`/`parent::create()`
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
