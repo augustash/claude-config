@@ -49,6 +49,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
 - **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
   D11.4 adopted Symfony Runtime; `symfony/runtime` allow-plugin must be `true` (not `false`) or `vendor/autoload_runtime.php` never generates and every web request WSODs while drush still bootstraps and hides it. Watch pre-11.4→11.4 bumps carrying a `false` suppression
+- **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
+  pulling an older-Drupal prod DB into newer local code and rebuilding (`cr`/`cim`) before `updatedb` dies on "Unknown column 'alias' in router" (D11.1's `system_update_11201` adds `{router}.alias`, absent in the pulled schema); correct order is `drush deploy` (updatedb→cim→cr). augustash ddev-pantheon-db ≥1.0.5 does this; older = manual `updb` after pull
 - **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
   BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
 - **GTranslate integration — prefer hosted subdomain** — `vendor/augustash/claude-config/memory/drupal/gtranslate-integration.md`  
@@ -117,3 +119,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
   ash-woocommerce-cookies plugin for Varnish cache-busting fix
+- **WP security-header CSP silently breaks analytics** — `vendor/augustash/claude-config/memory/wordpress/rsssl-csp-enforce-analytics.md`  
+  an enforced CSP whose allowlist omits the GA4 beacon host (often `analytics.google.com`, NOT `google-analytics.com`) cliffs analytics + Google Ads overnight while the site looks fine; `script-src` loads the tag, `connect-src` gates the beacon. Two header plugins enforce the INTERSECTION — never run both (RSSSL Pro vs Headers Security/HSTS; the legacy `X-Content-Security-Policy` is Headers Security's fingerprint). Diagnose via `wp_rsssl_csp_log` + headless netlog `/g/collect`, not the repo. Right-size: **Tier 1** (`default-src 'self'` + scheme-permissive `https:` fetch directives, in reviewed code — `templates/wordpress/csp-tier1.php`) beats a strict host-allowlist on a brochure site. Gitignore `wp-content/rsssl-managed-htaccess.lock`
