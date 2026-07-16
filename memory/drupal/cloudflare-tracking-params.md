@@ -12,4 +12,4 @@ Google Merchant Center/Shopping ads append `srsltid`, Facebook appends `fbclid`,
 
 **Must strip internally (not redirect):** `gclid`, `msclkid`, `_kx`, `gbraid`, `gad_source`, `gad_campaignid` — analytics JavaScript (GA, Bing UET, Klaviyo) reads these from `window.location` for conversion tracking. Redirecting would remove them before JS can capture them.
 
-**When to apply:** All augustash sites running paid ads. Handled by `drupal_cache_protection` module — no separate CDN rule needed.
+**When to apply:** All augustash sites running paid ads. Handled by the `drupal_cache_protection` module ([[drupal_cache_protection]] — full config defaults, submodules, Cloudflare-tier reasoning) — no separate CDN rule needed.
