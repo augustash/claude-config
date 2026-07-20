@@ -67,6 +67,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
 - **Cron off-path page_cache re-prime** — `vendor/augustash/claude-config/memory/drupal/page-cache-cron-reprime.md`  
   uncacheable form-page (CSRF/Turnstile → max-age 0) lives on anon page_cache; a periodic cron eviction dogpiles it (page_cache doesn't coalesce). Cron renders each variant off-path (loopback curl) + overwrites the canonical-cid entry tagless, never deleting → no cold hole. The app-level answer to the mid-day-purge case the deploy warmer punts on
+- **Unflushable cache bin** — `vendor/augustash/claude-config/memory/drupal/unflushable-cache-bin.md`  
+  a bin defined WITHOUT the `cache.bin` tag is absent from Cache::getBins(), so `drush cr`/drupal_flush_all_caches() can't evict it, yet it still inherits the Redis backend via the factory. Keeps a load-bearing warm artifact (e.g. an off-path-primed page) alive across clears and deploys; serve it with a StackMiddleware ahead of page_cache. No update hook needed (lazy table / Redis); one-time hook_update_N to copy+cleanup an existing cache.page entry across
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
   Tracking param handling via ash_facet_protection, not CF cache rules
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
