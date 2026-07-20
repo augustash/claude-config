@@ -47,8 +47,18 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Drupal caching** — `vendor/augustash/claude-config/memory/drupal/caching.md`  
   Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
+- **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
+  D11.4 adopted Symfony Runtime; `symfony/runtime` allow-plugin must be `true` (not `false`) or `vendor/autoload_runtime.php` never generates and every web request WSODs while drush still bootstraps and hides it. Watch pre-11.4→11.4 bumps carrying a `false` suppression
+- **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
+  pulling an older-Drupal prod DB into newer local code and rebuilding (`cr`/`cim`) before `updatedb` dies on "Unknown column 'alias' in router" (D11.1's `system_update_11201` adds `{router}.alias`, absent in the pulled schema); correct order is `drush deploy` (updatedb→cim→cr). augustash ddev-pantheon-db ≥1.0.5 does this; older = manual `updb` after pull
 - **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
   BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
+- **GTranslate integration — prefer hosted subdomain** — `vendor/augustash/claude-config/memory/drupal/gtranslate-integration.md`  
+  Default to hosted subdomain (CNAME each language to `{server}.tdn.gtranslate.net`); zero app load. The self-hosted subdirectory PHP addon is a synchronous per-request TDN proxy with no curl timeout — it saturates PHP-FPM (Pantheon = 6 workers) and serves empty cached 200s. Only argument for subdirectory is SEO. No DNS control → reuse mymspconnect's off-request store rebuild, never a kernel.request fetch. Reference build: reell.com.
+- **Cache bin that survives drush cr** — `vendor/augustash/claude-config/memory/drupal/persistent-cache-bin.md`  
+  Keep a warm store bin from being wiped by drupal_flush_all_caches: untagged bin (omit `cache.bin`; only when cron/dedicated-tag owns freshness — msp flights board) vs decorator backend that no-ops deleteAll/invalidateAll but stays tagged so real content-tag invalidation still works (mymspconnect gtranslate store). Pick by who owns freshness.
+- **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
+  standard names: index `global`, servers `pantheon_search` (prod) + `local` (DDEV); local server connection injected by settings.local.php against the standardized DDEV Solr Docker build (Solr 8.11 Cloud, `solr_cloud_basic_auth`, `ddev solrcollection` to upload configset). Don't hand-roll off-convention names.
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   Setup and running PHPUnit kernel/unit tests in DDEV
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
@@ -67,10 +77,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   drop-in webphp deploy:after hook that curls heaviest pages post-deploy to beat the cold-cache dogpile; swap the URL list per site
 - **Cron off-path page_cache re-prime** — `vendor/augustash/claude-config/memory/drupal/page-cache-cron-reprime.md`  
   uncacheable form-page (CSRF/Turnstile → max-age 0) lives on anon page_cache; a periodic cron eviction dogpiles it (page_cache doesn't coalesce). Cron renders each variant off-path (loopback curl) + overwrites the canonical-cid entry tagless, never deleting → no cold hole. The app-level answer to the mid-day-purge case the deploy warmer punts on
-- **Unflushable cache bin** — `vendor/augustash/claude-config/memory/drupal/unflushable-cache-bin.md`  
-  a bin defined WITHOUT the `cache.bin` tag is absent from Cache::getBins(), so `drush cr`/drupal_flush_all_caches() can't evict it, yet it still inherits the Redis backend via the factory. Keeps a load-bearing warm artifact (e.g. an off-path-primed page) alive across clears and deploys; serve it with a StackMiddleware ahead of page_cache. No update hook needed (lazy table / Redis); one-time hook_update_N to copy+cleanup an existing cache.page entry across
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
-  Tracking param handling via ash_facet_protection, not CF cache rules
+  Tracking param handling via drupal_cache_protection, not CF cache rules
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   cachetags table has no GC, needs periodic truncation; build a module
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
@@ -79,6 +87,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Try built-in `modifier_globals.status` flag first (instance-level, auto class); custom YAML modifier + PascalCase handler only when built-in doesn't fit
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   Slider component overflows on mobile only? Flex `min-width: auto` + Swiper's intrinsic-width markup; fix with `min-width: 0` on `.exo-component`
+- **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
+  enabling exo_icon in a KernelTestBase (directly or via a module that depends on it) fatals with `Undefined array key "node_type"` (its hook_entity_type_alter assumes a full site); keep `exo_icon()` out of testable logic (return `{icon,text}`, render in preprocess), assert structured output; still declare `exo:exo_icon` in `.info.yml`
+- **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
+  D11.4 added an 11th arg (`ImageDerivativeUtilities`) to core `ImageFormatter::__construct`; exo formatters subclassing it (`ExoImagineFormatter`, `ExoImageFormatter`) ArgumentCountError on image render (+ untyped `$currentUser`/`$imageStyleStorage` redeclarations fatal on load). Fix = drop the `__construct` override, inject exo services via `create()`/`parent::create()`
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
@@ -91,9 +103,13 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
-  Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotcha: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook
+  Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotchas: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook; and a require-dev plugin's uninstall/prune hook must not mutate a committed, non-gitignored file (a `--no-dev` deploy uninstalls it and Pantheon aborts on the tracked-file change) — gitignore pure output, or gate on `isDevMode()`
+- **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
+  Terminus-core secrets (`secret:site:set`) store Pantheon-side, read via `pantheon_get_secret()` (scope=web) — a SEPARATE system from the legacy `files/private/secrets.json` file; app reader should prefer the fn, fall back to the file. `--type`/`--scope` only on create. **Multiline values (PEM keys) fail** the arg parser — store base64, decode on read
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   augustash ddev recipes export Pantheon site + env in `.ddev/config.yaml` across 3 generations (`project=`; `PANTHEON_SITE`/`WORKING_ENVIRONMENT`; current `DDEV_PANTHEON_SITE`/`DDEV_PANTHEON_ENVIRONMENT`); grep all forms. `DDEV_` prefix dodges Pantheon's server-side `PANTHEON_ENVIRONMENT` collision; `migratePantheonEnv()` migrates on `-u`. Producers = ddev-drupal/wordpress, consumer = ddev-pantheon-db
+- **ddev-wordpress WP Engine gate** — `vendor/augustash/claude-config/memory/augustash/ddev-wordpress-wpengine-gate.md`  
+  ddev-wordpress auto-fixes WPE sites on every `composer update`: gates wp-config.php (wrap `DB_*` behind `IS_DDEV_PROJECT`, insert wp-config-ddev.php include before `wp-settings.php`) so ddev creds win, and un-ignores `.ddev/` in the WPE `/*` deny-all .gitignore. Detects via `WPE_APIKEY`/`WPE_CLUSTER_ID`/`PWP_NAME`. Idempotent, production-inert. Git gotcha: need both `!/.ddev/` + `!/.ddev/**`, and `check-ignore -q` misreads negations. Shipped 1.0.31
 - **ddev-setup post-update-cmd wiring** — `vendor/augustash/claude-config/memory/augustash/ddev-setup-post-update-cmd.md`  
   wiring the `Augustash\Ddev::postUpdate` hook via `ddev composer config --json '[...]'` mangles the namespace backslashes into a quoted string, so `composer update` dies with `Class "[\"Augustash\Ddev ... is not autoloadable`. Set it scalar or edit composer.json by hand; preserve any existing Pantheon `DrupalComposerManaged` hook
 - **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
@@ -103,3 +119,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
   ash-woocommerce-cookies plugin for Varnish cache-busting fix
+- **WP security-header CSP silently breaks analytics** — `vendor/augustash/claude-config/memory/wordpress/rsssl-csp-enforce-analytics.md`  
+  an enforced CSP whose allowlist omits the GA4 beacon host (often `analytics.google.com`, NOT `google-analytics.com`) cliffs analytics + Google Ads overnight while the site looks fine; `script-src` loads the tag, `connect-src` gates the beacon. Two header plugins enforce the INTERSECTION — never run both (RSSSL Pro vs Headers Security/HSTS; the legacy `X-Content-Security-Policy` is Headers Security's fingerprint). Diagnose via `wp_rsssl_csp_log` + headless netlog `/g/collect`, not the repo. Right-size: **Tier 1** (`default-src 'self'` + scheme-permissive `https:` fetch directives, in reviewed code — `templates/wordpress/csp-tier1.php`) beats a strict host-allowlist on a brochure site. Gitignore `wp-content/rsssl-managed-htaccess.lock`
