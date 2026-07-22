@@ -102,6 +102,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs (augustash, jacerider) to check before building from scratch
+- **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
+  Neo/jacerider modules ship Claude skills in `<module>/install/skills/`, but `composer update` does NOT update the project's live `.claude/skills/` copies (no auto mechanism). Re-`cp -R` each updated skill-shipping module's skills into `.claude/skills/` and commit with the bump. Lists which neo modules ship skills
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
