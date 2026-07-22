@@ -20,6 +20,8 @@ Default config (`drupal_cache_protection.settings.yml`):
 
 **Redirect vs strip:** `srsltid`/`fbclid` are not used by on-site JS, safe to redirect. `gclid`/`msclkid`/`_kx`/`hsa_*`/`__hs*` must be stripped internally because client-side analytics/ads JS reads them from `window.location` for conversion tracking.
 
+Why a CDN cache-key exclusion can't replace this — each click's param value is unique, so there's never a cached entry to match against: [[cloudflare-tracking-params]].
+
 ## Cloudflare tier reality
 
 Many augustash clients run Cloudflare in front of Pantheon, but on **free or Pro tier — not Enterprise**. CF's edge param-stripping (Transform Rules → Rewrite URL → strip query params) is **Enterprise only**. So even with CF in front, origin-side strip is the right tool for the typical client setup.

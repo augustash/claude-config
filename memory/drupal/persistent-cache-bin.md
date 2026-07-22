@@ -20,8 +20,21 @@ Not being in `Cache::getBins()`, it's invisible to every blanket clear. Simplest
   bin's freshness is *yours*: cron overwrites the entry wholesale each cycle, or
   you invalidate a **dedicated, hijacked tag** you control — not the content's
   real tags.
+- **Serving it:** `page_cache` only reads `cache.page`, so an untagged bin needs
+  its own reader — a `StackMiddleware` tagged `http_middleware` at **priority
+  >200** (after page_cache) and **<300** (after reverse_proxy, so scheme/host are
+  resolved), gated by `@page_cache_request_policy` exactly as page_cache is. Derive
+  the cid in **one shared service** used by both the cron writer and the middleware
+  reader, or they silently drift and the reader looks under a key never written.
+- **Migrating an entry off a normal bin** (e.g. `cache.page` → survivor) in a
+  one-time `hook_update_N`: same cid scheme, so for each cid copy the bytes across
+  **and delete the orphan** (else page_cache serves it stale on a survivor-miss).
+  No table/update-hook to provision the bin itself — `DatabaseBackend` lazily
+  creates `cache_<bin>` on first access (a Redis bin has none); the service def is
+  the whole install.
 - Reference: `msp` → `web/modules/custom/msp_service_flight` (`cache.flights`,
-  the flights-board survivor bin; cron is sole owner).
+  the flights-board survivor bin; cron is sole owner; `FlightsBoardCacheMiddleware`
+  + `hook_update_8002` migration).
 
 **2. Decorator backend — when the bin RIDES real content cache tags.**
 Keep the bin **tagged `cache.bin`** (so all tag machinery works normally and

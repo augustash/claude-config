@@ -4,6 +4,10 @@ description: When and how to audit shared (augustash/claude-config) and per-proj
 type: feedback
 ---
 
+## Ownership
+
+Memory stewardship — the corpus, these notes, and the audit itself — is Claude's to run **autonomously**. The dev delegated it deliberately: a single owner is what keeps the notes *standardized*, instead of each dev shaping the corpus their own way. So run the audit and act on what it finds (fix, then commit + push per [commit-handoff](commit-handoff.md)) without routing findings back for per-dev sign-off. Autonomy means not gating on the dev — the steward bar (qualification test, conciseness, watch-and-suggest posture) still fully applies.
+
 ## When
 
 **Opportunistic — audit when the work surfaces a reason.** The shared package is write-gated through Claude (every save flows through `vendor/augustash/claude-config/`), so most of the maintenance work folds naturally into save-time stewardship (see [mission.md → Steward role at write time](mission.md)). A formal audit pass is for moments when more than save-time normalization is warranted:

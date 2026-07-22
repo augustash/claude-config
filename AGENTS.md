@@ -57,6 +57,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Default to hosted subdomain (CNAME each language to `{server}.tdn.gtranslate.net`); zero app load. The self-hosted subdirectory PHP addon is a synchronous per-request TDN proxy with no curl timeout — it saturates PHP-FPM (Pantheon = 6 workers) and serves empty cached 200s. Only argument for subdirectory is SEO. No DNS control → reuse mymspconnect's off-request store rebuild, never a kernel.request fetch. Reference build: reell.com.
 - **Cache bin that survives drush cr** — `vendor/augustash/claude-config/memory/drupal/persistent-cache-bin.md`  
   Keep a warm store bin from being wiped by drupal_flush_all_caches: untagged bin (omit `cache.bin`; only when cron/dedicated-tag owns freshness — msp flights board) vs decorator backend that no-ops deleteAll/invalidateAll but stays tagged so real content-tag invalidation still works (mymspconnect gtranslate store). Pick by who owns freshness.
+- **Short edge TTL vs tag-purge for volatile pages** — `vendor/augustash/claude-config/memory/drupal/edge-ttl-vs-tag-purge.md`  
+  A block/render `#cache` max-age never reaches the external Cache-Control (that's the global `system.performance:cache.page.max_age`); to give ONE page a short edge TTL, set the RESPONSE max-age in a response subscriber/middleware, keyed by cache tag. Volatile pages (wait times, parking, checkpoint/flight status) should ride a short TTL, not edge tag-purge — in a Pantheon Global CDN outage both `pantheon_clear_edge_all` and per-tag purges silently die while TTL keeps working. Diagnose with a live `invalidateTags` + `curl -sI` (last-modified/age unchanged = purge not landing); lone-holdout page = Surrogate-Key truncation. Refs: msp `ServicePageCacheSubscriber` (tag-keyed) + `FlightsBoardCacheMiddleware` (warm-bin).
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard names: index `global`, servers `pantheon_search` (prod) + `local` (DDEV); local server connection injected by settings.local.php against the standardized DDEV Solr Docker build (Solr 8.11 Cloud, `solr_cloud_basic_auth`, `ddev solrcollection` to upload configset). Don't hand-roll off-convention names.
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
@@ -100,6 +102,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs (augustash, jacerider) to check before building from scratch
+- **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
+  Neo/jacerider modules ship Claude skills in `<module>/install/skills/`, but `composer update` does NOT update the project's live `.claude/skills/` copies (no auto mechanism). Re-`cp -R` each updated skill-shipping module's skills into `.claude/skills/` and commit with the bump. Lists which neo modules ship skills
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
