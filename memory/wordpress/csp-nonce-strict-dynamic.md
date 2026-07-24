@@ -1,6 +1,6 @@
 ---
 name: Pass CSP Evaluator on WordPress with nonce + strict-dynamic
-description: How to clear Google CSP Evaluator's script-src HIGH on a WP+GTM site WITHOUT a host allowlist — a per-request nonce + 'strict-dynamic' plus an output buffer that auto-nonces every in-page <script>. Covers why it works, the inline-handler gotcha, and the two-tester validation.
+description: How to clear Google CSP Evaluator's script-src HIGH on a WP+GTM site WITHOUT a host allowlist — a per-request nonce + 'strict-dynamic', nonced at BOTH WP's script-printing layer AND an output buffer. Covers why it works, the inline-handler gotcha, the buffer-misses-wp_add_inline_script gotcha (breaks Gravity Forms), and the two-tester validation.
 metadata:
   type: reference
 ---
@@ -30,7 +30,28 @@ fall back to it so nothing breaks. Because trust propagates, **only the
 Drop `'unsafe-eval'` (a standalone MEDIUM finding); add it back only if a GTM tag
 needs eval. Reference impl: `templates/wordpress/csp-nonce-strict-dynamic.php`
 (single-owner rule still applies — RSSSL's CSP stays OFF or the browser enforces
-the intersection). Real deployment: apf's `arrowhead-csp` plugin (v2).
+the intersection). Real deployment: apf's `arrowhead-csp` plugin (v2.2+).
+
+**The buffer alone is NOT enough — nonce at WP's printing layer too.** The
+`ob_start` regex silently **misses some `wp_add_inline_script()` output**: it's
+emitted during `wp_head` in a way that escapes the `template_redirect` buffer, so
+that one tag comes out un-nonced while the buffer nonces every other. Under
+`'strict-dynamic'` a *single* un-nonced inline script is **blocked** — and if it's
+a bootstrap other scripts depend on, everything downstream throws. The bite at apf:
+**Gravity Forms' `gform` foundation** (added `'before'` the
+`gform_gravityforms_libraries` handle) was blocked → `gform` undefined → every
+`gform.initializeOnLoaded()` threw → GF's wrapper (rendered `style="display:none"`
+until JS reveals it) stayed hidden → **invisible form**, presenting as "the
+third-party form broke" when the third party was fine. Fix belongs at the source:
+inside the same `template_redirect` callback (paired with the header, so the nonce
+matches), add
+`add_filter('wp_inline_script_attributes', fn)` + `add_filter('wp_script_attributes', fn)`
+that set `nonce` on the attribute array. WP 5.7+ routes enqueued inline/src scripts
+through `wp_get_inline_script_tag()` / the loader, both of which run these filters,
+so the nonce lands regardless of buffer timing. Keep the buffer as the fallback for
+raw `<script>` echoed outside `wp_enqueue` (the regex skips tags already carrying
+`nonce=`, so no double-nonce). Diagnose with `curl … | grep -c '^<script>'` — any
+plain un-nonced inline `<script>` in the served HTML is a strict-dynamic landmine.
 
 **The gotcha — a nonce covers `<script>` TAGS only.** strict-dynamic disables
 `'unsafe-inline'`, so inline `on*=` event handlers and `javascript:` URIs are

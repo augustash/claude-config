@@ -1,20 +1,29 @@
 <?php
 /**
  * Plugin Name:  CSP (nonce + strict-dynamic)
- * Description:  Front-end Content-Security-Policy that passes Google CSP Evaluator's script-src check WITHOUT a host allowlist: a per-request nonce + 'strict-dynamic', plus an output buffer that auto-nonces every in-page <script>. Reference implementation — copy into a site plugin and adjust the directive set. See memory/wordpress/csp-nonce-strict-dynamic.md.
- * Version:      1.0.0
+ * Description:  Front-end Content-Security-Policy that passes Google CSP Evaluator's script-src check WITHOUT a host allowlist: a per-request nonce + 'strict-dynamic', nonced at BOTH WordPress's script-printing layer and via an output buffer that auto-nonces every in-page <script>. Reference implementation — copy into a site plugin and adjust the directive set. See memory/wordpress/csp-nonce-strict-dynamic.md.
+ * Version:      2.0.0
  * Author:       August Ash
  * Requires PHP: 7.4
  *
  * SINGLE-OWNER RULE: this must be the ONLY emitter of Content-Security-Policy.
  * If Really Simple SSL (or any other header plugin) also emits CSP, the browser
  * enforces the INTERSECTION of both and things break silently. Keep the others'
- * CSP feature OFF.
+ * CSP feature OFF — and the header_remove() below strips any that slipped through
+ * (e.g. RSSSL's PHP-emitted report-only header) before we set ours.
  *
  * A nonce covers <script> TAGS only. Inline on*= event handlers and javascript:
  * URIs are NOT nonce-able and ARE blocked once strict-dynamic disables
  * 'unsafe-inline' in modern browsers — fix those at the source (move the handler
  * into a real <script>, which this buffer then nonces).
+ *
+ * TWO nonce layers, both required. The output buffer alone MISSES some
+ * wp_add_inline_script() output (emitted during wp_head in a way that escapes the
+ * template_redirect buffer — e.g. Gravity Forms' `gform` foundation bootstrap),
+ * and under strict-dynamic a single un-nonced inline script is BLOCKED. The
+ * wp_inline_script_attributes / wp_script_attributes filters nonce enqueued
+ * scripts at WP's source layer (WP 5.7+), independent of buffer timing; the buffer
+ * remains the fallback for raw <script> echoed outside wp_enqueue.
  */
 
 defined('ABSPATH') || exit;
@@ -79,6 +88,28 @@ add_action('template_redirect', static function (): void {
 	if (headers_sent()) {
 		return;
 	}
-	header('Content-Security-Policy: ' . aa_csp_policy(aa_csp_nonce()));
+
+	// Enforce the single-owner rule at runtime: strip any other CSP (e.g. a header
+	// plugin's report-only variant) before emitting ours, so the browser never
+	// enforces an intersection.
+	header_remove('Content-Security-Policy');
+	header_remove('Content-Security-Policy-Report-Only');
+
+	$nonce = aa_csp_nonce();
+	header('Content-Security-Policy: ' . aa_csp_policy($nonce));
+
+	// Layer 1: nonce enqueued scripts at WP's printing layer, independent of buffer
+	// timing (catches wp_add_inline_script output the buffer misses). Registered
+	// here so the nonce matches the header just emitted; wp_head runs later.
+	$add_nonce = static function (array $attr) use ($nonce): array {
+		if (empty($attr['nonce'])) {
+			$attr['nonce'] = $nonce;
+		}
+		return $attr;
+	};
+	add_filter('wp_inline_script_attributes', $add_nonce);
+	add_filter('wp_script_attributes', $add_nonce);
+
+	// Layer 2: buffer fallback for raw <script> echoed outside wp_enqueue.
 	ob_start('aa_csp_add_nonces');
 }, 0);
