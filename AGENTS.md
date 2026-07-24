@@ -22,6 +22,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
+- **Load the design skill for styling work** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
+  standing rule: invoke `frontend-design` at the START of any CSS/layout/visual task, then ground its plan in the project's existing brand tokens + sibling components; on a mature system the "one risk" is applying the system's own signature device somewhere new, not inventing one
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
