@@ -108,6 +108,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   GitHub orgs (augustash, jacerider) to check before building from scratch
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   Neo/jacerider modules ship Claude skills in `<module>/install/skills/`, but `composer update` does NOT update the project's live `.claude/skills/` copies (no auto mechanism). Re-`cp -R` each updated skill-shipping module's skills into `.claude/skills/` and commit with the bump. Lists which neo modules ship skills
+- **neo_alchemist discards nested markup values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-markup.md`  
+  a `type: markup` prop nested inside an `array` never receives its stored value: it renders the parent array's `examples` for that delta, or nothing past the example count. DB is fine, the page is wrong. Tell = sibling `type: string` props at the same nesting level are correct. `MarkupShape`'s `formatted_text` default plugin is `group: providers`, so `childHasOwnValueProvider()` skips `setFieldItemValue()`. Fix excludes it by id (not by `default_plugins` — `media` is one and does source a value). Invisible while instances are still built FROM the examples
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
