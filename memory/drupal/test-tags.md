@@ -1,10 +1,19 @@
 ---
 name: Augustash test tag/group convention
-description: Every custom test (PHPUnit, Nightwatch, or Playwright) carries 'aai' as its umbrella plus at least one module/concept sub-tag, so a single tag-filtered run targets all custom tests without pulling in contrib or core
+description: Every custom test (PHPUnit, Nightwatch, or Playwright) carries the umbrella tag of the COMPANY that built the site — aai (August Ash) or ar (AshenRayne) — plus at least one module/concept sub-tag
 type: feedback
 ---
 
-Every augustash-authored test in a project — PHPUnit (`@group`), Nightwatch (`@tags`), or Playwright (in-title `@tag` strings) — must carry **`aai`** as its umbrella identifier, plus at least one module- or concept-specific sub-tag. Applies to kernel, unit, functional, Nightwatch, and Playwright UI tests alike.
+Every hand-authored test in a project — PHPUnit (`@group`), Nightwatch (`@tags`), or Playwright (in-title `@tag` strings) — must carry **the umbrella identifier of the company that built the site**, plus at least one module- or concept-specific sub-tag. Applies to kernel, unit, functional, Nightwatch, and Playwright UI tests alike.
+
+**Which umbrella depends on who built the site, not on the client:**
+
+- **`aai`** — August Ash Inc. The larger team.
+- **`ar`** — AshenRayne. A two-person shop: the developer and Cyle (the jacerider/neo maintainer), and nobody else. Both of them also work at August Ash, so the same person moves between both and the tag is what tells the sites apart.
+
+**How to tell:** the Pantheon sitename is prefixed with it. Read `.ddev/config.yaml` — the site var (`DDEV_PANTHEON_SITE`, or its older `PANTHEON_SITE` / `project=` spellings, see [[ddev-drupal-pantheon-site-var]]) reads `aai-<slug>` or `ar-<slug>`. Magnum Dimensions / DMX Power is `DDEV_PANTHEON_SITE=ar-md` → **`ar`**.
+
+Don't infer it from the client name or the repo directory, and don't assume `aai` because the shared config lives under `augustash/`. Check the prefix, or match an existing test in the project; ask if there is neither. Everything below writes `aai` as the example — substitute whichever applies.
 
 **Why:** there's no native way to say "run all our custom tests" — bare `phpunit` or `yarn test:nightwatch` runs contrib and core suites too (slow and not our concern); Playwright runs in its own universe but benefits from the same filterability. A shared `aai` umbrella gives one stable target. Sub-tags keep per-module/concept targeting available for focused work.
 

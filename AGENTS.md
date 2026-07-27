@@ -76,7 +76,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
   skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
 - **Test tag/group convention** — `vendor/augustash/claude-config/memory/drupal/test-tags.md`  
-  `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
+  umbrella tag of the **company that built the site** + module sub-tag, on every custom test (PHPUnit + Nightwatch + Playwright). `aai` = August Ash; `ar` = AshenRayne, the two-person shop (the dev + Cyle, the jacerider/neo maintainer) that both also work at August Ash. Magnum Dimensions/DMX Power is an `ar` site. Tell them apart by the Pantheon sitename prefix in `.ddev/config.yaml` (`aai-<slug>` / `ar-<slug>`; md is `ar-md`), not by the client name
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
   index of local .patch files + vetted remote URLs to reuse across projects
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
@@ -110,6 +110,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   GitHub orgs (augustash, jacerider) to check before building from scratch
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   Neo/jacerider modules ship Claude skills in `<module>/install/skills/`, but `composer update` does NOT update the project's live `.claude/skills/` copies (no auto mechanism). Re-`cp -R` each updated skill-shipping module's skills into `.claude/skills/` and commit with the bump. Lists which neo modules ship skills
+- **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
+  component edits land in a PrivateTempStore **draft**; only the layout toolbar's Save publishes, and it is confirm-modal gated (the dialog's **button pane** Save is the real control). Miss the confirm and stored props never change while the editor form, preview and success message all look right — indistinguishable from a persistence bug, and it sends you hunting a value strip that doesn't exist. Tell-tale: toolbar Save/Revert/Reset enabled = unpublished draft. Revert (also confirm-gated) discards it. Verify against stored data, never the editor UI
 - **neo_alchemist discards nested markup values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-markup.md`  
   a `type: markup` prop nested inside an `array` never receives its stored value: it renders the parent array's `examples` for that delta, or nothing past the example count. DB is fine, the page is wrong. Tell = sibling `type: string` props at the same nesting level are correct. `MarkupShape`'s `formatted_text` default plugin is `group: providers`, so `childHasOwnValueProvider()` skips `setFieldItemValue()`. Fix excludes it by id (not by `default_plugins` — `media` is one and does source a value). Invisible while instances are still built FROM the examples
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
