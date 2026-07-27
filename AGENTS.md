@@ -76,7 +76,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
   skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
 - **Test tag/group convention** — `vendor/augustash/claude-config/memory/drupal/test-tags.md`  
-  umbrella tag of the **company that built the site** + module sub-tag, on every custom test (PHPUnit + Nightwatch + Playwright). `aai` = August Ash; `ar` = AshenRayne, the two-person shop (the dev + Cyle, the jacerider/neo maintainer) that both also work at August Ash. Magnum Dimensions/DMX Power is an `ar` site. Don't infer from the client — read an existing test and match it
+  umbrella tag of the **company that built the site** + module sub-tag, on every custom test (PHPUnit + Nightwatch + Playwright). `aai` = August Ash; `ar` = AshenRayne, the two-person shop (the dev + Cyle, the jacerider/neo maintainer) that both also work at August Ash. Magnum Dimensions/DMX Power is an `ar` site. Tell them apart by the Pantheon sitename prefix in `.ddev/config.yaml` (`aai-<slug>` / `ar-<slug>`; md is `ar-md`), not by the client name
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
   index of local .patch files + vetted remote URLs to reuse across projects
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  

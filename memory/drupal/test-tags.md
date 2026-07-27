@@ -11,9 +11,9 @@ Every hand-authored test in a project — PHPUnit (`@group`), Nightwatch (`@tags
 - **`aai`** — August Ash Inc. The larger team.
 - **`ar`** — AshenRayne. A two-person shop: the developer and Cyle (the jacerider/neo maintainer), and nobody else. Both of them also work at August Ash, so the same person moves between both and the tag is what tells the sites apart.
 
-Magnum Dimensions / DMX Power (`~/Projects/md`) is an **AshenRayne** site → `ar`.
+**How to tell:** the Pantheon sitename is prefixed with it. Read `.ddev/config.yaml` — the site var (`DDEV_PANTHEON_SITE`, or its older `PANTHEON_SITE` / `project=` spellings, see [[ddev-drupal-pantheon-site-var]]) reads `aai-<slug>` or `ar-<slug>`. Magnum Dimensions / DMX Power is `DDEV_PANTHEON_SITE=ar-md` → **`ar`**.
 
-Don't infer it from the client or the repo name. Read an existing test in the project and match it; ask if the project has none yet. Everything below writes `aai` as the example — substitute whichever applies.
+Don't infer it from the client name or the repo directory, and don't assume `aai` because the shared config lives under `augustash/`. Check the prefix, or match an existing test in the project; ask if there is neither. Everything below writes `aai` as the example — substitute whichever applies.
 
 **Why:** there's no native way to say "run all our custom tests" — bare `phpunit` or `yarn test:nightwatch` runs contrib and core suites too (slow and not our concern); Playwright runs in its own universe but benefits from the same filterability. A shared `aai` umbrella gives one stable target. Sub-tags keep per-module/concept targeting available for focused work.
 
