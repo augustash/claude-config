@@ -9,10 +9,10 @@ Designed for agentic / CLI-style AI tools (Claude Code, Cursor, Codex, Aider, Wi
 In the project:
 
 ```bash
-ddev composer config preferred-install.augustash/claude-config source && ddev composer require --dev 'augustash/claude-config:dev-master'
+ddev composer config allow-plugins.augustash/claude-config true && ddev composer config preferred-install.augustash/claude-config source && ddev composer require --dev 'augustash/claude-config:dev-master'
 ```
 
-The first half writes a per-project preference into the project's `composer.json` so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The second half pulls the package as a dev dependency and triggers the plugin, which:
+The first command whitelists this package's composer plugin in the project's `composer.json`. This package is a `composer-plugin` (it wires up the CLAUDE.md/AGENTS.md pointers), and composer's `allow-plugins` gate blocks any plugin not on the list — so on a project whose `allow-plugins` doesn't already include it, the require aborts with a `PluginManager` error until this is set. The second command writes a per-project preference so composer installs this package via `git clone` instead of zip extract. The vendor copy is then a real git working tree you can author memory in directly. The third pulls the package as a dev dependency and triggers the plugin, which:
 
 - Adds `@../vendor/augustash/claude-config/CLAUDE.md` to the project's `.claude/CLAUDE.md` (the `../` matters — Claude Code resolves `@` imports relative to the importing file's directory, so a bare `@vendor/...` would look for the non-existent `.claude/vendor/...`)
 - Adds an `AGENTS.md` pointer to `vendor/augustash/claude-config/AGENTS.md`
