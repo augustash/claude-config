@@ -70,7 +70,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   Setup and running PHPUnit kernel/unit tests in DDEV
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
-  Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
+  Selenium setup, yarn install, tag-scoped runs. **W3C patch is D10-only** — #3421202 landed in core (verified 11.4.4), so on D11 it fails to apply and `composer-exit-on-patch-failure` aborts the whole update; drop it during a D10→D11 bump. Patch lives at vendor/augustash/claude-config/patches/
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
   run resource-heavy tests serially (not parallel), wait on conditions not time, warm caches before timing-sensitive tests
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
