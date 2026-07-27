@@ -26,8 +26,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
   As concise as possible: subject + a tight WHY paragraph; diagnosis/verification/measurements belong in the PR or handoff, not the commit
-- **Load the design skill for styling work** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
-  standing rule: invoke `frontend-design` at the START of any CSS/layout/visual task, then ground its plan in the project's existing brand tokens + sibling components; on a mature system the "one risk" is applying the system's own signature device somewhere new, not inventing one
+- **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
+  invoke `frontend-design` BEFORE coding whenever design judgment is left: matching another page's treatment, giving a component a role, new UI. **Skip it for prescriptive moves** (a handed-over value like `max-width: 78%`). The failure mode it prevents is matching the wrong thing — read the reference's computed styles and join its selector rather than restating values
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context; offer proactively on project switches
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
