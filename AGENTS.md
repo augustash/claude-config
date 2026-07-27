@@ -72,7 +72,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   Setup and running PHPUnit kernel/unit tests in DDEV
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
-  Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
+  Selenium setup, yarn install, tag-scoped runs. **W3C patch is D10-only** — #3421202 landed in core (verified 11.4.4), so on D11 it fails to apply and `composer-exit-on-patch-failure` aborts the whole update; drop it during a D10→D11 bump. Patch lives at vendor/augustash/claude-config/patches/
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
   run resource-heavy tests serially (not parallel), wait on conditions not time, warm caches before timing-sensitive tests
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
@@ -118,6 +118,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a `type: markup` prop nested inside an `array` never receives its stored value: it renders the parent array's `examples` for that delta, or nothing past the example count. DB is fine, the page is wrong. Tell = sibling `type: string` props at the same nesting level are correct. `MarkupShape`'s `formatted_text` default plugin is `group: providers`, so `childHasOwnValueProvider()` skips `setFieldItemValue()`. Fix excludes it by id (not by `default_plugins` — `media` is one and does source a value). Invisible while instances are still built FROM the examples
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   Tracking param strip/redirect (Google/HubSpot ads, utm_*); facets + search submodules; origin-side strip is the right tool on CF Pro/Free since edge-strip is Enterprise-only
+- **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
+  a hard fork we OWN, not a patch set: contrib tracked recently-read items in server-side sessions for anon users, forcing a session sitewide and poisoning page cache (it's a sidebar/footer block, so not route-scoped); upstream closed the reports as works-as-intended, so augustash took it over. Never re-sync with upstream — the divergence is the point. Fork uses localStorage + an AJAX endpoint instead. Watch the `recently_read_list` `*_list` tag: see [[cachetags-garbage-collection]]
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   Distribute internal augustash composer packages via dev-master + prefer-source, no tags; place in require-dev. Gotchas: a dirty vendor working tree (e.g. test cache artifacts) makes `composer update` silently skip the package's update hook; and a require-dev plugin's uninstall/prune hook must not mutate a committed, non-gitignored file (a `--no-dev` deploy uninstalls it and Pantheon aborts on the tracked-file change) — gitignore pure output, or gate on `isDevMode()`
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
