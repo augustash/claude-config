@@ -76,7 +76,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
   skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
 - **Test tag/group convention** — `vendor/augustash/claude-config/memory/drupal/test-tags.md`  
-  `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
+  project umbrella tag + module sub-tag on every custom test (PHPUnit + Nightwatch + Playwright). The umbrella is **per project**, not always `aai` (`ar` on Magnum Dimensions/DMX Power) — read an existing test and match it
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
   index of local .patch files + vetted remote URLs to reuse across projects
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  

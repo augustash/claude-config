@@ -1,10 +1,12 @@
 ---
 name: Augustash test tag/group convention
-description: Every custom test (PHPUnit, Nightwatch, or Playwright) carries 'aai' as its umbrella plus at least one module/concept sub-tag, so a single tag-filtered run targets all custom tests without pulling in contrib or core
+description: Every custom test (PHPUnit, Nightwatch, or Playwright) carries the PROJECT'S umbrella tag plus at least one module/concept sub-tag, so a single tag-filtered run targets all custom tests without pulling in contrib or core
 type: feedback
 ---
 
-Every augustash-authored test in a project — PHPUnit (`@group`), Nightwatch (`@tags`), or Playwright (in-title `@tag` strings) — must carry **`aai`** as its umbrella identifier, plus at least one module- or concept-specific sub-tag. Applies to kernel, unit, functional, Nightwatch, and Playwright UI tests alike.
+Every augustash-authored test in a project — PHPUnit (`@group`), Nightwatch (`@tags`), or Playwright (in-title `@tag` strings) — must carry **the project's umbrella identifier**, plus at least one module- or concept-specific sub-tag. Applies to kernel, unit, functional, Nightwatch, and Playwright UI tests alike.
+
+**The umbrella is per project, not global.** It is `aai` on August Ash's own sites, but client projects use their own — `ar` on Magnum Dimensions / DMX Power (`~/Projects/md`), for instance. Read an existing test in the project before writing a new one and match what is there; ask if the project has no tests yet. Everything below writes `aai` as the example — substitute the project's own.
 
 **Why:** there's no native way to say "run all our custom tests" — bare `phpunit` or `yarn test:nightwatch` runs contrib and core suites too (slow and not our concern); Playwright runs in its own universe but benefits from the same filterability. A shared `aai` umbrella gives one stable target. Sub-tags keep per-module/concept targeting available for focused work.
 

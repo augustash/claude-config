@@ -71,7 +71,7 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, W3C patch, yarn install, tag-scoped runs. Patch lives at vendor/augustash/claude-config/patches/
 - [Playwright UI test writing](memory/drupal/playwright-testing.md) — run resource-heavy tests serially (not parallel), wait on conditions not time, warm caches before timing-sensitive tests
 - [Update-hook testing](memory/drupal/update-hook-testing.md) — skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
-- [Test tag/group convention](memory/drupal/test-tags.md) — `aai` umbrella + module sub-tag on every custom test (PHPUnit + Nightwatch)
+- [Test tag/group convention](memory/drupal/test-tags.md) — project umbrella tag + module sub-tag on every custom test (PHPUnit + Nightwatch + Playwright). The umbrella is **per project**, not always `aai` (`ar` on Magnum Dimensions/DMX Power) — read an existing test and match it
 - [Cross-project patches](memory/drupal/patches.md) — index of local .patch files + vetted remote URLs to reuse across projects
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs (augustash, jacerider) to check before building from scratch
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — Neo/jacerider modules ship Claude skills in `<module>/install/skills/`, but `composer update` does NOT update the project's live `.claude/skills/` copies (no auto mechanism). Re-`cp -R` each updated skill-shipping module's skills into `.claude/skills/` and commit with the bump. Lists which neo modules ship skills
