@@ -20,6 +20,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Always use ddev for CLI commands
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
   opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
+- **Leave stopwords out of method names** — `vendor/augustash/claude-config/memory/preferences/method-naming.md`  
+  no `a`/`an`/`the`/`to`, especially in test methods; reads better AND an article before a capitalised word trips `Drupal.NamingConventions.ValidFunctionName` (`BecomesAParagraph` = "not in lowerCamel format")
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
