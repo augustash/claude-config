@@ -19,7 +19,16 @@ Don't infer it from the client name or the repo directory, and don't assume `aai
 
 **Applying to new tests:**
 
-PHPUnit — class-level docblock, aai first:
+PHPUnit — class level, aai first. **Drupal 11** (PHPUnit 11) uses attributes; doc-comment metadata still works but is deprecated and is removed in PHPUnit 12:
+```php
+use PHPUnit\Framework\Attributes\Group;
+
+#[Group('aai')]
+#[Group('my_module')]
+class MyTest extends KernelTestBase { ... }
+```
+
+**Drupal 9/10** (PHPUnit 9) has no attribute support — use the docblock there:
 ```php
 /**
  * @group aai
@@ -27,6 +36,7 @@ PHPUnit — class-level docblock, aai first:
  */
 class MyTest extends KernelTestBase { ... }
 ```
+Either way `--group aai` filtering is unchanged.
 
 Nightwatch — module.exports `@tags` array, aai first:
 ```js

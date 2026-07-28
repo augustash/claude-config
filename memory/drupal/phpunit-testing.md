@@ -66,12 +66,18 @@ Also: PHP arrays return by value. If a helper builds a `$calls = []` and returns
 
 Every custom test carries `@group aai` as its umbrella plus at least one module-specific group — see [test-tags.md](test-tags.md) for the cross-runner convention (also applies to Nightwatch).
 
+On **D11** these are attributes (see the PHPUnit 11 section below); on **D9/10** they are docblock tags:
 ```php
+// D11
+#[Group('aai')]
+#[Group('my_module')]
+class MyTest extends KernelTestBase { ... }
+
+// D9/10
 /**
  * @group aai
  * @group my_module
  */
-class MyTest extends KernelTestBase { ... }
 ```
 
 Run all custom tests with bare `--group aai` — no path needed:
