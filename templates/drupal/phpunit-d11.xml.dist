@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PHPUnit config for a Drupal 11 site (PHPUnit 11 era).
+
+  Copy to the PROJECT ROOT as phpunit.xml.dist, commit it, and gitignore
+  phpunit.xml so devs can override locally without churn. The `custom`
+  testsuite is the point of this file: without it committed, only the dev who
+  hand-wrote it can run the project's own tests.
+
+  Replace {{SITE}} with the ddev project name (e.g. sisal -> sisal.ddev.site)
+  and list the project's test directories under the `custom` testsuite.
+
+  D9/D10 sites need templates/drupal/phpunit-d9-d10.xml.dist instead. The two
+  are NOT interchangeable: PHPUnit 10 removed printerClass and <listeners>,
+  and the classes behind them (\Drupal\Tests\Listeners\HtmlOutputPrinter,
+  \Drupal\Tests\Listeners\DrupalListener) do not exist in D11. Conversely the
+  <extensions> classes below do not exist before D11, so this file hard-fails
+  on D10 — verified against 10.5.1.
+
+  Running `phpunit --migrate-configuration` on a D10 config gets you the new
+  schema but silently DROPS the printer and listeners without adding the
+  <extensions> replacements, which loses browser-test HTML output. Use this
+  file rather than trusting that migration.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="web/core/tests/bootstrap.php" colors="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutChangesToGlobalState="true"
+         failOnWarning="true"
+         cacheResult="false"
+         cacheDirectory=".phpunit.cache"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd">
+  <php>
+    <ini name="error_reporting" value="32767"/>
+    <ini name="memory_limit" value="-1"/>
+    <env name="SIMPLETEST_BASE_URL" value="http://{{SITE}}.ddev.site"/>
+    <env name="SIMPLETEST_DB" value="mysql://db:db@db/db"/>
+    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="web/sites/simpletest/browser_output"/>
+    <env name="BROWSERTEST_OUTPUT_BASE_URL" value=""/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    <env name="MINK_DRIVER_CLASS" value=""/>
+    <env name="MINK_DRIVER_ARGS" value=""/>
+    <env name="MINK_DRIVER_ARGS_WEBDRIVER" value=""/>
+  </php>
+  <testsuites>
+    <testsuite name="unit">
+      <file>web/core/tests/TestSuites/UnitTestSuite.php</file>
+    </testsuite>
+    <testsuite name="kernel">
+      <file>web/core/tests/TestSuites/KernelTestSuite.php</file>
+    </testsuite>
+    <testsuite name="functional">
+      <file>web/core/tests/TestSuites/FunctionalTestSuite.php</file>
+    </testsuite>
+    <testsuite name="functional-javascript">
+      <file>web/core/tests/TestSuites/FunctionalJavascriptTestSuite.php</file>
+    </testsuite>
+    <testsuite name="build">
+      <file>web/core/tests/TestSuites/BuildTestSuite.php</file>
+    </testsuite>
+    <!-- Only OUR code. Contrib/core test dirs are deliberately excluded: a
+      single unloadable contrib test file fatals the whole discovery pass. -->
+    <testsuite name="custom">
+      <directory>web/modules/custom/{{MODULE}}/tests/src</directory>
+    </testsuite>
+  </testsuites>
+  <!-- Replaces the printerClass + <listeners> mechanisms PHPUnit 10 removed.
+    Drop these and browser tests lose their HTML output log and dump() output
+    is not captured. -->
+  <extensions>
+    <bootstrap class="Drupal\TestTools\Extension\HtmlLogging\HtmlOutputLogger">
+      <parameter name="outputDirectory" value="web/sites/simpletest/browser_output"/>
+      <parameter name="verbose" value="true"/>
+    </bootstrap>
+    <bootstrap class="Drupal\TestTools\Extension\Dump\DebugDump">
+      <parameter name="colors" value="true"/>
+      <parameter name="printCaller" value="true"/>
+    </bootstrap>
+  </extensions>
+</phpunit>

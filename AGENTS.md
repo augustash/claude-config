@@ -72,7 +72,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard names: index `global`, servers `pantheon_search` (prod) + `local` (DDEV); local server connection injected by settings.local.php against the standardized DDEV Solr Docker build (Solr 8.11 Cloud, `solr_cloud_basic_auth`, `ddev solrcollection` to upload configset). Don't hand-roll off-convention names.
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
-  Setup and running PHPUnit kernel/unit tests in DDEV
+  Setup and running PHPUnit kernel/unit tests in DDEV. **D9/10 and D11 configs are not interchangeable** (printerClass+listeners vs `<extensions>`; the classes behind each exist only in their own major) — templates for both in `templates/drupal/`; `--migrate-configuration` alone drops HTML output on an upgrade. Commit the config as `phpunit.xml.dist` or the `custom` testsuite exists on one machine only. PHPUnit 11 deprecates doc-comment metadata → `#[Group]`/`#[CoversClass]`/`#[DataProvider]`; provider string keys are now **named arguments**, so snake_case keys stop binding to camelCase params
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
   Selenium setup, yarn install, tag-scoped runs. **W3C patch is D10-only** — #3421202 landed in core (verified 11.4.4), so on D11 it fails to apply and `composer-exit-on-patch-failure` aborts the whole update; drop it during a D10→D11 bump. Patch lives at vendor/augustash/claude-config/patches/
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  

@@ -101,7 +101,34 @@ For a stable single-command run of every custom test, add a named `<testsuite>` 
 ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c ../phpunit.xml --testsuite custom"
 ```
 
-**Why this over `--group aai`:** a named testsuite only loads the dirs you list, so a broken contrib test file can't fatal the run the way it does under `--group aai` (which scans the whole tree). It also doubles as living documentation of where our coverage lives, and dodges the phpunit-9 "one positional path arg" limitation — no per-dir loop needed. Tradeoff: the dir list is maintained by hand, so a new test module won't be picked up until it's added. Keep `--group aai` as the zero-config option; reach for the testsuite when you want a reliable, repeatable full run. The dir list itself is project-specific and lives in that project's `phpunit.xml`, not here.
+**Why this over `--group aai`:** a named testsuite only loads the dirs you list, so a broken contrib test file can't fatal the run the way it does under `--group aai` (which scans the whole tree). It also doubles as living documentation of where our coverage lives, and dodges the phpunit-9 "one positional path arg" limitation — no per-dir loop needed. Tradeoff: the dir list is maintained by hand, so a new test module won't be picked up until it's added. Keep `--group aai` as the zero-config option; reach for the testsuite when you want a reliable, repeatable full run. The dir list itself is project-specific — but commit it as a project-root `phpunit.xml.dist` and gitignore `phpunit.xml`. If the testsuite exists only in the gitignored file, it exists only on one machine: a fresh clone and CI have no way to run the project's own tests.
+
+## D10 vs D11 config are NOT interchangeable
+
+PHPUnit 10 removed `printerClass` and `<listeners>`; Drupal 11 replaced them with `<extensions>`. The classes behind each only exist in their own era, so a config from one major hard-fails on the other:
+
+| Drupal | mechanism | schema | classes |
+| --- | --- | --- | --- |
+| 9 / 10 (incl. 10.5) | `printerClass` + `<listeners>` | 9.3 | `\Drupal\Tests\Listeners\HtmlOutputPrinter`, `\Drupal\Tests\Listeners\DrupalListener` |
+| 11 | `<extensions><bootstrap>` | 11.5 | `Drupal\TestTools\Extension\HtmlLogging\HtmlOutputLogger`, `...\Dump\DebugDump` |
+
+Ready-made, in this package: [`templates/drupal/phpunit-d9-d10.xml.dist`](../../templates/drupal/phpunit-d9-d10.xml.dist) and [`templates/drupal/phpunit-d11.xml.dist`](../../templates/drupal/phpunit-d11.xml.dist).
+
+**`phpunit --migrate-configuration` is not sufficient on a D10→D11 upgrade.** It updates the schema but silently DROPS the printer and listeners without adding the `<extensions>` replacements — browser tests then run green while writing no HTML output. Start from the D11 template instead.
+
+## PHPUnit 11: doc-comment metadata is deprecated
+
+Annotations still work in PHPUnit 11 but are removed in 12, and each one emits a deprecation per test — a suite can report hundreds of "deprecations" that are really two root causes (this, plus a stale XML schema).
+
+- `@group x` → `#[Group('x')]`
+- `@coversDefaultClass \Foo` / `@covers ::method` → class-level `#[CoversClass(\Foo::class)]`
+- `@dataProvider name` → `#[DataProvider('name')]`
+
+Import them from `PHPUnit\Framework\Attributes\*`. Attributes go **after** the docblock, immediately before the declaration — keep the descriptive prose, drop only the migrated tags, and delete docblocks left holding nothing.
+
+Collapsing per-method `@covers ::method` into one class-level `#[CoversClass]` loses no enforcement unless the project actually collects coverage (check for a `<source>`/`<coverage>` block and `requireCoverageMetadata` — most of ours have none), and `#[CoversMethod]` costs a repeated FQCN on every test.
+
+**Data-provider gotcha, worth knowing before it bites:** PHPUnit 10+ passes string keys in a data set as **named arguments**. A provider returning `'expected_theme' => ...` against a `$expectedTheme` parameter fails with `Unknown named parameter $expected_theme` — it silently stopped being a label and became a binding. Rename the keys to match the parameters exactly.
 
 ## Do not use `--list-groups`
 
