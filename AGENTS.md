@@ -22,6 +22,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
 - **Leave stopwords out of method names** — `vendor/augustash/claude-config/memory/preferences/method-naming.md`  
   no `a`/`an`/`the`/`to`, especially in test methods; reads better AND an article before a capitalised word trips `Drupal.NamingConventions.ValidFunctionName` (`BecomesAParagraph` = "not in lowerCamel format")
+- **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
+  **Cyle's rule**, so it holds across every neo project: bracket utilities (`sm:text-[2rem]`, `p-[13px]`, `max-w-[347px]`) are "generally always wrong and custom". They opt the element out of the design scale, so it stops moving when the scale is retuned and bespoke CSS hides inside something that looks systematic. Snap to the nearest real step and take the 1–2px (`2rem`/32px → `text-3xl`/30px); read the scale from the BUILT css, since neo themes redefine `--text-*`. Genuine exceptions (a third-party embed's fixed dimensions) want a comment naming what pins them
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   Concise; skip comments when the code is obvious, explain the WHY when it isn't
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
