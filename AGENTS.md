@@ -18,6 +18,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   store scripts as tracked files (templates/) and link by path; never paste code bodies into notes, even small ones
 - **DDEV workflow** — `vendor/augustash/claude-config/memory/preferences/ddev-workflow.md`  
   Always use ddev for CLI commands
+- **ddev Mutagen sync lag** — `vendor/augustash/claude-config/memory/preferences/ddev-mutagen-sync-lag.md`  
+  files written INSIDE the container (`drush cex`, composer, generators) reach the host seconds later, so reading them back immediately returns the PRE-command content and reads as "the command didn't work". On Drupal that invites blaming config_ignore/split/readonly for a filtering problem that doesn't exist. Verify via `ddev exec cat` (authoritative) or `ddev drush config:status`, not a host-side grep taken in the same breath
 - **Memory audit process** — `vendor/augustash/claude-config/memory/preferences/memory-audit.md`  
   opportunistic triggers with a daily-floor pre-check; `last_audit` date tracked in-module (single date, replaced each pass); self-refining
 - **Leave stopwords out of method names** — `vendor/augustash/claude-config/memory/preferences/method-naming.md`  
