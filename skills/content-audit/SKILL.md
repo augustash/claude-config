@@ -153,6 +153,63 @@ goes stale in public.
 **A page whose only content is an embed is invisible** to search and to AI retrieval. If the
 legacy page wrapped a video, keep its prose beside the video.
 
+## Pass 4 — turning legacy content into components
+
+The step between "this content survives" and "here is the component tree". This is the
+editorial half — deciding what shape the content actually *is*. Two other skills own the
+halves either side of it, and both should be loaded before you start building:
+
+- **`frontend-design`** — whenever presentation judgment is left: a new section's treatment,
+  or matching how an existing section already looks. Load it *before* coding, not after.
+  Skip it only for prescriptive moves where the value was handed to you. The failure it
+  prevents is matching the wrong thing — read the reference section's computed styles and
+  join its pattern rather than restating values.
+- **The project's component skill** (on a Neo project, `neo-component`) — how to actually
+  author or extend the component once you know what shape you need.
+
+A section that reuses an existing component still involves design judgment: which component,
+and whether the content earns a new one. Prefer extending the component the section already
+uses over introducing a second one that does nearly the same job.
+
+**Legacy markup encodes layout, not meaning. Re-type it as data.** Porting the old HTML
+carries its presentation decisions forward into a system that renders them differently.
+Extract the *relationships* and rebuild:
+
+| Legacy pattern | What it actually means | Rebuild as |
+|---|---|---|
+| `rowspan`, or an empty first cell meaning "same as the row above" | these rows share a parent | a **panel with its own heading**, one per parent |
+| `1. … <br> 2. … <br>` inside a cell | sequential steps | a real ordered list |
+| the same closing sentence inside every cell | one instruction, repeated | said **once**, after the list |
+| a paragraph restating something another page already explains | an unmanaged copy | a **link** to the one place it's written |
+
+**The rowspan case is the one that bites.** A merged cell survives the desktop table and then
+vanishes on mobile, where responsive tables turn each row into its own labelled record and
+continuation rows render with no parent at all. Don't fold the alternative either — an N-item
+cause list beside an N-item fix list asks the reader to pair them by position across a gap,
+and the pairing *is* the content. If a group has its own heading, its own anchor and its own
+rows, it's a panel. Once you stop assuming one table, the problem disappears.
+
+**Write each fact once and link to it.** Where two lookup paths need the same explanation,
+one holds it and the other points at it by anchor. Re-wording it then can't leave a stale
+copy behind. This is the same principle as the merge/group test, applied inside a page.
+
+**Check how anchors are derived before relying on them.** On some platforms a heading's `id`
+is slugged from its title, so re-wording a heading silently moves its anchor and breaks every
+inbound link. Verify against rendered output, not against a link appearing to work.
+
+**Pick the container by what the reader is doing:**
+
+- *scanning for their row* (a code, a model, a symptom) → a **table**, filterable past ~15 rows
+- *a set of independent questions* → an **accordion**, shut by default
+- *one continuous explanation* → a **prose block**
+- *a procedure* → ordered steps, with the warning that people skip pulled out above them
+
+**Tighten the key column.** A lookup table works when its first column reads down like an
+index — short scannable labels. Detail that pads a label belongs in the adjacent cell.
+
+**Re-point dead outbound links** at the new site as you go, and note any that have no
+destination yet rather than leaving them silently pointing at the old domain.
+
 ## Recording the decisions
 
 The audit document is a deliverable, not notes. A future session picks it up with no memory
