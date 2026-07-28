@@ -167,9 +167,33 @@ halves either side of it, and both should be loaded before you start building:
 - **The project's component skill** (on a Neo project, `neo-component`) — how to actually
   author or extend the component once you know what shape you need.
 
-A section that reuses an existing component still involves design judgment: which component,
-and whether the content earns a new one. Prefer extending the component the section already
-uses over introducing a second one that does nearly the same job.
+### Establish the constraint before deciding the shape
+
+The same content takes a different shape depending on what the system can render and what
+you're permitted to add. Settle two things first, because they change the answer:
+
+1. **What components already exist**, and what each can actually carry. Read the props, not
+   the name — a component's title rarely tells you whether it takes a video, a repeater, or
+   an anchor.
+2. **Whether new components are on the table** for this piece of work. Reuse-only, extend-
+   permitted and build-new are three different briefs.
+
+Then work in that order — **reuse → extend → build new** — and make the escalation explicit:
+
+- **Reuse** if an existing component fits the content's real shape. It fits if the content
+  maps onto its props without contortion, not if it can be forced in.
+- **Extend** the component the section already uses, in preference to introducing a second
+  one doing nearly the same job. One additive optional prop usually beats a near-duplicate
+  component, and it inherits the behaviour, styling and editor UI already proven there.
+- **Build new** only when the content's shape genuinely isn't in the system. Flag it as a
+  decision (`⚠ NEW COMPONENT`) with what it costs — never silently build one, and never
+  silently reshape the content to dodge the gap. Quietly flattening a table into prose
+  because no table component exists is a content decision disguised as a technical one.
+
+If you're constrained to reuse only and nothing fits, **say so and describe the compromise**
+rather than absorbing it. "This ships as prose because the hub has no table component, and
+it loses the scan-down lookup" is a reviewable statement; silently shipping worse content
+is not.
 
 **Legacy markup encodes layout, not meaning. Re-type it as data.** Porting the old HTML
 carries its presentation decisions forward into a system that renders them differently.
