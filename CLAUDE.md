@@ -43,6 +43,8 @@ Not worth saving: anything a fresh session could resolve with a grep, a read, or
 
 **Choosing a tier:** if the knowledge would help on a different augustash project, it's global. If it only matters in this codebase, it's per-project. When in doubt, per-project — it can be promoted later.
 
+**Memory vs. skill:** memory is knowledge Claude should *recall* (a gotcha, a decision, a vendor quirk). A **skill** is a *procedure Claude should follow* — a multi-step job with its own method, traps and deliverable, worth loading only when that job comes up. If you find yourself writing a memory with numbered steps and a tool to run, it's a skill. See [Skills](#skills) below.
+
 Update existing memories rather than creating duplicates. Remove what's outdated. Keep files focused and concise.
 
 ### Maintenance
@@ -123,3 +125,34 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — surface/offer to fix non-blocking warnings, dead code, orphaned artifacts near the work; "it still works" isn't good enough; keep cleanup scoped + its own commit
 - [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — `background=1` can 403 player URL looking like privacy issue; replace with explicit autoplay/controls/loop/muted/autopause/playsinline params
 - [LiveChat widget click-trap](memory/drupal/livechat-click-trap.md) — third-party rules (e.g. ConvertCart's `cc-ftr-menu`) force `#chat-widget-container`'s height beyond its bubble, the empty area then traps clicks; presents as "menu broken in normal Chrome/Edge, fine in private/Safari"; fix with higher-specificity CSS or JS observer
+
+---
+
+## Skills
+
+A **skill** is a procedure Claude loads on demand — a multi-step job with its own method,
+traps and deliverable. Distinct from memory, which is knowledge to recall (see
+[Memory vs. skill](#memory) above).
+
+Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`. Any tool a
+skill drives belongs in `templates/`, referenced by path — never pasted into the skill body
+(see [reference-scripts-not-embeds](memory/preferences/reference-scripts-not-embeds.md)).
+
+**Installing into a project.** Claude Code only discovers skills in the project's
+`.claude/skills/`, so a skill in this package is not live until it's copied:
+
+```
+cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
+```
+
+Commit that copy with the project. On `composer update augustash/claude-config`, re-copy any
+skill whose canonical version changed — there is no automatic sync, the same gotcha the neo
+modules have (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).
+
+**Writing one.** Same commit-handoff rule as memory: Claude writes, indexes and pushes.
+Update the index below, and keep the `description:` frontmatter explicit about when the skill
+applies *and when it doesn't* — it's the only thing loaded until the skill fires.
+
+### Current skills
+
+- [content-audit](skills/content-audit/SKILL.md) — reduce a legacy CMS's content before migrating it: keep/move/consolidate/eliminate per node, then a verbatim-overlap sweep to catch two nodes saying one thing, then restructure the survivors. Carries the four scoring traps (boilerplate and small denominators inflate; the score is a candidate not a verdict; it can't see already-migrated content) and the group-vs-merge test. Tool: [templates/content-overlap-sweep.py](templates/content-overlap-sweep.py)
