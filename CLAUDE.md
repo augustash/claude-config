@@ -30,49 +30,6 @@ Sanity-check before writing:
 
 Knowledge specific to this codebase — integration details, architectural decisions, non-obvious configuration.
 
-## Skills
-
-Reusable working methods live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`.
-They are versioned with this package, so a refinement made on one project reaches
-every project on the next `composer update augustash/claude-config`.
-
-To make them invocable in a project, symlink the directory once:
-
-```
-ln -s ../../vendor/augustash/claude-config/skills .claude/skills
-```
-
-**Skills are Claude's domain, the same way memory is.** Claude owns writing,
-refining, reorganising and committing them — no need to ask, and no need to be
-asked. Showing the diff is optional transparency, not a review gate.
-
-The maintenance expectation, mirroring [memory audit](memory/preferences/memory-audit.md):
-
-- **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
-  better pattern emerges, a stated preference generalises, or a mistake is worth not
-  repeating, fold it in *during that session* while the detail is fresh — don't defer
-  it to a cleanup pass that never comes.
-- **Active.** During a memory audit, give the skills the same pass: are they still
-  accurate, has one grown two topics that want splitting, is anything now wrong?
-- **Capture the corrections, not just the wins.** A skill that records only what
-  worked is half a skill. The errors — what was assumed, mis-measured or phrased
-  badly, and how it was caught — are what stop the next session repeating them.
-
-Owning them doesn't mean deciding alone. Ask when a judgement call would genuinely
-benefit from the team's view — whether a pattern generalises or was one client's
-taste, whether two skills should merge, what a convention *should* be rather than
-what it happened to be once. A skill built on a guess is worse than a question.
-
-Write skills in the vendor copy and commit there (same flow as shared memory above).
-
-### Current skills
-
-- **[client-report](skills/client-report/SKILL.md)** — evidence-led client reports and
-  rebuild pitches: how to gather and verify the data, frame findings so they sell
-  without overclaiming or implying neglect, structure the document, and ship it as a
-  self-contained branded HTML page. Includes the colour/gradient working method and
-  the verification traps that have bitten.
-
 ### Qualification
 
 The test: **given a clear, direct prompt, would a fresh session still need to do real work to arrive at this understanding?** Ignore how the current session went — messy communication and high token spend don't mean the knowledge is complex. What matters is whether the knowledge *itself* was non-trivial to discover.
@@ -179,9 +136,11 @@ A **skill** is a procedure Claude loads on demand — a multi-step job with its 
 traps and deliverable. Distinct from memory, which is knowledge to recall (see
 [Memory vs. skill](#memory) above).
 
-Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`. Any tool a
-skill drives belongs in `templates/`, referenced by path — never pasted into the skill body
-(see [reference-scripts-not-embeds](memory/preferences/reference-scripts-not-embeds.md)).
+Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`, versioned
+with this package, so a refinement made on one project reaches every project on the next
+`composer update augustash/claude-config`. Any tool a skill drives belongs in `templates/`,
+referenced by path — never pasted into the skill body (see
+[reference-scripts-not-embeds](memory/preferences/reference-scripts-not-embeds.md)).
 
 **Installing into a project.** Claude Code only discovers skills in the project's
 `.claude/skills/`, so a skill in this package is not live until it's copied:
@@ -190,14 +149,43 @@ skill drives belongs in `templates/`, referenced by path — never pasted into t
 cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
 ```
 
+Copy per skill — don't symlink `.claude/skills` at this package's `skills/` directory. That
+directory is shared: the neo/jacerider modules ship their own skills into it
+(see [neo-skills-sync](memory/augustash/neo-skills-sync.md)), and a symlink would leave
+nowhere for them to land.
+
 Commit that copy with the project. On `composer update augustash/claude-config`, re-copy any
 skill whose canonical version changed — there is no automatic sync, the same gotcha the neo
-modules have (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).
+modules have.
 
 **Writing one.** Same commit-handoff rule as memory: Claude writes, indexes and pushes.
 Update the index below, and keep the `description:` frontmatter explicit about when the skill
 applies *and when it doesn't* — it's the only thing loaded until the skill fires.
 
+**Skills are Claude's domain, the same way memory is.** Claude owns writing, refining,
+reorganising and committing them — no need to ask, and no need to be asked. Showing the diff
+is optional transparency, not a review gate. The maintenance expectation mirrors
+[memory audit](memory/preferences/memory-audit.md):
+
+- **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
+  better pattern emerges, a stated preference generalises, or a mistake is worth not
+  repeating, fold it in *during that session* while the detail is fresh — don't defer
+  it to a cleanup pass that never comes.
+- **Active.** During a memory audit, give the skills the same pass: are they still
+  accurate, has one grown two topics that want splitting, is anything now wrong?
+- **Capture the corrections, not just the wins.** A skill that records only what
+  worked is half a skill. The errors — what was assumed, mis-measured or phrased
+  badly, and how it was caught — are what stop the next session repeating them.
+
+Owning them doesn't mean deciding alone. Ask when a judgement call would genuinely
+benefit from the team's view — whether a pattern generalises or was one client's
+taste, whether two skills should merge, what a convention *should* be rather than
+what it happened to be once. A skill built on a guess is worse than a question.
+
 ### Current skills
 
+One index, and it lives here — adding a skill means adding a bullet below, never opening a
+second Skills section elsewhere in this file.
+
+- [client-report](skills/client-report/SKILL.md) — evidence-led client reports and rebuild pitches: how to gather and verify the data, frame findings so they sell without overclaiming or implying neglect, structure the document, and ship it as a self-contained branded HTML page. Includes the colour/gradient working method and the verification traps that have bitten.
 - [content-audit](skills/content-audit/SKILL.md) — reduce a legacy CMS's content before migrating it: keep/move/consolidate/eliminate per node, then a verbatim-overlap sweep to catch two nodes saying one thing, then restructure the survivors. Carries the four scoring traps (boilerplate and small denominators inflate; the score is a candidate not a verdict; it can't see already-migrated content) and the group-vs-merge test. Tool: [templates/content-overlap-sweep.py](templates/content-overlap-sweep.py)

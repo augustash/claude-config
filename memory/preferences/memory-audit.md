@@ -46,6 +46,23 @@ If nothing has changed, skip the review, bump `last_audit` to today, and move on
 - Can any be consolidated?
 - Do any conflict with [mission.md](mission.md) or [follow-site-conventions.md](follow-site-conventions.md)? (i.e. diary-shape rather than watch-and-suggest)
 
+**Structure of `CLAUDE.md` itself — run `python3 generate-agents.py` and read its output.**
+It now lints before it writes and exits non-zero on: a duplicated `##`/`###` heading, a
+memory or skill indexed twice, an index entry pointing at a file that doesn't exist, and a
+file in `memory/` or `skills/` that no index lists. Silence means the indexes and the disk
+agree — don't hand-verify what the script already covers.
+
+This check exists because prose alone didn't hold it: on 2026-07-29 the file had grown **two
+`## Skills` sections**, each with its own `### Current skills` listing a different skill, so
+either index read as the complete set while showing half of it. The cause is structural, not
+carelessness — the existing Skills section sat ~140 lines below the memory index, far enough
+off-screen that adding a skill near the top looked like starting a new one. Anything that
+splits an index will recur the same way, so the guard is mechanical and runs on every write.
+
+**Skills (`skills/{name}/SKILL.md`):** same accuracy and conciseness pass as memories — see
+[Skills → maintenance](../../CLAUDE.md#skills). Has one grown two topics that want splitting?
+Does the `description:` frontmatter still say when the skill applies *and when it doesn't*?
+
 **Per-project memories (`.claude/memory/` in the current project):**
 - Same staleness and conciseness checks.
 - Does any project-specific knowledge show up across multiple projects and deserve promotion to shared? (Promotion criteria is "useful in ≥2 projects" per [patches.md](../drupal/patches.md) — same rule.) Promotion means authoring it in the `augustash/claude-config` repo, not editing the local `vendor/` copy.
