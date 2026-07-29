@@ -209,6 +209,20 @@ compliance*. A long label reads as hedging; a one-word label reads as command of
 material. Pair a diagnostic label with an active one — **Why it persists / Action** —
 so every problem visibly resolves.
 
+**Sprinkle fun, sparingly and on purpose.** The document is serious, but people like
+fun, and fun makes a thing not feel like work — which is worth real money in a room.
+A pun in a section title, one dry aside, a heading that carries a double meaning from
+the client's own world (*Traffic patterns* for a usage section; *Final approach* for a
+closing). Rules that keep it from curdling:
+
+- Put the humour where the finding is *already* absurd — 99 people searching for a
+  terminal that doesn't exist writes its own joke. Don't manufacture one.
+- Land the laugh, then immediately convert it to the fix, so it earns its place.
+- Never in the sections carrying bad news, the credibility story, or the asks. A
+  wink next to "your site was crashing" or "we need your contract terms" reads as
+  flippant.
+- Two or three per document. It's seasoning, not a flavour.
+
 **Typography and rhythm.** One idea per paragraph — long slabs are the most common
 complaint and the easiest fix. Content panels (tables, cards) on a translucent white
 fill lift off any coloured ground. Keep one reusable divider token so the whole
