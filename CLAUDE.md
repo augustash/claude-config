@@ -30,6 +30,30 @@ Sanity-check before writing:
 
 Knowledge specific to this codebase — integration details, architectural decisions, non-obvious configuration.
 
+## Skills
+
+Reusable working methods live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`.
+They are versioned with this package, so a refinement made on one project reaches
+every project on the next `composer update augustash/claude-config`.
+
+To make them invocable in a project, symlink the directory once:
+
+```
+ln -s ../../vendor/augustash/claude-config/skills .claude/skills
+```
+
+Treat skills as living documents — when a project surfaces a better pattern, or a
+mistake worth not repeating, edit the skill in the vendor copy and commit it there
+(same flow as shared memory above).
+
+### Current skills
+
+- **[client-report](skills/client-report/SKILL.md)** — evidence-led client reports and
+  rebuild pitches: how to gather and verify the data, frame findings so they sell
+  without overclaiming or implying neglect, structure the document, and ship it as a
+  self-contained branded HTML page. Includes the colour/gradient working method and
+  the verification traps that have bitten.
+
 ### Qualification
 
 The test: **given a clear, direct prompt, would a fresh session still need to do real work to arrive at this understanding?** Ignore how the current session went — messy communication and high token spend don't mean the knowledge is complex. What matters is whether the knowledge *itself* was non-trivial to discover.

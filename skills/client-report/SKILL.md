@@ -1,0 +1,255 @@
+---
+name: client-report
+description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, or any document where we tell a client what we found and what we would do about it.
+---
+
+# Client report
+
+A method for producing the document we hand a client when we want them to
+understand what we found and buy what we would do next. Refined on the DMX Power
+rebuild report and the MSP Airport rebuild briefing.
+
+Two outputs, always:
+
+- **`<report>.html`** — self-contained, branded, opens by double-click, zips for email.
+- **`<report>.md`** — same content, plain. Easier to edit, diff and reuse.
+
+Optionally a third: **`technical-appendix.md`** — the depth the presenter consults
+when someone digs. Keep it out of the client document.
+
+---
+
+## 1. Evidence before argument
+
+Never write a finding you have not measured. The credibility of the whole document
+rests on the reader trusting the numbers, and one soft claim taints the rest.
+
+**Sources worth pulling, roughly in order of value:**
+
+| Source | Gives you |
+|---|---|
+| Origin access logs (nginx) | Feature-level demand, 404s, bot share, third-party consumers, search terms |
+| The content database | Real counts — published vs. unpublished, field usage, dead models |
+| Config export | Content types, fields, views, indexes, integrations, duplication |
+| **Replaying real queries against the live system** | The single highest-value move — see below |
+| GA4 / analytics | Per-page popularity, which logs behind a CDN cannot give you |
+
+**Replay real user behaviour against the real system.** Pull the top N search terms
+out of the logs, run them against the site's actual index, and record what comes
+back. On MSP this turned "search feels bad" into *only 8.7% of real searches return
+a usable result; 37% return 151+ results on a 1,069-item site.* That number carried
+the entire document. The same move generalises: take what users actually did, feed
+it to the thing that serves them, measure the outcome.
+
+**State what the evidence cannot support.** Origin logs sit behind the CDN, so they
+measure *load*, not popularity — a well-cached page barely appears. Say so in the
+document. On MSP, an attempt to rank content pages this way produced an obviously
+bogus distribution (every page in one narrow band = crawler traffic, plus alias
+collisions inflating a node with the flights board's 129k hits). The right response
+was a caveat box saying per-page popularity needs GA4, not a quiet fudge.
+
+**Verify before you claim.** Specific traps that have bitten:
+
+- **Author-name variants in git.** `kazajhodo` (2018) and `KazaJhodo` (2020) are the
+  same person; querying one gave a takeover date two years late. Always
+  `git log --format="%an" | sort -u` first.
+- **Alias collisions.** One alias mapping to six language rows attributed a
+  high-traffic page's hits to a content page. Print top matches before trusting a join.
+- **Assuming current state.** A remap that read the existing state wrong was a silent
+  no-op. Print the before-state, transform, print the after-state.
+- Config-file semantics — e.g. Drupal's `core.extension.yml` lists *enabled* modules
+  with their **weight**; `scheduler: 0` means enabled, not disabled.
+
+---
+
+## 2. Framing — the rules that make it sell without lying
+
+**Judge every recommendation twice.** What it does for *their* users, and what it
+gives *them* to manage with. Those are the same investment: a site that's hard to
+maintain quietly limits what the client can offer. State the pairing explicitly up
+top; it turns foundation work from a cost into a capability.
+
+**Age is context, not fault.** For a long-standing client especially, never let the
+document imply neglect — theirs or ours. One paragraph near the top does this for
+every finding at once:
+
+> This site was built when [framework/era] was new, and it was built well for that
+> moment — the choices in it were the standard, sensible ones at the time. What
+> follows is not a list of mistakes. **The gap is between what was right then and
+> what is possible now.**
+
+Then police the vocabulary. "Move to a *proper* search engine" implies the current
+one is improper — i.e. someone erred. "Move the index to a *dedicated* search
+service" says the same thing and blames no one.
+
+**Every weakness carries two answers.** Where we've held the account a while, a bare
+problem list reads as an indictment of us. Pair each one:
+
+- **Why this is still here** — the honest mechanism. It never errored. It lived in
+  logs nobody reads. It was blocked on a contract. It wasn't incrementally fixable.
+  *The runway went to stability first, correctly.*
+- **What we would do** — the move, with enough specificity to be credible and a way
+  to prove it worked.
+
+**Convert observations into moves.** Any sentence that states a gap and stops is a
+wasted opportunity. "There is no search reporting" → "a standing search-quality
+report tells your teams, in your customers' own words, what people came looking for
+and did not find." Watch for these on every pass.
+
+**Check what the client already owns before recommending a build.** The strongest
+findings are usually *capability already paid for and not connected* — a licensed
+platform the site never calls, data already synced but never displayed, a metric
+already calculated and sent to analytics instead of to users. These are cheap,
+credible and flattering to propose.
+
+**Lead the questions with the generative one.** Ask what data, APIs and systems they
+already have access to *before* the scoping questions. It changes what's possible,
+not just what's affordable — and it routinely surfaces assets nobody remembered.
+
+**Never assert what the client knows to be false.** If they say a claim is wrong,
+pull it immediately and replace it with the defensible version, even if the wrong
+version was stronger. One bad claim in the room costs the whole document.
+
+---
+
+## 3. Structure that has worked twice
+
+Numbered sections, stable IDs, scannable. Roughly 200–250 lines of markdown; the
+temptation is always to over-write.
+
+1. **Masthead** — the lens (who it's for, how it's judged), the era framing, and the
+   standard being aimed at. Keep to three short paragraphs plus an evidence strip.
+2. **The five things that matter** — the whole argument, scannable, with numbers.
+   *Each one paired with our response,* or it reads as an indictment.
+3. **How it's used** — one table, ranked, plus the readings that change the picture
+   (what looks small but isn't, what looks huge but is cached).
+4. **What's working** — assets to protect. Name them. This buys credibility for the
+   criticism that follows and gives the rebuild something to preserve.
+5. **Opportunities** — *not* "Where it falls short". Same content, and every item
+   carries its why-still-here and what-we'd-do.
+6. **The moves** — grouped by outcome, each stated twice (user benefit + engineering),
+   with effort. Close with a short **where we'd start** sequence: contract answers
+   first at no cost, then fast visible wins, then foundation, then differentiators.
+7. **What we already have** — the inventory of their own data and integrations, and
+   what combining them unlocks. Sets up the questions.
+8. **What we need from you** — questions, generative one first.
+9. **Why this team** — a specific, dated, verifiable story. See below.
+10. **Why this is the moment** — close on possibility, built only from findings
+    already established above.
+
+**The credibility story.** One concrete incident beats any amount of positioning.
+The MSP version: inherited 2018, crashing weekly, deployments themselves taking it
+down so the client feared deploying; two prior teams paid two weeks each, neither
+found it; nobody told us; we pulled the database, saw millions of duplicate rows,
+traced it to a malformed cache tag whose second half resolved to a new unique value
+every request — *the site was simultaneously caching nothing and storing everything*;
+resolved in about two hours.
+
+Mine the repo for **receipts** — first commit date and message, a tellingly-named
+branch, a one-line diff. Verifiable beats impressive. But if the client says your
+receipt is the wrong one, drop it and keep the story; the mechanism is the point.
+
+---
+
+## 4. Design
+
+Load the `frontend-design` skill first. Then:
+
+**Self-contained or it isn't deliverable.** No external fonts, scripts, images or
+CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
+`re.findall(r'(?:src|href)="(?!#)([^"]+)"', html)` returns empty.
+
+**System fonts only, and let mono carry the personality.** Every figure in
+`ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
+scan, and it needs no download. Heavy tight-tracked system sans for headlines.
+
+**Pull brand colors from the client's own source, never from memory or a logo.**
+Their theme's variables file is authoritative and usually contains a semantic system
+worth reusing. Watch for a "current" brand token that differs from the one used
+everywhere in practice — flag it rather than silently picking.
+
+**Find the signature in the client's own world.** Not a big number with a gradient.
+For an airport: the departure board — the exec summary rendered as status rows
+(`SEARCH · CRITICAL`, `WAYFINDING · NOT CONNECTED`, `FLIGHTS BOARD · ON TIME`). It's
+their instrument turned on their website, and it's the fastest possible read of five
+findings. Spend boldness once, then go quiet.
+
+**Make structural devices mean something.** Cycling section colors by position is
+decoration. Assign them: one hue for evidence, one for opportunity, one for the
+single genuinely-bad section — used *once*, so it lands. Watch for color fighting
+copy: red under a collaborative "what we need from you" section reads as danger.
+
+### Working colour with a client, without ping-pong
+
+This is where the most time gets burned. The lesson: **stop nudging hex values and
+define the system.**
+
+- **Work perceptually, not in sRGB.** Equal sRGB steps do not read as equal
+  lightness — gold at the same nominal value looks far lighter than blue, so the
+  sections never feel like siblings. Derive grounds in OKLCH at one lightness with
+  only hue varying, then convert to hex.
+- **Separate the two knobs and name them.** *Overall lightness* (how deep the ground
+  sits) and *delta* (how visible the gradient is) are independent. Changing one
+  while chasing feedback about the other is what causes the loop.
+- **Learn their gradient vocabulary.** "Dark bottom, subtly lighter top, light
+  favouring the top edge, mostly the darker" is a spec about **proportion**, not
+  lightness: settle the ramp by ~20% of section height so four-fifths is the settled
+  tone. `0deg` in CSS means bottom-to-top.
+- **Run contrast before committing.** White on `#ffad1f` is 1.87:1 — unreadable. Give
+  the numbers and offer the fix (deepen the ground, don't lighten the text) rather
+  than shipping it or silently refusing.
+- **Build a palette page.** A one-off `palette.html` with real chips, hex, variable
+  names and live gradient swatches lets the client point instead of describe. Worth
+  the ten minutes every time.
+
+**Label with strong verbs.** Section and block labels are the most-read words in the
+document — keep them short and active. *Action*, *Focus*, *Next*, *Plan*, *Improve*,
+*Capability* beat *What we would do*, *The five things that matter*, *Engineering and
+compliance*. A long label reads as hedging; a one-word label reads as command of the
+material. Pair a diagnostic label with an active one — **Why it persists / Action** —
+so every problem visibly resolves.
+
+**Typography and rhythm.** One idea per paragraph — long slabs are the most common
+complaint and the easiest fix. Content panels (tables, cards) on a translucent white
+fill lift off any coloured ground. Keep one reusable divider token so the whole
+document changes at once.
+
+**Quality floor, unannounced:** responsive, keyboard focus visible, reduced motion
+respected, and a print stylesheet that flips dark bands to white.
+
+---
+
+## 5. Delivery
+
+- Zip the HTML (`zip -j report.zip report.html`) — client-friendly, and the format
+  they remember.
+- `open` it after every change so they're reviewing the current state.
+- Keep the markdown in sync with the HTML on every edit, or it rots within an hour.
+- Split depth into `technical-appendix.md` rather than cutting it — the presenting
+  dev needs it even though the client shouldn't see it.
+
+## 6. Working with the reviewer
+
+Expect fast, terse, mid-turn corrections. Apply, verify by printing the result, and
+reopen.
+
+**Take the note, then generalise it.** Being handed exact pixel values means the
+pattern hasn't been learned yet — treat each one as a symptom of a rule that should
+already have been inferred. When told "`h5` to 12px", also pull the letter-spacing
+back (tracking that reads open at 9px shouts at 12px) and raise the panel's padding
+so the proportions still hold. When told to fix one divider, fix its sibling in the
+other component. Apply the change *and* the system it implies, then say what you
+extended and why so it can be corrected in one word.
+
+**Propose systems, not values.** "Which hex?" is a worse question than "here are
+three grounds at matched perceptual lightness — too heavy or about right?" Do the
+arithmetic (contrast ratios, OKLCH conversions, ramp derivations) rather than asking
+the reviewer to eyeball it; bring the numbers to the decision.
+
+Two habits that matter:
+
+- **Print the state after every structural edit.** Renumbering, remapping and
+  reordering all failed silently at least once on MSP; only verification caught it.
+- **Scope regex edits to a section.** A renumber intended for one list rewrote the
+  numbered summary at the top of the document. Slice the section, transform, splice
+  it back.
