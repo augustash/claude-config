@@ -91,6 +91,29 @@ problem list reads as an indictment of us. Pair each one:
 - **What we would do** — the move, with enough specificity to be credible and a way
   to prove it worked.
 
+**Never speculate about why something wasn't done.** The *why it persists* half is
+where a document quietly insults the people reading it. You do not know their budget
+cycles, their priorities, or what was already on their roadmap — so say so, credit
+that it may well already be on their list, and speak only to what you *can* observe:
+what the system itself made difficult. Name real constraints (an older foundation's
+limits, licence terms, work that can't be absorbed by a maintenance pass) rather than
+implying a lapse.
+
+Two habits that catch it:
+
+- **Negating a word still plants it.** "This was never a small fix that got skipped"
+  puts *skipped* in the reader's head. Cut the word, don't deny it.
+- **Don't distance us at their expense.** "Inherited from the original build, not
+  authored by us" defends us by indicting whoever built it — possibly someone still
+  in the room who commissioned it. "The accumulated weight of a foundation laid a
+  decade ago, under the assumptions and budgets of its time" states the same fact
+  with no defendant.
+
+Also check you haven't *understated* their work. Claiming a filter "only offers
+Terminal 1" when their content team tagged 400 records to concourse level is the same
+category of error, pointed the other way — and the person who did that tagging will
+be reading.
+
 **Convert observations into moves.** Any sentence that states a gap and stops is a
 wasted opportunity. "There is no search reporting" → "a standing search-quality
 report tells your teams, in your customers' own words, what people came looking for
