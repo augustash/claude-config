@@ -13,9 +13,13 @@ type: reference
    ```
    This drops `.ddev/config.selenium-standalone-chrome.yaml` which wires the `DRUPAL_TEST_WEBDRIVER_*` env vars for Nightwatch to reach the selenium container. No `.env` edit needed — env vars are injected at the container level.
 
-2. **Nightwatch W3C patch** — Drupal 10.x core Nightwatch does not natively handle W3C webdriver mode that selenium-standalone-chrome uses, so `sendKeys(ENTER)` and similar fail without the backport of [#3421202](https://www.drupal.org/project/drupal/issues/3421202).
+2. **Nightwatch W3C patch — Drupal 10 ONLY. Do not add on Drupal 11.**
 
-   A vetted copy lives at `vendor/augustash/claude-config/patches/3421202-nightwatch-w3c-backport.patch`. Copy it into the project's `patches/` dir and add to composer.json:
+   [#3421202](https://www.drupal.org/project/drupal/issues/3421202) landed in core. Verified in 11.4.4: `core/tests/Drupal/Nightwatch/nightwatch.conf.js` already sets `'goog:chromeOptions': { w3c: !!process.env.DRUPAL_TEST_WEBDRIVER_W3C }`. On D11 the patch no longer applies, and with `composer-exit-on-patch-failure: true` it aborts the whole `composer update` — so drop it from `composer.json` as part of any D10→D11 upgrade.
+
+   On **Drupal 10.x** it is still required: core Nightwatch there does not handle the W3C webdriver mode selenium-standalone-chrome uses, so `sendKeys(ENTER)` and similar fail without it.
+
+   A vetted copy lives at `vendor/augustash/claude-config/patches/3421202-nightwatch-w3c-backport.patch`. On D10, copy it into the project's `patches/` dir and add to composer.json:
    ```json
    "patches": {
      "drupal/core": {
