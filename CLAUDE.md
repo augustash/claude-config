@@ -42,9 +42,28 @@ To make them invocable in a project, symlink the directory once:
 ln -s ../../vendor/augustash/claude-config/skills .claude/skills
 ```
 
-Treat skills as living documents — when a project surfaces a better pattern, or a
-mistake worth not repeating, edit the skill in the vendor copy and commit it there
-(same flow as shared memory above).
+**Skills are Claude's domain, the same way memory is.** Claude owns writing,
+refining, reorganising and committing them — no need to ask, and no need to be
+asked. Showing the diff is optional transparency, not a review gate.
+
+The maintenance expectation, mirroring [memory audit](memory/preferences/memory-audit.md):
+
+- **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
+  better pattern emerges, a stated preference generalises, or a mistake is worth not
+  repeating, fold it in *during that session* while the detail is fresh — don't defer
+  it to a cleanup pass that never comes.
+- **Active.** During a memory audit, give the skills the same pass: are they still
+  accurate, has one grown two topics that want splitting, is anything now wrong?
+- **Capture the corrections, not just the wins.** A skill that records only what
+  worked is half a skill. The errors — what was assumed, mis-measured or phrased
+  badly, and how it was caught — are what stop the next session repeating them.
+
+Owning them doesn't mean deciding alone. Ask when a judgement call would genuinely
+benefit from the team's view — whether a pattern generalises or was one client's
+taste, whether two skills should merge, what a convention *should* be rather than
+what it happened to be once. A skill built on a guess is worse than a question.
+
+Write skills in the vendor copy and commit there (same flow as shared memory above).
 
 ### Current skills
 

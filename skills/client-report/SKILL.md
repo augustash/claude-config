@@ -232,6 +232,14 @@ compliance*. A long label reads as hedging; a one-word label reads as command of
 material. Pair a diagnostic label with an active one — **Why it persists / Action** —
 so every problem visibly resolves.
 
+**Cut copy that explains its own structure.** The most common source of clunk. "Each
+is stated twice — what it does for X, and what it gives Y — because that second part
+is what makes the first durable" spends its closing clause defending a layout choice.
+Replace the explanation with a claim: *"once for the people using the airport, once
+for the team who has to run it. A gain nobody can maintain isn't a gain."* Same point,
+and it's a sentence someone repeats in a meeting. Whenever a paragraph ends by
+justifying its own format, that's the sentence to rewrite.
+
 **Sprinkle fun, sparingly and on purpose.** The document is serious, but people like
 fun, and fun makes a thing not feel like work — which is worth real money in a room.
 A pun in a section title, one dry aside, a heading that carries a double meaning from
@@ -250,6 +258,22 @@ closing). Rules that keep it from curdling:
 complaint and the easiest fix. Content panels (tables, cards) on a translucent white
 fill lift off any coloured ground. Keep one reusable divider token so the whole
 document changes at once.
+
+**Tokenise the panel system early.** Tables, cards and callouts are the same shape
+doing the same job — one `--panel-pad` and `--panel-radius` keeps them consistent and
+makes "more padding on these" a one-line change instead of three. The same applies to
+the divider: one gradient token, used everywhere, changes the whole document at once.
+
+**Retreat components into their section's colour family.** A card sitting on a
+coloured ground inherits the document's default ink and instantly looks foreign. Give
+it a *ramp* in the section's own hue — number, heading, body, aside at three or four
+weights of one colour — rather than a single flat tone. That's what makes a panel look
+designed into its surroundings instead of dropped onto them.
+
+**A long report wants a sticky section nav.** Anchor every section, put the bar under
+the masthead rule, mark the active one with `IntersectionObserver`, give sections
+`scroll-margin-top`, hide it in print. Use an opaque ground — a translucent bar shifts
+colour as it passes over differently-coloured sections.
 
 **Quality floor, unannounced:** responsive, keyboard focus visible, reduced motion
 respected, and a print stylesheet that flips dark bands to white.
