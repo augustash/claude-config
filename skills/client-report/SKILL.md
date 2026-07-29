@@ -282,12 +282,20 @@ respected, and a print stylesheet that flips dark bands to white.
 
 ## 5. Delivery
 
-- Zip the HTML (`zip -j report.zip report.html`) — client-friendly, and the format
-  they remember.
-- `open` it after every change so they're reviewing the current state.
-- Keep the markdown in sync with the HTML on every edit, or it rots within an hour.
+- `open` the file after every change so they're reviewing the current state.
+- Keep the markdown in sync with the HTML on every edit, or it rots within an hour —
+  and **verify both after every structural edit**. On MSP the markdown silently kept
+  a question the HTML had dropped, because one regex matched and the other didn't.
 - Split depth into `technical-appendix.md` rather than cutting it — the presenting
   dev needs it even though the client shouldn't see it.
+- **Ship a folder, not a loose file.** Zip a directory containing the HTML (named
+  readably, spaces are fine), the markdown source, the appendix, and a short
+  `README.txt` saying what each file is and what the evidence base was. It survives
+  being forwarded to someone who wasn't in the conversation.
+
+**Run an integrity check before packaging.** Cheap, and it has caught real breakage:
+no external `src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts,
+no rules with a missing selector, every nav anchor resolving to an existing id.
 
 ## 6. Working with the reviewer
 
@@ -311,6 +319,20 @@ Two habits that matter:
 
 - **Print the state after every structural edit.** Renumbering, remapping and
   reordering all failed silently at least once on MSP; only verification caught it.
+  Removing a block leaves unbalanced tags just as easily — count them afterwards.
 - **Scope regex edits to a section.** A renumber intended for one list rewrote the
   numbered summary at the top of the document. Slice the section, transform, splice
   it back.
+- **Anchor CSS edits on unique strings.** Inserting before `.move .eng span{` spliced
+  into the *middle* of `.sec--gold .move .eng span{`, leaving an orphaned global rule
+  the base rule then overrode — which surfaced days later as "that colour is off".
+  Include enough of the selector, or the preceding line, to be unambiguous.
+- **Use absolute `git -C <path>` in nested repos.** A failed `cd` sent a commit
+  intended for the shared-config vendor copy into the *project* repo, sweeping up
+  unrelated work under the wrong message. Never rely on the shell's current
+  directory when two git repos are in play.
+
+**When they say a section repeats, they're usually right.** The *what we'd do* blocks
+and the moves list both answer "what would you do", so they drift into duplication
+naturally. Fix it by deciding which one owns the argument — usually the moves, since
+they carry the value framing — and reducing the other to a pointer.
