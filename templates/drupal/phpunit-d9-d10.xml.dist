@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PHPUnit config for a Drupal 9 / 10 site (PHPUnit 9 era).
+
+  Copy to the PROJECT ROOT as phpunit.xml.dist, commit it, and gitignore
+  phpunit.xml so devs can override locally without churn. The `custom`
+  testsuite is the point of this file: without it committed, only the dev who
+  hand-wrote it can run the project's own tests.
+
+  Replace {{SITE}} with the ddev project name (e.g. sisal -> sisal.ddev.site)
+  and list the project's test directories under the `custom` testsuite.
+
+  D11 sites need templates/drupal/phpunit-d11.xml.dist instead — PHPUnit 10
+  removed printerClass and <listeners>, and Drupal 11 replaced them with
+  <extensions>. The two are NOT interchangeable in either direction.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="web/core/tests/bootstrap.php" colors="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutChangesToGlobalState="true"
+         failOnWarning="true"
+         printerClass="\Drupal\Tests\Listeners\HtmlOutputPrinter"
+         cacheResult="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <php>
+    <ini name="error_reporting" value="32767"/>
+    <ini name="memory_limit" value="-1"/>
+    <env name="SIMPLETEST_BASE_URL" value="http://{{SITE}}.ddev.site"/>
+    <env name="SIMPLETEST_DB" value="mysql://db:db@db/db"/>
+    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="web/sites/simpletest/browser_output"/>
+    <env name="BROWSERTEST_OUTPUT_BASE_URL" value=""/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    <env name="MINK_DRIVER_CLASS" value=''/>
+    <env name="MINK_DRIVER_ARGS" value=''/>
+    <env name="MINK_DRIVER_ARGS_WEBDRIVER" value=''/>
+  </php>
+  <testsuites>
+    <testsuite name="unit">
+      <file>web/core/tests/TestSuites/UnitTestSuite.php</file>
+    </testsuite>
+    <testsuite name="kernel">
+      <file>web/core/tests/TestSuites/KernelTestSuite.php</file>
+    </testsuite>
+    <testsuite name="functional">
+      <file>web/core/tests/TestSuites/FunctionalTestSuite.php</file>
+    </testsuite>
+    <testsuite name="functional-javascript">
+      <file>web/core/tests/TestSuites/FunctionalJavascriptTestSuite.php</file>
+    </testsuite>
+    <testsuite name="build">
+      <file>web/core/tests/TestSuites/BuildTestSuite.php</file>
+    </testsuite>
+    <!-- Only OUR code. Contrib/core test dirs are deliberately excluded: a
+      single unloadable contrib test file fatals the whole discovery pass. -->
+    <testsuite name="custom">
+      <directory>web/modules/custom/{{MODULE}}/tests/src</directory>
+    </testsuite>
+  </testsuites>
+  <listeners>
+    <listener class="\Drupal\Tests\Listeners\DrupalListener">
+    </listener>
+  </listeners>
+</phpunit>

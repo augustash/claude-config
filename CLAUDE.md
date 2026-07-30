@@ -60,16 +60,18 @@ Update existing memories rather than creating duplicates. Remove what's outdated
 - [Memory structure](memory/preferences/memory-structure.md) — idea/specific.md pattern, organization conventions
 - [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — store scripts as tracked files (templates/) and link by path; never paste code bodies into notes, even small ones
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — Always use ddev for CLI commands
+- [ddev Mutagen sync lag](memory/preferences/ddev-mutagen-sync-lag.md) — files written INSIDE the container (`drush cex`, composer, generators) reach the host seconds later, so reading them back immediately returns the PRE-command content and reads as "the command didn't work". On Drupal that invites blaming config_ignore/split/readonly for a filtering problem that doesn't exist. Verify via `ddev exec cat` (authoritative) or `ddev drush config:status`, not a host-side grep taken in the same breath
 - [Drupal caching](memory/drupal/caching.md) — Cache debugging, session poisoning, lazy builders without BigPipe, Exo component cache, Redis compress_length tuning
 - [D11.4 symfony/runtime allow-plugin](memory/drupal/d11-symfony-runtime.md) — D11.4 adopted Symfony Runtime; `symfony/runtime` allow-plugin must be `true` (not `false`) or `vendor/autoload_runtime.php` never generates and every web request WSODs while drush still bootstraps and hides it. Watch pre-11.4→11.4 bumps carrying a `false` suppression
 - [Cross-version DB pull](memory/drupal/cross-version-db-pull.md) — pulling an older-Drupal prod DB into newer local code and rebuilding (`cr`/`cim`) before `updatedb` dies on "Unknown column 'alias' in router" (D11.1's `system_update_11201` adds `{router}.alias`, absent in the pulled schema); correct order is `drush deploy` (updatedb→cim→cr). augustash ddev-pantheon-db ≥1.0.5 does this; older = manual `updb` after pull
 - [config_ignore over a config_split module deadlocks deploy](memory/drupal/config-split-ignore-collision.md) — `cim` aborts with "Configuration X depends on the Y module that will not be installed after import" when an `ignored_config_entities` pattern covers config owned by a module in a split's `module:` list: the split uninstalls the module, the ignore vetoes deleting its config, `ConfigImportSubscriber::validateModules` rejects the pair. Drop the ignore (the split already separates envs; the ignore also blocks split-folder edits from importing). Follow-on: the first reconciliation import can OOM Pantheon's 256MB CLI limit uninstalling a dozen modules at once — uninstalls persist incrementally, so re-run, or front-run a standalone `pm:uninstall`. Recurs on every DB moved from an env where the split was active
+- [An active split whose modules aren't installed empties its folder on export](memory/drupal/config-split-export-wipes-folder.md) — the export-side twin of the above: `cex` writes a split folder from ACTIVE config, so an active split whose `module:` list isn't installed (normal on a prod-sourced DB that never got a `cim`) silently deletes every file in `config-dev/` as an ordinary export result. Plain `cget …status` reports the STORED `false` and hides the `settings.local.php` override, so it reads as "the split is off, can't be the split" — use `--include-overridden`. Restore from git, `cim`, re-export. Don't blanket-revert: a post-update export mixes this with real removals (D11 dropped `field.settings` outright)
 - [BigPipe is not viable on Pantheon](memory/drupal/bigpipe-pantheon.md) — BigPipe is off on Pantheon, so lazy_builder is a no-op. But the cache impact is narrower than it looks: anonymous page_cache + Pantheon Varnish ignore bubbled max-age 0, so most sites cache fine despite scary headers. Diagnose via `x-drupal-cache`/`x-cache` HIT, not `x-drupal-cache-max-age`. AJAX-placeholder strategy module belongs under drupal_cache_protection if/when needed.
 - [GTranslate integration — prefer hosted subdomain](memory/drupal/gtranslate-integration.md) — Default to hosted subdomain (CNAME each language to `{server}.tdn.gtranslate.net`); zero app load. The self-hosted subdirectory PHP addon is a synchronous per-request TDN proxy with no curl timeout — it saturates PHP-FPM (Pantheon = 6 workers) and serves empty cached 200s. Only argument for subdirectory is SEO. No DNS control → reuse mymspconnect's off-request store rebuild, never a kernel.request fetch. Reference build: reell.com.
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — Keep a warm store bin from being wiped by drupal_flush_all_caches: untagged bin (omit `cache.bin`; only when cron/dedicated-tag owns freshness — msp flights board) vs decorator backend that no-ops deleteAll/invalidateAll but stays tagged so real content-tag invalidation still works (mymspconnect gtranslate store). Pick by who owns freshness.
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — A block/render `#cache` max-age never reaches the external Cache-Control (that's the global `system.performance:cache.page.max_age`); to give ONE page a short edge TTL, set the RESPONSE max-age in a response subscriber/middleware, keyed by cache tag. Volatile pages (wait times, parking, checkpoint/flight status) should ride a short TTL, not edge tag-purge — in a Pantheon Global CDN outage both `pantheon_clear_edge_all` and per-tag purges silently die while TTL keeps working. Diagnose with a live `invalidateTags` + `curl -sI` (last-modified/age unchanged = purge not landing); lone-holdout page = Surrogate-Key truncation. Refs: msp `ServicePageCacheSubscriber` (tag-keyed) + `FlightsBoardCacheMiddleware` (warm-bin).
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard names: index `global`, servers `pantheon_search` (prod) + `local` (DDEV); local server connection injected by settings.local.php against the standardized DDEV Solr Docker build (Solr 8.11 Cloud, `solr_cloud_basic_auth`, `ddev solrcollection` to upload configset). Don't hand-roll off-convention names.
-- [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV
+- [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — Setup and running PHPUnit kernel/unit tests in DDEV. **D9/10 and D11 configs are not interchangeable** (printerClass+listeners vs `<extensions>`; the classes behind each exist only in their own major) — templates for both in `templates/drupal/`; `--migrate-configuration` alone drops HTML output on an upgrade. Commit the config as `phpunit.xml.dist` or the `custom` testsuite exists on one machine only. PHPUnit 11 deprecates doc-comment metadata → `#[Group]`/`#[CoversClass]`/`#[DataProvider]`; provider string keys are now **named arguments**, so snake_case keys stop binding to camelCase params
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup, yarn install, tag-scoped runs. **W3C patch is D10-only** — #3421202 landed in core (verified 11.4.4), so on D11 it fails to apply and `composer-exit-on-patch-failure` aborts the whole update; drop it during a D10→D11 bump. Patch lives at vendor/augustash/claude-config/patches/
 - [Playwright UI test writing](memory/drupal/playwright-testing.md) — run resource-heavy tests serially (not parallel), wait on conditions not time, warm caches before timing-sensitive tests
 - [Update-hook testing](memory/drupal/update-hook-testing.md) — skip update-path tests for trivial idempotent config-merge update hooks; test the behavior instead, reserve UpdatePathTestBase for real data migrations
@@ -134,9 +136,11 @@ A **skill** is a procedure Claude loads on demand — a multi-step job with its 
 traps and deliverable. Distinct from memory, which is knowledge to recall (see
 [Memory vs. skill](#memory) above).
 
-Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`. Any tool a
-skill drives belongs in `templates/`, referenced by path — never pasted into the skill body
-(see [reference-scripts-not-embeds](memory/preferences/reference-scripts-not-embeds.md)).
+Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`, versioned
+with this package, so a refinement made on one project reaches every project on the next
+`composer update augustash/claude-config`. Any tool a skill drives belongs in `templates/`,
+referenced by path — never pasted into the skill body (see
+[reference-scripts-not-embeds](memory/preferences/reference-scripts-not-embeds.md)).
 
 **Installing into a project.** Claude Code only discovers skills in the project's
 `.claude/skills/`, so a skill in this package is not live until it's copied:
@@ -145,14 +149,43 @@ skill drives belongs in `templates/`, referenced by path — never pasted into t
 cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
 ```
 
+Copy per skill — don't symlink `.claude/skills` at this package's `skills/` directory. That
+directory is shared: the neo/jacerider modules ship their own skills into it
+(see [neo-skills-sync](memory/augustash/neo-skills-sync.md)), and a symlink would leave
+nowhere for them to land.
+
 Commit that copy with the project. On `composer update augustash/claude-config`, re-copy any
 skill whose canonical version changed — there is no automatic sync, the same gotcha the neo
-modules have (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).
+modules have.
 
 **Writing one.** Same commit-handoff rule as memory: Claude writes, indexes and pushes.
 Update the index below, and keep the `description:` frontmatter explicit about when the skill
 applies *and when it doesn't* — it's the only thing loaded until the skill fires.
 
+**Skills are Claude's domain, the same way memory is.** Claude owns writing, refining,
+reorganising and committing them — no need to ask, and no need to be asked. Showing the diff
+is optional transparency, not a review gate. The maintenance expectation mirrors
+[memory audit](memory/preferences/memory-audit.md):
+
+- **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
+  better pattern emerges, a stated preference generalises, or a mistake is worth not
+  repeating, fold it in *during that session* while the detail is fresh — don't defer
+  it to a cleanup pass that never comes.
+- **Active.** During a memory audit, give the skills the same pass: are they still
+  accurate, has one grown two topics that want splitting, is anything now wrong?
+- **Capture the corrections, not just the wins.** A skill that records only what
+  worked is half a skill. The errors — what was assumed, mis-measured or phrased
+  badly, and how it was caught — are what stop the next session repeating them.
+
+Owning them doesn't mean deciding alone. Ask when a judgement call would genuinely
+benefit from the team's view — whether a pattern generalises or was one client's
+taste, whether two skills should merge, what a convention *should* be rather than
+what it happened to be once. A skill built on a guess is worse than a question.
+
 ### Current skills
 
+One index, and it lives here — adding a skill means adding a bullet below, never opening a
+second Skills section elsewhere in this file.
+
+- [client-report](skills/client-report/SKILL.md) — evidence-led client reports and rebuild pitches: how to gather and verify the data, frame findings so they sell without overclaiming or implying neglect, structure the document, and ship it as a self-contained branded HTML page. Includes the colour/gradient working method and the verification traps that have bitten.
 - [content-audit](skills/content-audit/SKILL.md) — reduce a legacy CMS's content before migrating it: keep/move/consolidate/eliminate per node, then a verbatim-overlap sweep to catch two nodes saying one thing, then restructure the survivors. Carries the four scoring traps (boilerplate and small denominators inflate; the score is a candidate not a verdict; it can't see already-migrated content) and the group-vs-merge test. Two tools, pointed opposite ways: [templates/content-overlap-sweep.py](templates/content-overlap-sweep.py) sweeps the legacy CMS, [templates/audit-migrated-overlap.php](templates/audit-migrated-overlap.php) sweeps what already migrated — and a clean run on the second means "no copy-paste", never "nothing is duplicated"
