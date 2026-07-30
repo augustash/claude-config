@@ -251,12 +251,23 @@ problems:
 
 ### Removed utility functions
 
-`$.isFunction`, `$.isArray`, `$.trim`, `$.isWindow` are gone. Unmaintained
-vendored libraries still call them and throw, aborting their init — colorbox,
-select2 and old jQuery UI plugins are common offenders. The visible symptom is
-"a display looks slightly off", because a behaviour silently died.
+`$.isFunction`, `$.isArray`, `$.trim`, `$.isWindow`, `$.isNumeric`, `$.type`,
+`$.parseJSON`, `$.now` and `.andSelf()` are gone. Unmaintained vendored
+libraries still call them and throw, aborting their init — colorbox, select2 and
+old jQuery UI plugins are common offenders. The visible symptom is "a display
+looks slightly off", because a behaviour silently died.
 
-Catch them by capturing real console errors, not by reading source:
+**Check the list against the file, not against a blog post.** `.bind()`,
+`.unbind()`, `.delegate()`, `.undelegate()` and the shorthand event methods
+(`.click()`, `.focus()`, `.change()`…) are **still present** in the 4.0.0 Drupal
+ships — deprecated, not removed. Treating them as breakage sends you rewriting
+call sites for nothing:
+
+```bash
+grep -n "unbind:\|	trim:\|isFunction" web/core/assets/vendor/jquery/jquery.js
+```
+
+Catch the real ones by capturing console errors, not by reading source:
 
 ```js
 page.on('pageerror', e => errors.push(e.message));
@@ -264,10 +275,55 @@ page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
 ```
 
 For **vendored** libraries you do not own, shim (eXo does this for pickadate in
-`exo_form/lib/pickadate/jquery4-shim.js`). Attach via
-`hook_library_info_alter()` so load order is guaranteed rather than hoped for.
-For **your own** code, fix properly — native `.trim()`, `Array.isArray`,
-`typeof x === 'function'`.
+`exo_form/lib/pickadate/jquery4-shim.js`). For **your own** code, fix properly —
+native `.trim()`, `Array.isArray`, `typeof x === 'function'`.
+
+Find the offenders that are actually *on the page*, rather than every match in
+`web/libraries` (most hits are bundled test copies of jQuery itself):
+
+```bash
+curl -sk "$URL" | grep -oE 'src="[^"]*\.js[^"]*"' | sed 's/src="//;s/"//;s/?.*//' \
+  | grep '^/' | sort -u | sed 's|^|web|' | xargs grep -l "isFunction"
+```
+
+Attach the shim with `hook_library_info_alter()` so load order comes from the
+dependency graph. **Key it by the extension that DECLARES the library, which is
+often not the one the asset is named after** — `getLibraryByName()` returns
+`FALSE` and the shim silently never attaches if you guess:
+
+```php
+$needs_shim = [
+  'colorbox'    => ['colorbox'],
+  'webform'     => ['libraries.jquery.select2'],   // not select2/select2
+  'exo'         => ['jquery.ui.sortable'],
+  'color_field' => ['color-field-widget-spectrum'],
+];
+```
+
+Verify each one resolved, rather than assuming:
+
+```bash
+ddev drush php:eval '$d = \Drupal::service("library.discovery");
+print var_export($d->getLibraryByName("webform", "libraries.jquery.select2"), TRUE);'
+```
+
+#### The trap: never put a `weight` on the shim
+
+A shim library declaring `dependencies: [core/jquery]` is already guaranteed to
+load after jQuery and before its consumer. Adding a weight to "make sure it goes
+first" orders it **ahead of jQuery itself**, and since every such shim opens with
+
+```js
+if (typeof jQuery === 'undefined') { return; }
+```
+
+it becomes a silent no-op. Everything looks correctly wired — the file is on the
+page, `getLibraryByName()` shows the dependency — and the original error keeps
+throwing. Confirm the emitted order, don't infer it:
+
+```bash
+curl -sk "$URL" | grep -oE 'src="[^"]*(jquery4-shim|jquery\.min|colorbox)[^"]*"' | nl
+```
 
 ### jquery.once is gone
 
@@ -280,14 +336,70 @@ have an unresolvable dependency, and `$(sel).once('id')` throws unless something
 $(context).find(sel).once('id').each(function () { … $(this) … });
 // after
 once('id', sel, context).forEach(function (el) { … $(el) … });
+// or, to keep an existing jQuery chain intact with a minimal diff
+$(once('id', sel, context)).each(function () { … $(this) … });
 ```
 
 Expect this to be **partially done** already on older sites, which is why the
 breakage looks patchy. Grep both the library declarations and the call sites.
 
+Three shapes do not translate mechanically, and each fails differently:
+
+- **jQuery-only selectors** (`:visible`, `:first`) are not valid CSS, so they
+  cannot be the `selector` argument. Resolve the collection first and pass the
+  elements: `once('id', $('.block.cart:visible'))`.
+- **`$(window).once()` / `$(document).once()`** — `once()` marks elements via
+  `setAttribute`, so a non-`Element` throws or silently returns nothing. Keep the
+  handler on `window`/`document` and hang the guard off `body`:
+  ```js
+  if (once('my-id', 'body').length) { $(window).on('load resize', …); }
+  ```
+- **No-argument `.once()`** defaulted to the id `once`. Give it a real, unique id
+  — reusing one id across two behaviours means the second never runs.
+
+Note eXo bundles its own `lib/jquery.once/jquery.once.min.js`, so `.once()` may
+keep working at runtime long after you have removed the core dependency. That
+masks the problem locally; do not read "it still works" as "it is migrated".
+
 Do not take a jQuery *removal* as part of the upgrade. Drupal still ships it,
 contrib requires it, and the regression surface is exactly the pages you can
 least afford to break. Fix the removed APIs; leave the rest.
+
+### Rebuilding theme assets — two blockers before you can verify anything
+
+None of the above is testable until the theme/module assets recompile, and on an
+older site the build is usually broken before you start.
+
+- **`ddev gulp ddev` can never work.** In the augustash gulpfile `exports.ddev`
+  is the *host-side* task — it shells out to `ddev describe -j`. Run inside the
+  container that returns "You executed a ddev command…", and the failure surfaces
+  as `SyntaxError: Unexpected token 'Y', "You execut"... is not valid JSON`, which
+  reads like a drush problem and is not. Use the default task in-container
+  (`ddev gulp watch` is the normal flow). Note `ddev gulp` is hardcoded to the
+  *theme's* gulpfile — a custom module with its own build needs `-f`.
+- **`node-sass` cannot build on modern Node.** Python 3.12 dropped `distutils`,
+  so `npm install` dies in `node-gyp`. It is almost always a stale entry: the
+  gulpfile binds `gulp-sass` to dart-sass (`require('sass')`), so `node-sass` is
+  unused. Drop it from `package.json` rather than pinning Node backwards.
+
+Rebuilding also regenerates exo's CSS from the newly-installed exo, so expect a
+handful of changed `css/*.css` files that have nothing to do with your edit.
+Commit those separately — they are build output, not the fix.
+
+### Prove the regression test actually fails
+
+A console-error spec that only logs will pass forever. Assert on **uncaught
+exceptions** (`pageerror`) — console `error` entries are full of third-party
+noise you do not control — and then verify the test has teeth by reintroducing
+the bug and watching it go red:
+
+```js
+expect(pageErrors, `uncaught exceptions on ${path}`).toEqual([]);
+```
+
+When triaging that noise, attribute each message to its source before assuming
+it is yours. `m.location().url` groups them instantly, and on a marketing site
+the overwhelming majority belong to analytics, A/B and personalisation vendors.
 
 ---
 

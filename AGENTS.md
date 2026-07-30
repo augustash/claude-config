@@ -146,6 +146,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- **ddev db pull guard** — `vendor/augustash/claude-config/memory/augustash/ddev-db-pull-guard.md`  
+  hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
 - **ddev-wordpress WP Engine gate** — `vendor/augustash/claude-config/memory/augustash/ddev-wordpress-wpengine-gate.md`  
   what it rewrites in wp-config.php and .gitignore on every composer update
 - **WP Engine git deploy** — `vendor/augustash/claude-config/memory/augustash/wpengine-git-deploy.md`  
