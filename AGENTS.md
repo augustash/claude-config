@@ -95,6 +95,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   uncacheable form-page (CSRF/Turnstile → max-age 0) lives on anon page_cache; a periodic cron eviction dogpiles it (page_cache doesn't coalesce). Cron renders each variant off-path (loopback curl) + overwrites the canonical-cid entry tagless, never deleting → no cold hole. The app-level answer to the mid-day-purge case the deploy warmer punts on
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
   Tracking param handling via drupal_cache_protection, not CF cache rules
+- **A redirect never fires while its source path still has an alias** — `vendor/augustash/claude-config/memory/drupal/redirect-shadowed-by-alias.md`  
+  retiring a node is THREE steps: unpublish, redirect, **delete the alias**. `RedirectRequestSubscriber` runs `processInbound()` before `findMatchingRedirect()`, so a live alias resolves `news/…` to `node/N` and the lookup misses — the 301 sits in the table correct and unreachable. Nor does it fall through to `redirect_404`, because a custom `hook_node_access` returning **403** (md: unpublished composed page = "internal") pre-empts the 404. The stored row looks perfect, so verify with an anonymous `curl -sI` asserting 301, never from the table or while logged in. Bulk retire must capture aliases before deleting them or the verify checks nothing
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   cachetags table has no GC, needs periodic truncation; build a module
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
