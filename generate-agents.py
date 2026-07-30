@@ -37,6 +37,68 @@ ENTRY_RE = re.compile(
     r"^- \[(?P<title>[^\]]+)\]\((?P<path>memory/[^)]+)\)\s+—\s+(?P<desc>.+)$"
 )
 
+LINK_RE = re.compile(r"\]\((?P<path>(?:memory|skills)/[^)#]+)\)")
+HEADING_RE = re.compile(r"^(?P<hashes>#{2,3}) +(?P<title>.+?)\s*$")
+
+
+def index_paths(text, heading):
+    """Paths linked from the bullet list under `heading`, in order (may repeat)."""
+    found = []
+    in_section = False
+    for line in text.splitlines():
+        if line.startswith(heading):
+            in_section = True
+            continue
+        if in_section and line.startswith("#"):
+            break
+        if in_section and line.startswith("- "):
+            m = LINK_RE.search(line)
+            if m:
+                found.append(m.group("path"))
+    return found
+
+
+def lint(text):
+    """Structural problems in CLAUDE.md. Returns a list of message strings.
+
+    Catches the failure this exists for: a new skill or memory being added under a
+    freshly-invented duplicate section instead of the existing index, which quietly
+    leaves each index showing only half the corpus (happened 2026-07-29 — two
+    '## Skills' sections, one skill listed in each).
+    """
+    problems = []
+
+    seen_headings = {}
+    for line in text.splitlines():
+        m = HEADING_RE.match(line)
+        if m:
+            key = (len(m.group("hashes")), m.group("title").lower())
+            seen_headings[key] = seen_headings.get(key, 0) + 1
+    for (level, title), count in seen_headings.items():
+        if count > 1:
+            problems.append(
+                f"heading '{'#' * level} {title}' appears {count}× — merge the "
+                f"sections; a split index shows only part of the corpus"
+            )
+
+    for heading, glob, label in (
+        ("### Current global memories", "memory/**/*.md", "memory"),
+        ("### Current skills", "skills/*/SKILL.md", "skill"),
+    ):
+        listed = index_paths(text, heading)
+        for path in listed:
+            if listed.count(path) > 1:
+                problems.append(f"{label} '{path}' is indexed more than once")
+            if not (SCRIPT_DIR / path).exists():
+                problems.append(f"indexed {label} '{path}' does not exist on disk")
+        listed_set = set(listed)
+        for f in sorted(SCRIPT_DIR.glob(glob)):
+            rel = f.relative_to(SCRIPT_DIR).as_posix()
+            if rel not in listed_set:
+                problems.append(f"{label} '{rel}' exists but is not in '{heading}'")
+
+    return sorted(set(problems))
+
 
 def extract_entries(text):
     """Yield (title, path, description) from the memory index section."""
@@ -126,6 +188,15 @@ def main():
         return 1
 
     text = CLAUDE_MD.read_text()
+
+    problems = lint(text)
+    if problems:
+        print(f"Error: {CLAUDE_MD.name} is structurally inconsistent:", file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
+        print("Fix CLAUDE.md and rerun; AGENTS.md was not written.", file=sys.stderr)
+        return 1
+
     entries = list(extract_entries(text))
     if not entries:
         print(

@@ -23,7 +23,7 @@ Memory stewardship — the corpus, these notes, and the audit itself — is Clau
 
 ## Last audit
 
-`last_audit: 2026-07-27`
+`last_audit: 2026-07-29`
 
 Tracked **here in the module** — the corpus being audited is this package, so its audit date lives with it (committed, travels to every project on `composer update`). A project-local file can't track this: it's per-dev and invisible to everyone else, so the shared corpus would have no shared record. Only the date is kept — no history log. Each pass is a fresh-eyes review, not an incremental diff against a fractured timeline.
 
@@ -42,9 +42,38 @@ If nothing has changed, skip the review, bump `last_audit` to today, and move on
 **Shared memories (authored in `augustash/claude-config`, shipped to projects as `vendor/augustash/claude-config/memory/`):**
 - Are referenced files, functions, or modules still accurate?
 - Are any memories now obvious from the codebase and no longer worth keeping?
+- **Has the thing been FIXED UPSTREAM? Then delete the memory.** A bug nobody can hit again is
+  dead weight — it costs context on every session and sends the next reader looking for a
+  symptom that no longer exists. Reduce to a single line naming the fixed version only if a
+  project might still be pinned below it; otherwise remove it outright.
+  - **"Fixed" means released upstream, not repaired here.** A bug we fix with a patch we carry
+    is still live for every other project, and the patch itself needs maintaining (a
+    `composer update` can silently drop it). Keep those, and keep them explicit that the fix is
+    a local patch pending release.
+  - So the deletion trigger is a **release**, and the check is cheap: for each memory whose fix
+    is a local patch, is the patch still needed against the installed version? If a patch no
+    longer applies because upstream landed it, that memory is finished — delete it and drop the
+    patch.
 - Are memories concise, or have they grown bloated?
 - Can any be consolidated?
 - Do any conflict with [mission.md](mission.md) or [follow-site-conventions.md](follow-site-conventions.md)? (i.e. diary-shape rather than watch-and-suggest)
+
+**Structure of `CLAUDE.md` itself — run `python3 generate-agents.py` and read its output.**
+It now lints before it writes and exits non-zero on: a duplicated `##`/`###` heading, a
+memory or skill indexed twice, an index entry pointing at a file that doesn't exist, and a
+file in `memory/` or `skills/` that no index lists. Silence means the indexes and the disk
+agree — don't hand-verify what the script already covers.
+
+This check exists because prose alone didn't hold it: on 2026-07-29 the file had grown **two
+`## Skills` sections**, each with its own `### Current skills` listing a different skill, so
+either index read as the complete set while showing half of it. The cause is structural, not
+carelessness — the existing Skills section sat ~140 lines below the memory index, far enough
+off-screen that adding a skill near the top looked like starting a new one. Anything that
+splits an index will recur the same way, so the guard is mechanical and runs on every write.
+
+**Skills (`skills/{name}/SKILL.md`):** same accuracy and conciseness pass as memories — see
+[Skills → maintenance](../../CLAUDE.md#skills). Has one grown two topics that want splitting?
+Does the `description:` frontmatter still say when the skill applies *and when it doesn't*?
 
 **Per-project memories (`.claude/memory/` in the current project):**
 - Same staleness and conciseness checks.

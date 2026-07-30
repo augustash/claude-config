@@ -33,21 +33,38 @@ if (empty($value[$shape->getName()])) {
 
 ## Fix
 
-Ask whether the key is **there**, not whether it's truthy:
+Ask whether the key is **there**, not whether it's truthy — **but exempt regions**:
 
 ```php
 if (!is_array($value) || !array_key_exists($shape->getName(), $value)) {
   continue;
 }
+// A REGION cannot express a value: its children live in the component tree and
+// RegionShape::form() sets #access = FALSE, so every form rebuild submits an
+// empty array for it. Honouring that empty wipes the tree.
+if ($shape instanceof ComponentShapeRegionPluginInterface && empty($value[$shape->getName()])) {
+  continue;
+}
 ```
 
-`resolveChildValues()`, in the same class, already asks it exactly this way — the `empty()` is the outlier, which is the argument to lead with upstream.
+`resolveChildValues()`, in the same class, already asks it the `array_key_exists()` way — the `empty()` is the outlier, which is the argument to lead with upstream.
+
+⚠ **Ship the region exception with it, always.** Without it this patch converts one bug into a worse one: **the first Alchemist save of any component with a repeater-nested region empties every region on the page.** The stored tree still holds every child component, so nothing is lost — but the page renders its sections empty, and the unset props then show SDC examples, so it presents as catastrophic data loss. A re-run of the page's build script restores it completely, which is the tell that it is a resolution failure and not lost data.
 
 Project-local patch `patches/neo-alchemist-nested-falsy-value.patch` until released; not promoted to [[patches]] (one project so far), same as [[neo-alchemist-nested-markup]].
 
 ## Verify it's safe before shipping
 
-The change makes empty strings clear where they used to fall back, so confirm nothing relied on that. Render every composed page before and after and diff the byte lengths — on md, all 8 pages were identical except the one page carrying the bug, which lost exactly the stray widget.
+The change makes falsy values clear where they used to fall back, so confirm nothing relied on that.
+
+**Diffing rendered byte lengths is NOT sufficient — it is what missed the region regression.** Writing the tree from a script produces a correct page either way; the damage only appears once a human saves a component in the editor, because that is what submits the empty. So the verification has to include:
+
+1. Render every composed page, before and after — byte lengths identical except the page carrying the bug.
+2. **Then open a component in the Alchemist editor, change one field, save, and re-render.** Assert the region children are still there. This step is the one that matters and the only one that would have caught it.
+
+## The deeper cause, worth knowing
+
+This whole family — this bug, [[neo-alchemist-nested-markup]], and unused props rendering phantom example rows — is one behaviour: **`ComponentShapePluginBase::init()` seeds every shape with its schema `examples`** (`$defaultValue = $this->getDefaultValue()` → `setFieldItemValue()`) and only replaces that seed when an override value is present. Examples act as a *seed*, not a *fallback*, so absence or falsiness leaves fabricated content in place. The patches above each fix one downstream symptom. A prop a builder never writes will show its examples on the **live page** — the fix on our side is to write the key explicitly (present-but-empty), which is what lets the resolver tell "deliberately nothing" from "never set".
 
 ## First hit
 
