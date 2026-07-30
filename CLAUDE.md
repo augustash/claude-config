@@ -4,76 +4,24 @@ Team-wide conventions and preferences for Claude Code.
 
 ## Memory
 
-Two shared memory tiers, both committed to git so the whole team benefits. **Both are writable — save directly to these locations.** Prefer these over Claude's local auto-memory (`~/.claude/projects/`) for any knowledge worth sharing.
+Two tiers, both committed to git so the whole team benefits. **Both are writable — save
+directly to these locations.** Prefer them over Claude's local auto-memory
+(`~/.claude/projects/`) for anything worth sharing.
 
-### Global — `vendor/augustash/claude-config/memory/`
+- **Global** — `vendor/augustash/claude-config/memory/{topic}/{specific}.md`. Knowledge that
+  transcends any single project; ships into every project requiring this package.
+- **Per-project** — `.claude/memory/` in the project repo. Knowledge specific to one codebase.
 
-Knowledge that transcends any single project. Augustash internal modules and reusable code, cross-project debugging approaches, team tooling conventions, shared patterns. Lives inside this composer package and ships into every project that requires it.
+> **Writing, curating, or auditing a memory? Load the
+> [memory-management](skills/memory-management/SKILL.md) skill first.** It owns the decisions
+> (does this qualify, which tier, is it really a skill), the index-entry form, the
+> commit-and-push steps that finish the write, and the audit process. Reading an existing
+> memory needs nothing — just open the file the index points at.
 
-Organize as `{topic}/{specific}.md` — see [memory structure](memory/preferences/memory-structure.md).
-
-**Writing shared memory.** `vendor/augustash/claude-config/` is a real git working copy (the project installs the package via composer's prefer-source). To save a shared memory:
-
-1. Write or edit the file under `vendor/augustash/claude-config/memory/{topic}/{specific}.md`.
-2. Update the `### Current global memories` index in `vendor/augustash/claude-config/CLAUDE.md` to match.
-3. Run `python3 vendor/augustash/claude-config/generate-agents.py` so `AGENTS.md` stays in sync with the index.
-4. From inside `vendor/augustash/claude-config/`: `git add -A && git commit -m "..." && git push`. Other projects pick up the change on their next `composer update augustash/claude-config`.
-
-**Commit handoff convention.** Steps 1–3 are Claude's job and happen automatically as part of every shared-memory edit — generating `AGENTS.md` is not an optional follow-up, it's part of the write. Step 4 (commit + push) is also Claude's job for this repo specifically, because it's a self-contained shared package other projects depend on, so leaving local-only edits would defeat the purpose. This differs from project-level work, where the developer commits. Memory is Claude-owned and committed autonomously (see [memory-audit.md → Ownership](memory/preferences/memory-audit.md)) — showing the diff first is optional transparency, not a required review gate.
-
-Sanity-check before writing:
-
-- If `vendor/augustash/claude-config/.git` is missing (the package was installed via dist instead of source), don't write — edits will be clobbered on the next composer run. Surface that and ask the user to reinstall with `composer reinstall augustash/claude-config --prefer-source` first.
-- If `git status` inside the vendor copy shows `HEAD detached` (the project still uses a tagged version constraint), commits won't push to a branch. This package is distributed via `dev-master`, not tagged releases — surface that and ask the user to switch their project's constraint to `dev-master` and run `composer update augustash/claude-config` first.
-
-### Per-project — `.claude/memory/` in the project repo
-
-Knowledge specific to this codebase — integration details, architectural decisions, non-obvious configuration.
-
-### Qualification
-
-The test: **given a clear, direct prompt, would a fresh session still need to do real work to arrive at this understanding?** Ignore how the current session went — messy communication and high token spend don't mean the knowledge is complex. What matters is whether the knowledge *itself* was non-trivial to discover.
-
-Worth saving:
-- **Cross-system synthesis** — understanding required connecting dots across multiple files, services, or external docs that a fresh session would need to re-traverse.
-- **Non-obvious reasoning** — the "why" behind a choice isn't in the code. A future session would make the wrong call without it.
-- **External context** — API behaviors, vendor quirks, team decisions that live outside the codebase.
-
-Not worth saving: anything a fresh session could resolve with a grep, a read, or a quick command — even if this session took a long time to get there.
-
-**Choosing a tier:** if the knowledge would help on a different augustash project, it's global. If it only matters in this codebase, it's per-project. When in doubt, per-project — it can be promoted later.
-
-**Memory vs. skill:** memory is knowledge Claude should *recall* (a gotcha, a decision, a vendor quirk). A **skill** is a *procedure Claude should follow* — a multi-step job with its own method, traps and deliverable, worth loading only when that job comes up. If you find yourself writing a memory with numbered steps and a tool to run, it's a skill. See [Skills](#skills) below.
-
-Update existing memories rather than creating duplicates. Remove what's outdated. Keep files focused and concise.
-
-### Index entries are hooks, not summaries
-
-The index below is loaded into **every session, in full, forever**; the memory
-bodies are loaded only when opened. That asymmetry is the entire design — it's
-what lets the corpus grow without the per-session cost growing with it.
-
-So an index line pays rent on every session that never needs it, and its only
-job is to make the decision *"is this worth opening?"* Write the **trigger** —
-the symptom, the task, the thing you'd be staring at — not the finding:
-
-> ✅ `— a correct 301 sits in the table unreachable; retiring a node is three steps, not two`
-> ❌ `— retiring a node is THREE steps: unpublish, redirect, delete the alias. RedirectRequestSubscriber runs processInbound() before findMatchingRedirect(), so … [+400 chars]`
-
-The long form is worse *as an index*, not merely more expensive: it front-loads
-the conclusion and buries the trigger, so the thing being pattern-matched
-against sits forty words deep. Aim for **one line, ~120 characters** after the
-em dash. If it needs more, that's the body's job — and being unable to name the
-trigger in a line is a sign the memory itself is unfocused.
-
-Resist restating the fix here "so it's already loaded." It isn't a shortcut; it
-is the cost, paid every session, whether or not the memory is ever used.
-
-### Maintenance
-
-**Passive:** Every shared-memory save is a curator pass — scan the relevant topic dir for existing coverage, normalize shape and voice, reconcile any contradictions in one place, and keep the index in sync. See [mission.md → Steward role at write time](memory/preferences/mission.md) for the full posture.
-
-**Active audit:** Opportunistic — triggered by signals like a memory-heavy session, stale refs surfacing, or dev request. Daily pre-check as a floor so the corpus never drifts more than 24h. See [memory audit process](memory/preferences/memory-audit.md).
+The index below is a **table of contents**, loaded in full every session; bodies load only when
+opened. That asymmetry is what lets the corpus grow without the per-session cost growing with
+it — so entries are one-line hooks saying *when* a memory fires, never summaries of what it
+concluded. `generate-agents.py` enforces the ceiling.
 
 ### Current global memories
 
@@ -172,8 +120,9 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 ## Skills
 
 A **skill** is a procedure Claude loads on demand — a multi-step job with its own method,
-traps and deliverable. Distinct from memory, which is knowledge to recall (see
-[Memory vs. skill](#memory) above).
+traps and deliverable. Distinct from memory, which is knowledge to recall; the
+[memory-management](skills/memory-management/SKILL.md) skill (§3) has the test for telling
+them apart when a note starts growing steps.
 
 Canonical copies live in `vendor/augustash/claude-config/skills/{name}/SKILL.md`, versioned
 with this package, so a refinement made on one project reaches every project on the next
@@ -233,3 +182,4 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [client-report](skills/client-report/SKILL.md) — writing an evidence-led client report or rebuild pitch and shipping it as a branded HTML page
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
+- [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps

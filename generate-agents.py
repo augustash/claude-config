@@ -39,6 +39,15 @@ ENTRY_RE = re.compile(
 
 LINK_RE = re.compile(r"\]\((?P<path>(?:memory|skills)/[^)#]+)\)")
 HEADING_RE = re.compile(r"^(?P<hashes>#{2,3}) +(?P<title>.+?)\s*$")
+ANY_ENTRY_RE = re.compile(
+    r"^- \[(?P<title>[^\]]+)\]\((?P<path>(?:memory|skills)/[^)]+)\)\s+—\s+(?P<desc>.+)$"
+)
+
+# Longest an index description may be. The index loads in full every session while
+# bodies load on demand, so an entry that restates its finding spends that budget on
+# memories the session never opens — and buries the trigger it's matched against.
+# Target is ~120; this is the ceiling, generous enough that only real regressions trip.
+MAX_INDEX_DESC = 250
 
 
 def index_paths(text, heading):
@@ -98,6 +107,17 @@ def lint(text):
             rel = f.relative_to(SCRIPT_DIR).as_posix()
             if rel not in listed_set:
                 problems.append(f"{label} '{rel}' exists but is not in '{heading}'")
+
+    # Prose alone didn't hold the hook-not-summary rule — entries reached 1,100 chars by
+    # 2026-07-30 — so it's mechanical. See the memory-management skill, §5.
+    for line in text.splitlines():
+        m = ANY_ENTRY_RE.match(line)
+        if m and len(m.group("desc")) > MAX_INDEX_DESC:
+            problems.append(
+                f"index entry '{m.group('title')}' is {len(m.group('desc'))} chars "
+                f"(max {MAX_INDEX_DESC}) — write the trigger, not the finding; the "
+                f"detail belongs in {m.group('path')}"
+            )
 
     return sorted(set(problems))
 
