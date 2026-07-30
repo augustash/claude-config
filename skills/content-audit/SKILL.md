@@ -176,112 +176,17 @@ goes stale in public.
 **A page whose only content is an embed is invisible** to search and to AI retrieval. If the
 legacy page wrapped a video, keep its prose beside the video.
 
-## Pass 4 — turning legacy content into components
+## Pass 4 — hand off to the build
 
-The step between "this content survives" and "here is the component tree". This is the
-editorial half — deciding what shape the content actually *is*. Two other skills own the
-halves either side of it, and both should be loaded before you start building:
+Deciding what shape the surviving content actually *is* — reuse/extend/build-new, re-typing
+legacy markup as data, choosing table vs accordion vs prose, and verifying the built page — is
+its own job with its own traps, and it runs per section rather than once per project.
 
-- **`frontend-design`** — whenever presentation judgment is left: a new section's treatment,
-  or matching how an existing section already looks. Load it *before* coding, not after.
-  Skip it only for prescriptive moves where the value was handed to you. The failure it
-  prevents is matching the wrong thing — read the reference section's computed styles and
-  join its pattern rather than restating values.
-- **The project's component skill** (on a Neo project, `neo-component`) — how to actually
-  author or extend the component once you know what shape you need.
+**Load [content-to-components](../content-to-components/SKILL.md)** when you get there.
 
-### Establish the constraint before deciding the shape
-
-The same content takes a different shape depending on what the system can render and what
-you're permitted to add. Settle two things first, because they change the answer:
-
-1. **What components already exist**, and what each can actually carry. Read the props, not
-   the name — a component's title rarely tells you whether it takes a video, a repeater, or
-   an anchor.
-2. **Whether new components are on the table** for this piece of work. Reuse-only, extend-
-   permitted and build-new are three different briefs.
-
-Then work in that order — **reuse → extend → build new** — and make the escalation explicit:
-
-- **Reuse** if an existing component fits the content's real shape. It fits if the content
-  maps onto its props without contortion, not if it can be forced in.
-- **Extend** the component the section already uses, in preference to introducing a second
-  one doing nearly the same job. One additive optional prop usually beats a near-duplicate
-  component, and it inherits the behaviour, styling and editor UI already proven there.
-- **Build new** only when the content's shape genuinely isn't in the system. Flag it as a
-  decision (`⚠ NEW COMPONENT`) with what it costs — never silently build one, and never
-  silently reshape the content to dodge the gap. Quietly flattening a table into prose
-  because no table component exists is a content decision disguised as a technical one.
-
-If you're constrained to reuse only and nothing fits, **say so and describe the compromise**
-rather than absorbing it. "This ships as prose because the hub has no table component, and
-it loses the scan-down lookup" is a reviewable statement; silently shipping worse content
-is not.
-
-**Legacy markup encodes layout, not meaning. Re-type it as data.** Porting the old HTML
-carries its presentation decisions forward into a system that renders them differently.
-Extract the *relationships* and rebuild:
-
-| Legacy pattern | What it actually means | Rebuild as |
-|---|---|---|
-| `rowspan`, or an empty first cell meaning "same as the row above" | these rows share a parent | a **panel with its own heading**, one per parent |
-| `1. … <br> 2. … <br>` inside a cell | sequential steps | a real ordered list |
-| the same closing sentence inside every cell | one instruction, repeated | said **once**, after the list |
-| a paragraph restating something another page already explains | an unmanaged copy | a **link** to the one place it's written |
-| "the N, NP, LP and CSW series work this way" | *who this content is for* | a **field on the component**, not a sentence |
-
-**The rowspan case is the one that bites.** A merged cell survives the desktop table and then
-vanishes on mobile, where responsive tables turn each row into its own labelled record and
-continuation rows render with no parent at all. Don't fold the alternative either — an N-item
-cause list beside an N-item fix list asks the reader to pair them by position across a gap,
-and the pairing *is* the content. If a group has its own heading, its own anchor and its own
-rows, it's a panel. Once you stop assuming one table, the problem disappears.
-
-**Applicability is metadata, not a sentence.** Support content constantly names who it is for
-— which models, series, revisions or regions it covers — and legacy pages bury that in the
-middle of a paragraph. It is the *first* thing a reader needs and the one thing they scan for:
-is this about my unit? Buried in prose they have to read the paragraph to find out, and it
-cannot be filtered, listed or checked for staleness.
-
-So when a block's scope is stated in its copy, **lift it onto the component** — provided the
-component has, or can take, a field for it. The test:
-
-- It names **specific** hardware or variants, not a general audience. "For CSW and CMW series"
-  qualifies; "for most installations" does not.
-- It scopes **this block**, not a step inside it. A caveat on one instruction stays in the copy.
-- The list is **closed and checkable** — you could verify it against the catalog.
-
-Then remove the sentence. Leaving both means the page states its scope twice and the two can
-disagree; assert the absence in whatever verifies the build, because a later edit restoring the
-inline version is silent. Treat it as content, not a relationship — labels the editor types,
-not references resolved against a product entity. Applicability copy ages, but so does the
-catalog, and coupling them makes a content edit into a data migration.
-
-If the component has no such field, this is an **extend**, not a rewrite: one additive optional
-prop on the component the section already uses (see the escalation order above). If extending
-isn't on the table, leave the sentence and record it — a scope statement is not something to
-drop for want of a field.
-
-**Write each fact once and link to it.** Where two lookup paths need the same explanation,
-one holds it and the other points at it by anchor. Re-wording it then can't leave a stale
-copy behind. This is the same principle as the merge/group test, applied inside a page.
-
-**Check how anchors are derived before relying on them.** On some platforms a heading's `id`
-is slugged from its title, so re-wording a heading silently moves its anchor and breaks every
-inbound link. Verify against rendered output, not against a link appearing to work.
-
-**Pick the container by what the reader is doing:**
-
-- *scanning for their row* (a code, a model, a symptom) → a **table**, filterable past ~15 rows
-- *a set of independent questions* → an **accordion**, shut by default
-- *one continuous explanation* → a **prose block**
-- *a procedure* → ordered steps, with the warning that people skip pulled out above them
-
-**Tighten the key column.** A lookup table works when its first column reads down like an
-index — short scannable labels. Detail that pads a label belongs in the adjacent cell.
-
-**Re-point dead outbound links** at the new site as you go, and note any that have no
-destination yet rather than leaving them silently pointing at the old domain.
+What this skill owes it: the dispositions, the IA, and the audit document. What it must NOT
+absorb: the decision about what migrates. If you find yourself dropping content because no
+component fits, that is an audit decision being made by the build — come back here.
 
 ## Recording the decisions
 
@@ -300,21 +205,6 @@ of the reasoning, so:
   it isn't re-investigated.
 - **Fix contradictions upstream in the same pass.** When a decode changes a call, update the
   disposition tables and summary lists too, or the document starts disagreeing with itself.
-
-## Building sections
-
-Sections may be composed in code rather than clicked together, because a 22-row table is
-easier to get right and to review as a diff, and a verify pass can assert the result
-(anchors present, row counts per table, cross-links resolving).
-
-**Such builders are scaffolding, not a source of truth.** The content rides up with the
-database, and the moment anyone edits the page in the page builder a re-run silently
-discards their work. **Retire them at handoff** — the DB carries the content by then, and
-the audit doc remains the record of what was decided and why.
-
-A composed section is a **construction, not a migration**: legacy tables get re-typed as
-real data, `1. … <br> 2. …` prose becomes ordered lists, repeated boilerplate is stated
-once, and dead outbound links are re-pointed at the new site.
 
 ## Scope discipline
 

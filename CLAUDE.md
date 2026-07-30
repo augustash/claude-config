@@ -188,5 +188,6 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 
 - [client-report](skills/client-report/SKILL.md) — writing an evidence-led client report or rebuild pitch and shipping it as a branded HTML page
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
+- [content-to-components](skills/content-to-components/SKILL.md) — building a page out of audited content: what shape it is, reuse/extend/build-new, and verifying the result
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
