@@ -109,8 +109,31 @@ migrated** into the new site — a catalog product, a built feature, an existing
 is invisible to it. One node scored a clean 20% against its own cluster and turned out to be
 a product overview already owned by two live commerce products.
 
-> **Before building any section, check its nodes against already-migrated content by hand.**
-> Not automatable with this tool, and the trap most likely to ship.
+> **Before building any section, check its nodes against already-migrated content.**
+> The trap most likely to ship.
+
+Point the same method the other way, on the new site:
+[`templates/audit-migrated-overlap.php`](../../templates/audit-migrated-overlap.php) compares
+a proposed section's nodes against every product and node already there. Run it beside the
+sweep, before building.
+
+**But it clears less than it appears to, and this is the sharp edge.** It compares *wording*.
+A section built as a **construction** — re-typed rather than copied, which is what these
+builds should be — scores near zero against the very content it duplicates. On the reference
+project five guide procedures were re-written inline into a hub while the migrated articles
+carrying those same five procedures stayed published on dead URLs: **10% verbatim, one
+sentence, same substance.** Identical in kind to the 20% product overview.
+
+> Verbatim overlap is evidence of duplication. **Its absence is not evidence of
+> originality.** A clean run means "no copy-paste", never "nothing is duplicated" — finish
+> with the group-vs-merge test by hand.
+
+One implementation note, because it silently invalidates the entire check: when stripping
+markup, replace each tag with a **space**, not with nothing. PHP's `strip_tags()` turns
+`…distortion.</p><p>Some applications…` into `distortion.Some`, which no sentence splitter
+can break, so a whole article collapses into one giant sentence that matches nothing and the
+tool reports a confident no-overlap. The tell is a sentence count far below the same node's
+count in the legacy sweep.
 
 ### Group vs. merge — the distinction that decides everything
 
