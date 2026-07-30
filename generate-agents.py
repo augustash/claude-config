@@ -49,7 +49,9 @@ def index_paths(text, heading):
         if line.startswith(heading):
             in_section = True
             continue
-        if in_section and line.startswith("#"):
+        # Only a same-or-higher-level heading ends the section; `#### ` sub-headers
+        # group the index by topic and must not terminate the scan.
+        if in_section and re.match(r"#{1,3} ", line):
             break
         if in_section and line.startswith("- "):
             m = LINK_RE.search(line)
