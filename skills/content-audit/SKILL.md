@@ -228,6 +228,7 @@ Extract the *relationships* and rebuild:
 | `1. … <br> 2. … <br>` inside a cell | sequential steps | a real ordered list |
 | the same closing sentence inside every cell | one instruction, repeated | said **once**, after the list |
 | a paragraph restating something another page already explains | an unmanaged copy | a **link** to the one place it's written |
+| "the N, NP, LP and CSW series work this way" | *who this content is for* | a **field on the component**, not a sentence |
 
 **The rowspan case is the one that bites.** A merged cell survives the desktop table and then
 vanishes on mobile, where responsive tables turn each row into its own labelled record and
@@ -235,6 +236,31 @@ continuation rows render with no parent at all. Don't fold the alternative eithe
 cause list beside an N-item fix list asks the reader to pair them by position across a gap,
 and the pairing *is* the content. If a group has its own heading, its own anchor and its own
 rows, it's a panel. Once you stop assuming one table, the problem disappears.
+
+**Applicability is metadata, not a sentence.** Support content constantly names who it is for
+— which models, series, revisions or regions it covers — and legacy pages bury that in the
+middle of a paragraph. It is the *first* thing a reader needs and the one thing they scan for:
+is this about my unit? Buried in prose they have to read the paragraph to find out, and it
+cannot be filtered, listed or checked for staleness.
+
+So when a block's scope is stated in its copy, **lift it onto the component** — provided the
+component has, or can take, a field for it. The test:
+
+- It names **specific** hardware or variants, not a general audience. "For CSW and CMW series"
+  qualifies; "for most installations" does not.
+- It scopes **this block**, not a step inside it. A caveat on one instruction stays in the copy.
+- The list is **closed and checkable** — you could verify it against the catalog.
+
+Then remove the sentence. Leaving both means the page states its scope twice and the two can
+disagree; assert the absence in whatever verifies the build, because a later edit restoring the
+inline version is silent. Treat it as content, not a relationship — labels the editor types,
+not references resolved against a product entity. Applicability copy ages, but so does the
+catalog, and coupling them makes a content edit into a data migration.
+
+If the component has no such field, this is an **extend**, not a rewrite: one additive optional
+prop on the component the section already uses (see the escalation order above). If extending
+isn't on the table, leave the sentence and record it — a scope statement is not something to
+drop for want of a field.
 
 **Write each fact once and link to it.** Where two lookup paths need the same explanation,
 one holds it and the other points at it by anchor. Re-wording it then can't leave a stale
