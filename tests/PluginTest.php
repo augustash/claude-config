@@ -695,4 +695,111 @@ class PluginTest extends TestCase
         $event->method('isDevMode')->willReturn($devMode);
         return $event;
     }
+
+    /**
+     * Build a fake installed package with the given skills, plus a project root.
+     *
+     * @param array<string, array<string, string>> $packageSkills name => [relative path => contents]
+     * @return array{0: string, 1: string} [installPath, root]
+     */
+    private function skillFixture(array $packageSkills): array
+    {
+        $installPath = $this->tmp . '/vendor/augustash/claude-config';
+        foreach ($packageSkills as $name => $files) {
+            foreach ($files as $rel => $contents) {
+                $target = $installPath . '/skills/' . $name . '/' . $rel;
+                @mkdir(dirname($target), 0777, true);
+                file_put_contents($target, $contents);
+            }
+        }
+        $root = $this->tmp . '/project';
+        mkdir($root . '/.claude/skills', 0777, true);
+        return [$installPath, $root];
+    }
+
+    private function adopt(string $installPath, string $root, string $name): void
+    {
+        $dest = $root . '/.claude/skills/' . $name;
+        mkdir($dest, 0777, true);
+        foreach (scandir($installPath . '/skills/' . $name) as $entry) {
+            if ($entry === '.' || $entry === '..') continue;
+            $src = $installPath . '/skills/' . $name . '/' . $entry;
+            if (is_file($src)) {
+                copy($src, $dest . '/' . $entry);
+            }
+        }
+    }
+
+    public function testSyncSkillsRefreshesAnAdoptedSkillThatDriftedBehind(): void
+    {
+        [$installPath, $root] = $this->skillFixture([
+            'memory-management' => ['SKILL.md' => "v2 — refined upstream\n"],
+        ]);
+        // Project adopted v1 and never re-copied.
+        mkdir($root . '/.claude/skills/memory-management', 0777, true);
+        file_put_contents($root . '/.claude/skills/memory-management/SKILL.md', "v1\n");
+
+        $this->assertSame(['memory-management'], Plugin::syncSkills($installPath, $root));
+        $this->assertSame(
+            "v2 — refined upstream\n",
+            file_get_contents($root . '/.claude/skills/memory-management/SKILL.md')
+        );
+    }
+
+    public function testSyncSkillsLeavesUnadoptedSkillsUncopied(): void
+    {
+        // A WordPress project must not inherit the Drupal upgrade skill just
+        // because it lives in the package.
+        [$installPath, $root] = $this->skillFixture([
+            'drupal-11-upgrade' => ['SKILL.md' => "drupal\n"],
+            'memory-management' => ['SKILL.md' => "memory\n"],
+        ]);
+        $this->adopt($installPath, $root, 'memory-management');
+
+        $this->assertSame([], Plugin::syncSkills($installPath, $root));
+        $this->assertDirectoryDoesNotExist($root . '/.claude/skills/drupal-11-upgrade');
+    }
+
+    public function testSyncSkillsIsIdempotent(): void
+    {
+        [$installPath, $root] = $this->skillFixture([
+            'memory-management' => ['SKILL.md' => "same\n"],
+        ]);
+        $this->adopt($installPath, $root, 'memory-management');
+
+        // Already identical — reports no change, so composer output stays quiet.
+        $this->assertSame([], Plugin::syncSkills($installPath, $root));
+    }
+
+    public function testSyncSkillsMirrorsNestedFilesAndPrunesRemovedOnes(): void
+    {
+        [$installPath, $root] = $this->skillFixture([
+            'content-audit' => [
+                'SKILL.md' => "skill\n",
+                'references/palette.md' => "kept\n",
+            ],
+        ]);
+        $this->adopt($installPath, $root, 'content-audit');
+        // Stale leftover from an older version of the skill.
+        mkdir($root . '/.claude/skills/content-audit/references', 0777, true);
+        file_put_contents($root . '/.claude/skills/content-audit/references/gone.md', "dropped upstream\n");
+
+        $this->assertSame(['content-audit'], Plugin::syncSkills($installPath, $root));
+        $this->assertSame(
+            "kept\n",
+            file_get_contents($root . '/.claude/skills/content-audit/references/palette.md')
+        );
+        $this->assertFileDoesNotExist($root . '/.claude/skills/content-audit/references/gone.md');
+    }
+
+    public function testSyncSkillsNoOpWhenProjectHasNoSkillsDirectory(): void
+    {
+        [$installPath, $root] = $this->skillFixture([
+            'memory-management' => ['SKILL.md' => "x\n"],
+        ]);
+        $this->rrmdir($root . '/.claude/skills');
+
+        $this->assertSame([], Plugin::syncSkills($installPath, $root));
+        $this->assertDirectoryDoesNotExist($root . '/.claude/skills');
+    }
 }

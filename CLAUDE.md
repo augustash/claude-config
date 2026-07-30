@@ -142,9 +142,15 @@ directory is shared: the neo/jacerider modules ship their own skills into it
 (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)), and a symlink would leave
 nowhere for them to land.
 
-Commit that copy with the project. On `composer update augustash/claude-config`, re-copy any
-skill whose canonical version changed — there is no automatic sync, the same gotcha the neo
-modules have.
+Commit that copy with the project. **Adoption is manual; staying current is not** — the
+composer Plugin's `syncSkills()` refreshes every *already-adopted* copy on each
+`composer update augustash/claude-config`, prints which ones changed, and leaves skills the
+project never adopted alone (a WordPress project shouldn't inherit the Drupal upgrade skill).
+The package copy is canonical, so a local edit to a project copy gets overwritten — refine it
+here instead. Commit the refreshed copy with the bump.
+
+This only covers *this* package's skills. The neo/jacerider modules still have the manual
+gotcha (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).
 
 **Writing one.** Same commit-handoff rule as memory: Claude writes, indexes and pushes.
 Update the index below, and keep the `description:` frontmatter explicit about when the skill

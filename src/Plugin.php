@@ -210,6 +210,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (self::addAuditHook($root . '/.claude/settings.json')) {
             $this->info('wired memory-audit SessionStart hook into .claude/settings.json');
         }
+        $skills = self::syncSkills($installPath, $root);
+        if ($skills !== []) {
+            $this->info(
+                'refreshed .claude/skills/: ' . implode(', ', $skills)
+                . ' — commit the update with the bump'
+            );
+        }
     }
 
     /**
@@ -509,6 +516,109 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $settings['hooks'] = $hooks;
 
         return self::writeJsonObject($file, $settings);
+    }
+
+    /**
+     * Refresh the project's copies of this package's skills.
+     *
+     * Claude Code only discovers skills in the project's own .claude/skills/,
+     * so each is copied there rather than referenced in vendor/. Nothing re-copies
+     * them afterwards, so before this existed a skill refined here stayed frozen in
+     * every project that had already adopted it — silently, since a stale copy looks
+     * exactly like a current one.
+     *
+     * Refreshes only skills the project has ALREADY adopted. Adoption stays a
+     * deliberate per-project act (`cp -R vendor/…/skills/<name> .claude/skills/`) —
+     * pushing every skill everywhere would hand a WordPress project the Drupal
+     * upgrade skill and vice versa.
+     *
+     * The package copy is canonical: local edits to a project copy are overwritten,
+     * which is why refinements belong upstream in this repo. Each adopted skill is
+     * mirrored exactly, so files dropped upstream don't linger in the project.
+     *
+     * @return string[] Names of skills whose project copy changed.
+     */
+    public static function syncSkills(string $installPath, string $root): array
+    {
+        if ($installPath === '' || !is_dir($installPath . '/skills')) {
+            return [];
+        }
+        $projectSkills = $root . '/.claude/skills';
+        if (!is_dir($projectSkills)) {
+            return [];
+        }
+
+        $updated = [];
+        foreach ((array) glob($installPath . '/skills/*', GLOB_ONLYDIR) as $source) {
+            $name = basename($source);
+            $dest = $projectSkills . '/' . $name;
+            // Not adopted here — leave it alone.
+            if (!is_dir($dest)) {
+                continue;
+            }
+            if (self::mirrorDirectory($source, $dest)) {
+                $updated[] = $name;
+            }
+        }
+        sort($updated);
+
+        return $updated;
+    }
+
+    /**
+     * Make $dest an exact copy of $src: write files whose contents differ, then
+     * remove anything in $dest that $src no longer has.
+     *
+     * @return bool True if anything was written or removed.
+     */
+    private static function mirrorDirectory(string $src, string $dest): bool
+    {
+        $changed = false;
+        $wanted = [];
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($src, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($files as $file) {
+            $rel = substr($file->getPathname(), strlen($src) + 1);
+            $target = $dest . '/' . $rel;
+            $wanted[$rel] = true;
+            if ($file->isDir()) {
+                if (!is_dir($target) && @mkdir($target, 0777, true)) {
+                    $changed = true;
+                }
+                continue;
+            }
+            $contents = (string) file_get_contents($file->getPathname());
+            if (is_file($target) && file_get_contents($target) === $contents) {
+                continue;
+            }
+            if (!is_dir(dirname($target))) {
+                @mkdir(dirname($target), 0777, true);
+            }
+            if (file_put_contents($target, $contents) !== false) {
+                $changed = true;
+            }
+        }
+
+        // Deepest-first so a directory is empty by the time it's removed.
+        $existing = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dest, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($existing as $file) {
+            $rel = substr($file->getPathname(), strlen($dest) + 1);
+            if (isset($wanted[$rel])) {
+                continue;
+            }
+            $ok = $file->isDir() ? @rmdir($file->getPathname()) : @unlink($file->getPathname());
+            if ($ok) {
+                $changed = true;
+            }
+        }
+
+        return $changed;
     }
 
     /**
