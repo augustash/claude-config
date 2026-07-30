@@ -26,6 +26,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
+- **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
+  before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
+- **Tables sidescroll, never restack into records** — `vendor/augustash/claude-config/memory/preferences/table-sidescroll-default.md`  
+  reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
