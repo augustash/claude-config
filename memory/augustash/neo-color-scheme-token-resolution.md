@@ -51,4 +51,4 @@ Once the mechanism works, there is still a choice about *how far* a panel travel
 
 Prefer crossing all the way to the ground the brand actually has, and inverting the panel's ink with it, over a partial lift. If the ink cannot follow, that is the signal the panel needs its own scheme scope rather than a hand-tuned mix.
 
-First hit: ar-md (md) 2026-07-27, knowledge articles opening in a full-screen `scheme-dark` modal. See [[neo-skills-sync]] and [[neo-alchemist-nested-markup]] for the other neo gotchas.
+First hit: ar-md (md) 2026-07-27, knowledge articles opening in a full-screen `scheme-dark` modal. See [[neo-skills-sync]] and [[neo-alchemist-example-seeding]] for the other neo gotchas.

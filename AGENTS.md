@@ -26,6 +26,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
+- **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
+  before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
+- **Tables sidescroll, never restack into records** — `vendor/augustash/claude-config/memory/preferences/table-sidescroll-default.md`  
+  reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
@@ -122,10 +126,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `composer update` does not refresh the project's `.claude/skills/` copies
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
-- **neo_alchemist discards nested markup values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-markup.md`  
-  a nested markup prop renders the SDC example instead of stored data
-- **neo_alchemist overwrites a nested prop stored FALSE** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-falsy-value.md`  
-  same symptom, separate cause; a stored `false` is read as never-written
+- **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
+  content on the page nobody authored; editors see repeater rows they never created
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  

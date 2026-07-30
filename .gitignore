@@ -1,5 +1,7 @@
 /vendor/
 composer.lock
+__pycache__/
+*.pyc
 .phpunit.result.cache
 /.phpunit.cache/
 .last-run.log
