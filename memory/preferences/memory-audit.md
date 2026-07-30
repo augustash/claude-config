@@ -42,6 +42,18 @@ If nothing has changed, skip the review, bump `last_audit` to today, and move on
 **Shared memories (authored in `augustash/claude-config`, shipped to projects as `vendor/augustash/claude-config/memory/`):**
 - Are referenced files, functions, or modules still accurate?
 - Are any memories now obvious from the codebase and no longer worth keeping?
+- **Has the thing been FIXED UPSTREAM? Then delete the memory.** A bug nobody can hit again is
+  dead weight — it costs context on every session and sends the next reader looking for a
+  symptom that no longer exists. Reduce to a single line naming the fixed version only if a
+  project might still be pinned below it; otherwise remove it outright.
+  - **"Fixed" means released upstream, not repaired here.** A bug we fix with a patch we carry
+    is still live for every other project, and the patch itself needs maintaining (a
+    `composer update` can silently drop it). Keep those, and keep them explicit that the fix is
+    a local patch pending release.
+  - So the deletion trigger is a **release**, and the check is cheap: for each memory whose fix
+    is a local patch, is the patch still needed against the installed version? If a patch no
+    longer applies because upstream landed it, that memory is finished — delete it and drop the
+    patch.
 - Are memories concise, or have they grown bloated?
 - Can any be consolidated?
 - Do any conflict with [mission.md](mission.md) or [follow-site-conventions.md](follow-site-conventions.md)? (i.e. diary-shape rather than watch-and-suggest)
