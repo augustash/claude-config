@@ -122,10 +122,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `composer update` does not refresh the project's `.claude/skills/` copies
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
-- **neo_alchemist discards nested markup values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-markup.md`  
-  a nested markup prop renders the SDC example instead of stored data
-- **neo_alchemist overwrites a nested prop stored FALSE** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-nested-falsy-value.md`  
-  same symptom, separate cause; a stored `false` is read as never-written
+- **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
+  content on the page nobody authored; editors see repeater rows they never created
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  

@@ -49,4 +49,4 @@ foreach ($db->query('SELECT entity_id, field_full_props FROM {node__field_full}'
 
 Fix through the entity API (load → decode the `props` column → walk → `setValue()` → `save()`), not raw SQL, so cache tags invalidate. `setNewRevision(FALSE)` keeps a data repair out of the revision history.
 
-First hit: ar-md (md) 2026-07-27, two seeded knowledge articles, 4 values. See [[neo-alchemist-nested-markup]] for the other way a nested component prop silently fails to reach the page — same symptom class, different cause, and worth ruling out together.
+First hit: ar-md (md) 2026-07-27, two seeded knowledge articles, 4 values. See [[neo-alchemist-example-seeding]] for the other way a component prop silently fails to reach the page — same symptom class, different cause, and worth ruling out together.

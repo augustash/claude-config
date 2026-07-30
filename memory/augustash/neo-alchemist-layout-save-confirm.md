@@ -35,4 +35,4 @@ pane one. A click that misses leaves the dialog open and the page unchanged,
 which reads exactly like a save that silently failed — always confirm against
 stored data rather than the editor UI.
 
-Related: [[neo-alchemist-nested-markup]]
+Related: [[neo-alchemist-example-seeding]]
