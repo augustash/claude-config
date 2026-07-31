@@ -28,7 +28,7 @@ than the narrowest level that makes the symptom go away. Two habits that follow:
 
 The corollary is that a genuinely instance-specific need is a signal about the *component*: it
 usually wants an additive optional prop, not a bespoke rule. See the reuse → extend → build-new
-escalation in the `content-to-components` skill.
+escalation in the `content-migration-to-components` skill.
 
 Related: [[tailwind-no-arbitrary-values]] is the same instinct one level down — an arbitrary
 value opts a single element out of the scale the way a page-scoped rule opts a single page out

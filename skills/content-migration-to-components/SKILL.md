@@ -1,6 +1,6 @@
 ---
-name: content-to-components
-description: Turn surviving legacy content into a component tree — decide what shape the content actually is, choose reuse/extend/build-new, re-type legacy markup as data, and verify the built page. Use when building a page or section out of audited content, composing sections in a build script, deciding whether content wants a table/accordion/prose block, lifting applicability or scope out of prose, or writing the verify pass for a composed page. NOT for deciding WHICH content survives (that is content-audit, which runs first), and NOT for authoring the component itself — the project's component skill owns that once you know the shape you need.
+name: content-migration-to-components
+description: Turn content surviving a CMS migration into a component tree — decide what shape the content actually is, choose reuse/extend/build-new, re-type legacy markup as data, and verify the built page. Use when building a page or section out of audited legacy content, composing sections in a build script, deciding whether migrated content wants a table/accordion/prose block, lifting applicability or scope out of prose, or writing the verify pass for a composed page. Assumes a legacy source: NOT for greenfield page-building, NOT for deciding WHICH content survives (that is content-audit, which runs first), and NOT for authoring the component itself — the project's component skill owns that once you know the shape you need.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

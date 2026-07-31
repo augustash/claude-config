@@ -182,7 +182,7 @@ Deciding what shape the surviving content actually *is* — reuse/extend/build-n
 legacy markup as data, choosing table vs accordion vs prose, and verifying the built page — is
 its own job with its own traps, and it runs per section rather than once per project.
 
-**Load [content-to-components](../content-to-components/SKILL.md)** when you get there.
+**Load [content-migration-to-components](../content-migration-to-components/SKILL.md)** when you get there.
 
 What this skill owes it: the dispositions, the IA, and the audit document. What it must NOT
 absorb: the decision about what migrates. If you find yourself dropping content because no
