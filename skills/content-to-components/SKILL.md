@@ -235,11 +235,11 @@ A detector suite scored 13/13 while two cases were wrong, because the check used
 "expected starts with actual" and `"UL 1741"` starts with `"UL"` — the exact bug being tested
 for read as a pass. Assert equality against the full expected value.
 
-**Assertions only confirm what someone thought to check.** Everything found on md 2026-07-31 —
-a component invisible at one window height, four stacked tables reading as a wall, a masthead
-on the wrong rhythm — was found by *looking at the page*, while every assertion stayed green
-throughout. Budget a read-through as a reader, at desktop and mobile, and treat it as part of
-building rather than as review.
+**Assertions only confirm what someone thought to check.** On one build every defect in a
+finished, fully-asserted set of articles was found by *looking at the page* — a component
+invisible at one window height, four stacked tables reading as a wall, a masthead on the wrong
+rhythm — while every assertion stayed green throughout. Budget a read-through as a reader, at
+desktop and mobile, and treat it as part of building rather than as review.
 
 ### Calibrate any detector against the real corpus first
 
