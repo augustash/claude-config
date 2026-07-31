@@ -24,6 +24,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   audit triggers and the `last_audit` daily floor
 - **Leave stopwords out of method names** — `vendor/augustash/claude-config/memory/preferences/method-naming.md`  
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
+- **Style rules cover as much ground as possible** — `vendor/augustash/claude-config/memory/preferences/style-rules-cover-ground.md`  
+  before scoping a style fix to one page or instance; Kaza's rule on uniformity
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
@@ -123,7 +125,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs to check before building anything from scratch
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
-  `composer update` does not refresh the project's `.claude/skills/` copies
+  after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
@@ -132,6 +134,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
+- **Neo component-spacing ramp is bottom-heavy** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-ramp.md`  
+  sections read as run together on mobile while desktop looks right
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
