@@ -27,6 +27,17 @@ Ids are stored bare. neo prepends the style when building the class:
 
 So any id that already carries `regular-` / `solid-` / `light-` / `brands-` / `duotone-` / `thin-` is dead on arrival. Easy to introduce when props are written programmatically (a migration, a seeded article) by copying the *class* name instead of the id.
 
+## `drush neoi-list` hands you the broken form
+
+The lookup you'd naturally reach for is the one that produces the bad value. Its **Name** and **Twig** columns both print prefixed:
+
+```
+ Name                 Library   Twig
+ brands-think-peaks   brands    icon('brands-think-peaks')
+```
+
+Copy that `icon('brands-think-peaks')` — which reads as a ready-to-paste call, not a class — and you get an empty span. **Strip the library segment**: the id is `think-peaks`. This is not a display bug to work around; the class genuinely is `icon-brands-think-peaks`, and the column is showing the class. Confirm with the render test above before storing a value found this way.
+
 `IconRepository::getIcon()` is not the way to check — it returned NULL for known-good ids too. Render the element instead:
 
 ```php

@@ -139,7 +139,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
-  an icon silently renders empty, reading as "no icon support"
+  an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   tracking-param strip/redirect, facets + search submodules
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
