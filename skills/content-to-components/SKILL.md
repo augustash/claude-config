@@ -107,6 +107,37 @@ If the component has no such field, this is an **extend**, not a rewrite: one ad
 prop on the component the section already uses. If extending isn't on the table, leave the
 sentence and record it — a scope statement is not something to drop for want of a field.
 
+### Prefer deriving it over authoring it
+
+A field the editor types is the fallback, not the goal. When the fact is **already stated in
+the copy in a recognisable form**, compute the strip from the copy at render and give the
+component no prop at all. Then there is nothing to mistype, nothing to drift, and no second
+place stating the same thing.
+
+Derive when the citation is self-identifying — a standard (`IEEE 1547`, `UL 1741`), a part
+number, a revision. Author when it is not: a list of model designations includes tokens like
+`N`, `T` and `MM`, and no pattern distinguishes those from ordinary words. If you must match
+open-ended tokens, match them **exactly and case-sensitively against a whitelist you already
+own** (the catalog's own SKUs), never by shape.
+
+**Where derivation can link, the prose should not.** A citation reads as part of its sentence;
+linking every mention mid-paragraph turns a technical note into a link farm. One place to
+click, at the point the reader is looking them up.
+
+### ⚠ Lifting out and deriving are opposites
+
+This is the trap, and it is easy to walk into having done both correctly:
+
+**Lifting a sentence onto a field deletes the very text a detector would read.** A block whose
+scope was lifted last month has prose that no longer names a single model, so a detector added
+this month finds nothing and the strip renders empty — with no error, on a page that previously
+worked.
+
+So decide the mechanism **before** removing anything, and if a section already has lifted
+values, converting it to derivation means putting the sentence back. Where both must coexist,
+derive-and-fill with the authored value standing where prose is silent is the only form that
+degrades gracefully — at the cost of keeping the editable field you were trying to remove.
+
 ## Choosing the container
 
 **Pick by what the reader is doing:**
@@ -198,6 +229,37 @@ kinds of check, and the last two are the ones people skip:
 
 Name what each check is defending in its label. A failing assertion whose message is the
 selector tells the next reader nothing about why it mattered.
+
+**Compare exactly.** A loose comparison turns a failing check green and you will believe it.
+A detector suite scored 13/13 while two cases were wrong, because the check used
+"expected starts with actual" and `"UL 1741"` starts with `"UL"` — the exact bug being tested
+for read as a pass. Assert equality against the full expected value.
+
+**Assertions only confirm what someone thought to check.** Everything found on md 2026-07-31 —
+a component invisible at one window height, four stacked tables reading as a wall, a masthead
+on the wrong rhythm — was found by *looking at the page*, while every assertion stayed green
+throughout. Budget a read-through as a reader, at desktop and mobile, and treat it as part of
+building rather than as review.
+
+### Calibrate any detector against the real corpus first
+
+If a section is derived by pattern, run the pattern over **all existing content before trusting
+it**, deliberately loose, and read what comes back. Inventing the rules and then checking a few
+cases finds the false negatives and none of the false positives.
+
+Real returns from one such pass, none of which were predicted:
+
+- Matching case-insensitively reported **16 standards that were `</ul>` close tags** — scanning
+  stored props as JSON rather than rendered text.
+- `ANSI 110–127 VAC` — a voltage range read as a standard number. A trailing range or unit
+  disqualifies.
+- `NEC 96` — some bodies are cited by **edition**, not standard number.
+- The same standard appearing three ways in existing copy (`UL 1741`, `UL-1741`, `UL458`),
+  which is the normalisation the strip exists to hide.
+
+Then let the *detection* stay open-ended and keep any curated map to presentation only. A
+pattern that matches anything of the right shape needs no maintenance as new values appear; a
+list of known values goes stale the first time someone writes a new one.
 
 ## Scope discipline
 
