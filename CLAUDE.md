@@ -65,6 +65,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [config_ignore over a config_split module deadlocks deploy](memory/drupal/config-split-ignore-collision.md) — `cim` aborts with "depends on the Y module that will not be installed"
 - [An active split whose modules aren't installed empties its folder on export](memory/drupal/config-split-export-wipes-folder.md) — `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - [A redirect never fires while its source path still has an alias](memory/drupal/redirect-shadowed-by-alias.md) — a correct 301 sits in the table unreachable; retiring a node is three steps, not two
+- [Gating a Drupal file takes three things](memory/drupal/private-file-gate.md) — a restricted file still downloads though `file_managed` says `private://`; also after any migration whose source had private files
 - [BigPipe is not viable on Pantheon](memory/drupal/bigpipe-pantheon.md) — lazy_builder is a no-op there; also how to actually diagnose whether a page caches
 - [GTranslate integration](memory/drupal/gtranslate-integration.md) — choosing hosted-subdomain vs the subdirectory addon, which saturates PHP-FPM
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush

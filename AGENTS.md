@@ -73,6 +73,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - **A redirect never fires while its source path still has an alias** — `vendor/augustash/claude-config/memory/drupal/redirect-shadowed-by-alias.md`  
   a correct 301 sits in the table unreachable; retiring a node is three steps, not two
+- **Gating a Drupal file takes three things** — `vendor/augustash/claude-config/memory/drupal/private-file-gate.md`  
+  a restricted file still downloads though `file_managed` says `private://`; also after any migration whose source had private files
 - **BigPipe is not viable on Pantheon** — `vendor/augustash/claude-config/memory/drupal/bigpipe-pantheon.md`  
   lazy_builder is a no-op there; also how to actually diagnose whether a page caches
 - **GTranslate integration** — `vendor/augustash/claude-config/memory/drupal/gtranslate-integration.md`  
