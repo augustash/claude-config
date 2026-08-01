@@ -136,6 +136,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   content on the page nobody authored; editors see repeater rows they never created
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
+- **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
+  before removing one plugin programmatically, or when one you never touched disappears
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo component-spacing ramp is bottom-heavy** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-ramp.md`  
