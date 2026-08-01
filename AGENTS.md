@@ -32,6 +32,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
 - **Tables sidescroll, never restack into records** — `vendor/augustash/claude-config/memory/preferences/table-sidescroll-default.md`  
   reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
+- **Sidescroll dead zones** — `vendor/augustash/claude-config/memory/preferences/sidescroll-dead-zones.md`  
+  a strip that scrolls over its middle but not its edges, or won't drag; also: never hijack a plain vertical wheel
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
