@@ -142,6 +142,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before removing one plugin programmatically, or when one you never touched disappears
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
+- **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
+  a theme rule on a submit button half-applies, with no `!important` and nothing visibly overriding it
 - **Neo component-spacing ramp is bottom-heavy** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-ramp.md`  
   sections read as run together on mobile while desktop looks right
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
