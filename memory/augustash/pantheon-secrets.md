@@ -6,7 +6,9 @@ type: reference
 
 # Pantheon Secrets (Terminus core) — two systems, and the multiline trap
 
-Pantheon's secrets feature moved from the deprecated `terminus-secrets-manager-plugin` (and the deprecated `pantheon_secrets` EA Drupal module) into **Terminus core** (4.2.0+). Commands: `terminus secret:site:set|list|delete <site[.env]> <name> <value>`.
+Pantheon's secrets feature moved from the deprecated `terminus-secrets-manager-plugin` into **Terminus core** (4.2.0+). Commands: `terminus secret:site:set|list|delete <site[.env]> <name> <value>`.
+
+> ⚠ **Correction (2026-08-02).** An earlier version of this note also called the `pantheon_secrets` **Drupal module** deprecated. That was wrong — it conflated the module with the Secrets **EA program** its README references. The module is actively maintained: 1.1.0 released 2026-07-03, stable, security-team covered, `^10 || ^11`. Verified on drupal.org, and adopted on ar-md. Don't avoid it on the strength of the old wording here.
 
 ## It is NOT the legacy files/private/secrets.json
 
@@ -17,7 +19,25 @@ These are **two independent systems** that coexist; don't conflate them:
 
 Verified empirically: set a value with `secret:site:set`, then on the env `pantheon_get_secret()` returns it AND `files/private/secrets.json` still exists separately (unchanged). So a value set via Terminus is invisible to a `file_get_contents('private://secrets.json')` reader unless you also write the file.
 
-**App-read pattern:** make the credential reader prefer `pantheon_get_secret($key)` when `function_exists()`, fall back to the local `private://secrets.json` file otherwise (so the same `get()` works on Pantheon and locally). Avoids a new module dependency (don't need the deprecated `pantheon_secrets` Drupal module + Key for a couple of keys).
+## Reading them in Drupal — prefer Key + pantheon_secrets
+
+**Default to `drupal/pantheon_secrets`**, which provides a **Key provider plugin**, so each credential becomes one Key entity and only the secret's *name* is in exported config. Reasons to prefer it over a hand-rolled reader:
+
+- `drupal/key` is often already installed and enabled (Turnstile, and most mail/API modules require it), so it is usually not a new dependency at all — check `core.extension.yml` before assuming it is.
+- Contrib that wants a credential (Symfony Mailer/Postmark, Turnstile) consumes a **Key entity** natively. A bespoke reader has to be adapted to each one; a Key entity is just selected.
+
+**Set the secret** `--type=runtime --scope=web`, and **site-level (omit the env)** so dev/test/live all resolve it with nothing to redo at launch.
+
+⚠ **Omit `base64_encoded` from `key_provider_settings`.** The module's config schema (`key.provider.pantheon`) declares only `secret_name`, so including it makes the exported config schema-invalid and Drupal warns on save. `getKeyValue()` guards it with `isset()`, so leaving it out is safe for any value that is not encoded.
+
+⚠ **Locally the Pantheon provider has no platform to call.** Override the provider per key in `settings.local.php` rather than editing the entity, so exported config keeps the Pantheon provider:
+
+```php
+$config['key.key.<id>']['key_provider'] = 'config';
+$config['key.key.<id>']['key_provider_settings'] = ['key_value' => '…'];
+```
+
+**Hand-rolled alternative**, still fine for a site with one or two credentials and no Key module: prefer `pantheon_get_secret($key)` when `function_exists()`, fall back to `$settings[…]` from `settings.local.php` or the local `private://secrets.json`, so the same `get()` works on and off Pantheon.
 
 ## set: create vs update, and scope/type
 
