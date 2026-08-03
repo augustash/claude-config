@@ -77,6 +77,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `cim` aborts with "depends on the Y module that will not be installed"
 - **An active split whose modules aren't installed empties its folder on export** — `vendor/augustash/claude-config/memory/drupal/config-split-export-wipes-folder.md`  
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
+- **A DB push makes cim uninstall the whole dev split at once** — `vendor/augustash/claude-config/memory/drupal/config-split-db-push-mass-uninstall.md`  
+  `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
 - **A redirect never fires while its source path still has an alias** — `vendor/augustash/claude-config/memory/drupal/redirect-shadowed-by-alias.md`  
   a correct 301 sits in the table unreachable; retiring a node is three steps, not two
 - **Gating a Drupal file takes three things** — `vendor/augustash/claude-config/memory/drupal/private-file-gate.md`  
