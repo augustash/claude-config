@@ -82,6 +82,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` vs `ar` umbrella tag + module sub-tag, and how to tell which a site is
 - [Cross-project patches](memory/drupal/patches.md) — index of reusable local .patch files and vetted remote URLs
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — custom disallow rules via Composer scaffold append
+- [Favicon 404 cluster with the icons all present](memory/drupal/favicon-docroot-icons.md) — thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
@@ -110,7 +111,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [neo_animate hides one component at some viewport heights](memory/augustash/neo-animate-edge-retract.md) — a section blank at one window height and fine at another; reads as lost content
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
-- [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps
+- [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
 - [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - [ddev db pull guard](memory/augustash/ddev-db-pull-guard.md) — hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
