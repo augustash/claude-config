@@ -59,6 +59,14 @@ was a caveat box saying per-page popularity needs GA4, not a quiet fudge.
   no-op. Print the before-state, transform, print the after-state.
 - Config-file semantics — e.g. Drupal's `core.extension.yml` lists *enabled* modules
   with their **weight**; `scheduler: 0` means enabled, not disabled.
+- **Your own notes go stale, and they are the source you trust least carefully.** A
+  build doc said the catalog went "129 → 192 variations"; the database said 186, and
+  no legacy count matched 129 either — it had been comparing two states of our own
+  work. A tracking note carried a feature as "in progress" that had shipped weeks
+  before. A feature was written off as unbuilt because the check only scanned page
+  component trees, and it was served by its own route. **Re-query the running system
+  for every number and every status at the moment you write it**, and prefer a query
+  that would fail loudly over one that returns an empty set.
 
 ---
 
@@ -135,7 +143,55 @@ version was stronger. One bad claim in the room costs the whole document.
 
 ---
 
-## 3. Structure that has worked twice
+## 3. Weighting — what earns space, and in what order
+
+**A win's weight is the achievement multiplied by the surface it lands on.** This is
+the rule the rest of the section follows from. A neat fix on the privacy policy is a
+small win however clever it was: the page is minor, rarely read and boring. Sitewide
+data integrity that makes accurate faceted search possible is a huge win, because the
+surface is the entire catalog. Rank by that product — never by how hard the work felt
+or how long it took, which is the ordering that comes naturally and is always wrong.
+
+**Order the list the way the client's own site is organised.** The main menu is
+usually the best available proxy, because it already encodes what they consider
+primary: products before support before a single tool. Following it also means the
+document and the site teach the same shape, so a reader never has to translate.
+
+**Where hierarchy and weight disagree, weight wins.** A sitewide structural change
+outranks a single page even when that page sits higher in the menu. On DMX, "pages
+are built from components rather than raw HTML" had been filed last; it applies to
+every page and every editor permanently, so it belonged above three single-page
+groups.
+
+**Group by section, not by theme.** A thematic group cuts across the hierarchy and
+breaks the pattern everything else follows. On DMX a "Protected by default" group
+looked tidy and held three items that belonged in three different places — a gated
+library that lives on the support page, decoy addresses that are a locator feature,
+and a cookie decline that is neither. Dissolving it into the section groups made all
+three easier to place *and* forced two thin groups to earn a real second item.
+
+**Test every candidate: does it permanently change what the client can do?** Durable
+capability beats one-time repair. Applied strictly this cuts more than expected —
+hygiene work that saves cost but changes no behaviour, and any insight billed twice
+under two headings. Cut both; a padded list devalues the items that earn their place.
+
+**Tell their journey, not ours.** The client wants the story of their site going from
+a malformed mess to integrity and polish. They do not want the story of us building
+and repairing our own work. **Fixing the legacy data is the win; fixing a bug in our
+own migration is not** — it is invisible to them, it is not what they are buying, and
+it plants a doubt in a document whose whole job is confidence. The same cut applies
+to any credential, defect or near-miss on our side that never reached production:
+disclosing it reads as honesty to us and as alarm to them.
+
+**Never claim a capability that is not live yet.** On DMX the catalog band was titled
+"a catalog that can sell" and led with "every build is orderable" — while cart and
+checkout were switched off. The honest framing was stronger anyway: their product
+*content* became structured products. State what is true today; put the rest in the
+futures section where it is correctly scoped as not-yet.
+
+---
+
+## 4. Structure that has worked twice
 
 Numbered sections, stable IDs, scannable. Roughly 200–250 lines of markdown; the
 temptation is always to over-write.
@@ -174,7 +230,7 @@ receipt is the wrong one, drop it and keep the story; the mechanism is the point
 
 ---
 
-## 4. Design
+## 5. Design
 
 Load the `frontend-design` skill first. Then:
 
@@ -280,7 +336,7 @@ respected, and a print stylesheet that flips dark bands to white.
 
 ---
 
-## 5. Delivery
+## 6. Delivery
 
 - `open` the file after every change so they're reviewing the current state.
 - Keep the markdown in sync with the HTML on every edit, or it rots within an hour —
@@ -297,7 +353,7 @@ respected, and a print stylesheet that flips dark bands to white.
 no external `src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts,
 no rules with a missing selector, every nav anchor resolving to an existing id.
 
-## 6. Working with the reviewer
+## 7. Working with the reviewer
 
 Expect fast, terse, mid-turn corrections. Apply, verify by printing the result, and
 reopen.
