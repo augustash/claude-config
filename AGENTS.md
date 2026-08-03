@@ -105,6 +105,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   index of reusable local .patch files and vetted remote URLs
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   custom disallow rules via Composer scaffold append
+- **Favicon 404 cluster with the icons all present** — `vendor/augustash/claude-config/memory/drupal/favicon-docroot-icons.md`  
+  thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - **Pantheon Quicksilver cache warmer** — `vendor/augustash/claude-config/memory/drupal/pantheon-quicksilver-cache-warmer.md`  
   deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - **Cron off-path page_cache re-prime** — `vendor/augustash/claude-config/memory/drupal/page-cache-cron-reprime.md`  
