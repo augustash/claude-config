@@ -760,6 +760,51 @@ class PluginTest extends TestCase
         $this->assertDirectoryDoesNotExist($root . '/.claude/skills/drupal-11-upgrade');
     }
 
+    public function testSyncSkillsSeedsAnAlwaysOnSkillTheProjectNeverAdopted(): void
+    {
+        // The audit hook is wired into every project unconditionally, so the
+        // skill holding the audit procedure has to arrive unconditionally too.
+        [$installPath, $root] = $this->skillFixture([
+            'drupal-11-upgrade' => ['SKILL.md' => "drupal\n"],
+            'memory-management' => ['SKILL.md' => "memory\n"],
+        ]);
+
+        $this->assertSame(['memory-management'], Plugin::syncSkills($installPath, $root));
+        $this->assertSame(
+            "memory\n",
+            file_get_contents($root . '/.claude/skills/memory-management/SKILL.md')
+        );
+        // Seeding one skill must not drag the stack-specific ones along.
+        $this->assertDirectoryDoesNotExist($root . '/.claude/skills/drupal-11-upgrade');
+    }
+
+    public function testSyncSkillsCreatesTheSkillsDirectoryToSeedAnAlwaysOnSkill(): void
+    {
+        // Projects that never adopted anything have no .claude/skills/ at all —
+        // the common case, and the one that made memory-management look like it
+        // went missing at random.
+        [$installPath, $root] = $this->skillFixture([
+            'memory-management' => ['SKILL.md' => "memory\n"],
+        ]);
+        $this->rrmdir($root . '/.claude/skills');
+
+        $this->assertSame(['memory-management'], Plugin::syncSkills($installPath, $root));
+        $this->assertFileExists($root . '/.claude/skills/memory-management/SKILL.md');
+    }
+
+    public function testSyncSkillsSeedingIsIdempotent(): void
+    {
+        [$installPath, $root] = $this->skillFixture([
+            'memory-management' => ['SKILL.md' => "memory\n"],
+        ]);
+        $this->rrmdir($root . '/.claude/skills');
+
+        $this->assertSame(['memory-management'], Plugin::syncSkills($installPath, $root));
+        // Second run finds it identical — no churn in a committed project file,
+        // and composer stays quiet.
+        $this->assertSame([], Plugin::syncSkills($installPath, $root));
+    }
+
     public function testSyncSkillsIsIdempotent(): void
     {
         [$installPath, $root] = $this->skillFixture([
@@ -792,10 +837,13 @@ class PluginTest extends TestCase
         $this->assertFileDoesNotExist($root . '/.claude/skills/content-audit/references/gone.md');
     }
 
-    public function testSyncSkillsNoOpWhenProjectHasNoSkillsDirectory(): void
+    public function testSyncSkillsNoOpWhenProjectHasNoSkillsDirectoryAndNothingIsAlwaysOn(): void
     {
+        // Nothing always-on in the package here, so an un-adopting project keeps
+        // a clean tree — seeding must not be an excuse to create .claude/skills/
+        // on every install.
         [$installPath, $root] = $this->skillFixture([
-            'memory-management' => ['SKILL.md' => "x\n"],
+            'drupal-11-upgrade' => ['SKILL.md' => "x\n"],
         ]);
         $this->rrmdir($root . '/.claude/skills');
 

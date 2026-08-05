@@ -151,6 +151,12 @@ referenced by path — never pasted into the skill body (see
 cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
 ```
 
+**Except [memory-management](skills/memory-management/SKILL.md), which the Plugin seeds into
+every project** (`ALWAYS_ON_SKILLS`). It's stack-agnostic, and the Plugin already wires the
+memory-audit SessionStart hook everywhere unconditionally — a reminder to run an audit whose
+procedure lives only in that skill. Shipping one without the other was half a mechanism.
+Adding anything else to that list needs the same argument, not just broad usefulness.
+
 Copy per skill — don't symlink `.claude/skills` at this package's `skills/` directory. That
 directory is shared: the neo/jacerider modules ship their own skills into it
 (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)), and a symlink would leave
@@ -162,6 +168,12 @@ composer Plugin's `syncSkills()` refreshes every *already-adopted* copy on each
 project never adopted alone (a WordPress project shouldn't inherit the Drupal upgrade skill).
 The package copy is canonical, so a local edit to a project copy gets overwritten — refine it
 here instead. Commit the refreshed copy with the bump.
+
+Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
+once ran that `cp` and absent everywhere else — which reads as a skill that goes missing at
+random rather than one that was never installed. If `/<name>` comes back `Unknown skill`, that's
+the reason; the procedure is still on disk at `vendor/augustash/claude-config/skills/<name>/`
+and can just be read directly.
 
 This only covers *this* package's skills. The neo/jacerider modules still have the manual
 gotcha (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).
