@@ -87,6 +87,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
+- [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
