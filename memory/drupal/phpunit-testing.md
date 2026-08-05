@@ -104,12 +104,16 @@ For a stable single-command run of every custom test, add a named `<testsuite>` 
 ```
 
 ```bash
-ddev exec bash -c "cd /var/www/html/web && ../vendor/bin/phpunit -c ../phpunit.xml --testsuite custom"
+ddev exec vendor/bin/phpunit -c /var/www/html/phpunit.xml.dist --testsuite custom
 ```
+
+**Pass `-c` as an absolute path.** `core/tests/bootstrap.php` ends with `chdir(dirname(__DIR__, 2))` — it moves the process into `web/` — and PHPUnit loads the bootstrap *before* it maps `<directory>` entries, resolving each against `dirname()` of the config path **as given on the command line**. A relative `-c phpunit.xml.dist` leaves that dirname as `.`, which after the chdir means `web/`, so every `web/modules/…` entry misresolves and the run dies with `Test directory "./web/modules/…" not found` — while `ls` in the container shows the directory sitting right there. The older `cd web && phpunit -c ../phpunit.xml` form survives only by coincidence: the `..` and the one-level chdir cancel out. An absolute `-c` holds from any cwd.
 
 **Why this over `--group aai`:** a named testsuite only loads the dirs you list, so a broken contrib test file can't fatal the run the way it does under `--group aai` (which scans the whole tree). It also doubles as living documentation of where our coverage lives, and dodges the phpunit-9 "one positional path arg" limitation — no per-dir loop needed. Tradeoff: the dir list is maintained by hand, so a new test module won't be picked up until it's added. Keep `--group aai` as the zero-config option; reach for the testsuite when you want a reliable, repeatable full run. The dir list itself is project-specific — but commit it as a project-root `phpunit.xml.dist` and gitignore `phpunit.xml`. If the testsuite exists only in the gitignored file, it exists only on one machine: a fresh clone and CI have no way to run the project's own tests.
 
 ## D10 vs D11 config are NOT interchangeable
+
+**Pick the template from the installed core, not `.ddev/config.yaml`.** A project's ddev `type:` is set once and rarely revisited — mymspconnect declares `type: drupal11` while running core 10.6.14. Read the version out of `composer.lock` (`"name": "drupal/core"`) or `vendor/bin/phpunit --version`; PHPUnit 9.6 means the D9/D10 file.
 
 PHPUnit 10 removed `printerClass` and `<listeners>`; Drupal 11 replaced them with `<extensions>`. The classes behind each only exist in their own era, so a config from one major hard-fails on the other:
 
