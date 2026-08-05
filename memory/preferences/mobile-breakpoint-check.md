@@ -17,5 +17,8 @@ Two traps worth knowing, both from real cases:
 
 - **The same rule is not the same weight at both widths.** A row tint over a ~40px table stripe becomes a full-height record card when the table restacks — same alpha, several times the area. Decide whether a value needs a breakpoint variant, don't assume it carries over.
 - **A component's mobile layout may contradict a site-wide default.** Check whether the component opts out of something the rest of the site does (e.g. restacking a table into records when [[table-sidescroll-default]] says tables sidescroll), and say so rather than silently reversing a documented decision.
+- **It runs both ways: a mobile-scoped change needs the desktop look.** Hiding something at one width can strip the only path to a feature at another. A LiveChat bubble was suppressed site-wide in favour of a launcher in the mobile sticky bar — a bar the theme hides from 40em up — so desktop had no bubble *and* no launcher, and chat was unreachable. Caught by eye just before deploy. Whenever a change makes one width the way in, ask what the other width now has.
+
+**`curl` cannot see a breakpoint.** Fetching a URL and grepping the markup verifies structure only — the DOM is identical whether a region is visible or `display: none`, so every such check passes while a breakpoint-only regression sits in it. Reach for the render check to confirm markup, config and hrefs; reach for a real viewport (the Alchemist preview sizes, a browser) before calling responsive CSS done. Confusing the two reads as "verified" when nothing was.
 
 Related: [[use-design-skill]] for when the work needs design judgement rather than prescribed values.

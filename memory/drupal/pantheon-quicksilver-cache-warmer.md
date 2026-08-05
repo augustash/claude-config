@@ -6,7 +6,9 @@ type: reference
 
 After a Pantheon deploy the FPM container bounces and APCu (the fast tier of ChainedFastBackend) is empty. The first real requests then race to rebuild Drupal's metadata layer — views data, theme registry, plugin definitions, Exo component/imagine defs, menu tree — from cold. With a small worker pool that dogpile produces slow responses and, on a heavy page, 502/503s for a few minutes until caches settle.
 
-The fix is a **Quicksilver `deploy: after` webphp hook** that curls the heaviest pages once each, sequentially, so the shared caches are warm before real traffic arrives. It's a drop-in: copy the script, swap the `$paths` list. Used on MSP and sisal.
+The fix is a **Quicksilver `deploy: after` webphp hook** that curls the heaviest pages once each, sequentially, so the shared caches are warm before real traffic arrives. It's a drop-in: copy the script, swap the `$paths` list. In use on sisal.
+
+⚠ **It buys nothing once the heavy page has its own deploy-surviving cache — MSP removed it for that reason** (2026-06-26, "ineffective", same day the unflushable survivor bin shipped; see [persistent-cache-bin.md](persistent-cache-bin.md)). The warmer's whole value is the deploy-time cold window, so a page that carries a warm copy *through* the deploy leaves it warming caches nothing was waiting on. Check that first: if the site's expensive pages already survive the bounce, skip the hook rather than adding a second warming path to keep in sync.
 
 **Key design choices (keep these when adapting):**
 - **Live only.** Dev/test/multidev deploys are too frequent and their cold pain isn't user-facing.

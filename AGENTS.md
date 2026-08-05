@@ -131,6 +131,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a 403 on the player URL that looks like a privacy setting
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
   "menu broken in normal Chrome, fine in private" from an oversized chat container
+- **LiveChat from your own trigger** — `vendor/augustash/claude-config/memory/drupal/livechat-custom-launcher.md`  
+  putting chat in a menu instead of the floating bubble; also a chat window that opens with its title bar off-screen
 
 ## Augustash internal modules
 
