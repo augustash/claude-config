@@ -103,6 +103,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created
+- [The 'default' option discards stored media values](memory/augustash/neo-alchemist-option-default-discards-value.md) — an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - [neo_alchemist heading anchors derive from the title](memory/augustash/neo-alchemist-heading-anchor-override.md) — a stored anchor is ignored, so re-wording a heading silently moves its id
 - [Saving a neo_component wipes every prop plugin on the shape](memory/augustash/neo-alchemist-plugin-settings-wipe.md) — before removing one plugin programmatically, or when one you never touched disappears
 - [neo_color scheme tokens and the :root bake](memory/augustash/neo-color-scheme-token-resolution.md) — a custom property declared at `:root` won't recolor inside a scheme

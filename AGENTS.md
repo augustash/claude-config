@@ -146,6 +146,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
   content on the page nobody authored; editors see repeater rows they never created
+- **The 'default' option discards stored media values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-option-default-discards-value.md`  
+  an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
