@@ -75,18 +75,23 @@ curl -s $URL                                      # STILL empty  ← the bug
 `drupal_cache_protection_node_access` (see
 [[drupal_cache_protection]]) brackets the window: suppresses page/dynamic-page
 caching plus emits `no-store` while grants are being rebuilt, then invalidates
-`rendered` once on completion. It deliberately does **not** purge at the start —
-stale-but-correct beats empty, and core's `DatabaseCacheTagsChecksum` dedupes
-repeated invalidations of a tag within one process, so an opening purge silently
-cancels the closing one for any rebuild that runs start-to-finish under drush.
+`rendered` once on completion. It deliberately **never purges while grants are
+missing** — only after they are back. Two reasons, and the first generalises:
+cache *hits* keep serving throughout (a kill switch prevents storing, not
+serving), so purging while the render path is broken throws away the pages still
+serving correct content and pushes every visitor onto the path that produces
+empty listings. Second, core's `DatabaseCacheTagsChecksum` dedupes repeated
+invalidations of a tag within one process, so an opening purge silently cancels
+the closing one for any rebuild that runs start-to-finish under drush.
 
 It also runs a cron check for the case its decorator can't see: `{node_access}`
 emptied by a hand-run `TRUNCATE`, or by a **database import carrying a table
 that was empty when dumped** — the realistic one, since a Pantheon env clone
 can move it. Empty grants + published nodes + a `hook_node_grants` module is an
-impossible state, so it logs, opens the guard and flags the rebuild. Recovery
-still needs `node_access_rebuild()` run by hand; an unattended rebuild on a
-large site is its own hazard.
+impossible state, so it logs, opens the guard and flags the rebuild. It
+**detects and contains, it does not repair** — recovery still needs
+`node_access_rebuild()` run by hand; an unattended rebuild on a large site is
+its own hazard, and it ends in a full edge purge worth timing.
 
 Without that module the operational fix after any rebuild is a full `drush cr`
 (and an edge purge on Pantheon — `rendered` reaches it via
