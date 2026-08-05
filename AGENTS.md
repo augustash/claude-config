@@ -117,6 +117,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   handle in drupal_cache_protection, not CF cache rules
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   the cachetags table has no GC and grows unbounded
+- **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
+  listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
   `required: FALSE` is a no-op on a link field
 - **Exo modifier checkbox + class** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
