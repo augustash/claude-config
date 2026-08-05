@@ -80,6 +80,14 @@ stale-but-correct beats empty, and core's `DatabaseCacheTagsChecksum` dedupes
 repeated invalidations of a tag within one process, so an opening purge silently
 cancels the closing one for any rebuild that runs start-to-finish under drush.
 
+It also runs a cron check for the case its decorator can't see: `{node_access}`
+emptied by a hand-run `TRUNCATE`, or by a **database import carrying a table
+that was empty when dumped** — the realistic one, since a Pantheon env clone
+can move it. Empty grants + published nodes + a `hook_node_grants` module is an
+impossible state, so it logs, opens the guard and flags the rebuild. Recovery
+still needs `node_access_rebuild()` run by hand; an unattended rebuild on a
+large site is its own hazard.
+
 Without that module the operational fix after any rebuild is a full `drush cr`
 (and an edge purge on Pantheon — `rendered` reaches it via
 `pantheon_advanced_page_cache` surrogate keys).
