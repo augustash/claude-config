@@ -36,6 +36,8 @@ The overlay is conditional; the seed is not. No override, no replacement.
 
 **Write the key explicitly, present-but-empty**, rather than omitting it. That is what lets the resolver tell "deliberately nothing" from "never set" — omission is indistinguishable from absence, and absence keeps the seed.
 
+⚠ **Not sufficient on image, file or video props.** Those four shapes discard a written value outright via a separate mechanism, so the same symptom survives this fix — see [[neo-alchemist-option-default-discards-value]]. If you have written the key and still see examples, you are in that memory, not this one.
+
 There is no upstream patch for this and none of ours ever covered it. Whether examples should seed or only fall back is a design call on the module, worth raising with Cyle rather than patching around.
 
 ## What is NOT this any more
