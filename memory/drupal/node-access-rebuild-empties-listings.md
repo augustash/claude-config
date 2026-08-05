@@ -88,10 +88,18 @@ It also runs a cron check for the case its decorator can't see: `{node_access}`
 emptied by a hand-run `TRUNCATE`, or by a **database import carrying a table
 that was empty when dumped** — the realistic one, since a Pantheon env clone
 can move it. Empty grants + published nodes + a `hook_node_grants` module is an
-impossible state, so it logs, opens the guard and flags the rebuild. It
-**detects and contains, it does not repair** — recovery still needs
-`node_access_rebuild()` run by hand; an unattended rebuild on a large site is
-its own hazard, and it ends in a full edge purge worth timing.
+impossible state, so cron **repairs it**: guard on, `node_access_rebuild()`,
+purge, caching resumed, all in the one run. A cold cache for a few minutes
+beats missing content until somebody notices.
+
+It terminates because a completed rebuild cannot leave the table empty while a
+published node exists — `NodeAccessControlHandler::acquireGrants()` adds the
+default `all/0` grant *after* `hook_node_access_records_alter()`, so no module
+can suppress it. Retries are bounded (3) for the one case that could repeat: a
+site too large to finish inside a cron run. A partially-filled table is caught
+too — row count alone can't distinguish it from a healthy one, so an
+outstanding attempt plus core's flag still set is treated as unverified and
+rebuilt.
 
 Without that module the operational fix after any rebuild is a full `drush cr`
 (and an edge purge on Pantheon — `rendered` reaches it via
