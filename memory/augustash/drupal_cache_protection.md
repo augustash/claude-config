@@ -11,6 +11,7 @@ type: reference
 - **`drupal_cache_protection`** (parent) — tracking-param handling. Middleware at priority 290 reads `redirect_params` (301 to clean URL) and `strip_params` (internal strip, browser URL unchanged) from config. Settings form at `/admin/config/system/cache-protection`. Also ships robots.txt scaffold via `assets/robots-additions.txt` with general bot-throttling rules.
 - **`drupal_cache_protection_facets`** (submodule) — facet bot protection. Depends on parent. Only enable when `drupal/facets` is present.
 - **`drupal_cache_protection_search`** (submodule) — per-IP rate limit + page-cache kill switch on search routes (`/search`, plus configurable query params like `s`, `keys`, `search_api_fulltext`). Enable on any site with a search route exposed — Drupal core Search, search_api, Solr, custom.
+- **`drupal_cache_protection_node_access`** (submodule) — stops a node access grants rebuild from permanently caching empty listings. Enable wherever `hook_node_grants()` is implemented (`node_unpublished`, `group`, `domain_access`, `workbench_access`). No config. Added Aug 2026; the failure it prevents is [[node-access-rebuild-empties-listings]].
 
 ## Parent module: tracking params
 
@@ -53,6 +54,7 @@ The module's `strip_params` entry for `utm_*` is therefore **a no-op on Pantheon
 - **Paid ads running** → install parent module (handles all the common ad-click params, including HubSpot)
 - **`drupal/facets` present** → enable the facets submodule too
 - **Any search route exposed** → enable the search submodule (rate-limit + uncache is free protection regardless of search load)
+- **`hasImplementations('node_grants')` is TRUE** → enable the node_access submodule (its status report entry says so outright when it has nothing to do)
 
 ## Install
 

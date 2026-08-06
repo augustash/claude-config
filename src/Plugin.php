@@ -45,6 +45,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         'python3 "$CLAUDE_PROJECT_DIR/vendor/augustash/claude-config/templates/memory-audit-check.py"';
 
     /**
+     * Skills seeded into every project rather than waiting to be adopted.
+     *
+     * Adoption is deliberate for stack-specific skills — a WordPress project has
+     * no use for drupal-11-upgrade. memory-management is different on both
+     * counts: it's stack-agnostic, and this plugin *already* wires the
+     * memory-audit SessionStart hook into every project unconditionally
+     * (addAuditHook()). That hook tells Claude to run an audit whose procedure
+     * lives entirely in the skill, so leaving the skill unadopted ships half a
+     * mechanism — the reminder fires, the method it points at is absent. Making
+     * it always-on closes that gap; anything else added here needs the same
+     * justification, not just broad usefulness.
+     */
+    public const ALWAYS_ON_SKILLS = ['memory-management'];
+
+    /**
      * composer.json require names that mark a project as WordPress. Any
      * wpackagist-* dependency counts too (see isWordPress()).
      */
@@ -213,7 +228,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $skills = self::syncSkills($installPath, $root);
         if ($skills !== []) {
             $this->info(
-                'refreshed .claude/skills/: ' . implode(', ', $skills)
+                'synced .claude/skills/: ' . implode(', ', $skills)
                 . ' — commit the update with the bump'
             );
         }
@@ -527,10 +542,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * every project that had already adopted it — silently, since a stale copy looks
      * exactly like a current one.
      *
-     * Refreshes only skills the project has ALREADY adopted. Adoption stays a
-     * deliberate per-project act (`cp -R vendor/…/skills/<name> .claude/skills/`) —
-     * pushing every skill everywhere would hand a WordPress project the Drupal
-     * upgrade skill and vice versa.
+     * Refreshes skills the project has already adopted, and seeds the ALWAYS_ON_SKILLS
+     * whether or not it has. Adoption otherwise stays a deliberate per-project act
+     * (`cp -R vendor/…/skills/<name> .claude/skills/`) — pushing every skill
+     * everywhere would hand a WordPress project the Drupal upgrade skill and vice
+     * versa.
      *
      * The package copy is canonical: local edits to a project copy are overwritten,
      * which is why refinements belong upstream in this repo. Each adopted skill is
@@ -544,16 +560,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             return [];
         }
         $projectSkills = $root . '/.claude/skills';
-        if (!is_dir($projectSkills)) {
-            return [];
-        }
 
         $updated = [];
         foreach ((array) glob($installPath . '/skills/*', GLOB_ONLYDIR) as $source) {
             $name = basename($source);
             $dest = $projectSkills . '/' . $name;
-            // Not adopted here — leave it alone.
-            if (!is_dir($dest)) {
+            // Not adopted here, and not one we install everywhere — leave it alone.
+            if (!is_dir($dest) && !in_array($name, self::ALWAYS_ON_SKILLS, true)) {
+                continue;
+            }
+            // Seeding a new skill: create the destination up front so mirroring an
+            // empty source dir can't fault on a missing tree.
+            if (!is_dir($dest) && !mkdir($dest, 0777, true) && !is_dir($dest)) {
                 continue;
             }
             if (self::mirrorDirectory($source, $dest)) {

@@ -119,6 +119,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   handle in drupal_cache_protection, not CF cache rules
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   the cachetags table has no GC and grows unbounded
+- **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
+  listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
   `required: FALSE` is a no-op on a link field
 - **Exo modifier checkbox + class** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
@@ -133,6 +135,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a 403 on the player URL that looks like a privacy setting
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
   "menu broken in normal Chrome, fine in private" from an oversized chat container
+- **LiveChat from your own trigger** — `vendor/augustash/claude-config/memory/drupal/livechat-custom-launcher.md`  
+  putting chat in a menu instead of the floating bubble; also a chat window that opens with its title bar off-screen
 
 ## Augustash internal modules
 
@@ -144,6 +148,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
   content on the page nobody authored; editors see repeater rows they never created
+- **The 'default' option discards stored media values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-option-default-discards-value.md`  
+  an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
@@ -158,8 +164,6 @@ These files are authoritative and kept current by the team. Prefer conventions h
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
-- **neo_animate hides one component at some viewport heights** — `vendor/augustash/claude-config/memory/augustash/neo-animate-edge-retract.md`  
-  a section blank at one window height and fine at another; reads as lost content
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   tracking-param strip/redirect, facets + search submodules
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  

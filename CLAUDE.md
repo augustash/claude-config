@@ -88,6 +88,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
+- [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
@@ -95,6 +96,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — a 403 on the player URL that looks like a privacy setting
 - [LiveChat widget click-trap](memory/drupal/livechat-click-trap.md) — "menu broken in normal Chrome, fine in private" from an oversized chat container
+- [LiveChat from your own trigger](memory/drupal/livechat-custom-launcher.md) — putting chat in a menu instead of the floating bubble; also a chat window that opens with its title bar off-screen
 
 #### Augustash internal modules
 
@@ -102,6 +104,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created
+- [The 'default' option discards stored media values](memory/augustash/neo-alchemist-option-default-discards-value.md) — an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - [neo_alchemist heading anchors derive from the title](memory/augustash/neo-alchemist-heading-anchor-override.md) — a stored anchor is ignored, so re-wording a heading silently moves its id
 - [Saving a neo_component wipes every prop plugin on the shape](memory/augustash/neo-alchemist-plugin-settings-wipe.md) — before removing one plugin programmatically, or when one you never touched disappears
 - [neo_color scheme tokens and the :root bake](memory/augustash/neo-color-scheme-token-resolution.md) — a custom property declared at `:root` won't recolor inside a scheme
@@ -109,7 +112,6 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
 - [neo spacing is a token plus an application](memory/augustash/neo-component-spacing-collapse.md) — same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
-- [neo_animate hides one component at some viewport heights](memory/augustash/neo-animate-edge-retract.md) — a section blank at one window height and fine at another; reads as lost content
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
@@ -151,6 +153,12 @@ referenced by path — never pasted into the skill body (see
 cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
 ```
 
+**Except [memory-management](skills/memory-management/SKILL.md), which the Plugin seeds into
+every project** (`ALWAYS_ON_SKILLS`). It's stack-agnostic, and the Plugin already wires the
+memory-audit SessionStart hook everywhere unconditionally — a reminder to run an audit whose
+procedure lives only in that skill. Shipping one without the other was half a mechanism.
+Adding anything else to that list needs the same argument, not just broad usefulness.
+
 Copy per skill — don't symlink `.claude/skills` at this package's `skills/` directory. That
 directory is shared: the neo/jacerider modules ship their own skills into it
 (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)), and a symlink would leave
@@ -162,6 +170,12 @@ composer Plugin's `syncSkills()` refreshes every *already-adopted* copy on each
 project never adopted alone (a WordPress project shouldn't inherit the Drupal upgrade skill).
 The package copy is canonical, so a local edit to a project copy gets overwritten — refine it
 here instead. Commit the refreshed copy with the bump.
+
+Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
+once ran that `cp` and absent everywhere else — which reads as a skill that goes missing at
+random rather than one that was never installed. If `/<name>` comes back `Unknown skill`, that's
+the reason; the procedure is still on disk at `vendor/augustash/claude-config/skills/<name>/`
+and can just be read directly.
 
 This only covers *this* package's skills. The neo/jacerider modules still have the manual
 gotcha (see [neo-skills-sync](memory/augustash/neo-skills-sync.md)).

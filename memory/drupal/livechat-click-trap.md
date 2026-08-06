@@ -42,4 +42,6 @@ If the answer is anything other than the button or its descendants, walk up to f
 
 Keep `bottom`-style positioning rules from the offending stylesheet if they intentionally make room for a footer nav. Only override `height` / `max-height`.
 
+That holds while the bubble is the only thing on screen. If the site drives chat from its own trigger instead of the bubble ([[livechat-custom-launcher]]), the window opens in that same container and a `bottom` offset with no matching height cap pushes its title bar off the top — cap `max-height` by the offset, in this file, so it outranks the theme.
+
 **How to apply:** when "menu icon doesn't respond to clicks" presents on a Drupal site with the LiveChat module + a chat widget integration, check `document.elementFromPoint` over the broken control before assuming cache, popups, or JS bugs. If a chat-widget element is the hit, look for stylesheet rules forcing the container's height beyond its natural bubble size — the override pattern above resolves it. The same shape of bug can happen with Intercom, Drift, HubSpot, or any cross-origin-iframe widget whose container can be force-expanded by other scripts on the page.
