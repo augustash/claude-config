@@ -65,6 +65,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Drupal caching](memory/drupal/caching.md) — cache debugging, session poisoning, Exo component cache, Redis compress_length
 - [D11.4 symfony/runtime allow-plugin](memory/drupal/d11-symfony-runtime.md) — every web request WSODs after a 11.4 bump while drush still works fine
 - [Cross-version DB pull](memory/drupal/cross-version-db-pull.md) — older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
+- [Admin theme change orphans theme-keyed config](memory/drupal/admin-theme-keyed-config.md) — the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
 - [config_ignore over a config_split module deadlocks deploy](memory/drupal/config-split-ignore-collision.md) — `cim` aborts with "depends on the Y module that will not be installed"
 - [An active split whose modules aren't installed empties its folder on export](memory/drupal/config-split-export-wipes-folder.md) — `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - [A DB push makes cim uninstall the whole dev split at once](memory/drupal/config-split-db-push-mass-uninstall.md) — `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
