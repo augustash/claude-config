@@ -58,6 +58,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Trust contrib tests](memory/preferences/trust-contrib-tests.md) — cover only the seam we own; never hit a live external API
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
+- [Status updates carry decisions, not side effects](memory/preferences/status-updates-decision-relevant.md) — before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
 
 #### Drupal
