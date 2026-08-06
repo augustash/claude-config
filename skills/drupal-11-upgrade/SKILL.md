@@ -235,6 +235,22 @@ Find the second class systemically:
 grep -rn "protected \$entityTypeManager;" web/modules/custom web/modules/community
 ```
 
+**Parent classes REMOVING properties subclasses still read.** The inverse of
+the above, and sneakier: nothing fatals at class load or page render — the
+undefined-property read explodes only when its code path runs, which for form
+widgets is often an AJAX rebuild no page-load smoke test touches. Commerce 2→3
+dropped `protected $variationStorage` from `ProductVariationWidgetBase`; a
+custom option widget still calling `$this->variationStorage->load()` on the
+rebuild path 500'd every option-select change sitewide (surfacing as
+"customers can't enter gift card amounts") two days after a deploy where every
+page rendered green. Two defenses:
+
+- After bumping a contrib module a major version, treat language-server /
+  PHPStan "undefined property" findings on custom classes extending its bases
+  as real errors, not noise — each is a latent fatal on whatever path reads it.
+- Page loads are not a smoke test for widgets. Exercise the interactions:
+  change a select that triggers `#ajax`, watch for `Drupal.AjaxError` / 500s.
+
 **PSR-4 case mismatches.** `Case mismatch between loaded and declared class
 names` surfaces only with Symfony's DebugClassLoader active (i.e. with
 deprecation testing enabled). Works on macOS's case-insensitive filesystem,
