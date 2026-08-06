@@ -86,6 +86,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
+- [A promotion silently stops applying though its config all checks out](memory/drupal/commerce-promotion-compatibility-none.md) — enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
 - [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field

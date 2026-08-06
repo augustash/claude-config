@@ -115,6 +115,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   keeping an uncacheable form page warm through a mid-day cache eviction
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
   handle in drupal_cache_protection, not CF cache rules
+- **A promotion silently stops applying though its config all checks out** — `vendor/augustash/claude-config/memory/drupal/commerce-promotion-compatibility-none.md`  
+  enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   the cachetags table has no GC and grows unbounded
 - **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
