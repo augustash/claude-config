@@ -17,6 +17,14 @@ remove. "Nobody will notice" is not a judgement about severity — it is a bet t
 closely, and it loses the moment someone does. It also compounds: the tolerance, not the
 pixel, is what accumulates into a codebase that is merely fine.
 
+**And a display bug is never only a display bug — it is the one part of the build a stranger
+can audit.** Kaza, md 2026-08-07: *"If I look at a site and see display issues, it makes me
+instantly suspect that the level of detail is questionable, and suspect the backend is going
+to be really scary — because that is the hard part."* The front end is the **easier** half and
+the only half on show, so sloppiness there is read, correctly, as evidence about the half
+nobody can inspect. That inference runs on our work too: a visitor, a client, or the next
+developer has no other signal to go on.
+
 The case that produced it is the shape to recognise. A 1.5rem glyph in a small-caps table
 header inflated the header row by ~6.7px, which rounded a fractional row height to a whole one
 and showed as a **1px seam** under one column. Invisible until Kaza put a red background behind
