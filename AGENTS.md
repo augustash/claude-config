@@ -46,6 +46,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   ~/.claude/scratch/ for temporary cross-project context
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
+- **Feature work goes on a branch, not master** — `vendor/augustash/claude-config/memory/preferences/feature-branch-not-master.md`  
+  before pushing anything speculative or in-review; master auto-deploys to dev on Pantheon
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
   who commits what: Claude owns shared memory, dev owns project work
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
