@@ -75,6 +75,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   every web request WSODs after a 11.4 bump while drush still works fine
 - **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
   older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
+- **Admin theme change orphans theme-keyed config** — `vendor/augustash/claude-config/memory/drupal/admin-theme-keyed-config.md`  
+  the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
 - **config_ignore over a config_split module deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/config-split-ignore-collision.md`  
   `cim` aborts with "depends on the Y module that will not be installed"
 - **An active split whose modules aren't installed empties its folder on export** — `vendor/augustash/claude-config/memory/drupal/config-split-export-wipes-folder.md`  
@@ -197,3 +199,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
   analytics cliffs overnight while the site looks fine; two header plugins intersect
 - **Pass CSP Evaluator on WordPress with nonce + strict-dynamic** — `vendor/augustash/claude-config/memory/wordpress/csp-nonce-strict-dynamic.md`  
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
+  production serves your local .ddev.site URLs; also any plugin generating a file into the web root
