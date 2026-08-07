@@ -62,6 +62,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   wait on the condition, never a fixed delay
 - **Transactional email on our account** — `vendor/augustash/claude-config/memory/preferences/transactional-email-on-our-account.md`  
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
+- **Drupal-native admin UI over React** — `vendor/augustash/claude-config/memory/preferences/drupal-native-admin-ui.md`  
+  before scoping any rich Drupal admin UI; dialog/tabledrag/AJAX get the react-like feel with no build step
 - **Status updates carry decisions, not side effects** — `vendor/augustash/claude-config/memory/preferences/status-updates-decision-relevant.md`  
   before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
