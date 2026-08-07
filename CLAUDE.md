@@ -40,6 +40,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Memory audit process](memory/preferences/memory-audit.md) — audit triggers and the `last_audit` daily floor
 - [Leave stopwords out of method names](memory/preferences/method-naming.md) — no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - [Style rules cover as much ground as possible](memory/preferences/style-rules-cover-ground.md) — before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- [A defect nobody can see still gets fixed](memory/preferences/fix-what-nobody-sees.md) — before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - [Use scale classes, not arbitrary Tailwind values](memory/preferences/tailwind-no-arbitrary-values.md) — Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - [Check mobile on every CSS change](memory/preferences/mobile-breakpoint-check.md) — before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
