@@ -197,3 +197,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
   analytics cliffs overnight while the site looks fine; two header plugins intersect
 - **Pass CSP Evaluator on WordPress with nonce + strict-dynamic** — `vendor/augustash/claude-config/memory/wordpress/csp-nonce-strict-dynamic.md`  
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
+  production serves your local .ddev.site URLs; also any plugin generating a file into the web root

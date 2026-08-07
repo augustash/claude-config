@@ -130,6 +130,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [LearnDash closed-course button URL](memory/wordpress/learndash-closed-course-button-url.md) — a closed course's buy button points at live from every other environment
 - [WP security-header CSP silently breaks analytics](memory/wordpress/rsssl-csp-enforce-analytics.md) — analytics cliffs overnight while the site looks fine; two header plugins intersect
 - [Pass CSP Evaluator on WordPress with nonce + strict-dynamic](memory/wordpress/csp-nonce-strict-dynamic.md) — clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- [AIOSEO writes llms.txt as a static file](memory/wordpress/aioseo-llms-txt-static-file.md) — production serves your local .ddev.site URLs; also any plugin generating a file into the web root
 
 ---
 
