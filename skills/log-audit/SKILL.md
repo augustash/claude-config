@@ -86,6 +86,15 @@ format; Acquia via `acli`; plain hosting via `/var/log/nginx/`. The parsing belo
 the same everywhere. On a multi-appserver plan each server keeps its own log — pull
 each, or accept that you're sampling.
 
+**Analyze locally. Log contents — IPs, session identifiers, PII, request bodies — must
+never be sent to an external service.** Shell tools (grep/awk/sort/uniq) over a local
+copy are the justified case for reaching past the file tools. Where an aggregator is
+available, prefer queries that summarize server-side (New Relic NRQL) so you pull back
+numbers rather than raw log bodies. Quote the specific lines that carry a finding, not
+the surrounding traffic. See [log-audit](../../memory/preferences/log-audit.md) for the
+recurring health-and-security sweep across all six log types — a different job from this
+one, which is incident forensics.
+
 ## Pass 3 — parse it correctly
 
 Two traps, both of which produce *empty output that looks like a real answer*:
