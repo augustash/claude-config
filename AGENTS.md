@@ -65,6 +65,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
 
+## Cloudflare
+
+- **WAF rules silently break SSL renewal** — `vendor/augustash/claude-config/memory/cloudflare/waf-blocks-acme-renewal.md`  
+  before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
+
 ## Drupal
 
 - **Drupal caching** — `vendor/augustash/claude-config/memory/drupal/caching.md`  
