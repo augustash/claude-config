@@ -54,7 +54,6 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commit handoff](memory/preferences/commit-handoff.md) — who commits what: Claude owns shared memory, dev owns project work
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
 - [Local config in settings.local.php](memory/preferences/local-config-in-settings-local.md) — dev-only overrides never go through `cset`/UI
-- [Log audit](memory/preferences/log-audit.md) — how to run a server-log review; never exfiltrate log contents
 - [Test reminders](memory/preferences/test-reminders.md) — surface existing tests when changing covered code, flag coverage gaps
 - [Trust contrib tests](memory/preferences/trust-contrib-tests.md) — cover only the seam we own; never hit a live external API
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
@@ -223,5 +222,5 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [content-migration-to-components](skills/content-migration-to-components/SKILL.md) — building a page out of migrated content: what shape it is, reuse/extend/build-new, and verifying the result
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
-- [log-audit](skills/log-audit/SKILL.md) — an integration broke, a client reports errors from a system you can't see, or you need a third party's egress IP without asking them
+- [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps

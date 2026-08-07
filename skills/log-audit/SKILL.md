@@ -1,19 +1,27 @@
 ---
 name: log-audit
-description: Read a site's access/error logs as evidence to answer who actually called, from where, with which credential, and when it stopped. Use when an integration or API consumer breaks, when a client reports errors from a system you can't see, when you need a third party's egress IP without asking them, when investigating bot/card-testing traffic, or when you need to establish exactly when behavior changed and correlate it to a deploy. NOT for reading code or config to find what a site is supposed to do — that's a site audit. This is the pass that establishes what actually happened on the wire.
+description: Audit a site's traffic through its server logs — nginx access/error, php-error/fpm/slow, New Relic. Two entry points, one job. Incident-driven, use when an integration or API consumer breaks, a client reports errors from a system you can't see, you need a third party's egress IP without asking them, or you must pin exactly when behavior changed and tie it to a deploy. Recurring, use when a dev drops a log export for a health-and-security review of scanners, abusive clients, 502/504s, fatals and slow requests. NOT for auditing site CONTENT — that's content-audit. This establishes what actually happened on the wire.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Log audit — traffic as evidence
 
-**The job:** something broke, and the code doesn't say why. Logs record what *did*
-happen, not what should. That difference is the entire value: a site audit reads
-intent, a log audit reads behavior, and when they disagree the log is right.
+**The job: audit a site's traffic.** Logs record what *did* happen, not what should. That
+difference is the entire value — a content or config audit reads intent, a log audit reads
+behavior, and when they disagree the log is right.
 
-Reach for this when the question has the shape *"who called, from where, with what,
-and when did it stop"* — an integration gone silent, a client reporting errors from a
-system you have no access to, a third party whose egress IP you need, attack traffic
-to characterize.
+It arrives two ways, and they're the same job from opposite ends:
+
+- **Incident-driven** — *"who called, from where, with what, and when did it stop?"* An
+  integration gone silent, a client reporting errors from a system you can't see, a third
+  party whose egress IP you need, attack traffic to characterize. Start at
+  [Pass 1](#pass-1--establish-the-clock); you have a question and are hunting the evidence.
+- **Recurring sweep** — a dev exports logs for a health-and-security review. Start at
+  [The recurring sweep](#the-recurring-sweep); you have the evidence and are hunting the
+  questions.
+
+A sweep routinely turns up an incident, at which point you're doing the first kind. Passes
+2 and 3 — pulling and parsing — are shared, and the traps bite both.
 
 ## The core insight
 
@@ -91,9 +99,7 @@ never be sent to an external service.** Shell tools (grep/awk/sort/uniq) over a 
 copy are the justified case for reaching past the file tools. Where an aggregator is
 available, prefer queries that summarize server-side (New Relic NRQL) so you pull back
 numbers rather than raw log bodies. Quote the specific lines that carry a finding, not
-the surrounding traffic. See [log-audit](../../memory/preferences/log-audit.md) for the
-recurring health-and-security sweep across all six log types — a different job from this
-one, which is incident forensics.
+the surrounding traffic.
 
 ## Pass 3 — parse it correctly
 
@@ -158,6 +164,40 @@ inferring.
 `whois` the resulting IP. Its ASN and country decide things — whether a geo-fence
 could have been responsible, whether a "residential broadband" address is really the
 vendor it's labelled as.
+
+## The recurring sweep
+
+The other entry point: a dev exports a site's logs — commonly to `~/Desktop/logs/` — for a
+health-and-security review. Typically `nginx-access.log`, `nginx-error.log`, `php-error.log`,
+`php-fpm-error.log`, `php-slow.log`, `newrelic.log`.
+
+**Review ONE log at a time.** Surface findings, let the dev assess and act, then move to the
+next. Don't bulk-process all six in one pass — sequential review keeps each log's findings
+focused and actionable, and the dev can fix something before it muddies the next log.
+
+**Order is a guideline, not a rule** — group by layer, nginx then php:
+
+| | Log | What it tends to surface |
+|---|---|---|
+| 1 | nginx access | Traffic and status-code distribution, abusive clients (scanners, path enumeration, injection attempts in query strings), high-frequency IPs, bot/UA anomalies |
+| 2 | nginx error | Usually low-volume. Mostly blocked scans (`access forbidden by rule`) and forbidden directory listings — benign, and confirmation the block rules work. What matters is the web-server view of 502/504s: `recv() failed`, `connection reset by peer`, `timed out` from the FPM upstream |
+| 3 | php-error | Recurring warnings, notices, fatals, deprecations, repeated stack traces |
+| 4 | php-fpm-error | Pool health, `max_children` saturation |
+| 5 | php-slow | Slow-request hotspots — offending functions and paths, repeated slow stacks |
+| 6 | newrelic | Agent and instrumentation health |
+
+**Cross-reference freely.** Tie an access-log traffic spike to an nginx-error upstream reset
+and then to the php-slow entry naming the request. That chain — spike → reset → slow function
+— is the one that converts "the site felt down Tuesday" into a specific fix, and no single log
+contains it.
+
+**Logs answer *what happened*; New Relic answers *how much and trending which way*.** They're
+complementary, not alternatives. Raw logs give per-request IPs and paths, exact errors, and
+FPM pool health, which New Relic samples away. New Relic gives multi-month trends,
+percentiles, and APM traces decomposing a slow request into DB vs PHP vs external. For the
+perf and error-trend portion of a sweep, keep the logs as the spine and add an NRQL pass —
+see [templates/newrelic/](../../templates/newrelic/). NRQL aggregates server-side, so you pull
+back summarized numbers rather than raw log bodies.
 
 ## The traps
 

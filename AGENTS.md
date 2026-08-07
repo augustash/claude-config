@@ -54,8 +54,6 @@ These files are authoritative and kept current by the team. Prefer conventions h
   always confirm before terminus against `.live`/`.test`
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
   dev-only overrides never go through `cset`/UI
-- **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
-  how to run a server-log review; never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   surface existing tests when changing covered code, flag coverage gaps
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
