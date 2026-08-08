@@ -32,6 +32,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 #### Preferences & collaboration
 
 - [Mission](memory/preferences/mission.md) — how Claude stewards this corpus; read first, it shapes how every other memory is written
+- [Security outranks convenience](memory/preferences/security-first.md) — on any tradeoff with a security dimension; also before putting a credential anywhere
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is already handled here before writing in it
 - [Memory structure](memory/preferences/memory-structure.md) — topic/specific.md layout and organization rules
 - [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — scripts live in templates/ and are linked by path, never pasted into a note

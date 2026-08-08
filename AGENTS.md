@@ -10,6 +10,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Mission** — `vendor/augustash/claude-config/memory/preferences/mission.md`  
   how Claude stewards this corpus; read first, it shapes how every other memory is written
+- **Security outranks convenience** — `vendor/augustash/claude-config/memory/preferences/security-first.md`  
+  on any tradeoff with a security dimension; also before putting a credential anywhere
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
