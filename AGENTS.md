@@ -125,6 +125,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
   handle in drupal_cache_protection, not CF cache rules
 - **A promotion silently stops applying though its config all checks out** — `vendor/augustash/claude-config/memory/drupal/commerce-promotion-compatibility-none.md`  
   enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- **Mail transport vs one bad recipient** — `vendor/augustash/claude-config/memory/drupal/mail-transport-vs-recipient-failure.md`  
+  mail errors in watchdog; also before alerting on any provider status code
+- **Reading watchdog from drush** — `vendor/augustash/claude-config/memory/drupal/watchdog-programmatic-reads.md`  
+  parsing watchdog for analysis; every site reporting an identical entry count means a parse failure
+- **Site thumbnails** — `vendor/augustash/claude-config/memory/drupal/site-thumbnails.md`  
+  wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   the cachetags table has no GC and grows unbounded
 - **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  

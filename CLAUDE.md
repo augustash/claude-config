@@ -91,6 +91,9 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
 - [A promotion silently stops applying though its config all checks out](memory/drupal/commerce-promotion-compatibility-none.md) — enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- [Mail transport vs one bad recipient](memory/drupal/mail-transport-vs-recipient-failure.md) — mail errors in watchdog; also before alerting on any provider status code
+- [Reading watchdog from drush](memory/drupal/watchdog-programmatic-reads.md) — parsing watchdog for analysis; every site reporting an identical entry count means a parse failure
+- [Site thumbnails](memory/drupal/site-thumbnails.md) — wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
 - [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
