@@ -62,16 +62,33 @@ check() { # check <json> <what>
 }
 
 # Token sanity — catches the single most common setup mistake before anything else.
+#
+# There are two kinds of Cloudflare API token and they verify at DIFFERENT endpoints:
+#   User token    (My Profile > API Tokens)      -> /user/tokens/verify        ~40 chars
+#   Account token (Manage Account > API Tokens)  -> /accounts/<id>/tokens/verify  ~53 chars
+# An account token checked against the user endpoint returns [1000] Invalid API Token even
+# though it works perfectly for every real call. Verifying against only one endpoint turns a
+# working setup into a wild goose chase — so try both before believing the token is bad.
 verify() {
   local r; r="$(cf GET /user/tokens/verify)"
-  if ! echo "$r" | jq -e '.success == true' >/dev/null 2>&1; then
-    printf 'Token rejected by Cloudflare.\n' >&2
-    echo "$r" | jq -r '.errors[]? | "  [\(.code)] \(.message)"' >&2 2>/dev/null || true
-    printf '\nCloudflare API tokens are 40 chars [A-Za-z0-9_-]; yours is %s.\n' \
-      "${#CF_API_TOKEN}" >&2
-    printf 'If that is not 40 you likely copied the token ID rather than the token value.\n' >&2
-    exit 1
+  echo "$r" | jq -e '.success == true' >/dev/null 2>&1 && return 0
+
+  if [ -n "${CF_ACCOUNT_ID:-}" ]; then
+    local a; a="$(cf GET "/accounts/$CF_ACCOUNT_ID/tokens/verify")"
+    echo "$a" | jq -e '.success == true' >/dev/null 2>&1 && return 0
   fi
+
+  printf 'Token rejected by Cloudflare at both verify endpoints.\n' >&2
+  echo "$r" | jq -r '.errors[]? | "  [\(.code)] \(.message)"' >&2 2>/dev/null || true
+  if [ -z "${CF_ACCOUNT_ID:-}" ]; then
+    printf '\nOnly the user endpoint was tried: CF_ACCOUNT_ID is not set. If this is an\n' >&2
+    printf 'account-owned token (Manage Account > API Tokens), set CF_ACCOUNT_ID and retry.\n' >&2
+  fi
+  printf '\nYour token is %s chars. User tokens are ~40, account tokens ~53; both are\n' \
+    "${#CF_API_TOKEN}" >&2
+  printf '[A-Za-z0-9_-]. A 32-char hex value is the token ID, not the token — the value is\n' >&2
+  printf 'shown once, on the screen right after you create it, and cannot be re-read.\n' >&2
+  exit 1
 }
 
 # The custom-rules ruleset is the entrypoint whose phase is http_request_firewall_custom.
@@ -97,8 +114,11 @@ case "$CMD" in
       | to_entries[]
       | "\(.key + 1). [\(if .value.enabled then "on " else "OFF" end)] \(.value.action | ascii_upcase)  \(.value.description // "(no description)")"
         + "\n     expr:   \(.value.expression)"
-        + (if (.value.action_parameters.phases // empty) then "\n     skips:  \((.value.action_parameters.phases) | join(", "))" else "" end)
-        + (if (.value.action_parameters.ruleset // empty) then "\n     ALSO SKIPS: ruleset=\(.value.action_parameters.ruleset)" else "" end)
+        # `// null`, never `// empty`: empty makes jq drop the WHOLE entry rather than
+        # falling through to the else, so every rule without these keys — i.e. every
+        # non-SKIP rule, the blocking ones — vanished from the output silently.
+        + (if (.value.action_parameters.phases // null) then "\n     skips:  \((.value.action_parameters.phases) | join(", "))" else "" end)
+        + (if (.value.action_parameters.ruleset // null) then "\n     ALSO SKIPS: ruleset=\(.value.action_parameters.ruleset)" else "" end)
         + (if (.value.logging.enabled // true) then "" else "\n     logging: OFF" end)
         + "\n     id:     \(.value.id)\n"'
     ;;
