@@ -109,6 +109,25 @@ if($c && str_contains($c,"<")) printf("%s %s => %s\n",$p["name"],$p["version"],$
 On one site the sole blocker was `drupal/seven` (`>=10.3 <11.3`) — the admin
 theme silently capping core two minors below target.
 
+**Retiring Seven has a tail that lands weeks later.** Seven is gone from core in
+11.0, so the deploy uninstalls it and switches the admin theme to Claro. The site
+still works, so it reads as done — then the client reports the admin "looks
+wrong": exposed filters that sat on one row wrap onto two, sidebar panels lose
+their headers, favicons vanish. The cause is not styling. Modules that store
+settings **keyed by theme machine name** (`exo_form.settings.themes`,
+`real_favicon.settings.themes`) still have a `seven:` entry and no `claro:` one,
+so their whole treatment silently stops applying. Sweep for it *during* the
+upgrade rather than fielding it later:
+
+```bash
+grep -rn '\bseven\b' config/ | grep -viE 'seven_|\.seven|dependencies'
+```
+
+Copy the old theme's entry to the new key — see [[admin-theme-keyed-config]] for
+the type gotcha and the residue that config alone can't fix. Budget an hour for
+this; on one site it accounted for nearly the whole "we prefer the old admin
+theme" complaint, and reverting the theme was never the answer.
+
 ### Scraping drupal.org for compatibility is not enough
 
 A `core_version_requirement` scrape of your **direct requires** is structurally
@@ -241,6 +260,55 @@ deprecation testing enabled). Works on macOS's case-insensitive filesystem,
 fragile on Linux. Fix the filename **and** the `services.yml` reference together
 — changing only one breaks the other environment. A case-only rename needs two
 `git mv` steps.
+
+**A forked core plugin is a latent upgrade bug.** Custom widgets, formatters and
+handlers that were copy-pasted from core to change one detail keep whatever core
+looked like on the day they were forked. They call core statics that later get
+removed, and nothing flags it: the class loads, the plugin registers, and it only
+fatals when that one form is built. `/product/add/custom` fataled on
+`Datetime::formatExample()` — **removed in D11** — from a widget forked off
+`TimestampDatetimeWidget` to add a "+30 days" default. Every smoke test passed;
+the route just wasn't in any of them.
+
+Find them by intent, not by symptom — grep for core classes called statically
+from custom plugins, then diff each fork against the core original:
+
+```bash
+grep -rn 'use Drupal\\Core\\.*\\Element\\' web/modules/custom --include='*.php'
+find web/core -name "$(basename FORKED_FILE)"   # then diff the two
+```
+
+Take core's own resolution rather than reimplementing the removed call: core
+dropped the format example from that widget instead of replacing it, and its
+current version also stopped clobbering the field's `#description`. Following
+core fixed the fatal *and* restored the field's real help text, which the fork
+had been overwriting with a format hint for years.
+
+**Grep for the removed APIs directly** — it costs seconds and finds the same
+class of bug in contrib you'd otherwise hit one form at a time:
+
+```bash
+grep -rn 'getImplementations(\|formatExample(\|::moduleHandler()->getImplementations' \
+  web/modules/custom web/modules/community web/modules/contrib web/themes --include='*.php' --include='*.module'
+```
+
+`ModuleHandler::getImplementations()` (deprecated 9.4, removed 11) is the common
+one; core's replacement is `invokeAllWith($hook, callable)`, and core's own
+`EntityViewDisplayEditForm::thirdPartySettingsForm()` is the reference shape,
+null-coalesce included. On one site this was a fatal in `exo_alchemist` on
+`/block/add/<bundle>`.
+
+**Half-declared entity relationships fatal only once something reads the other
+half.** Core always pairs `bundle_entity_type` (on the content entity) with
+`bundle_of` (on the bundle entity). A `hook_entity_type_alter()` that sets only
+the first works fine until a module discovers the bundle entity by the forward
+key and then reads the reverse — simple_sitemap does exactly this and throws
+`Entity does not provide bundles for another entity type`. Fix the definition,
+not the consumer:
+
+```bash
+grep -rn "set('bundle_entity_type'" web/modules/custom web/modules/community
+```
 
 ---
 
@@ -498,6 +566,11 @@ curl cannot tell that from a broken query.
 - [ ] Patch *output* verified on the build, not just the patch files
 - [ ] Site **curled**, not just drush-statused; watchdog clean under a watermark
 - [ ] Console errors captured on list + detail pages (jQuery 4 fallout)
+- [ ] **Every entity add/edit form opened, one per bundle** — not just the admin
+      menu. Sweeping the client's whole admin menu (26 paths) came back clean
+      while `/product/add/custom` fataled, because field widgets only execute on
+      forms and no form is reachable from a menu. List pages prove nothing about
+      widget code.
 - [ ] Custom test suite green
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
       real gateways, which tests deliberately never touch
@@ -505,4 +578,5 @@ curl cannot tell that from a broken query.
 ## Related memory
 
 [[d11-symfony-runtime]] · [[cross-version-db-pull]] · [[phpunit-testing]] ·
-[[exo-d11-image-formatters]] · [[config-split-ignore-collision]]
+[[exo-d11-image-formatters]] · [[config-split-ignore-collision]] ·
+[[admin-theme-keyed-config]]
