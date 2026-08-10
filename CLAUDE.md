@@ -40,6 +40,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Memory audit process](memory/preferences/memory-audit.md) — audit triggers and the `last_audit` daily floor
 - [Leave stopwords out of method names](memory/preferences/method-naming.md) — no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - [Style rules cover as much ground as possible](memory/preferences/style-rules-cover-ground.md) — before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- [A defect nobody can see still gets fixed](memory/preferences/fix-what-nobody-sees.md) — before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - [Use scale classes, not arbitrary Tailwind values](memory/preferences/tailwind-no-arbitrary-values.md) — Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - [Check mobile on every CSS change](memory/preferences/mobile-breakpoint-check.md) — before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
@@ -53,12 +54,17 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commit handoff](memory/preferences/commit-handoff.md) — who commits what: Claude owns shared memory, dev owns project work
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
 - [Local config in settings.local.php](memory/preferences/local-config-in-settings-local.md) — dev-only overrides never go through `cset`/UI
-- [Log audit](memory/preferences/log-audit.md) — how to run a server-log review; never exfiltrate log contents
 - [Test reminders](memory/preferences/test-reminders.md) — surface existing tests when changing covered code, flag coverage gaps
 - [Trust contrib tests](memory/preferences/trust-contrib-tests.md) — cover only the seam we own; never hit a live external API
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
+
+#### Cloudflare
+
+- [WAF rules silently break SSL renewal](memory/cloudflare/waf-blocks-acme-renewal.md) — before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
+- [Free Bot Fight Mode can't be skipped by any WAF rule](memory/cloudflare/bot-fight-mode-unskippable.md) — an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
+- [Cloudflare WAF and event tool](memory/cloudflare/waf-rule-tool.md) — before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
 
 #### Drupal
 
@@ -100,7 +106,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 #### Augustash internal modules
 
-- [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building anything from scratch
+- [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created
@@ -114,6 +120,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
+- [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
 - [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
@@ -130,6 +137,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [LearnDash closed-course button URL](memory/wordpress/learndash-closed-course-button-url.md) — a closed course's buy button points at live from every other environment
 - [WP security-header CSP silently breaks analytics](memory/wordpress/rsssl-csp-enforce-analytics.md) — analytics cliffs overnight while the site looks fine; two header plugins intersect
 - [Pass CSP Evaluator on WordPress with nonce + strict-dynamic](memory/wordpress/csp-nonce-strict-dynamic.md) — clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- [AIOSEO writes llms.txt as a static file](memory/wordpress/aioseo-llms-txt-static-file.md) — production serves your local .ddev.site URLs; also any plugin generating a file into the web root
 
 ---
 
@@ -217,4 +225,5 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [content-migration-to-components](skills/content-migration-to-components/SKILL.md) — building a page out of migrated content: what shape it is, reuse/extend/build-new, and verifying the result
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
+- [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps

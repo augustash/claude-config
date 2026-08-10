@@ -26,6 +26,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - **Style rules cover as much ground as possible** — `vendor/augustash/claude-config/memory/preferences/style-rules-cover-ground.md`  
   before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- **A defect nobody can see still gets fixed** — `vendor/augustash/claude-config/memory/preferences/fix-what-nobody-sees.md`  
+  before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
@@ -52,8 +54,6 @@ These files are authoritative and kept current by the team. Prefer conventions h
   always confirm before terminus against `.live`/`.test`
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
   dev-only overrides never go through `cset`/UI
-- **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
-  how to run a server-log review; never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   surface existing tests when changing covered code, flag coverage gaps
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
@@ -64,6 +64,15 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
+
+## Cloudflare
+
+- **WAF rules silently break SSL renewal** — `vendor/augustash/claude-config/memory/cloudflare/waf-blocks-acme-renewal.md`  
+  before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
+- **Free Bot Fight Mode can't be skipped by any WAF rule** — `vendor/augustash/claude-config/memory/cloudflare/bot-fight-mode-unskippable.md`  
+  an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
+- **Cloudflare WAF and event tool** — `vendor/augustash/claude-config/memory/cloudflare/waf-rule-tool.md`  
+  before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
 
 ## Drupal
 
@@ -141,7 +150,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Augustash internal modules
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
-  GitHub orgs to check before building anything from scratch
+  GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
@@ -168,6 +177,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   tracking-param strip/redirect, facets + search submodules
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
+- **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
+  before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
@@ -197,3 +208,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
   analytics cliffs overnight while the site looks fine; two header plugins intersect
 - **Pass CSP Evaluator on WordPress with nonce + strict-dynamic** — `vendor/augustash/claude-config/memory/wordpress/csp-nonce-strict-dynamic.md`  
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
+  production serves your local .ddev.site URLs; also any plugin generating a file into the web root

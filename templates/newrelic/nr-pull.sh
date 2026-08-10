@@ -2,9 +2,11 @@
 # Pull a New Relic worker-saturation / performance exhibit for a Pantheon site.
 #
 # Usage:   bash nr-pull.sh <site-dir>
-# Example: bash nr-pull.sh ~/.config/newrelic/mspairport
+# Example: bash nr-pull.sh .newrelic
 #
-# <site-dir> must contain an nr.env (kept OUTSIDE this repo — see README.md) with:
+# <site-dir> holds nr.env and receives out/. Prefer a gitignored dir in the site itself
+# (.newrelic/) over a parallel ~/.config tree — see README.md. It must never be inside
+# vendor/augustash/claude-config, which ships to every project. Contents:
 #   NR_ACCOUNT_ID=1234567
 #   NR_API_KEY=NRAK-xxxxxxxx
 #   NR_APP=mspairport (live)
