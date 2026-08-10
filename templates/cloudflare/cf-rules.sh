@@ -8,7 +8,9 @@
 #   bash cf-rules.sh <site-dir> backup        # timestamped snapshot of the ruleset
 #   bash cf-rules.sh <site-dir> apply <file>  # PUT an edited rules array (atomic, reorders)
 #
-# <site-dir> holds cf.env and receives out/. It must live OUTSIDE this repo.
+# <site-dir> holds cf.env and receives out/. Prefer a gitignored dir in the site itself
+# (.cloudflare/) over a parallel ~/.config tree — see cf.env.example. It must never be
+# inside vendor/augustash/claude-config, which ships to every project.
 # Requires: curl, jq.
 
 set -euo pipefail
