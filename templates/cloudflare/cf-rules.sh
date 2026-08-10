@@ -7,6 +7,14 @@
 #   bash cf-rules.sh <site-dir> lists         # account IP lists + their items
 #   bash cf-rules.sh <site-dir> backup        # timestamped snapshot of the ruleset
 #   bash cf-rules.sh <site-dir> apply <file>  # PUT an edited rules array (atomic, reorders)
+#   bash cf-rules.sh <site-dir> audit [since] [before]
+#                                             # who changed what, when (default: last 7 days)
+#
+# `audit` answers the question this tool actually gets reached for during an incident:
+# not "what are the rules now" but "what changed, and did it change when the breakage
+# started". Point it at the hour traffic died. It only sees changes made on YOUR side —
+# a Cloudflare-pushed managed-ruleset or bot-scoring change leaves no entry here, so an
+# empty result means "nobody here touched it", not "nothing changed".
 #
 # <site-dir> holds cf.env and receives out/. Prefer a gitignored dir in the site itself
 # (.cloudflare/) over a parallel ~/.config tree — see cf.env.example. It must never be
@@ -21,7 +29,7 @@ die() { printf '%s\n' "$*" >&2; exit 1; }
 
 SITE_DIR="${1:-}"
 CMD="${2:-show}"
-[ -n "$SITE_DIR" ] || die "usage: bash cf-rules.sh <site-dir> [show|pull|lists|backup|apply <file>]"
+[ -n "$SITE_DIR" ] || die "usage: bash cf-rules.sh <site-dir> [show|pull|lists|backup|audit|apply <file>]"
 [ -d "$SITE_DIR" ] || die "no such dir: $SITE_DIR"
 [ -f "$SITE_DIR/cf.env" ] || die "no cf.env in $SITE_DIR (copy cf.env.example there and fill it in)"
 
@@ -116,6 +124,35 @@ case "$CMD" in
       cf GET "/accounts/$CF_ACCOUNT_ID/rules/lists/$lid/items" \
         | jq -r '.result[]? | "  \(.ip // .redirect.source_url // .hostname // .asn)\(if .comment then "   # " + .comment else "" end)"'
     done
+    ;;
+
+  audit)
+    verify
+    [ -n "${CF_ACCOUNT_ID:-}" ] || die "CF_ACCOUNT_ID needed for audit (token also needs Account > Audit Logs > Read)"
+    # Default window: the last 7 days. Both bounds accept anything Cloudflare parses as
+    # RFC3339 — a bare date (2026-08-04) is treated as midnight UTC.
+    SINCE="${3:-$(date -u -v-7d +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)}"
+    BEFORE="${4:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+    r="$(cf GET "/accounts/$CF_ACCOUNT_ID/audit_logs?since=$SINCE&before=$BEFORE&per_page=1000&direction=desc")"
+    check "$r" "get audit logs"
+    n="$(echo "$r" | jq '.result | length')"
+    printf 'audit log  %s .. %s   (%s entries)\n\n' "$SINCE" "$BEFORE" "$n"
+    if [ "$n" = "0" ]; then
+      printf 'No configuration changes recorded in this window.\n'
+      printf 'That rules out a change made from your account — NOT a change Cloudflare\n'
+      printf 'rolled out themselves (managed rulesets, bot scoring). Check Security Events\n'
+      printf 'for what is actually being actioned before concluding nothing changed.\n'
+      exit 0
+    fi
+    echo "$r" | jq -r '
+      .result[]
+      | "\(.when)  \(.actor.email // .actor.type // "?")"
+        + "\n     action:   \(.action.type // "?")\(if .action.result == false then "  (FAILED)" else "" end)"
+        + "\n     resource: \(.resource.type // "?")\(if .resource.id then " " + .resource.id else "" end)"
+        + (if (.metadata // {}) != {} then "\n     meta:     \(.metadata | tojson)" else "" end)
+        + (if .oldValue and .oldValue != "" and .oldValue != null then "\n     from:     \(.oldValue | tostring | .[0:300])" else "" end)
+        + (if .newValue and .newValue != "" and .newValue != null then "\n     to:       \(.newValue | tostring | .[0:300])" else "" end)
+        + "\n"'
     ;;
 
   backup)
