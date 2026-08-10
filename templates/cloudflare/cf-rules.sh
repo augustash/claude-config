@@ -7,6 +7,7 @@
 #   bash cf-rules.sh <site-dir> lists         # account IP lists + their items
 #   bash cf-rules.sh <site-dir> backup        # timestamped snapshot of the ruleset
 #   bash cf-rules.sh <site-dir> apply <file>  # PUT an edited rules array (atomic, reorders)
+#   bash cf-rules.sh <site-dir> events <ip> [date]   # is this client getting through, and what hit it
 #   bash cf-rules.sh <site-dir> audit [since] [before]
 #                                             # who changed what, when (default: last 7 days)
 #
@@ -29,7 +30,7 @@ die() { printf '%s\n' "$*" >&2; exit 1; }
 
 SITE_DIR="${1:-}"
 CMD="${2:-show}"
-[ -n "$SITE_DIR" ] || die "usage: bash cf-rules.sh <site-dir> [show|pull|lists|backup|audit|apply <file>]"
+[ -n "$SITE_DIR" ] || die "usage: bash cf-rules.sh <site-dir> [show|events|pull|lists|backup|audit|apply <file>]"
 [ -d "$SITE_DIR" ] || die "no such dir: $SITE_DIR"
 [ -f "$SITE_DIR/cf.env" ] || die "no cf.env in $SITE_DIR (copy cf.env.example there and fill it in)"
 
@@ -52,6 +53,19 @@ cf() { # cf <method> <path> [body]
   else
     curl -sS -X "$method" "$API$path" -H "Authorization: Bearer $CF_API_TOKEN"
   fi
+}
+
+gql() { # gql <query-string>
+  local body; body="$(jq -n --arg q "$1" '{query:$q}')"
+  curl -sS "https://api.cloudflare.com/client/v4/graphql" \
+    -H "Authorization: Bearer $CF_API_TOKEN" \
+    -H "Content-Type: application/json" --data "$body"
+}
+
+# The day after $1, in UTC. BSD date first, GNU second.
+next_day() {
+  date -u -j -v+1d -f %Y-%m-%d "$1" +%Y-%m-%d 2>/dev/null \
+    || date -u -d "$1 + 1 day" +%Y-%m-%d
 }
 
 check() { # check <json> <what>
@@ -144,6 +158,48 @@ case "$CMD" in
       cf GET "/accounts/$CF_ACCOUNT_ID/rules/lists/$lid/items" \
         | jq -r '.result[]? | "  \(.ip // .redirect.source_url // .hostname // .asn)\(if .comment then "   # " + .comment else "" end)"'
     done
+    ;;
+
+  events)
+    IP="${3:-}"
+    [ -n "$IP" ] || die "usage: bash cf-rules.sh <site-dir> events <client-ip> [YYYY-MM-DD]"
+    DAY="${4:-$(date -u +%Y-%m-%d)}"; NEXT="$(next_day "$DAY")"
+    verify
+
+    # Both datasets are capped at a 1-day window on non-Enterprise zones, hence one
+    # day per call rather than a range. They answer different questions and you need
+    # both: firewallEventsAdaptive logs ONLY requests something actioned, so a client
+    # sailing through appears nowhere in it — absence there is not evidence of success.
+    # httpRequestsAdaptiveGroups counts every request by response status, which is
+    # what actually tells you whether the client is getting through.
+    printf '=== %s on %s ===\n\n' "$IP" "$DAY"
+
+    r="$(gql "{ viewer { zones(filter:{zoneTag:\"$CF_ZONE_ID\"}) { httpRequestsAdaptiveGroups(filter:{datetime_geq:\"${DAY}T00:00:00Z\",datetime_leq:\"${NEXT}T00:00:00Z\",clientIP:\"$IP\"},limit:50) { count dimensions { edgeResponseStatus } } } } }")"
+    if [ -n "$(echo "$r" | jq -r '.errors[0].message // empty')" ]; then
+      printf 'requests: ERROR %s\n' "$(echo "$r" | jq -r '.errors[0].message')"
+    else
+      echo "$r" | jq -r '.data.viewer.zones[0].httpRequestsAdaptiveGroups as $g
+        | ($g | map(select(.dimensions.edgeResponseStatus < 400) | .count) | add // 0) as $ok
+        | ($g | map(.count) | add // 0) as $tot
+        | "requests: total=\($tot)  ok=\($ok)  " + ([$g[] | "\(.dimensions.edgeResponseStatus):\(.count)"] | join(" "))'
+    fi
+
+    r="$(gql "{ viewer { zones(filter:{zoneTag:\"$CF_ZONE_ID\"}) { firewallEventsAdaptive(filter:{datetime_geq:\"${DAY}T00:00:00Z\",datetime_leq:\"${NEXT}T00:00:00Z\",clientIP:\"$IP\"},limit:1000,orderBy:[datetime_DESC]) { datetime action source ruleId clientRequestPath userAgent } } } }")"
+    if [ -n "$(echo "$r" | jq -r '.errors[0].message // empty')" ]; then
+      printf 'actioned: ERROR %s\n' "$(echo "$r" | jq -r '.errors[0].message')"
+      exit 0
+    fi
+    n="$(echo "$r" | jq '.data.viewer.zones[0].firewallEventsAdaptive | length')"
+    printf 'actioned: %s events\n' "$n"
+    [ "$n" = "0" ] && { printf '\nNothing challenged or blocked this client today.\n'; exit 0; }
+    printf '\nby source/action:\n'
+    echo "$r" | jq -r '.data.viewer.zones[0].firewallEventsAdaptive
+      | group_by("\(.source)|\(.ruleId)|\(.action)")
+      | sort_by(-length)[]
+      | "   \(length)x  \(.[0].action)  src=\(.[0].source)  rule=\(.[0].ruleId)"'
+    printf '\nmost recent:\n'
+    echo "$r" | jq -r '.data.viewer.zones[0].firewallEventsAdaptive[:5][]
+      | "   \(.datetime)  \(.action)  \(.clientRequestPath)"'
     ;;
 
   audit)
