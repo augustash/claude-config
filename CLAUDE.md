@@ -104,7 +104,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 #### Augustash internal modules
 
-- [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building anything from scratch
+- [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created

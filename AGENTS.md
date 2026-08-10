@@ -146,7 +146,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Augustash internal modules
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
-  GitHub orgs to check before building anything from scratch
+  GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
