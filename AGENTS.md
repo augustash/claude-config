@@ -210,3 +210,5 @@ These files are authoritative and kept current by the team. Prefer conventions h
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
 - **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
   production serves your local .ddev.site URLs; also any plugin generating a file into the web root
+- **terminus wp returns no output at all** — `vendor/augustash/claude-config/memory/wordpress/wp-cli-silent-on-pantheon.md`  
+  every WP-CLI command exits 0 printing nothing; also before running any destructive eval-file on Pantheon
