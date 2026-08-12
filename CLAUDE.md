@@ -129,6 +129,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [WP Engine git deploy](memory/augustash/wpengine-git-deploy.md) — reconcile live plugin drift before deploying or the push reverts it
 - [ddev-setup post-update-cmd wiring](memory/augustash/ddev-setup-post-update-cmd.md) — the hook set via `ddev composer config --json` fails to autoload
 - [New Relic audit tool](memory/augustash/newrelic-audit-tool.md) — NerdGraph puller + report generator for Pantheon worker-saturation exhibits
+- [Force a fleet sync — run the collectors on GitHub](memory/augustash/vincent-collectors-manual-run.md) — when V.I.N.CENT's board/Updates/Health look stale and you need fresh data now, outside the twice-daily CI schedule
 
 #### WordPress
 

@@ -198,6 +198,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   the hook set via `ddev composer config --json` fails to autoload
 - **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
   NerdGraph puller + report generator for Pantheon worker-saturation exhibits
+- **Force a fleet sync — run the collectors on GitHub** — `vendor/augustash/claude-config/memory/augustash/vincent-collectors-manual-run.md`  
+  when V.I.N.CENT's board/Updates/Health look stale and you need fresh data now, outside the twice-daily CI schedule
 
 ## WordPress
 
