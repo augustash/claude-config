@@ -32,8 +32,19 @@ Same plugin, same data. Dynamic is right; the file on disk is stale.
 
 **Impact is genuinely low — don't inflate it.** Nothing human-facing renders `llms.txt`, no major search engine uses it (Google has said so explicitly), and AI crawlers are carried by `sitemap.xml` and the HTML regardless. The real cost is repo hygiene: a ~100KB generated artifact churning hundreds of lines into commits, which is also how the bad content shipped. Treat it as cleanup, not an incident.
 
-**Fixes**, cheapest first:
+**Fixes**, best first:
 
+- **Commit a symlink into the uploads mount** — `llms.txt -> wp-content/uploads/llms.txt`.
+  Verified end to end on Pantheon (atrix.com, 2026-08-12). AIOSEO still writes to
+  `<docroot>/llms.txt`, but `WP_Filesystem`'s `fopen('w')` follows the symlink, so the bytes land
+  in `uploads/` — which *is* writable on test/live — and the link survives every regeneration
+  rather than being replaced. nginx serves through it. Net result: it regenerates on live at
+  live's own `home_url()`, git carries one line instead of a ~100KB artifact, and the year-long
+  asset TTL becomes irrelevant because the content is finally correct. Two gotchas: the file
+  404s after deploy until the first generation (prime it with
+  `wp eval 'aioseo()->llms->generateLlmsTxt();'`), and generating **via WP-CLI emits `http://`**
+  because `wp-config-pantheon.php` derives `WP_HOME` from `$_SERVER['HTTP_HOST']`, absent under
+  CLI — a web-triggered run gets `https://`, so just let the scheduled job correct it.
 - `.gitignore` it and `git rm --cached llms.txt`. Live ends up with no `llms.txt` at all, which given the above costs nothing measurable.
 - Serve it dynamically from a small mu-plugin (disable AIOSEO's static generation). Renders at `home_url()` every time, gets normal WordPress cache headers instead of the asset TTL, and leaves the repo entirely.
 - Rewriting the domain before commit (`sed`, or a pre-push hook) works but only treats the symptom — the file still ships frozen and still carries the year-long TTL.

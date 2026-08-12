@@ -139,6 +139,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Pass CSP Evaluator on WordPress with nonce + strict-dynamic](memory/wordpress/csp-nonce-strict-dynamic.md) — clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
 - [AIOSEO writes llms.txt as a static file](memory/wordpress/aioseo-llms-txt-static-file.md) — production serves your local .ddev.site URLs; also any plugin generating a file into the web root
 - [terminus wp returns no output at all](memory/wordpress/wp-cli-silent-on-pantheon.md) — WP-CLI commands exit 0 printing nothing, or eval-file silently does nothing; check before any destructive run
+- [Object Cache Pro survives a database clone](memory/wordpress/object-cache-survives-db-clone.md) — wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
 
 ---
 
