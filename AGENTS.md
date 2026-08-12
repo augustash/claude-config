@@ -212,3 +212,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
 - **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
   production serves your local .ddev.site URLs; also any plugin generating a file into the web root
+- **terminus wp returns no output at all** — `vendor/augustash/claude-config/memory/wordpress/wp-cli-silent-on-pantheon.md`  
+  WP-CLI commands exit 0 printing nothing, or eval-file silently does nothing; check before any destructive run
+- **Object Cache Pro survives a database clone** — `vendor/augustash/claude-config/memory/wordpress/object-cache-survives-db-clone.md`  
+  wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
