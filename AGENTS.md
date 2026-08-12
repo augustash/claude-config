@@ -163,6 +163,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
   before removing one plugin programmatically, or when one you never touched disappears
+- **A builder-written value the editor rejects makes a component unsaveable** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-builder-value-blocks-editor.md`  
+  a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
