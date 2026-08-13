@@ -140,6 +140,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   enabling exo_icon in a KernelTestBase fatals on a missing `node_type`
 - **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
+- **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
+  shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
@@ -163,6 +165,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
   before removing one plugin programmatically, or when one you never touched disappears
+- **A builder-written value the editor rejects makes a component unsaveable** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-builder-value-blocks-editor.md`  
+  a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
@@ -171,6 +175,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   sections read as run together on mobile while desktop looks right
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
+- **Neo image derivatives are AVIF on D11.2+** — `vendor/augustash/claude-config/memory/augustash/neo-image-avif-on-d11-2.md`  
+  link previews break site-wide after an 11.2 bump while every image still looks right in a browser
+- **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
+  every page shares one meta description, or no page has one; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
