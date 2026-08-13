@@ -140,6 +140,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   enabling exo_icon in a KernelTestBase fatals on a missing `node_type`
 - **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
+- **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
+  shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
