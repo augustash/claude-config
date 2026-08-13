@@ -62,6 +62,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - [Drupal-native admin UI over React](memory/preferences/drupal-native-admin-ui.md) — before scoping any rich Drupal admin UI; dialog/tabledrag/AJAX get the react-like feel with no build step
 - [Status updates carry decisions, not side effects](memory/preferences/status-updates-decision-relevant.md) — before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
+- [Caveats belong with the delivery](memory/preferences/caveats-with-delivery.md) — before calling any work "done" or deploying; say what's verified vs assumed up front, never surface caveats after the fact
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
 
 #### Drupal

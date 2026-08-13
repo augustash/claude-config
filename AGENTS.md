@@ -70,6 +70,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before scoping any rich Drupal admin UI; dialog/tabledrag/AJAX get the react-like feel with no build step
 - **Status updates carry decisions, not side effects** — `vendor/augustash/claude-config/memory/preferences/status-updates-decision-relevant.md`  
   before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
+- **Caveats belong with the delivery** — `vendor/augustash/claude-config/memory/preferences/caveats-with-delivery.md`  
+  before calling any work "done" or deploying; say what's verified vs assumed up front, never surface caveats after the fact
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
 
