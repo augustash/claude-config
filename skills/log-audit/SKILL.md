@@ -91,8 +91,18 @@ An empty result for a caller means nothing if the log doesn't reach back far eno
 
 **On other platforms:** WP Engine and Kinsta expose logs over SFTP in the same nginx
 format; Acquia via `acli`; plain hosting via `/var/log/nginx/`. The parsing below is
-the same everywhere. On a multi-appserver plan each server keeps its own log — pull
-each, or accept that you're sampling.
+the same everywhere.
+
+**On a multi-appserver plan each server keeps its own log, and this does not announce
+itself.** Every connection lands on whichever container answers, so one `sftp get`
+succeeds, returns a plausible file, and silently covers a single server. The tell is
+that `ls -l` and the downloaded size disagree — and that repeating the download gives a
+*different* size, so the two appear to swap. Nothing errors. This applies to
+`logs/php/` (php-error.log, php-slow.log) exactly as it does to `logs/nginx/`.
+
+So pull repeatedly until sizes stop changing, concatenate the samples, and dedupe — or
+state plainly that the figures are a sample of one container. The failure mode is
+quietly reporting "no occurrences" from one server's log as though it covered the site.
 
 **Analyze locally. Log contents — IPs, session identifiers, PII, request bodies — must
 never be sent to an external service.** Shell tools (grep/awk/sort/uniq) over a local
@@ -103,7 +113,16 @@ the surrounding traffic.
 
 ## Pass 3 — parse it correctly
 
-Two traps, both of which produce *empty output that looks like a real answer*:
+Three traps, all of which produce *empty output that looks like a real answer*:
+
+**`zcat` on macOS reads nothing and says nothing.** BSD `zcat` expects `.Z`, so
+`zcat *.gz` prints an empty stream and exits clean — a whole-corpus grep returns zero
+hits and looks like a genuine negative. `zcat -f` mostly papers over it; `gunzip -c` is
+the one that always works. Sanity-check the decompression before trusting any count:
+
+```bash
+gunzip -c nginx-access.log-*.gz | wc -l     # must be non-zero before you believe a grep
+```
 
 **The leading IP is the load balancer.** Pantheon logs `$remote_addr` as an internal
 `10.x.x.x`. The real client is the **first** entry of the comma-separated

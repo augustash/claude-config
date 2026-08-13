@@ -214,3 +214,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
   WP-CLI commands exit 0 printing nothing, or eval-file silently does nothing; check before any destructive run
 - **Object Cache Pro survives a database clone** — `vendor/augustash/claude-config/memory/wordpress/object-cache-survives-db-clone.md`  
   wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
+- **AIOSEO nulls its Head object in AJAX and cron** — `vendor/augustash/claude-config/memory/wordpress/aioseo-rest-head-null-ajax-cron.md`  
+  WooCommerce product webhooks fail and it reads as a broken scheduler; the queue looks healthy while events silently stop
+- **PHP session GC never runs on Pantheon** — `vendor/augustash/claude-config/memory/wordpress/pantheon-session-gc-never-runs.md`  
+  the database is mostly one session table; also before reserving a quiet window to rebuild a bloated table
