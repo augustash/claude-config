@@ -118,6 +118,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo's base.css out-ranks the theme on form buttons](memory/augustash/neo-base-css-button-specificity.md) — a theme rule on a submit button half-applies, with no `!important` and nothing visibly overriding it
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
 - [neo spacing is a token plus an application](memory/augustash/neo-component-spacing-collapse.md) — same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
+- [Neo image derivatives turn AVIF on D11.2+](memory/augustash/neo-image-avif-on-d11-2.md) — link previews break site-wide after an 11.2 bump while every image still looks right in a browser
 - [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules

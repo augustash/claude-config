@@ -173,6 +173,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   sections read as run together on mobile while desktop looks right
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
+- **Neo image derivatives turn AVIF on D11.2+** — `vendor/augustash/claude-config/memory/augustash/neo-image-avif-on-d11-2.md`  
+  link previews break site-wide after an 11.2 bump while every image still looks right in a browser
 - **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
   every page shares one meta description, or no page has one; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
