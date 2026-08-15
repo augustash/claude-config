@@ -48,6 +48,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   ~/.claude/scratch/ for temporary cross-project context
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
+- **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
+  before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
   who commits what: Claude owns shared memory, dev owns project work
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  

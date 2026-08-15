@@ -51,6 +51,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
+- [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — who commits what: Claude owns shared memory, dev owns project work
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
 - [Local config in settings.local.php](memory/preferences/local-config-in-settings-local.md) — dev-only overrides never go through `cset`/UI

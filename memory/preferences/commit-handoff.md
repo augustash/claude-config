@@ -9,6 +9,7 @@ Two distinct ownership zones for committing:
 
 - **Shared memory (`vendor/augustash/claude-config/`):** Claude commits and pushes. This is package distribution — leaving local-only edits would defeat the purpose since other projects depend on the published package.
 - **Project repo:** Developer reviews the diff, commits, and pushes. Even when Claude wrote the code, the dev reviews and commits to maintain authorship signal and review discipline.
+- **Module clones (`~/Projects/<module>/`):** Claude commits and pushes; the developer opens the PR. See [[module-fixes-on-develop]] — that memory owns the branching rule and the "match the upstream author's conventions" half.
 
 **Why:** Developer wants to review every change to project code before it's committed. Shared memory is meant to flow back to the team automatically; project work should not.
 
