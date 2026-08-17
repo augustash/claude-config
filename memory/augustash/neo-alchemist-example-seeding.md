@@ -49,6 +49,35 @@ Two downstream bugs in this family were fixed upstream in **neo_alchemist 1.0.10
 
 Both had project-local patches, both dropped 2026-07-30. The seeding behaviour above is the part that survived them.
 
+## The seeded examples can be STALE
+
+The examples that get seeded are not read live from the `*.component.yml` — a saved
+`neo_component` carries its own `schema` snapshot, and that snapshot only refreshes when the
+**expression** changes. `Component::preSave()` recomputes `schema` and `expression` together,
+guarded on the expression differing from the stored one.
+
+The expression encodes prop *names and types*. It does not encode examples. So **editing only
+`examples:` in an SDC never updates the stored schema** — new placements keep seeding whatever
+the examples were when the prop structure last changed. Re-saving the entity is not enough
+either; nothing differs, so the guard never opens.
+
+The tell is examples you know you deleted still appearing as editor defaults. Force it:
+
+```php
+$e = \Drupal::entityTypeManager()->getStorage('neo_component')->load('my_component');
+$e->set('schema', \Drupal\Component\Serialization\Json::encode($e->getComponentSchema()));
+$e->save();
+```
+
+Then `drush cex` — the snapshot lives in `config/neo_alchemist.neo_component.*.yml`, so a
+stale one is committed and deploys to every environment. ⚠ Grep the exported file for a
+distinctive example string rather than eyeballing it: the schema is JSON-in-YAML with escaped
+slashes, so `images/queue-01.jpg` will not match what is actually written as
+`images\/queue-01.jpg`.
+
+First hit: md 2026-08-17, swapping a hero's ten example images for locally-sized ones. The SDC
+was correct and the stored schema still carried the old URLs.
+
 ## Diagnosing
 
 Compare stored against rendered — never read the value back and call it proof. Render the node and grep the HTML for a distinctive string from the component's `examples:` block; a hit is a seed that was never overwritten.

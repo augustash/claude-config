@@ -113,7 +113,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
-- [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created
+- [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created, or examples you deleted still showing as defaults
 - [The 'default' option discards stored media values](memory/augustash/neo-alchemist-option-default-discards-value.md) — an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - [neo_alchemist heading anchors derive from the title](memory/augustash/neo-alchemist-heading-anchor-override.md) — a stored anchor is ignored, so re-wording a heading silently moves its id
 - [Saving a neo_component wipes every prop plugin on the shape](memory/augustash/neo-alchemist-plugin-settings-wipe.md) — before removing one plugin programmatically, or when one you never touched disappears
@@ -123,6 +123,8 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
 - [neo spacing is a token plus an application](memory/augustash/neo-component-spacing-collapse.md) — same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - [Neo image derivatives are AVIF on D11.2+](memory/augustash/neo-image-avif-on-d11-2.md) — link previews break site-wide after an 11.2 bump while every image still looks right in a browser
+- [component:// srcs get no image style](memory/augustash/neo-image-local-src-no-derivatives.md) — images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
+- [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
 - [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
