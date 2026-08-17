@@ -44,6 +44,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
   when design judgment is left; skip it for prescriptive handed-over values
+- **Deliverables are HTML files, not Claude artifacts** — `vendor/augustash/claude-config/memory/preferences/deliverables-as-html-files.md`  
+  before publishing a report, audit or findings page for a client or the team
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
