@@ -162,7 +162,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
-  content on the page nobody authored; editors see repeater rows they never created
+  content on the page nobody authored; editors see repeater rows they never created, or examples you deleted still showing as defaults
 - **The 'default' option discards stored media values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-option-default-discards-value.md`  
   an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
@@ -181,6 +181,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - **Neo image derivatives are AVIF on D11.2+** — `vendor/augustash/claude-config/memory/augustash/neo-image-avif-on-d11-2.md`  
   link previews break site-wide after an 11.2 bump while every image still looks right in a browser
+- **component:// srcs get no image style** — `vendor/augustash/claude-config/memory/augustash/neo-image-local-src-no-derivatives.md`  
+  images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
+- **A spent neo-animate reveal seals a stacking context** — `vendor/augustash/claude-config/memory/augustash/neo-animate-identity-transform-stacking.md`  
+  a sibling won't layer between two children no matter what z-index it gets
 - **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
   every page shares one meta description, or no page has one; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
