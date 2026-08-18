@@ -114,6 +114,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   standard index/server names and the DDEV Solr build
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
+  a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
   Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
@@ -175,6 +177,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before removing one plugin programmatically, or when one you never touched disappears
 - **A builder-written value the editor rejects makes a component unsaveable** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-builder-value-blocks-editor.md`  
   a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
+- **Editor chrome must not sit in the preview's document flow** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md`  
+  an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
