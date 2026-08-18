@@ -72,6 +72,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 - [Drupal caching](memory/drupal/caching.md) — cache debugging, session poisoning, Exo component cache, Redis compress_length
 - [D11.4 symfony/runtime allow-plugin](memory/drupal/d11-symfony-runtime.md) — every web request WSODs after a 11.4 bump while drush still works fine
+- [A stored NULL placeholder WSODs every order page on D11](memory/drupal/commerce-log-null-placeholder-d11.md) — admin order pages 500 right after a D11 deploy, old and new alike; the data is far older than the outage
 - [Cross-version DB pull](memory/drupal/cross-version-db-pull.md) — older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - [Admin theme change orphans theme-keyed config](memory/drupal/admin-theme-keyed-config.md) — the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
 - [An empty config object kills cim](memory/drupal/cim-empty-config-object.md) — `cim` dies on the same op every run with "delete() on null", and `config:delete` insists the config does not exist

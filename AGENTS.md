@@ -84,6 +84,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   cache debugging, session poisoning, Exo component cache, Redis compress_length
 - **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
   every web request WSODs after a 11.4 bump while drush still works fine
+- **A stored NULL placeholder WSODs every order page on D11** — `vendor/augustash/claude-config/memory/drupal/commerce-log-null-placeholder-d11.md`  
+  admin order pages 500 right after a D11 deploy, old and new alike; the data is far older than the outage
 - **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
   older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - **Admin theme change orphans theme-keyed config** — `vendor/augustash/claude-config/memory/drupal/admin-theme-keyed-config.md`  
