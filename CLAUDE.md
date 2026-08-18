@@ -69,6 +69,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [WAF rules silently break SSL renewal](memory/cloudflare/waf-blocks-acme-renewal.md) — before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
 - [Free Bot Fight Mode can't be skipped by any WAF rule](memory/cloudflare/bot-fight-mode-unskippable.md) — an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
 - [Cloudflare WAF and event tool](memory/cloudflare/waf-rule-tool.md) — before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- [A WAF rule keyed on http.referer inverts](memory/cloudflare/referer-is-not-a-security-condition.md) — before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
 #### Drupal
 

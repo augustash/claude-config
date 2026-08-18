@@ -81,6 +81,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
 - **Cloudflare WAF and event tool** — `vendor/augustash/claude-config/memory/cloudflare/waf-rule-tool.md`  
   before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- **A WAF rule keyed on http.referer inverts** — `vendor/augustash/claude-config/memory/cloudflare/referer-is-not-a-security-condition.md`  
+  before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
 ## Drupal
 
