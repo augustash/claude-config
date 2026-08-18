@@ -70,6 +70,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
+- **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
+  before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
 ## Cloudflare
 
