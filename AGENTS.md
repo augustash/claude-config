@@ -176,7 +176,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **A builder-written value the editor rejects makes a component unsaveable** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-builder-value-blocks-editor.md`  
   a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - **Editor chrome must not sit in the preview's document flow** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md`  
-  an Alchemist preview that shakes in Firefox but never in Chrome; also before animating anything in a preview
+  an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  

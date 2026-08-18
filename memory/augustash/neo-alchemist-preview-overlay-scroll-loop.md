@@ -1,6 +1,6 @@
 ---
 name: Editor chrome must not sit in the preview's document flow
-description: "Alchemist sizes each preview iframe to exactly its content height, so the document sits permanently a fraction of a pixel from needing a scrollbar. Anything the editor draws INTO that document — outlines, labels, hit targets — can tip it over, and where scrollbars take width the frame then shakes: scrollbar, narrower, rewrap, resize, repeat."
+description: "Alchemist sizes each preview iframe to exactly its content height, so the document sits permanently a fraction of a pixel from needing a scrollbar. Anything the editor draws INTO that document — outlines, labels, hit targets — can tip it over, and the frame then rings: scrollbar, relayout, resize, repeat, tens of times a second."
 metadata:
   type: reference
 ---
@@ -9,19 +9,12 @@ metadata:
 
 The parent sets each preview frame's height from the height the child reports, so
 `scrollHeight` and `clientHeight` end up **exactly equal**. That is a knife edge: one extra
-fractional pixel inside that document means a scrollbar.
-
-Where scrollbars are *classic* and take width — Firefox, and not Chrome, whose overlay
-scrollbars take none — that closes a loop:
-
-```
-scrollbar appears → frame narrows ~15px → text rewraps → height changes
-   → parent resizes the frame → scrollbar goes → width returns → rewraps back → …
-```
+fractional pixel inside that document means a scrollbar, and a scrollbar means a relayout,
+which changes the reported height, which resizes the frame, which changes it again.
 
 Measured on ar-md at **~90 `size` messages a second**, visible as the preview shaking. It bit
-only the narrowest frame, because a rewrap moves the most there, and only while a prop outline
-was drawn — the outline was the fractional pixel.
+the narrowest frame worst and only while a prop outline was drawn — the outline was the extra
+pixel.
 
 **Rule: anything the editor draws over a preview goes on its own layer, outside the flow.**
 
@@ -38,6 +31,11 @@ Fixed and clipped, it cannot influence layout or scroll size at all. Children ar
 positioned in **viewport** coordinates, not document ones — safe because the frame is sized to
 its content and never scrolls itself.
 
+⚠ **Not browser-specific.** It reproduced in Chrome and Firefox alike. It was first
+misdiagnosed as Firefox-only, from Chrome sessions that stayed quiet for unrelated reasons —
+so do not let "Chrome looks fine" rule this out. Verify with the counter below rather than by
+eye, in whichever browser is to hand.
+
 ## Corollaries
 
 - **Entrance animations do not belong in an editor preview.** neo_animate holds elements at
@@ -53,8 +51,13 @@ its content and never scrolls itself.
 
 ## Diagnosing this class
 
-Chrome will not reproduce it. Counting the messages does: hook `window.message` in the parent,
-count `type === 'size'` per second, and compare against an idle baseline of 1–5.
+Counting beats looking. Hook `window.message` in the parent, count `type === 'size'` per
+second, and compare against an idle baseline of 1–5:
+
+```js
+let n = 0; window.addEventListener('message', e => { if (e.data?.type === 'size') n++; });
+setInterval(() => { console.log('size msgs/sec', n); n = 0; }, 1000);
+```
 
 Fixed in the kazajhodo/neo_alchemist fork (2026-08-18), pending upstream merge — until that
 lands and is tagged, the loop is live for every other project on a released neo_alchemist.

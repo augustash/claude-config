@@ -119,7 +119,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [neo_alchemist heading anchors derive from the title](memory/augustash/neo-alchemist-heading-anchor-override.md) — a stored anchor is ignored, so re-wording a heading silently moves its id
 - [Saving a neo_component wipes every prop plugin on the shape](memory/augustash/neo-alchemist-plugin-settings-wipe.md) — before removing one plugin programmatically, or when one you never touched disappears
 - [A builder-written value the editor rejects makes a component unsaveable](memory/augustash/neo-alchemist-builder-value-blocks-editor.md) — a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
-- [Editor chrome must not sit in the preview's document flow](memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md) — an Alchemist preview that shakes in Firefox but never in Chrome; also before animating anything in a preview
+- [Editor chrome must not sit in the preview's document flow](memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md) — an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
 - [neo_color scheme tokens and the :root bake](memory/augustash/neo-color-scheme-token-resolution.md) — a custom property declared at `:root` won't recolor inside a scheme
 - [Neo's base.css out-ranks the theme on form buttons](memory/augustash/neo-base-css-button-specificity.md) — a theme rule on a submit button half-applies, with no `!important` and nothing visibly overriding it
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
