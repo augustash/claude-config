@@ -12,6 +12,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   how Claude stewards this corpus; read first, it shapes how every other memory is written
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
+- **Check what already exists before writing code we maintain** — `vendor/augustash/claude-config/memory/preferences/prefer-existing-tooling.md`  
+  before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
   topic/specific.md layout and organization rules
 - **Reference scripts, don't embed** — `vendor/augustash/claude-config/memory/preferences/reference-scripts-not-embeds.md`  
@@ -68,6 +70,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
+- **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
+  before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
 ## Cloudflare
 
@@ -84,6 +88,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   cache debugging, session poisoning, Exo component cache, Redis compress_length
 - **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
   every web request WSODs after a 11.4 bump while drush still works fine
+- **A stored NULL placeholder WSODs every order page on D11** — `vendor/augustash/claude-config/memory/drupal/commerce-log-null-placeholder-d11.md`  
+  admin order pages 500 right after a D11 deploy, old and new alike; the data is far older than the outage
 - **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
   older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - **Admin theme change orphans theme-keyed config** — `vendor/augustash/claude-config/memory/drupal/admin-theme-keyed-config.md`  

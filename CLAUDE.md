@@ -33,6 +33,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 - [Mission](memory/preferences/mission.md) — how Claude stewards this corpus; read first, it shapes how every other memory is written
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is already handled here before writing in it
+- [Check what already exists before writing code we maintain](memory/preferences/prefer-existing-tooling.md) — before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - [Memory structure](memory/preferences/memory-structure.md) — topic/specific.md layout and organization rules
 - [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — scripts live in templates/ and are linked by path, never pasted into a note
 - [DDEV workflow](memory/preferences/ddev-workflow.md) — always use ddev for CLI commands
@@ -61,6 +62,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
+- [Prove code is dead against its consumers](memory/preferences/prove-code-is-dead.md) — before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
 #### Cloudflare
 
@@ -72,6 +74,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 - [Drupal caching](memory/drupal/caching.md) — cache debugging, session poisoning, Exo component cache, Redis compress_length
 - [D11.4 symfony/runtime allow-plugin](memory/drupal/d11-symfony-runtime.md) — every web request WSODs after a 11.4 bump while drush still works fine
+- [A stored NULL placeholder WSODs every order page on D11](memory/drupal/commerce-log-null-placeholder-d11.md) — admin order pages 500 right after a D11 deploy, old and new alike; the data is far older than the outage
 - [Cross-version DB pull](memory/drupal/cross-version-db-pull.md) — older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - [Admin theme change orphans theme-keyed config](memory/drupal/admin-theme-keyed-config.md) — the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
 - [An empty config object kills cim](memory/drupal/cim-empty-config-object.md) — `cim` dies on the same op every run with "delete() on null", and `config:delete` insists the config does not exist

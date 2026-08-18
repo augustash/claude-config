@@ -1,22 +1,41 @@
 ---
 name: commit-handoff
-description: Claude commits + pushes shared claude-config memory work. Developer commits and pushes all project-level work after reviewing the diff.
+description: Claude commits shared claude-config memory, module-clone work, and project-level work. Pushing project code stays with the developer. Commit granularity — one idea per commit — matters more than who types it.
 metadata:
   type: feedback
 ---
 
-Two distinct ownership zones for committing:
+Committing is Claude's to do. What differs by zone is **pushing**:
 
-- **Shared memory (`vendor/augustash/claude-config/`):** Claude commits and pushes. This is package distribution — leaving local-only edits would defeat the purpose since other projects depend on the published package.
-- **Project repo:** Developer reviews the diff, commits, and pushes. Even when Claude wrote the code, the dev reviews and commits to maintain authorship signal and review discipline.
-- **Module clones (`~/Projects/<module>/`):** Claude commits and pushes; the developer opens the PR. See [[module-fixes-on-develop]] — that memory owns the branching rule and the "match the upstream author's conventions" half.
+- **Shared memory (`vendor/augustash/claude-config/`):** Claude commits *and pushes*. This is
+  package distribution — leaving local-only edits would defeat the purpose since other
+  projects depend on the published package.
+- **Project repo:** Claude commits. **The developer pushes.** On Pantheon-style projects a push
+  to the tracked branch is a deploy, so that stays an explicit human action — ask, don't
+  assume, even right after a batch of approved commits.
+- **Module clones (`~/Projects/<module>/`):** Claude commits and pushes; the developer opens the
+  PR. See [[module-fixes-on-develop]] — that memory owns the branching rule and the "match the
+  upstream author's conventions" half.
 
-**Why:** Developer wants to review every change to project code before it's committed. Shared memory is meant to flow back to the team automatically; project work should not.
+**Why:** the review the old hand-off rule protected turned out to be better served by tight,
+well-scoped commits than by a gate on who runs `git commit`. A dev can read five commits that
+each do one thing far faster than one diff they have to take apart.
 
-**How to apply:** After finishing project work, prepare a clean state (files saved, tests passing) and stop — don't run `git add` or `git commit` for project files. State what was changed, surface the diff if helpful, and let the dev take it from there. For shared memory under `vendor/augustash/claude-config/`, follow the package's own commit handoff convention (steps 1–4 in its CLAUDE.md) — that ends with Claude committing and pushing.
+## Granularity is the actual rule
 
-⚠ **"Go ahead" covers that batch, not the session.** The way this rule actually gets broken is not by ignoring it — it is by being handed the commits once, for one clearly-scoped set of changes, and quietly treating that as standing permission for everything after. On ar-md (2026-08-02) a single "go for it" early in a session turned into **31 unreviewed project commits**, which then had to be unwound with `git reset --soft`. Nothing was lost, but the review the rule exists to protect never happened.
+**One commit is one idea — the unit you would want to revert as a whole.** Don't split one idea
+across several commits, and don't combine unrelated ones. Keep the message concise: subject plus
+a tight *why*; the diagnosis belongs in the PR, not the commit (see [[commit-messages]]).
 
-So: an approval is consumed by the work in front of you. When the next distinct piece is ready, hand it back and ask again. And if committing is delegated for a long stretch, **commit at the granularity the dev would have chosen** — the same run produced ~18 commits for one feature, several of them a single CSS value, which fails the revert test as badly as one giant commit does.
+This is where it goes wrong in practice, in both directions. On ar-md (2026-08-02) a single
+long delegated stretch produced **31 commits for one feature**, several of them a single CSS
+value — which fails the revert test exactly as badly as one giant commit does. Being handed the
+commits is not licence to commit at every keystroke; commit at the granularity the dev would
+have chosen.
 
-Staging is the useful middle ground: `git add` the finished work so it is one reviewable set and say so, without taking the commit.
+## How to apply
+
+Finish the work, leave a clean state (files saved, lint/tests passing), then commit it in
+idea-sized pieces. Say what landed and what is still uncommitted. For project repos, stop at the
+commit and let the dev push. Run `cex` first when a Drupal project's config may have drifted
+(see [[cex-before-commit]]).
