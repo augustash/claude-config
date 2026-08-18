@@ -49,6 +49,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; diagnosis belongs in the PR, not the commit
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
+- [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
 - [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
