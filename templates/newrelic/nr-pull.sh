@@ -46,7 +46,9 @@ nr_run hist-errors        "SELECT count(newrelic.timeslice.value) AS errors FROM
 nr_run hist-cron          "SELECT average(newrelic.timeslice.value)*1000 AS avg_ms, max(newrelic.timeslice.value)*1000 AS max_ms FROM Metric WHERE appName='$APP' AND metricTimesliceName='OtherTransaction/all' SINCE 180 days ago TIMESERIES 1 day"
 
 # --- Recent high-res: FROM Transaction (raw events, ~2wk retention). Supports percentile. ---
-nr_run flights-rt  "SELECT count(*), percentile(duration,50,95,99), max(duration) FROM Transaction WHERE appName='$APP' AND (request.uri LIKE '%/flights%' OR name LIKE '%flights%') SINCE 14 days ago TIMESERIES 1 day"
+# Site-wide response-time percentiles. Optionally narrowed by NR_TXN_FILTER, e.g.
+# NR_TXN_FILTER="request.uri LIKE '%/flights%' OR name LIKE '%flights%'"
+nr_run rt-percentiles "SELECT count(*), percentile(duration,50,95,99), max(duration) FROM Transaction WHERE appName='$APP'${NR_TXN_FILTER:+ AND ($NR_TXN_FILTER)} SINCE 14 days ago TIMESERIES 1 day"
 nr_run error-rate  "SELECT percentage(count(*), WHERE error IS true), count(*) FROM Transaction WHERE appName='$APP' SINCE 14 days ago TIMESERIES 1 day"
 nr_run throughput  "SELECT rate(count(*),1 minute), average(duration) FROM Transaction WHERE appName='$APP' SINCE 14 days ago TIMESERIES 6 hours"
 
