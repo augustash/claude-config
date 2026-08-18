@@ -158,6 +158,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
+- **Serving a background video at more than one size** — `vendor/augustash/claude-config/memory/drupal/responsive-background-video.md`  
+  handing a phone a smaller clip than a desktop; also before believing MDN that `media` does nothing on a `<video>` source
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
   "menu broken in normal Chrome, fine in private" from an oversized chat container
 - **LiveChat from your own trigger** — `vendor/augustash/claude-config/memory/drupal/livechat-custom-launcher.md`  
@@ -183,6 +185,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - **Editor chrome must not sit in the preview's document flow** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md`  
   an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
+- **A neo_component created in code fatals on the next load** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-component-create-description.md`  
+  a command dies on EntityBase.php after you created a component in code; the create() reported success
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  

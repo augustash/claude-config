@@ -109,6 +109,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — a 403 on the player URL that looks like a privacy setting
+- [Serving a background video at more than one size](memory/drupal/responsive-background-video.md) — handing a phone a smaller clip than a desktop; also before believing MDN that `media` does nothing on a `<video>` source
 - [LiveChat widget click-trap](memory/drupal/livechat-click-trap.md) — "menu broken in normal Chrome, fine in private" from an oversized chat container
 - [LiveChat from your own trigger](memory/drupal/livechat-custom-launcher.md) — putting chat in a menu instead of the floating bubble; also a chat window that opens with its title bar off-screen
 
@@ -123,6 +124,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Saving a neo_component wipes every prop plugin on the shape](memory/augustash/neo-alchemist-plugin-settings-wipe.md) — before removing one plugin programmatically, or when one you never touched disappears
 - [A builder-written value the editor rejects makes a component unsaveable](memory/augustash/neo-alchemist-builder-value-blocks-editor.md) — a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - [Editor chrome must not sit in the preview's document flow](memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md) — an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
+- [A neo_component created in code fatals on the next load](memory/augustash/neo-alchemist-component-create-description.md) — a command dies on EntityBase.php after you created a component in code; the create() reported success
 - [neo_color scheme tokens and the :root bake](memory/augustash/neo-color-scheme-token-resolution.md) — a custom property declared at `:root` won't recolor inside a scheme
 - [Neo's base.css out-ranks the theme on form buttons](memory/augustash/neo-base-css-button-specificity.md) — a theme rule on a submit button half-applies, with no `!important` and nothing visibly overriding it
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
