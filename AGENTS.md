@@ -158,6 +158,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
+  embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
 - **Serving a background video at more than one size** — `vendor/augustash/claude-config/memory/drupal/responsive-background-video.md`  
@@ -219,6 +221,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- **ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error** — `vendor/augustash/claude-config/memory/augustash/ddev-gulp-in-container.md`  
+  a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
 - **ddev db pull guard** — `vendor/augustash/claude-config/memory/augustash/ddev-db-pull-guard.md`  
   hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
 - **ddev-wordpress WP Engine gate** — `vendor/augustash/claude-config/memory/augustash/ddev-wordpress-wpengine-gate.md`  
