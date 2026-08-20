@@ -235,6 +235,23 @@ receipt is the wrong one, drop it and keep the story; the mechanism is the point
 
 Load the `frontend-design` skill first. Then:
 
+**Write a complete HTML document.** `<!DOCTYPE html>`, `<html lang>`, and a `<head>`
+carrying `<meta charset="utf-8">` and a viewport meta. Too obvious to state, and exactly
+what gets skipped when the page is drafted with Artifact conventions in mind — there the
+platform supplies the skeleton, here nothing does. A standalone file with no doctype
+renders in **quirks mode**, where tables do not inherit `color`: every `td` falls back to
+the `body` colour, so body cells go dark on a dark ground while `th` cells keep their
+explicit colour and look fine. A missing charset separately makes the browser guess
+windows-1252, turning every em dash into `â€"`. Both shipped once and cost three rounds of
+"the labels aren't legible" while every contrast measurement came back correct — because
+the CSS was never wrong.
+
+**When a reviewer says something is unreadable twice, stop adjusting CSS and open the
+file.** Measuring the styles you wrote only confirms what you intended. `getComputedStyle`
+on the actual element tells you what the browser did, and walking the ancestor chain finds
+where an inherited value gets dropped. That took about a minute after three rounds of
+guessing.
+
 **Self-contained or it isn't deliverable.** No external fonts, scripts, images or
 CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 `re.findall(r'(?:src|href)="(?!#)([^"]+)"', html)` returns empty.
@@ -351,8 +368,11 @@ respected, and a print stylesheet that flips dark bands to white.
   being forwarded to someone who wasn't in the conversation.
 
 **Run an integrity check before packaging.** Cheap, and it has caught real breakage:
-no external `src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts,
-no rules with a missing selector, every nav anchor resolving to an existing id.
+starts with `<!DOCTYPE html>` and declares `<meta charset="utf-8">`, no external
+`src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts, no rules with a
+missing selector, every nav anchor resolving to an existing id. If you can open it in a
+browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
+anything else means the head is wrong.
 
 ## 7. Working with the reviewer
 
