@@ -251,7 +251,23 @@ is strong evidence and still not a guarantee against vendor failover. Use it, th
 confirm with the vendor — derive first so you're not blocked, verify after so you're
 not wrong.
 
-**5. An empty result is a finding only if coverage is proven.** "No traffic from X"
+**5. A bot filter you have not validated is a number generator.** Separating humans
+from bots decides every figure in the report, so prove the filter before quoting it.
+Build a cohort you *know* is human — clients that POSTed a form is the cheapest — and
+measure what the filter throws away. On Gladwin a gate that looked obviously right ("a
+real browser loads at least one CSS/JS/image") excluded **33.6% of confirmed humans**,
+because Cloudflare serves assets from the edge and only 9.6% of asset requests reached
+origin at all. **Asset presence is not a humanity test on any CDN-fronted site.** The
+version that shipped scored 0.4% false positives against the same cohort.
+
+Two follow-ons worth expecting. Gates that *combine* signals (a stale browser version
+**and** never rendering) beat either alone — single-signal gates caught real people
+submitting quote forms. And cleaning can move a headline *away* from where you expect:
+bot traffic had been padding the non-searcher baseline, so the conversion gap widened
+from 2.0x to 3.5x after filtering, and one "top page" fell from 13,366 views to 392.
+Treat every pre-filter figure as unsafe, not merely noisy.
+
+**6. An empty result is a finding only if coverage is proven.** "No traffic from X"
 means nothing until you've shown the log window covers the period X should have been
 active in.
 
