@@ -9,13 +9,14 @@ A method for producing the document we hand a client when we want them to
 understand what we found and buy what we would do next. Refined on the DMX Power
 rebuild report and the MSP Airport rebuild briefing.
 
-Two outputs, always:
+**The deliverable is one HTML file.** Self-contained, branded, opens by
+double-click in any browser, zips for email. Clients open these in a browser —
+they do not read markdown, and a parallel `<report>.md` twin is not wanted.
+Don't produce one; it is a second copy to keep in sync for no reader.
 
-- **`<report>.html`** — self-contained, branded, opens by double-click, zips for email.
-- **`<report>.md`** — same content, plain. Easier to edit, diff and reuse.
-
-Optionally a third: **`technical-appendix.md`** — the depth the presenter consults
-when someone digs. Keep it out of the client document.
+Alongside it: **`technical-appendix.md`** — the depth the presenter consults when
+someone digs. Internal, markdown is right for it, and it stays out of the client
+document.
 
 ---
 
@@ -339,14 +340,14 @@ respected, and a print stylesheet that flips dark bands to white.
 ## 6. Delivery
 
 - `open` the file after every change so they're reviewing the current state.
-- Keep the markdown in sync with the HTML on every edit, or it rots within an hour —
-  and **verify both after every structural edit**. On MSP the markdown silently kept
-  a question the HTML had dropped, because one regex matched and the other didn't.
+- **Verify the HTML after every structural edit** — print the result, don't assume.
+  Renumbering, remapping and reordering have all failed silently. (This rule used to
+  be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
 - Split depth into `technical-appendix.md` rather than cutting it — the presenting
   dev needs it even though the client shouldn't see it.
 - **Ship a folder, not a loose file.** Zip a directory containing the HTML (named
-  readably, spaces are fine), the markdown source, the appendix, and a short
-  `README.txt` saying what each file is and what the evidence base was. It survives
+  readably, spaces are fine), the appendix, and a short `README.txt` saying what each
+  file is, what the evidence base was, and which file the client should open. It survives
   being forwarded to someone who wasn't in the conversation.
 
 **Run an integrity check before packaging.** Cheap, and it has caught real breakage:
