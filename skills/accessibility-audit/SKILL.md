@@ -77,11 +77,41 @@ npm i playwright axe-core @guidepup/virtual-screen-reader @guidepup/guidepup
 npx playwright install chromium
 ```
 
-**Real-AT automation needs a system permission change, which is the user's to
-make, not yours.** `npx @guidepup/setup setup` writes to the macOS TCC privacy
-database by default; pass `--macos-ignore-tcc-db` and let them grant Accessibility
-permission through System Settings. Tell them the screen reader takes over the
-machine during a run — it speaks aloud and captures the keyboard.
+**Real-AT automation costs a permission expansion, and the virtual reader usually
+is not worth trading it for.** Establish this with the user before spending time on
+it. What driving real VoiceOver on macOS actually requires:
+
+1. `npx @guidepup/setup setup` — note the doubled word; the package is
+   `@guidepup/setup` and `setup` is its subcommand.
+2. `npx @guidepup/setup install voiceover` — installs the preferences bundle. Easy
+   to miss, and skipping it fails later with a misleading message.
+3. Accessibility permission for the host terminal (System Settings → Privacy &
+   Security → Accessibility).
+4. **Write access to `~/Library/Group Containers/group.com.apple.VoiceOver/`** —
+   Guidepup mounts a preferences DMG and symlinks into it. That path is
+   TCC-protected, so this is the step that actually blocks.
+
+Running `setup --macos-ignore-tcc-db` to avoid touching the privacy database
+leaves step 4 failing with `EPERM ... symlink`. The honest choices are Full Disk
+Access for the terminal — permanent and broad, every process in that terminal
+gains read access to all user data — or letting the tool edit the TCC database
+itself. **Neither is yours to decide.** Put the trade to the user and let them pick.
+
+**When VoiceOver "cannot be started", read `error.cause`.** The thrown message is
+generic; the real reason is two levels down the cause chain. Walk it before
+diagnosing anything.
+
+**Weigh it honestly before asking.** NVDA and JAWS on Windows are what roughly
+65% and 60% of screen-reader users run; VoiceOver is under 10%. A macOS-only
+real-AT pass is not the representative case it sounds like, and the virtual reader
+already produces genuine announcement sequences. On sisalrugs the virtual reader
+supplied every transcript in the report and found the filename-alt-text defect;
+real VoiceOver was scoped out and nothing was lost.
+
+If a run does go ahead, tell them the screen reader takes over the machine — it
+speaks aloud and captures the keyboard — and always stop it in a `finally`, with a
+`pkill -f "VoiceOver.app/Contents/MacOS/VoiceOver"` backstop. `osascript ... quit`
+and `killall` both failed to stop it in practice.
 
 **Scope the reader to one component when comparing.** A whole-page read is
 hundreds of lines and diffs badly. Scoped to the disputed fieldset, the before and
