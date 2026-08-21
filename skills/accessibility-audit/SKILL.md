@@ -108,10 +108,27 @@ already produces genuine announcement sequences. On sisalrugs the virtual reader
 supplied every transcript in the report and found the filename-alt-text defect;
 real VoiceOver was scoped out and nothing was lost.
 
-If a run does go ahead, tell them the screen reader takes over the machine — it
-speaks aloud and captures the keyboard — and always stop it in a `finally`, with a
-`pkill -f "VoiceOver.app/Contents/MacOS/VoiceOver"` backstop. `osascript ... quit`
-and `killall` both failed to stop it in practice.
+**Starting a screen reader hijacks a machine someone else is using.** It speaks
+aloud through the active output device and captures the keyboard. On sisalrugs it
+started reading during a call the developer was on — "sound is off" is not
+protection, because a call routes audio separately and screen sharing carries it.
+
+So permission to set the tooling up is **not** permission to start it. Get an
+explicit go-ahead for the *moment*, immediately before each run, and treat any
+gap — a call, a demo, someone else at the keyboard — as a stop. Never start one
+mid-diagnosis to test a hypothesis; that is exactly how it gets started five times
+in ten minutes.
+
+Stopping it is harder than starting it. `osascript ... quit` and `killall
+VoiceOver` both reported success and left it running; only
+`pkill -9 -f "VoiceOver.app/Contents/MacOS/VoiceOver"` worked. Put that in a
+`finally`, run it even on the paths that "cannot" have started it, and verify with
+`pgrep` rather than trusting the stop call.
+
+To leave a machine as you found it: `pkill` the process, then
+`defaults delete com.apple.VoiceOver4/default SCREnableAppleScript` so nothing can
+start it programmatically again, and drop `~/Library/Caches/guidepup`. The
+Accessibility permission granted to the terminal can only be revoked by the user.
 
 **Scope the reader to one component when comparing.** A whole-page read is
 hundreds of lines and diffs badly. Scoped to the disputed fieldset, the before and
