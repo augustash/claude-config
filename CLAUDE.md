@@ -90,6 +90,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — giving ONE page a short external Cache-Control, and why TTL beats tag-purge
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- [A required element with no #title announces an empty error](memory/drupal/form-element-title-drives-error-message.md) — an alert region renders blank, or a field reads as just "edit, required"
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
 - [Playwright UI test writing](memory/drupal/playwright-testing.md) — serial runs, condition waits, warm caches first
