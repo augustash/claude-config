@@ -245,6 +245,7 @@ Same rule as the memory index: a line per skill, saying when it fires. The
 authoritative trigger is each SKILL.md's own `description:` frontmatter — that's
 what Claude Code actually loads for discovery, so keep it sharp there.
 
+- [accessibility-audit](skills/accessibility-audit/SKILL.md) — testing a site's accessibility and writing a defensible record: an ADA demand letter, a compliance question, or a pre-launch check
 - [client-report](skills/client-report/SKILL.md) — writing an evidence-led client report or rebuild pitch and shipping it as a branded HTML page
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [content-migration-to-components](skills/content-migration-to-components/SKILL.md) — building a page out of migrated content: what shape it is, reuse/extend/build-new, and verifying the result
