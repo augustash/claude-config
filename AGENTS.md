@@ -55,7 +55,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
   before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
-  who commits what: Claude owns shared memory, dev owns project work
+  before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before terminus against `.live`/`.test`
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
