@@ -156,6 +156,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
+  a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
 - **Serving a background video at more than one size** — `vendor/augustash/claude-config/memory/drupal/responsive-background-video.md`  
