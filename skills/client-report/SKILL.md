@@ -9,13 +9,14 @@ A method for producing the document we hand a client when we want them to
 understand what we found and buy what we would do next. Refined on the DMX Power
 rebuild report and the MSP Airport rebuild briefing.
 
-Two outputs, always:
+**The deliverable is one HTML file.** Self-contained, branded, opens by
+double-click in any browser, zips for email. Clients open these in a browser —
+they do not read markdown, and a parallel `<report>.md` twin is not wanted.
+Don't produce one; it is a second copy to keep in sync for no reader.
 
-- **`<report>.html`** — self-contained, branded, opens by double-click, zips for email.
-- **`<report>.md`** — same content, plain. Easier to edit, diff and reuse.
-
-Optionally a third: **`technical-appendix.md`** — the depth the presenter consults
-when someone digs. Keep it out of the client document.
+Alongside it: **`technical-appendix.md`** — the depth the presenter consults when
+someone digs. Internal, markdown is right for it, and it stays out of the client
+document.
 
 ---
 
@@ -234,6 +235,23 @@ receipt is the wrong one, drop it and keep the story; the mechanism is the point
 
 Load the `frontend-design` skill first. Then:
 
+**Write a complete HTML document.** `<!DOCTYPE html>`, `<html lang>`, and a `<head>`
+carrying `<meta charset="utf-8">` and a viewport meta. Too obvious to state, and exactly
+what gets skipped when the page is drafted with Artifact conventions in mind — there the
+platform supplies the skeleton, here nothing does. A standalone file with no doctype
+renders in **quirks mode**, where tables do not inherit `color`: every `td` falls back to
+the `body` colour, so body cells go dark on a dark ground while `th` cells keep their
+explicit colour and look fine. A missing charset separately makes the browser guess
+windows-1252, turning every em dash into `â€"`. Both shipped once and cost three rounds of
+"the labels aren't legible" while every contrast measurement came back correct — because
+the CSS was never wrong.
+
+**When a reviewer says something is unreadable twice, stop adjusting CSS and open the
+file.** Measuring the styles you wrote only confirms what you intended. `getComputedStyle`
+on the actual element tells you what the browser did, and walking the ancestor chain finds
+where an inherited value gets dropped. That took about a minute after three rounds of
+guessing.
+
 **Self-contained or it isn't deliverable.** No external fonts, scripts, images or
 CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 `re.findall(r'(?:src|href)="(?!#)([^"]+)"', html)` returns empty.
@@ -339,19 +357,22 @@ respected, and a print stylesheet that flips dark bands to white.
 ## 6. Delivery
 
 - `open` the file after every change so they're reviewing the current state.
-- Keep the markdown in sync with the HTML on every edit, or it rots within an hour —
-  and **verify both after every structural edit**. On MSP the markdown silently kept
-  a question the HTML had dropped, because one regex matched and the other didn't.
+- **Verify the HTML after every structural edit** — print the result, don't assume.
+  Renumbering, remapping and reordering have all failed silently. (This rule used to
+  be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
 - Split depth into `technical-appendix.md` rather than cutting it — the presenting
   dev needs it even though the client shouldn't see it.
 - **Ship a folder, not a loose file.** Zip a directory containing the HTML (named
-  readably, spaces are fine), the markdown source, the appendix, and a short
-  `README.txt` saying what each file is and what the evidence base was. It survives
+  readably, spaces are fine), the appendix, and a short `README.txt` saying what each
+  file is, what the evidence base was, and which file the client should open. It survives
   being forwarded to someone who wasn't in the conversation.
 
 **Run an integrity check before packaging.** Cheap, and it has caught real breakage:
-no external `src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts,
-no rules with a missing selector, every nav anchor resolving to an existing id.
+starts with `<!DOCTYPE html>` and declares `<meta charset="utf-8">`, no external
+`src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts, no rules with a
+missing selector, every nav anchor resolving to an existing id. If you can open it in a
+browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
+anything else means the head is wrong.
 
 ## 7. Working with the reviewer
 

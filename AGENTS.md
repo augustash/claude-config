@@ -55,7 +55,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
   before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
-  who commits what: Claude owns shared memory, dev owns project work
+  before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before terminus against `.live`/`.test`
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
@@ -81,6 +81,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
 - **Cloudflare WAF and event tool** — `vendor/augustash/claude-config/memory/cloudflare/waf-rule-tool.md`  
   before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- **A WAF rule keyed on http.referer inverts** — `vendor/augustash/claude-config/memory/cloudflare/referer-is-not-a-security-condition.md`  
+  before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
 ## Drupal
 
@@ -118,6 +120,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   standard index/server names and the DDEV Solr build
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
+  an alert region renders blank, or a field reads as just "edit, required"
 - **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
   a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
@@ -156,6 +160,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
+  embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
   a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
@@ -219,6 +225,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- **ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error** — `vendor/augustash/claude-config/memory/augustash/ddev-gulp-in-container.md`  
+  a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
 - **ddev db pull guard** — `vendor/augustash/claude-config/memory/augustash/ddev-db-pull-guard.md`  
   hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
 - **ddev-wordpress WP Engine gate** — `vendor/augustash/claude-config/memory/augustash/ddev-wordpress-wpengine-gate.md`  
