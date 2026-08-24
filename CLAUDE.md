@@ -111,6 +111,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - [A third-party map iframe eats one-finger page scroll](memory/drupal/third-party-iframe-touch-scroll-trap.md) — embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
+- [An inline head script is HTML-escaped, so >= and && break it](memory/drupal/html-head-inline-script-escaped.md) — a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — a 403 on the player URL that looks like a privacy setting
 - [Serving a background video at more than one size](memory/drupal/responsive-background-video.md) — handing a phone a smaller clip than a desktop; also before believing MDN that `media` does nothing on a `<video>` source
 - [LiveChat widget click-trap](memory/drupal/livechat-click-trap.md) — "menu broken in normal Chrome, fine in private" from an oversized chat container

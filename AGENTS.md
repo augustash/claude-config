@@ -162,6 +162,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
   embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
+- **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
+  a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
 - **Serving a background video at more than one size** — `vendor/augustash/claude-config/memory/drupal/responsive-background-video.md`  
