@@ -70,6 +70,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
+- **A legacy URL's pageviews say nothing about the words in it** — `vendor/augustash/claude-config/memory/preferences/traffic-count-is-not-a-search-signal.md`  
+  before citing an old URL's traffic as evidence for a word, a label, a slug or a heading
 - **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
   before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
@@ -104,6 +106,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - **A DB push makes cim uninstall the whole dev split at once** — `vendor/augustash/claude-config/memory/drupal/config-split-db-push-mass-uninstall.md`  
   `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
+- **A redirect pass built on aliases and hrefs cannot see view paths** — `vendor/augustash/claude-config/memory/drupal/redirect-discovery-misses-view-paths.md`  
+  a legacy URL with real traffic 404s and is absent from the redirect batch; nothing was looking for its kind
 - **A redirect never fires while its source path still has an alias** — `vendor/augustash/claude-config/memory/drupal/redirect-shadowed-by-alias.md`  
   a correct 301 sits in the table unreachable; retiring a node is three steps, not two
 - **Gating a Drupal file takes three things** — `vendor/augustash/claude-config/memory/drupal/private-file-gate.md`  

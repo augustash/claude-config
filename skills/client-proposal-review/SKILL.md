@@ -111,6 +111,13 @@ Videos, on a section whose written procedures are the substance, and Learn to Po
 on a section that is seven articles in two groups where the second group is a purchase
 decision, an installation procedure and a guide to satisfying an electrical inspector.
 
+**The test cuts both ways.** A label fails when it is narrower than its contents *and* when
+it is broader than them. DMX had one of each: Power Theory over a section that runs from
+inverter theory to installing a unit, and Contact over a section whose only job was sales.
+The fix for the second is the same shape as the first — call it **Contact Sales** now, and
+it becomes Contact with children the day a second contact point exists. A container label
+over a single item promises a choice that is not there.
+
 **Make it arithmetic, not taste.** "Accurate for four of the seven, wrong for the other
 three, including a step-by-step installation" ends the argument. "We prefer Learn" invites
 a counter-preference. Go and count before you write the paragraph; the count is the
@@ -130,46 +137,130 @@ row would show to everyone while its contents did not.
 
 ---
 
-## 4. Close with the resolved structure
+## 4. Lead with the resolved structure
 
-**End on a concrete counter-proposal, not a list of questions.** This is the control
+**Open on a concrete counter-proposal, not a list of questions.** This is the control
 mechanism. A question list hands the next move back to the client and reopens everything;
 a resolved structure that visibly absorbs their columns is a thing to approve. Keep their
 labels wherever the label wasn't the problem — the document should read as their proposal
 refined, not replaced.
 
+**Put it first, not last.** This originally said *close* with it, and the DMX draft did;
+moving the table to the top was better and it is worth saying why. A reader who has seen the
+answer reads the reasoning as support for something they can already picture. A reader who
+has not is being walked through six arguments toward a conclusion they cannot see, which is
+the shape of being talked into something. Lead with the structure, follow with the verdicts,
+then the why.
+
 Leave open only what genuinely needs their answer, and make each one a single decision
 with the options named ("one row that lands on the full map, or four pre-filtered rows?").
 
+**Then answer their proposal item by item, in their order, echoing each item above its
+response.** One section per thing they proposed — their column, their row, their feature —
+titled with *their* label, opening with a quiet block restating what they put in it, and
+followed by the response. The DMX draft grouped by our reasoning instead: three columns
+adopted together in one section, the renames collected in a footer, the gated-section problem
+somewhere else again. Every one of those groupings made sense from our side and none of them
+did from theirs, because a reader holding their own document had to work out which part
+answered which column.
+
+Three things fall out of getting this right, and they are why it is worth the duplication:
+
+- **It reads without their document open.** Echoing the proposed items means they never
+  reconcile two pages.
+- **Arguments land where they belong.** A rename gets argued inside the section it renames,
+  not gathered into a naming appendix that reads as a list of complaints.
+- **The verdict strip becomes an index.** One row per section, same order, same labels —
+  clickable straight into the answer. Note the counter-proposal table will *not* be one-to-one
+  with it, and that is fine: on DMX the table had five rows to the strip's six, because the
+  column being eliminated does not appear in the structure it is being eliminated from.
+
 ---
 
-## 5. Tone scales with what they invested
+## 5. The document must not narrate itself
+
+Everything cut from the DMX draft in review was the document describing its own existence.
+None of it was wrong; all of it delayed the substance, and one piece actively set the wrong
+frame.
+
+- **Don't name it after the act of judging them.** The title was "Menu reorganization —
+  review"; the review half came off. *Review* says we graded their work, and for a client
+  who deliberated that is the frame before they have read a sentence. Name the subject, not
+  what we did to it.
+- **Cut status meta.** "In response to Table 1" went too. They know what they sent; a
+  document that announces its own provenance is throat-clearing. A prepared-for line and a
+  date are enough furniture.
+- **The lede states the act, not the method.** The draft opened by explaining the evaluation
+  criterion — *column by column, against the one test a menu has to pass…* Kaza replaced the
+  whole paragraph with **"I counter your menu changes, with menu changes."** One line, and it
+  does more: it says what the document is, in the register of someone talking rather than
+  reporting. Reach for the sentence that names the act.
+- **Sign it as a person.** First person singular throughout. "We think" is a firm issuing a
+  position; "I think" is someone accountable for an opinion, which is what a counter-proposal
+  actually is — and the plural quietly undercuts the deference line two paragraphs later.
+  Keep the plural only for delivery: *the opinion is mine, the build is ours.*
+- **A joke that scores a point cannot sit under an opener that credits them.** DMX's own
+  document labelled its table "Table 1", so ours captioned its counter-table *"Table 1 — how
+  the turntables."* It was asked for, drafted, and then cut — and the reason is worth keeping.
+  Once the opener became *I took your changes and adapted them… goal is to make the site more
+  awesome*, the gag was working against it: one line says we built on your thinking, the next
+  scores off it. The register has to hold all the way down. Warmth and a scoring joke fight,
+  and warmth is the one doing the real work.
+
+---
+
+## 6. Tone scales with what they invested
 
 **Ask how much work went into it before choosing a register.** A first sketch takes
 directness; a set of decisions they laboured over takes the intent-crediting version of
 every counter, or the document lands as a week of their work being marked. The content
 does not change — the ordering and the framing do.
 
-**Open with an explicit deference line, above the verdicts.** One short paragraph saying
-this is our opinion rather than a ruling, that the decision is theirs, and that we would
-rather say it now than after launch. It costs three sentences and it is what licenses
-everything under it to be direct — a reader who has been told the call is theirs can take
-"we'd advise against" as counsel, where the same words cold read as us overruling them.
-Place it above the status readout, not below, so it frames the verdicts before they are
-read. Defer on authority, never on substance: "we'll build what you decide" must not slide
-into "we're not sure about any of this."
+**Open with intent and a shared goal, above the verdicts — not with deference.** Something
+short has to frame the document before the readout, or "advise against" reads cold as
+overruling them. The instinct is to reach for permission-seeking; that is the wrong
+instrument, and it was drafted wrong on DMX before Kaza replaced it:
 
-Watch the two-word verdicts hardest. In a scannable readout they carry more weight than
-the paragraph they summarise: "Recommend against" reads as a ruling, "We'd advise
-against" as counsel. Same position, and the second one survives contact with someone
-who is proud of the column.
+> ❌ *This is my opinion, not a verdict. It's your site — if you read this and still want it
+> as you've drawn it, that's what we'll build. I'd just rather say it now than after launch.*
+>
+> ✅ *I took your changes and adapted them into what I think is better — these are the
+> reasons. Goal is to make the site more awesome.*
+
+The second is shorter, warmer and considerably stronger. It says what actually happened
+(their work was taken seriously and built on, not overridden), what the document contains
+(reasons), and why any of it is worth reading (a better site, which is a goal they already
+hold). The first spends three sentences asking permission to have an opinion — which
+undercuts every argument beneath it and, read plainly, invites them to ignore the whole
+thing.
+
+**Adapted, not corrected, is the frame.** "I took your changes and adapted them" is true of
+a good review and it is the sentence that lets the pushback land, because it puts us
+downstream of their thinking rather than opposite it.
+
+Defer on authority where it genuinely applies, never on substance, and never as an opening
+posture.
+
+Watch the two-word verdicts hardest, for two different reasons.
+
+**They out-weigh the paragraph they summarise.** "Recommend against" reads as a ruling,
+"We'd advise against" as counsel. Same position, and the second one survives contact with
+someone who is proud of the column.
+
+**And they go stale silently.** A verdict is written early, against the first answer, in a
+document that then gets argued for hours — so it is the element most likely to be wrong at
+the end and the least likely to be re-read, because it looks finished. On DMX a chip read
+*Filters, not pages* long after the recommendation had become three addressed pages; it was
+accurate against the first answer and false against the shipped one, and the client caught
+it, not us. **Re-read every verdict against the section it now heads before sending**, and
+treat any that still matches its first draft as unchecked rather than settled.
 
 Never characterise the proposal as a whole. No "this is confusing", no "several of these
 are worse". Every criticism attaches to one named item and carries its alternative.
 
 ---
 
-## 6. What this document is not
+## 7. What this document is not
 
 Two different things get confused with this one. They are unrelated to each other, and
 both are unrelated to this.
@@ -190,7 +281,7 @@ both are unrelated to this.
 **And not a punch list of its own.** One topic, no ids, nothing to carry forward. It
 ends the discussion rather than starting a tracked one.
 
-## 7. Output
+## 8. Output
 
 **One self-contained HTML file, in the project's `docs/`.** Same contract as
 [client-report](../client-report/SKILL.md) §5 — real `<!DOCTYPE html>`, `<meta charset>`,
