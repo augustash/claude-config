@@ -90,6 +90,14 @@ documents are hard to find, ask for the list of models whose documents are missi
 wrong. They get the outcome they wanted, we get a content pass instead of a nav change,
 and the column dies without anyone defending it.
 
+**Pre-empt the halfway version.** A client whose structure you refuse will reach for the
+compromise rather than the reversal — "fine, make the library searchable", "fine, keep it
+but move it". A counter-proposal that only answers the original reopens the argument one
+mail later, on ground you have not prepared. Name the likely compromise and answer it in
+the same breath: on DMX, a searchable document library is the same answer with extra steps,
+because the site already has a search and a second one splits the thing a library was meant
+to fix. Say it while you have their attention, not after they have proposed it.
+
 **Distinguish "we disagree" from "we cannot map this."** A genuine unknown is a question
 and must be dressed as one — assume it is deliberate and ask what they meant. Dressing a
 question as a pushback insults a decision they may have reasoned carefully; dressing a
