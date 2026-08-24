@@ -172,10 +172,13 @@ frame.
   position; "I think" is someone accountable for an opinion, which is what a counter-proposal
   actually is — and the plural quietly undercuts the deference line two paragraphs later.
   Keep the plural only for delivery: *the opinion is mine, the build is ours.*
-- **Spend the joke once.** A document that disagrees benefits from one light touch signalling
-  collegial rather than adversarial. DMX's own document labelled its table "Table 1", so ours
-  captioned its counter-table *"Table 1 — how the turntables."* Running the same gag a second
-  time in the masthead made it heavy; the caption survived, the meta line did not.
+- **A joke that scores a point cannot sit under an opener that credits them.** DMX's own
+  document labelled its table "Table 1", so ours captioned its counter-table *"Table 1 — how
+  the turntables."* It was asked for, drafted, and then cut — and the reason is worth keeping.
+  Once the opener became *I took your changes and adapted them… goal is to make the site more
+  awesome*, the gag was working against it: one line says we built on your thinking, the next
+  scores off it. The register has to hold all the way down. Warmth and a scoring joke fight,
+  and warmth is the one doing the real work.
 
 ---
 
@@ -186,14 +189,30 @@ directness; a set of decisions they laboured over takes the intent-crediting ver
 every counter, or the document lands as a week of their work being marked. The content
 does not change — the ordering and the framing do.
 
-**Open with an explicit deference line, above the verdicts.** One short paragraph saying
-this is our opinion rather than a ruling, that the decision is theirs, and that we would
-rather say it now than after launch. It costs three sentences and it is what licenses
-everything under it to be direct — a reader who has been told the call is theirs can take
-"we'd advise against" as counsel, where the same words cold read as us overruling them.
-Place it above the status readout, not below, so it frames the verdicts before they are
-read. Defer on authority, never on substance: "we'll build what you decide" must not slide
-into "we're not sure about any of this."
+**Open with intent and a shared goal, above the verdicts — not with deference.** Something
+short has to frame the document before the readout, or "advise against" reads cold as
+overruling them. The instinct is to reach for permission-seeking; that is the wrong
+instrument, and it was drafted wrong on DMX before Kaza replaced it:
+
+> ❌ *This is my opinion, not a verdict. It's your site — if you read this and still want it
+> as you've drawn it, that's what we'll build. I'd just rather say it now than after launch.*
+>
+> ✅ *I took your changes and adapted them into what I think is better — these are the
+> reasons. Goal is to make the site more awesome.*
+
+The second is shorter, warmer and considerably stronger. It says what actually happened
+(their work was taken seriously and built on, not overridden), what the document contains
+(reasons), and why any of it is worth reading (a better site, which is a goal they already
+hold). The first spends three sentences asking permission to have an opinion — which
+undercuts every argument beneath it and, read plainly, invites them to ignore the whole
+thing.
+
+**Adapted, not corrected, is the frame.** "I took your changes and adapted them" is true of
+a good review and it is the sentence that lets the pushback land, because it puts us
+downstream of their thinking rather than opposite it.
+
+Defer on authority where it genuinely applies, never on substance, and never as an opening
+posture.
 
 Watch the two-word verdicts hardest. In a scannable readout they carry more weight than
 the paragraph they summarise: "Recommend against" reads as a ruling, "We'd advise
