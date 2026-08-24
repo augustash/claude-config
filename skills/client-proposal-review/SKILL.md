@@ -111,6 +111,13 @@ Videos, on a section whose written procedures are the substance, and Learn to Po
 on a section that is seven articles in two groups where the second group is a purchase
 decision, an installation procedure and a guide to satisfying an electrical inspector.
 
+**The test cuts both ways.** A label fails when it is narrower than its contents *and* when
+it is broader than them. DMX had one of each: Power Theory over a section that runs from
+inverter theory to installing a unit, and Contact over a section whose only job was sales.
+The fix for the second is the same shape as the first — call it **Contact Sales** now, and
+it becomes Contact with children the day a second contact point exists. A container label
+over a single item promises a choice that is not there.
+
 **Make it arithmetic, not taste.** "Accurate for four of the seven, wrong for the other
 three, including a step-by-step installation" ends the argument. "We prefer Learn" invites
 a counter-preference. Go and count before you write the paragraph; the count is the
