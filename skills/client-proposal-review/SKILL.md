@@ -95,6 +95,25 @@ and must be dressed as one — assume it is deliberate and ask what they meant. 
 question as a pushback insults a decision they may have reasoned carefully; dressing a
 pushback as a question loses the argument you needed to win.
 
+**A label is a container — test it against everything the section must stay true of.**
+Clients rename toward specificity, and specificity in a label is a constraint rather than a
+gain: the narrower name is only right if it covers every item in there today *and* whatever
+plausibly gets added. DMX proposed two renames with exactly this shape — Guides to How-to
+Videos, on a section whose written procedures are the substance, and Learn to Power Theory,
+on a section that is seven articles in two groups where the second group is a purchase
+decision, an installation procedure and a guide to satisfying an electrical inspector.
+
+**Make it arithmetic, not taste.** "Accurate for four of the seven, wrong for the other
+three, including a step-by-step installation" ends the argument. "We prefer Learn" invites
+a counter-preference. Go and count before you write the paragraph; the count is the
+argument.
+
+**Argue inside their rationale, not against it.** Ask why they name things the way they do,
+because a stated reason is the strongest lever you will get. DMX picks section labels to be
+accurate for search indexing — which turns an over-specific label from a matter of taste
+into something that actively works against a goal they already hold. A client will drop a
+name to protect their own reasoning far faster than to accommodate ours.
+
 **Flag what their structure has no place for.** The thing they forgot outranks the thing
 they got wrong: it is not a criticism at all, it is us catching something, and it is the
 item most likely to make them trust the rest. On DMX the permission-gated dealer section
@@ -122,6 +141,15 @@ with the options named ("one row that lands on the full map, or four pre-filtere
 directness; a set of decisions they laboured over takes the intent-crediting version of
 every counter, or the document lands as a week of their work being marked. The content
 does not change — the ordering and the framing do.
+
+**Open with an explicit deference line, above the verdicts.** One short paragraph saying
+this is our opinion rather than a ruling, that the decision is theirs, and that we would
+rather say it now than after launch. It costs three sentences and it is what licenses
+everything under it to be direct — a reader who has been told the call is theirs can take
+"we'd advise against" as counsel, where the same words cold read as us overruling them.
+Place it above the status readout, not below, so it frames the verdicts before they are
+read. Defer on authority, never on substance: "we'll build what you decide" must not slide
+into "we're not sure about any of this."
 
 Watch the two-word verdicts hardest. In a scannable readout they carry more weight than
 the paragraph they summarise: "Recommend against" reads as a ruling, "We'd advise
