@@ -49,10 +49,19 @@ That ratio usually means the review has drifted into taste. Refuse things that w
 damage the site; concede things that are merely not how we'd have done it.
 
 **Separate the free concessions from the expensive refusals, and give the free ones
-away explicitly.** A rename that costs nothing should be handed over in as many words —
-"that's yours to call, say the word." It is worth more than it costs: it establishes
-that the refusals are about consequence rather than preference, and it leaves one
-naming argument to spend capital on instead of four.
+away explicitly.** Something that costs nothing *and is no worse* should be handed over
+in as many words — "that's yours to call, say the word." It is worth more than it costs:
+it establishes that the refusals are about consequence rather than preference, and it
+leaves one argument to spend capital on instead of four.
+
+⚠ **Cheap to implement is not the same as free.** A rename costs nothing to build and can
+still be a worse label, and conceding it trades the site's quality for goodwill we did not
+need to buy. On DMX the instinct was to hand over Support → Help Center because no code
+depended on it; the correct read was that "help" describes less than "support" for a
+section carrying fault codes and service documentation, "Center" is doing no work, and the
+result is longer and less common than the word it replaces. **Test the concession on
+merit, not on effort** — then concede the ones that genuinely are neutral, which makes the
+one you argue look like judgement rather than reflex.
 
 ---
 
