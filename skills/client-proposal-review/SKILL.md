@@ -130,20 +130,56 @@ row would show to everyone while its contents did not.
 
 ---
 
-## 4. Close with the resolved structure
+## 4. Lead with the resolved structure
 
-**End on a concrete counter-proposal, not a list of questions.** This is the control
+**Open on a concrete counter-proposal, not a list of questions.** This is the control
 mechanism. A question list hands the next move back to the client and reopens everything;
 a resolved structure that visibly absorbs their columns is a thing to approve. Keep their
 labels wherever the label wasn't the problem — the document should read as their proposal
 refined, not replaced.
+
+**Put it first, not last.** This originally said *close* with it, and the DMX draft did;
+moving the table to the top was better and it is worth saying why. A reader who has seen the
+answer reads the reasoning as support for something they can already picture. A reader who
+has not is being walked through six arguments toward a conclusion they cannot see, which is
+the shape of being talked into something. Lead with the structure, follow with the verdicts,
+then the why.
 
 Leave open only what genuinely needs their answer, and make each one a single decision
 with the options named ("one row that lands on the full map, or four pre-filtered rows?").
 
 ---
 
-## 5. Tone scales with what they invested
+## 5. The document must not narrate itself
+
+Everything cut from the DMX draft in review was the document describing its own existence.
+None of it was wrong; all of it delayed the substance, and one piece actively set the wrong
+frame.
+
+- **Don't name it after the act of judging them.** The title was "Menu reorganization —
+  review"; the review half came off. *Review* says we graded their work, and for a client
+  who deliberated that is the frame before they have read a sentence. Name the subject, not
+  what we did to it.
+- **Cut status meta.** "In response to Table 1" went too. They know what they sent; a
+  document that announces its own provenance is throat-clearing. A prepared-for line and a
+  date are enough furniture.
+- **The lede states the act, not the method.** The draft opened by explaining the evaluation
+  criterion — *column by column, against the one test a menu has to pass…* Kaza replaced the
+  whole paragraph with **"I counter your menu changes, with menu changes."** One line, and it
+  does more: it says what the document is, in the register of someone talking rather than
+  reporting. Reach for the sentence that names the act.
+- **Sign it as a person.** First person singular throughout. "We think" is a firm issuing a
+  position; "I think" is someone accountable for an opinion, which is what a counter-proposal
+  actually is — and the plural quietly undercuts the deference line two paragraphs later.
+  Keep the plural only for delivery: *the opinion is mine, the build is ours.*
+- **Spend the joke once.** A document that disagrees benefits from one light touch signalling
+  collegial rather than adversarial. DMX's own document labelled its table "Table 1", so ours
+  captioned its counter-table *"Table 1 — how the turntables."* Running the same gag a second
+  time in the masthead made it heavy; the caption survived, the meta line did not.
+
+---
+
+## 6. Tone scales with what they invested
 
 **Ask how much work went into it before choosing a register.** A first sketch takes
 directness; a set of decisions they laboured over takes the intent-crediting version of
@@ -169,7 +205,7 @@ are worse". Every criticism attaches to one named item and carries its alternati
 
 ---
 
-## 6. What this document is not
+## 7. What this document is not
 
 Two different things get confused with this one. They are unrelated to each other, and
 both are unrelated to this.
@@ -190,7 +226,7 @@ both are unrelated to this.
 **And not a punch list of its own.** One topic, no ids, nothing to carry forward. It
 ends the discussion rather than starting a tracked one.
 
-## 7. Output
+## 8. Output
 
 **One self-contained HTML file, in the project's `docs/`.** Same contract as
 [client-report](../client-report/SKILL.md) §5 — real `<!DOCTYPE html>`, `<meta charset>`,
