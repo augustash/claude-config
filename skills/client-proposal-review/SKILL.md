@@ -234,10 +234,19 @@ downstream of their thinking rather than opposite it.
 Defer on authority where it genuinely applies, never on substance, and never as an opening
 posture.
 
-Watch the two-word verdicts hardest. In a scannable readout they carry more weight than
-the paragraph they summarise: "Recommend against" reads as a ruling, "We'd advise
-against" as counsel. Same position, and the second one survives contact with someone
-who is proud of the column.
+Watch the two-word verdicts hardest, for two different reasons.
+
+**They out-weigh the paragraph they summarise.** "Recommend against" reads as a ruling,
+"We'd advise against" as counsel. Same position, and the second one survives contact with
+someone who is proud of the column.
+
+**And they go stale silently.** A verdict is written early, against the first answer, in a
+document that then gets argued for hours — so it is the element most likely to be wrong at
+the end and the least likely to be re-read, because it looks finished. On DMX a chip read
+*Filters, not pages* long after the recommendation had become three addressed pages; it was
+accurate against the first answer and false against the shipped one, and the client caught
+it, not us. **Re-read every verdict against the section it now heads before sending**, and
+treat any that still matches its first draft as unchecked rather than settled.
 
 Never characterise the proposal as a whole. No "this is confusing", no "several of these
 are worse". Every criticism attaches to one named item and carries its alternative.
