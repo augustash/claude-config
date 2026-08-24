@@ -1,6 +1,6 @@
 ---
 name: client-report
-description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, or any document where we tell a client what we found and what we would do about it.
+description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it.
 ---
 
 # Client report
@@ -231,7 +231,75 @@ receipt is the wrong one, drop it and keep the story; the mechanism is the point
 
 ---
 
-## 5. Design
+## 5. When the document answers a request
+
+Everything above assumes a pitch: we chose what to say. A **response document** is a
+different genre — an accessibility record answering an ADA demand, an audit answering a
+client's written questions, a post-incident report. The reader is holding the request
+while they read. Most of the rules still apply; these are the ones that only apply here.
+
+**Restate what was asked, and map it.** Open with the request itself — each part, and
+where in the document it is answered. Without that, a reader cannot tick off their own
+list, and a document that answers everything still reads as though it dodged something.
+On sisal the record answered all three allegations and never once restated the five-part
+request it was written for; adding that map was the single largest improvement to it.
+
+**Read the source document, not a summary of it.** The sisal demand described its own
+list of allegations as *"illustrative and not exhaustive."* The record answered the three
+items as though three items were the ask — and had nothing to say about the framing. That
+one clause changed how all the volunteered extra work should be presented: not diligence
+beyond the request, but the request being answered as written. Ask for the original.
+
+**Assume an adversarial reader even when the client is friendly.** The document will be
+forwarded to counsel. Strip incidental technical attribution that widens the claim beyond
+this site — a framework name and version in a header invites *"is the framework
+inaccessible?"*, which is a bigger fight than the one being answered. Describe the
+mechanism (`the framework could not construct a validation message`) and keep the name in
+the internal appendix. The evidence loses nothing.
+
+**Sweep for statements the world has falsified.** A response is written over days and
+sent after them. "These corrections take effect only once deployed to production" was
+true when drafted and false the hour the deploy landed — and it was the load-bearing
+sentence of its section. Any sentence in the future tense about your own work is a
+liability the moment that work happens; re-read them all whenever anything ships.
+
+**Never assert something checkable about your own document without checking it.** A line
+claiming each finding recorded all eight requested fields was written, then found to be
+false for two of the three. An adversarial reader checks exactly these. Verify, then
+write the claim that survives verification.
+
+**State a status on every peer, or on none.** A summary table where one row ended
+"Corrected" and the others ended without a status implied the others were not corrected —
+when in truth one needed no correction and one had an improvement pending. Parallel rows
+must answer parallel questions.
+
+### Line editing — the cuts a developer will not make
+
+A strong writer strips these by reflex. Everyone else leaves them in, because each one
+feels careful. All of these were cut from a single document in one sitting:
+
+- **Sentences about the document instead of in it.** *"It is restated here in condensed
+  form, with a pointer to where each part is answered. The condensation is for navigation
+  only; nothing was narrowed."* The table beneath it demonstrated all of that. Meta-text
+  explaining your own structure is the most common filler in a technical document.
+- **Pre-emptive hedges and scope carve-outs.** A block of stated limitations, and *"authenticated
+  and administrative areas were out of scope by direction."* Defensible, and it reads as
+  building an excuse before anyone has complained. Where a limitation genuinely qualifies a
+  finding, put it *on that finding*, not in a list of everything that could be doubted.
+- **Narration of what an artifact already shows.** Two screen-reader transcripts sat side by
+  side, before and after; a paragraph then explained what they demonstrated. If the exhibit
+  works, delete the caption.
+- **Cross-reference links inside prose.** *"— see §4, item 1"* breaks the reading line to
+  offer navigation nobody asked for. State the outcome. In a document short enough to scan,
+  the reader finds the detail themselves.
+- **Words carrying no load.** *"the auditing tools normally used"* → *"the auditing tools
+  used"*.
+
+The test for all of them: does the sentence say the thing, or talk about saying the thing?
+
+---
+
+## 6. Design
 
 Load the `frontend-design` skill first. Then:
 
@@ -354,7 +422,7 @@ respected, and a print stylesheet that flips dark bands to white.
 
 ---
 
-## 6. Delivery
+## 7. Delivery
 
 - `open` the file after every change so they're reviewing the current state.
 - **Verify the HTML after every structural edit** — print the result, don't assume.
@@ -374,7 +442,7 @@ missing selector, every nav anchor resolving to an existing id. If you can open 
 browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
 anything else means the head is wrong.
 
-## 7. Working with the reviewer
+## 8. Working with the reviewer
 
 Expect fast, terse, mid-turn corrections. Apply, verify by printing the result, and
 reopen.
