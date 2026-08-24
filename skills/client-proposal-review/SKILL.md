@@ -27,6 +27,14 @@ grounding it showed the two moves emptied About of both its children, which is e
 why they had marked About as one page. Their structure was more coherent than the first
 read suggested, and the document said so.
 
+**Verify every claim you make about their content, including the ones you are confident
+about.** These documents argue from specifics, and the specific is usually better than the
+one you half-remembered. On DMX the draft said a video section "has the written steps
+beside each video" — true, but opening the builder showed each walkthrough carries a full
+written procedure, and that the single most important item in the section is a warning that
+equalizing the wrong battery chemistry causes permanent damage. Text, not video. The
+verified version won the argument the assumed version only gestured at.
+
 **Establish the deployment state before you argue cost.** Half a set of objections can
 evaporate on one fact. On DMX the renames looked expensive — derived anchors, a redirect
 map, cross-links — until the client-side reminder that the site is still on dev and
