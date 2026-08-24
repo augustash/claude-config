@@ -148,6 +148,26 @@ then the why.
 Leave open only what genuinely needs their answer, and make each one a single decision
 with the options named ("one row that lands on the full map, or four pre-filtered rows?").
 
+**Then answer their proposal item by item, in their order, echoing each item above its
+response.** One section per thing they proposed — their column, their row, their feature —
+titled with *their* label, opening with a quiet block restating what they put in it, and
+followed by the response. The DMX draft grouped by our reasoning instead: three columns
+adopted together in one section, the renames collected in a footer, the gated-section problem
+somewhere else again. Every one of those groupings made sense from our side and none of them
+did from theirs, because a reader holding their own document had to work out which part
+answered which column.
+
+Three things fall out of getting this right, and they are why it is worth the duplication:
+
+- **It reads without their document open.** Echoing the proposed items means they never
+  reconcile two pages.
+- **Arguments land where they belong.** A rename gets argued inside the section it renames,
+  not gathered into a naming appendix that reads as a list of complaints.
+- **The verdict strip becomes an index.** One row per section, same order, same labels —
+  clickable straight into the answer. Note the counter-proposal table will *not* be one-to-one
+  with it, and that is fine: on DMX the table had five rows to the strip's six, because the
+  column being eliminated does not appear in the structure it is being eliminated from.
+
 ---
 
 ## 5. The document must not narrate itself
