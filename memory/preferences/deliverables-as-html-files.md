@@ -12,8 +12,11 @@ work that produced it. An artifact is a page hosted on claude.ai behind an
 account; it is not the thing that gets sent to a client, and routing a client's
 data through an external host to produce it is a step nobody asked for. The
 [client-report](../../skills/client-report/SKILL.md) skill already codifies the
-output contract for the biggest case of this — `<report>.html` plus
-`<report>.md`, self-contained, no external assets.
+output contract for the biggest case of this — one self-contained `<report>.html`
+with no external assets. **No markdown twin**: the skill is explicit that a
+parallel `<report>.md` is not wanted, because nobody reads it and it is a second
+copy to keep in sync. (Markdown is still right for the internal
+`technical-appendix.md`, which is a different document, not a copy of the same one.)
 
 **How to apply:** build the page as a single file with inlined CSS and no CDN
 references, so it opens offline. Keep the design work — the artifact-design

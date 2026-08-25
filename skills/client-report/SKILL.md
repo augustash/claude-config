@@ -430,10 +430,16 @@ respected, and a print stylesheet that flips dark bands to white.
   be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
 - Split depth into `technical-appendix.md` rather than cutting it — the presenting
   dev needs it even though the client shouldn't see it.
-- **Ship a folder, not a loose file.** Zip a directory containing the HTML (named
-  readably, spaces are fine), the appendix, and a short `README.txt` saying what each
-  file is, what the evidence base was, and which file the client should open. It survives
-  being forwarded to someone who wasn't in the conversation.
+- **Ship a folder only when there is something to keep together.** If the HTML is
+  genuinely self-contained and travels alone — no appendix going with it, no images,
+  fonts or data files — send the loose `.html`. It opens by double-click and needs no
+  unpacking. Wrapping one file in a zip is packaging overhead the recipient has to
+  undo for nothing.
+  When there *are* companions — the `technical-appendix.md`, screenshots, an evidence
+  export — zip a directory containing them, named readably (spaces are fine), plus a
+  short `README.txt` saying what each file is, what the evidence base was, and which
+  file to open. That survives being forwarded to someone who wasn't in the
+  conversation; a bare pile of attachments does not.
 
 **Run an integrity check before packaging.** Cheap, and it has caught real breakage:
 starts with `<!DOCTYPE html>` and declares `<meta charset="utf-8">`, no external
