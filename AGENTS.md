@@ -138,6 +138,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `aai` vs `ar` umbrella tag + module sub-tag, and how to tell which a site is
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
   index of reusable local .patch files and vetted remote URLs
+- **Pantheon's code log runs ahead of the build** — `vendor/augustash/claude-config/memory/drupal/pantheon-build-lag.md`  
+  a deploy or post-deploy script straight after a push reports success against the previous code
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   custom disallow rules via Composer scaffold append
 - **Favicon 404 cluster with the icons all present** — `vendor/augustash/claude-config/memory/drupal/favicon-docroot-icons.md`  
