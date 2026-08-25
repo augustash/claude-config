@@ -33,6 +33,27 @@ value — which fails the revert test exactly as badly as one giant commit does.
 commits is not licence to commit at every keystroke; commit at the granularity the dev would
 have chosen.
 
+## Prose deliverables get one commit, not a commit per revision
+
+A written deliverable under active revision — a client report, an audit record, a findings
+page — is **one commit for the whole revision pass**, landed when the editing settles. Do not
+commit each wording change as you make it, even though each one is individually sound and the
+file is valid after every edit.
+
+The reason is the reader, not the rule: nobody benefits from seeing a sentence reworded three
+times, a claim softened, and a contradiction reconciled as separate history. Those are drafting
+moves, not decisions anyone would revert. On sisal (2026-08-24), an accessibility record sent in
+response to an ADA demand took roughly a dozen edits in one sitting — restating the client's
+request, correcting a statement the deploy had falsified, reconciling two paragraphs that
+disagreed. One commit; the intermediate states are noise.
+
+This is the same single-idea test, applied to a document: the idea is *this revision of the doc*,
+not each sentence in it. Code differs because a code change usually is a discrete decision.
+
+**How to apply:** when a document is going to be edited repeatedly, say up front that commits are
+being held, keep the file in a valid committable state throughout so the dev can call time
+whenever they like, and land it once. Ask before splitting into more than one.
+
 ## How to apply
 
 Finish the work, leave a clean state (files saved, lint/tests passing), then commit it in
