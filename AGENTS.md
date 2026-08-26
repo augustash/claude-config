@@ -58,6 +58,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before terminus against `.live`/`.test`
+- **Don't narrate the deploy** — `vendor/augustash/claude-config/memory/preferences/dont-narrate-the-deploy.md`  
+  before listing post-push updb/cim steps; the payload is useful, the procedure isn't
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
   dev-only overrides never go through `cset`/UI
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
