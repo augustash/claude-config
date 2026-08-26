@@ -773,6 +773,13 @@ pitch structure** — this is a much smaller genre:
 3. **Held back on purpose** — the section that earns the document. Every item
    gets its reason in the client's terms. Without it, a short list of versions
    reads as the whole job.
+
+   **A hold the client cannot perceive does not belong here.** Build tooling,
+   composer plugins, anything whose entire existence is upstream of their site —
+   cut it, however real the decision was. On wps *"three build tools … one
+   carries a fault that breaks deployments"* was struck for exactly this: it
+   describes our machinery, and the reader has no way to care. What survived
+   each mapped to something on their site, and the section got sharper for it.
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
 5. **Next** — only when there is something. Cut it otherwise rather than padding.
