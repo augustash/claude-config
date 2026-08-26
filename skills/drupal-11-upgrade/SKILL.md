@@ -160,72 +160,26 @@ so a scrape under-reports.
 
 ## Phase 3 — Patches (the expensive one)
 
-### composer-patches only applies patches at package INSTALL time
+**The patch procedure lives in [site-update](../site-update/SKILL.md), Phase 2** —
+triage (merged upstream? did the code move? re-target), regeneration, and the
+composer-patches install-time trap that makes an edited patch silently not apply.
+An upgrade hits exactly the same wall as a routine round; it is not a different
+procedure, so it is not duplicated here.
 
-This is the single most costly trap in this skill.
+Read it before starting this phase. The two things an upgrade adds:
 
-If a package's version and `dist.reference` are **identical** between the D10
-and D11 locks, composer does not reinstall it, so **composer-patches never runs
-for it**. On an incremental build (Pantheon reuses the artifact) the package
-keeps whatever patch output it had — including patch content from before you
-edited it.
+**The install-time trap is likelier here, and better hidden.** A D10→D11 lock
+churns nearly every package, which makes it natural to assume everything was
+reinstalled and therefore re-patched. Anything whose version and `dist.reference`
+happened *not* to move was not — and on Pantheon's incremental build it keeps its
+pre-edit patch output while the build reports success. That is the single most
+costly trap in this skill; site-update has the diagnosis and the two-push fix.
 
-Symptoms, all of which mislead:
-
-- Build succeeds. `composer-exit-on-patch-failure: true` never fires, because
-  no patch was *attempted* — nothing failed.
-- The corrected patch file **is** present in the build.
-- Other patches look fine — but only because their content never changed, so
-  cached-and-patched is indistinguishable from freshly-patched.
-- Only the patch whose **content** you edited is stale.
-
-Diagnose by checking patch *output* on the build, not the patch file:
-
-```bash
-terminus drush SITE.ENV -- php:eval '
-echo str_contains(file_get_contents("/code/web/modules/contrib/X/src/Y.php"), "NEW_SYMBOL")
-  ? "patched" : "STALE";'
-```
-
-**Fixes that do NOT work** (all verified):
-
-- editing the patch file — no reinstall, no re-apply
-- renaming the patch / changing its description — same
-- `composer update <pkg>` — "Nothing to modify in lock file"
-- committing `patches.lock.json` — records intent, does not enforce
-- upgrading to composer-patches **v2** — same install-time-only behaviour, and
-  v2 additionally failed to apply patches v1 applied fine ("No available patcher
-  was able to apply"), taking the whole install down
-
-**The fix that works — two pushes:**
-
-1. Remove the package from `composer.json` + lock. Push. Build **uninstalls** it
-   from the artifact. *(Do not run `drush deploy` in this window — the module's
-   config is still enabled while its code is gone. Config is safe as long as you
-   never `pm:uninstall`.)*
-2. Re-add it. Push. Build **installs fresh** → patches apply.
-
-One commit doing both is a no-op: re-adding produces a byte-identical lock
-entry, so composer sees no change.
-
-**Prevention:** keep one patch file per package, regenerated wholesale rather
-than a set of hand-edited files. Generate by diffing pristine against patched:
-
-```bash
-diff -ruN a/ b/ > patches/PKG-combined.patch   # a = pristine, b = patched
-```
-
-### `composer reinstall` is broken under composer-patches v1
-
-The plugin removes **all** patched packages ("Removing package X so that it can
-be re-installed and re-patched"), then composer's own reinstall fails with
-"Package is not installed" — leaving core, commerce and everything else deleted.
-Recovery is `composer install`. Prefer `composer install` over `reinstall`.
-
-### Re-check every patch after any composer thrashing
-
-Packages reinstalled during unrelated operations silently lose their patches.
-Verify by grepping for a known symbol from each patch, not by trusting the log.
+**Budget for a patch sweep, not a patch fix.** Most patches on a D10 site were
+written against D9/D10 code, so expect several to need re-targeting in one pass
+rather than one to fail. Do the sweep before the multidev, and re-check every
+patch after any composer thrashing — packages reinstalled during unrelated
+operations lose their patches silently.
 
 ---
 
