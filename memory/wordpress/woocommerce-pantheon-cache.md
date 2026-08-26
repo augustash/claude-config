@@ -1,6 +1,6 @@
 ---
 name: WooCommerce Pantheon cache fix
-description: Custom plugin fixes Pantheon Varnish cache-busting by WooCommerce cookies — check for this on any WooCommerce/Pantheon site, and read the safety interaction before installing it
+description: Custom plugin fixes Pantheon Varnish cache-busting by WooCommerce cookies — on any WooCommerce/Pantheon site, check the bust is even reachable and read the safety interaction before installing it
 type: reference
 ---
 
@@ -24,6 +24,30 @@ Pantheon/WooCommerce site). Four interdependent parts — don't modify in isolat
 Paired with a Cloudflare WAF rule blocking GET `add-to-cart=` and `add_to_wishlist=` params.
 `remove_item=` is intentionally excluded — it's nonce-protected and Cloudflare was blocking
 legitimate cart-page removals (mini-cart POSTs, full cart GETs).
+
+## First check the bust is even reachable
+
+Measure before you recommend. The mechanism above is real everywhere, but the *population it
+affects* is site-specific, and a purchase gate can erase it. On **eqlearn.com** (2026-08-26)
+an add-to-cart registration gate meant anonymous visitors could never hold a cart at all:
+
+- a real `?add-to-cart=<id>` returned `302 /login` and set **no cookies**
+- no `Set-Cookie` on `/`, `/shop/`, `/cart/` or a product page — anonymous users get nothing
+- logged-in users do have carts, but `is_user_logged_in()` already makes the mu-plugin send
+  `no-cache, no-store, must-revalidate`, so the cart cookies add nothing on top
+
+So parts 1–3 bought that site **no caching benefit** — the gate had closed the same hole from
+the other side. Still worth installing for part 4 and as defence-in-depth if the gate is ever
+relaxed, but don't promise a performance win you haven't measured. See
+[[woocommerce-purchase-gate-seams]] for the gate's own hooks.
+
+**Check reachability first:** can an anonymous visitor actually reach a cart? If not, parts 1–3
+are inert and part 4 is the whole value.
+
+**Verifying the fix: don't replay a cookie.** `curl -H 'Cookie: woocommerce_items_in_cart=1'`
+still MISSes *after* the fix, because Varnish keys on the inbound cookie no matter who set it —
+that reads as failure and isn't. Verify by watching `Set-Cookie` on a real add-to-cart, not by
+sending the cookie yourself.
 
 ## The cookie bust is also an accidental safety net
 

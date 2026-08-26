@@ -157,7 +157,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 #### WordPress
 
-- [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — a shopper with a cart item gets zero edge cache; also read it BEFORE installing the fix, which has a safety interaction
+- [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — cart cookies bust edge cache site-wide; before installing the fix, check it is even reachable and read the safety interaction
 - [WooCommerce purchase gate seams](memory/wordpress/woocommerce-purchase-gate-seams.md) — forcing login before purchase takes four hooks, only one of them a real rule
 - [LearnDash closed-course button URL](memory/wordpress/learndash-closed-course-button-url.md) — a closed course's buy button points at live from every other environment
 - [WP security-header CSP silently breaks analytics](memory/wordpress/rsssl-csp-enforce-analytics.md) — analytics cliffs overnight while the site looks fine; two header plugins intersect
