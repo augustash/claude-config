@@ -91,19 +91,48 @@ Three upstreams, one per stack:
 | Drupal 7 | `https://github.com/pantheon-systems/drops-7` |
 | WordPress | `https://github.com/pantheon-systems/wordpress` |
 
-Older Drupal projects reference the same composer-managed upstream by its former
-name, `pantheon-upstreams/drupal-project` — `grep pantheon-upstreams
-composer.json` tells you which string a given site carries. If any of these URLs
-stops resolving, [docs.pantheon.io/core-updates](https://docs.pantheon.io/core-updates)
+`pantheon-upstreams/drupal-project` is **not** the composer-managed one under an
+old name — it's a separate repo that still exists, and the platform labels it
+*"Drupal 9 (deprecated)"*. `composer.json`'s own `name` field carries whichever
+one the site was created from, and `terminus site:info <site>` gives the
+authoritative answer in its `upstream:` line. If any of these URLs stops
+resolving, [docs.pantheon.io/core-updates](https://docs.pantheon.io/core-updates)
 is the authority; take the link from there rather than guessing a rename.
 
-Nothing configures these as a git remote, so fetch the URL directly:
+Nothing configures these as a git remote, so fetch the URL directly — and **ask
+for the branch name rather than assuming `master`**; `drupal-composer-managed`
+is on `main`, and a wrong guess fails as `couldn't find remote ref`, which reads
+like the repo moved:
 
 ```bash
-git fetch https://github.com/pantheon-systems/wordpress master
+git ls-remote --heads https://github.com/pantheon-upstreams/drupal-composer-managed
+git fetch https://github.com/pantheon-upstreams/drupal-composer-managed main
 git log --oneline HEAD..FETCH_HEAD      # read it before merging
 git merge FETCH_HEAD --no-edit
 ```
+
+### When the upstream track is simply dead
+
+On an older site all three signals can fail at once, and together they mean *skip
+this step*, not *debug it*:
+
+- `terminus upstream:updates:status` exits 1 with a bare
+  `The operation failed to complete.` — auth is fine, the deprecated upstream
+  just can't be diffed.
+- `git merge-base HEAD FETCH_HEAD` prints **nothing**. The site's history was
+  squashed or re-inited at some point, so it shares no ancestor with any
+  upstream and `HEAD..FETCH_HEAD` lists the upstream's *entire* history back to
+  `first commit` — 28 pending commits that are not pending at all.
+- Diffing the scaffolding shows our `pantheon.upstream.yml` is the older
+  `drupal-project` file (`php_version: 7.4`, no `web_docroot`, no `build_step`)
+  and `upstream-configuration/` doesn't exist.
+
+Before writing it up as exposure, read `pantheon.yml`: on a site like this the
+platform settings the newer upstream would deliver (`php_version`,
+`web_docroot`, `build_step`, `drush_version`) are usually already set there by
+hand, so nothing is actually behind. Report it as a standing item — the site is
+pinned to a deprecated upstream and only a re-point to
+`drupal-composer-managed` clears it — and get on with the dependency round.
 
 `terminus upstream:updates:apply <site>.<env>` does the same merge on the
 platform instead, leaving you to `git pull` it back — worth knowing, but the
