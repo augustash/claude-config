@@ -18,12 +18,22 @@ parallel `<report>.md` is not wanted, because nobody reads it and it is a second
 copy to keep in sync. (Markdown is still right for the internal
 `technical-appendix.md`, which is a different document, not a copy of the same one.)
 
+**Not in the site repo either.** Kaza's rule, on atr 2026-08-26: *"I don't want
+these committed or stored in the site."* A report written during a maintenance
+round went to `private/reports/` on the reasoning below — and on a
+Pantheon/WP-Engine project every tracked file *is* the deploy artifact, so a
+client document in the repo ships to production and lives in its history. It
+also isn't site code; it doesn't want reverting, reviewing or versioning with
+the release. Hand it over instead — `~/Desktop/` unless somewhere else is
+agreed — and if it did land in a commit, amend it out rather than adding a
+deletion commit on top.
+
 **How to apply:** build the page as a single file with inlined CSS and no CDN
 references, so it opens offline. Keep the design work — the artifact-design
 guidance on palette, type pairing, both-theme tokens and letting layout do the
 spacing is all still worth applying to the HTML; it is only the *publishing
-step* that changes. Ask where the file should live if it is not obvious;
-a client-facing report usually belongs with the project, not in a scratch dir.
+step* that changes. Then ask where it should go, and default to handing over the
+file rather than filing it anywhere.
 
 Pair with [[use-design-skill]] when the page has to match an existing look, and
 [[reference-scripts-not-embeds]] for the related instinct that generated tooling
