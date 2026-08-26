@@ -147,6 +147,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
 - [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- [ddev exec expands your variables before bash sees them](memory/augustash/ddev-exec-var-expansion.md) — a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
 - [ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error](memory/augustash/ddev-gulp-in-container.md) — a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
 - [ddev db pull guard](memory/augustash/ddev-db-pull-guard.md) — hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
 - [ddev-wordpress WP Engine gate](memory/augustash/ddev-wordpress-wpengine-gate.md) — what it rewrites in wp-config.php and .gitignore on every composer update

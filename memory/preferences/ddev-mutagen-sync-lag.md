@@ -27,6 +27,14 @@ The command succeeded. The file is correct in the container. The host just hasn'
 
 For config specifically, `ddev drush config:status` reports DB-vs-sync state from *inside* the container, so it is immune to this and worth preferring over eyeballing exported files.
 
+## It lags host → container too
+
+The same delay runs the other way, and there the symptom is not a stale read but a **missing
+file**. Write a script on the host, run it immediately in the container, and you get
+`bash: /var/www/html/build.sh: No such file or directory` (exit 127) — which reads as a wrong
+path rather than a race, and it passes on the retry. `ddev mutagen sync` before the `ddev exec`.
+See [[ddev-exec-var-expansion]], where this bites hardest.
+
 ## Don't conclude from one read
 
 Before deciding a container-side write failed, re-read once through `ddev exec`. If both agree, it really failed.

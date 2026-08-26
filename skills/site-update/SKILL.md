@@ -144,14 +144,14 @@ appends timestamps, which work but read as machine spew in review.
 
 Mechanics that will bite:
 
-- **`ddev exec` runs with `set -u`.** A multi-line `bash -c '...'` that sets a
-  variable dies with `SRC: unbound variable`. Write the script to a file in the
-  project (mounted at `/var/www/html`) and `ddev exec bash /var/www/html/x.sh`.
-  Same for anything with nested quoting — a heredoc'd Python script inside a
-  single-quoted `bash -c` is unwinnable.
-- **Mutagen lag.** A file written inside the container reads *stale* on the host.
-  You will `cat` the patch you just generated and see the old one, and conclude
-  the write failed. Run `ddev mutagen sync` first. See
+- **`ddev exec` eats your variables.** The block above dies with
+  `SRC: unbound variable` if you paste it into `ddev exec bash -c '...'`. Put it
+  in a script file and run that — which is the right move here anyway, since the
+  edit step wants a heredoc'd Python block that no amount of escaping survives.
+  See [ddev-exec-var-expansion](../../memory/augustash/ddev-exec-var-expansion.md).
+- **Mutagen lag, both directions.** `ddev mutagen sync` before the `ddev exec`
+  (or the script file 127s as not found) *and* after it (or you `cat` the patch
+  you just generated and see the old one, and conclude the write failed). See
   [ddev-mutagen-sync-lag](../../memory/preferences/ddev-mutagen-sync-lag.md).
 - Patch paths are `-p1`, so they're relative to the package root
   (`src/Hook/Foo.php`), not the site root.

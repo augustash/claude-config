@@ -231,6 +231,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- **ddev exec expands your variables before bash sees them** — `vendor/augustash/claude-config/memory/augustash/ddev-exec-var-expansion.md`  
+  a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
 - **ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error** — `vendor/augustash/claude-config/memory/augustash/ddev-gulp-in-container.md`  
   a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
 - **ddev db pull guard** — `vendor/augustash/claude-config/memory/augustash/ddev-db-pull-guard.md`  
