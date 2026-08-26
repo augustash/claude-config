@@ -51,6 +51,9 @@ pass a tid to test the child level. A healthy response is a JSON array of
 if ($this->bundle !== NULL && method_exists($entity_type, 'getBundleListCacheTags')) {
 ```
 
+**Still unfixed as of 2.0.7** (checked 2026-08-26: `ShsTermCacheDependency::getCacheTags()`
+calls `getBundleListCacheTags()` unguarded). Keep the patch; re-check on the next release.
+
 Local patch, pending an upstream release — `patches/shs-bundle-list-cache-tags-d10.patch`
 (first written on the msp project). Contrib is gitignored on Pantheon-style projects, so this
 has to ride as a `cweagans/composer-patches` entry, not an edit to the installed copy; see
