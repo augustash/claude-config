@@ -753,3 +753,57 @@ before any `terminus` against `.live`/`.test`
 Lead with the decisions, not the transcript. What went up, what you held and why,
 what you verified, what's left. The held list is the part worth reading — it's
 the only place judgment was exercised.
+
+### Every round ends with a client record
+
+Not just the blocked ones. The [client-report](../client-report/SKILL.md) page
+written for atr existed because the client had to *act* on a lapsed
+subscription — but the standing habit is one short record per round regardless,
+so "what did you do to our site last month" has a file to point at.
+
+`docs/updates/<YYYY-MM-DD>-maintenance.html`, committed with the round. Borrow
+that skill's §6 design rules and §7 integrity check; **ignore its ten-section
+pitch structure** — this is a much smaller genre:
+
+1. **Title block** — project, sheet, date, round, prepared by, and whether any
+   action is required. Answer that last one in the header, not on page two.
+2. **Updated** — a version table of the ten or so components a non-developer
+   recognises, each with a plain-language gloss (*Webform — contact and request
+   forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
+3. **Held back on purpose** — the section that earns the document. Every item
+   gets its reason in the client's terms. Without it, a short list of versions
+   reads as the whole job.
+4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
+   listing and its job search filters*, not *`/careers` returned 200*.
+5. **Next** — only when there is something. Cut it otherwise rather than padding.
+
+Pull the palette from the **theme's own variables file**, not the logo and not
+memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
+the document's brand colour cannot drift apart. On wps the theme's red was
+`#e1251b` while `logo.svg` carried `#E02726` — near-identical, and visibly wrong
+side by side.
+
+### State where the platform sits in its support window — looked up, not recalled
+
+The one claim in a maintenance record that is worth a client's attention is how
+much runway the current major has, and it is exactly the claim most likely to be
+written from memory and be wrong. On wps the draft said *"Drupal 10 is supported
+into 2027, so there is room to plan"*; the schedule says **Drupal 10 reaches end
+of life 9 December 2026**, and `10.6.x` is the final minor — about fifteen weeks
+out, and the round had just taken core as far as Drupal 10 goes.
+
+That single fact inverted the document. "Nothing needed from you" became a dated
+upgrade window, and it belongs in the header cell rather than a closing
+paragraph.
+
+Check it every round, from the authority, at the moment you write it:
+
+| Stack | Authority |
+|---|---|
+| Drupal | [drupal.org core release schedule](https://www.drupal.org/about/core/policies/core-release-cycles/schedule) |
+| WordPress | [wordpress.org/about/roadmap](https://wordpress.org/about/roadmap/) — and the PHP version's own EOL, which bites first more often |
+
+It also reframes Phase 3's hold list. Holding a module because its 4.x targets
+the next major is correct *and* it is a countdown: each one is work that lands
+with the upgrade. Say so in the internal report — a hold list that quietly
+becomes an upgrade scope is worth surfacing before the client asks.
