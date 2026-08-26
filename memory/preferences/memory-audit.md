@@ -44,7 +44,7 @@ it with no per-project setup. The floor is a minimum, not a ceiling.
 
 ## Last audit
 
-`last_audit: 2026-08-24`
+`last_audit: 2026-08-26`
 
 Tracked **here in the module** — the corpus being audited is this package, so its audit date
 travels with it to every project on `composer update`. A project-local file can't track this:
