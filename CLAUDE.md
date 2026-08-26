@@ -257,3 +257,4 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
 - [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
+- [site-update](skills/site-update/SKILL.md) — a routine dependency-update round on a site (Drupal or WordPress); also whenever `composer update` aborts on a patch
