@@ -1,6 +1,6 @@
 ---
 name: site-update
-description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success. On WordPress it covers the Pantheon upstream merge that core actually comes from, and the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
+description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Starts at the Pantheon upstream — Drupal, Drupal 7 and WordPress each have one, and no package manager will bring it. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success. On WordPress it covers the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
 ---
 
 # Site update pass
@@ -70,6 +70,54 @@ Two files are churn, not change: `.ddev/addon-metadata/*/manifest.yaml` (a
 `ddev restart` rewrites `install_date`) and `vendor/composer/installed.php`,
 whose root-package `reference` records the project's own git HEAD, so it moves
 every time you commit. Leave both out of the update commits.
+
+### Check the Pantheon upstream first
+
+On Pantheon, part of the site isn't ours: core (and on Drupal the composer
+scaffolding around it) arrives from an upstream repo, and `composer update` /
+`wp plugin update` will never bring it. Check it at the top of every round,
+before the dependency work, since applying it can move `composer.json` itself:
+
+```bash
+ddev exec 'terminus upstream:updates:status <site>.dev'   # current | outdated
+ddev exec 'terminus upstream:updates:list <site>.dev'     # what is pending, and why
+```
+
+Three upstreams, one per stack:
+
+| Site | Upstream |
+|---|---|
+| Drupal (composer-managed) | `https://github.com/pantheon-upstreams/drupal-composer-managed` |
+| Drupal 7 | `https://github.com/pantheon-systems/drops-7` |
+| WordPress | `https://github.com/pantheon-systems/wordpress` |
+
+Older Drupal projects reference the same composer-managed upstream by its former
+name, `pantheon-upstreams/drupal-project` — `grep pantheon-upstreams
+composer.json` tells you which string a given site carries. If any of these URLs
+stops resolving, [docs.pantheon.io/core-updates](https://docs.pantheon.io/core-updates)
+is the authority; take the link from there rather than guessing a rename.
+
+Nothing configures these as a git remote, so fetch the URL directly:
+
+```bash
+git fetch https://github.com/pantheon-systems/wordpress master
+git log --oneline HEAD..FETCH_HEAD      # read it before merging
+git merge FETCH_HEAD --no-edit
+```
+
+`terminus upstream:updates:apply <site>.<env>` does the same merge on the
+platform instead, leaving you to `git pull` it back — worth knowing, but the
+local merge is the one to prefer: you see the conflicts on your own machine,
+with the site running, instead of discovering them in the dashboard.
+
+**An upstream carries more than core.** Pantheon's MU plugin ships inside the
+WordPress one, and the Drupal upstreams carry `upstream-configuration`,
+`pantheon.yml` and scaffolding — so "two commits pending" is often one release
+plus one platform change. Read the list, don't assume.
+
+The merge commit *is* the core commit; there is nothing to stage afterwards.
+Then bring the database up: `ddev wp core update-db`, or `ddev drush updb -y` as
+part of Phase 4.
 
 ### When ddev itself was updated
 
@@ -551,22 +599,12 @@ extend it as more get run.
 
 ### Core comes from the upstream, not `wp core update`
 
-On a Pantheon WordPress site core lives *in the repo*, tracked from
-`pantheon-systems/WordPress`. `wp core update` would write core files yourself
-and hand you a conflict against every future upstream merge. Take it as a merge:
+The mechanics are in Phase 0 — check the upstream, fetch
+`https://github.com/pantheon-systems/wordpress`, merge. What's WordPress-specific:
 
-```bash
-ddev exec 'terminus upstream:updates:status <site>.dev'   # current | outdated
-ddev exec 'terminus upstream:updates:list <site>.dev'     # what is pending, and why
-git fetch https://github.com/pantheon-systems/WordPress master
-git log --oneline HEAD..FETCH_HEAD
-git merge FETCH_HEAD --no-edit
-ddev wp core update-db
-```
-
-The upstream carries more than core — Pantheon's MU plugin ships in it too, so
-"two commits pending" can be one WP release plus one platform bump. And the
-merge commit *is* the core commit; there's nothing to stage.
+**`wp core update` is the wrong tool on Pantheon**, tempting as it looks. It
+writes core files yourself and hands you a conflict against every future
+upstream merge, on a directory tree you don't own.
 
 **`git diff HEAD FETCH_HEAD` will lie to you.** The upstream tree has no
 `wp-content/plugins`, so a full-tree diff reports every plugin we have as a
@@ -579,8 +617,8 @@ git diff --stat $(git merge-base HEAD FETCH_HEAD) FETCH_HEAD | tail -5
 
 That showed the real change: 1,487 files, one core release.
 
-`wp core update-db` answering *"already at latest db version"* is a normal
-result, not a skipped step — not every release moves `db_version`.
+Then `ddev wp core update-db`. Answering *"already at latest db version"* is a
+normal result, not a skipped step — not every release moves `db_version`.
 
 ### Plugins and themes
 
