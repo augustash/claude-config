@@ -1,6 +1,6 @@
 ---
 name: site-update
-description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, and the verification that catches a break composer reported as success. Owns patch handling for every Drupal skill. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
+description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success. On WordPress it covers the Pantheon upstream merge that core actually comes from, and the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
 ---
 
 # Site update pass
@@ -66,8 +66,44 @@ Uncommitted `composer.lock` at the start usually means a previous session's
 update ran and stopped. Read its diff before doing anything:
 `git diff composer.lock | grep -E '^[-+] +"version"'`.
 
-Ignore `.ddev/addon-metadata/*/manifest.yaml` churn — a `ddev restart` rewrites
-`install_date`. It's noise, not a change.
+Two files are churn, not change: `.ddev/addon-metadata/*/manifest.yaml` (a
+`ddev restart` rewrites `install_date`) and `vendor/composer/installed.php`,
+whose root-package `reference` records the project's own git HEAD, so it moves
+every time you commit. Leave both out of the update commits.
+
+### When ddev itself was updated
+
+A ddev upgrade moves the *binary*; it never touches the project's scaffolding.
+Re-assert it:
+
+```bash
+ddev composer ddev-setup update    # no prompts, refresh in place
+ddev restart                       # only if it says to
+```
+
+`ddev-setup` is the composer script our `augustash/ddev-drupal` /
+`augustash/ddev-wordpress` package wires in. **Bare, it reconfigures**
+interactively (every prompt seeded from the current value, so enter keeps it).
+The `update` argument is the one you want here: keep the configuration, rebuild
+everything generated from it — asset `config.yaml` keys the package has added
+since, the `post-start` add-on hooks (`ddev add-on get
+augustash/ddev-pantheon-db` + `ddev db`), the legacy `PANTHEON_SITE` →
+`DDEV_PANTHEON_SITE` env rename, the terminus 3 downgrade Dockerfile for
+PHP < 8.2, `settings.local.php` / `wp-config-local.php`, the WP Engine deploy
+hooks, `.gitignore` appends, the browsersync compose file.
+
+It ends with either *"Scaffolding refreshed — run `ddev restart`"* or
+*"Everything up-to-date."* — decided by hashing the managed files before and
+after, so a no-op says so instead of sending you into a pointless restart.
+
+**Why a ddev bump specifically.** The scaffolding encodes things ddev owns and
+moves between releases: its CLI surface (`ddev get` became `ddev add-on get`),
+the config defaults it prunes against (that allowlist is validated against one
+ddev version and rots), the add-on it re-fetches on every start. The hooks that
+would refresh this on their own fire on `composer install` / `composer update`
+**inside the web container only** — and on a project whose composer manages
+nothing but dev tooling (most WordPress ones), months pass without either. Run
+it by hand after the upgrade; it costs nothing when nothing moved.
 
 ---
 
@@ -335,6 +371,48 @@ ddev composer require -W 'drupal/a:^5.0' 'drupal/b:^4.0'   # the boring batch
 ddev composer require -W 'drupal/geolocation:^4.0'         # the one to watch
 ```
 
+### When you can't take it — paygates and dead ends
+
+Some updates aren't a judgement call, they're a wall: a lapsed licence, an
+expired marketplace subscription, a vendor who now sells the thing as a
+different product, a version the platform pins. It surfaces as a *failed*
+update with a renewal link, not as an absent one:
+
+```
+Warning: Please visit the subscriptions page and renew to continue receiving updates.
+name                           old_version  new_version  status
+woocommerce-tax-exempt-plugin  1.8.1        1.9.5        Error
+```
+
+**A wall is a deliverable, not a dead end.** Nobody on our side can renew the
+client's WooCommerce.com subscription or their ACF licence, so the round ends
+with a short client-facing page: what is stuck, what unsticking it costs, what
+the exposure is meanwhile. Load the [client-report](../client-report/SKILL.md)
+skill for it, and write a self-contained HTML file rather than an artifact — see
+[deliverables-as-html-files](../../memory/preferences/deliverables-as-html-files.md).
+
+Per blocked item, the page needs:
+
+- The plugin, the version installed, the version it can't reach. **The gap is
+  the argument** — "1.8.1 → 1.9.5, seven releases" lands where "out of date"
+  doesn't.
+- **A link they can act on, and whose account it is.** Check before writing
+  "renew your subscription": these accounts are often the client's own, from
+  before we took the site on, under a staff email that may have left. The Woo
+  helper record carries the account name and the URL it was authorised
+  against — read it, don't guess who owns it.
+- What holding it costs: security fixes in the releases being skipped, and any
+  compatibility ceiling now behind the site. A `WC tested up to: 8.*.*` header
+  against WooCommerce 11 is concrete and non-technical readers get it.
+- **What we did instead** — held at the working version, verified the site still
+  runs on it. Say it plainly, or the item reads as "broken".
+
+**Sweep the expiries you can see, not just the one that failed.** The same
+subscription list that explains today's failure names what lapses next month;
+one renewal conversation covering both beats two. On atr the blocked extension
+had no subscription at all, while a live one had 11 days left — the second item
+was the more useful half of the report.
+
 ---
 
 ## Phase 4 — Land it
@@ -467,28 +545,122 @@ you push — on a Pantheon project the push is a deploy, so it stays the dev's.
 
 ## WordPress
 
-Same spine, different tools. This lane is thinner than the Drupal one — extend it
-as rounds get run.
+Same spine, different tools — and on Pantheon a different core mechanism
+entirely. Worked through on a WooCommerce/Pantheon round (atr, 2026-08-26);
+extend it as more get run.
+
+### Core comes from the upstream, not `wp core update`
+
+On a Pantheon WordPress site core lives *in the repo*, tracked from
+`pantheon-systems/WordPress`. `wp core update` would write core files yourself
+and hand you a conflict against every future upstream merge. Take it as a merge:
 
 ```bash
-ddev wp core check-update
-ddev wp plugin list --update=available
-ddev wp theme list --update=available
-ddev wp core update && ddev wp plugin update --all && ddev wp theme update --all
+ddev exec 'terminus upstream:updates:status <site>.dev'   # current | outdated
+ddev exec 'terminus upstream:updates:list <site>.dev'     # what is pending, and why
+git fetch https://github.com/pantheon-systems/WordPress master
+git log --oneline HEAD..FETCH_HEAD
+git merge FETCH_HEAD --no-edit
 ddev wp core update-db
 ```
 
-Same take/hold rules. The stack-specific traps:
+The upstream carries more than core — Pantheon's MU plugin ships in it too, so
+"two commits pending" can be one WP release plus one platform bump. And the
+merge commit *is* the core commit; there's nothing to stage.
+
+**`git diff HEAD FETCH_HEAD` will lie to you.** The upstream tree has no
+`wp-content/plugins`, so a full-tree diff reports every plugin we have as a
+deletion — 27,787 files and 4.9M deletions on this round, which reads as
+catastrophe. Diff the merge base:
+
+```bash
+git diff --stat $(git merge-base HEAD FETCH_HEAD) FETCH_HEAD | tail -5
+```
+
+That showed the real change: 1,487 files, one core release.
+
+`wp core update-db` answering *"already at latest db version"* is a normal
+result, not a skipped step — not every release moves `db_version`.
+
+### Plugins and themes
+
+```bash
+ddev wp plugin list --update=available
+ddev wp theme list --update=available
+ddev wp plugin update <a> <b> <c>       # the boring batch
+ddev wp plugin update <the-one-to-watch> # its own run
+ddev wp theme update --all
+```
+
+Same take/hold rules as Phase 3, same reason to split the batch: a plugin that
+owns data or checkout gets its own run so its file diff is isolatable later.
+Premium plugins update through their own licence servers, so a round can come
+back partly blocked — that's *When you can't take it* above.
+
+For WooCommerce marketplace extensions the subscription list is readable, and it
+is the fastest answer to both "why did that fail" and "what lapses next":
+
+```bash
+ddev wp eval 'foreach (WC_Helper::get_subscriptions() as $s)
+  printf("%s | expires %s | expired:%s\n", $s["product_name"],
+    date("Y-m-d", $s["expires"]), !empty($s["expired"]) ? "yes" : "no");'
+```
+
+An extension that failed to update simply won't appear in it. ⚠ Read it that
+way rather than through `wp option get woocommerce_helper_data` — that option
+holds the account's OAuth access token and secret, and it must not land in a
+report, a commit or a paste.
+
+### A guard we carry is a patch by another name
+
+An mu-plugin written to work around a contrib bug is exactly the carried fix
+Phase 2 talks about, and a version bump is when to re-check it. Read the new
+release's code, not its changelog:
+[carried-fix-obsolete-check](../../memory/augustash/carried-fix-obsolete-check.md).
+On this round AIOSEO Pro went 5.0.0.1 → 5.0.1 with
+[the REST-head null](../../memory/wordpress/aioseo-rest-head-null-ajax-cron.md)
+still unfixed at both ends, so the guard stayed and its "verified against"
+note moved forward — cheap, and it stops the next round re-deriving it.
+
+### Verifying a WooCommerce round
+
+Most of the surface here is public, so anonymous coverage does real work: home,
+`/shop/`, a product, `/cart/`, `/my-account/`, and a page carrying a form. A
+`302` on `/checkout/` with an empty cart is a pass. Then the two checks a page
+load won't give you:
+
+```bash
+curl -sk -o /dev/null -w '%{http_code}\n' 'https://<site>.ddev.site/wp-cron.php?doing_wp_cron'
+ddev logs | grep -iE 'PHP Fatal|Uncaught'
+```
+
+wp-cron over HTTP is the only cheap way to exercise the `DOING_CRON` path, where
+a whole class of plugin fatals lives (that AIOSEO one among them) and where
+wp-cli's own context can't reach.
+
+**Do not trigger a webhook to test one.** A local WooCommerce still holds the
+client's real delivery URLs; firing `product.updated` to see whether the payload
+builds sends live-shaped data to their Klaviyo or ERP from your laptop. Verify
+the code path, not the delivery.
+
+Two local-only alarms that are not findings — filter them out rather than
+reporting them:
+
+- **"Object Cache Pro is temporarily disabled — this is extremely risky"**, on
+  every single wp-cli command. `wp-config.php` defines `WP_REDIS_DISABLED`
+  off-Pantheon; that is the intended local configuration. (Post-update settings
+  checks *can* lie for a real reason though — see
+  [object-cache-survives-db-clone](../../memory/wordpress/object-cache-survives-db-clone.md).)
+- **`/wp-login.php` 404s** wherever `wps-hide-login` is active.
+
+### The stack-specific traps
 
 - **Reconcile live plugin drift before deploying.** WP Engine sites get plugins
   updated *in the dashboard*; a git deploy silently reverts them. See
-  [wpengine-git-deploy](../../memory/wordpress/wpengine-git-deploy.md).
+  [wpengine-git-deploy](../../memory/augustash/wpengine-git-deploy.md).
 - **`ddev-wordpress` rewrites `wp-config.php` and `.gitignore`** on every
   `composer update` — check that diff, it isn't yours. See
   [ddev-wordpress-wpengine-gate](../../memory/augustash/ddev-wordpress-wpengine-gate.md).
-- **Object Cache Pro serves pre-clone options** after a DB pull, so post-update
-  settings checks can lie. See
-  [object-cache-survives-db-clone](../../memory/wordpress/object-cache-survives-db-clone.md).
 - **`terminus wp` can exit 0 printing nothing.** Never take silence as success on
   Pantheon. See
   [wp-cli-silent-on-pantheon](../../memory/wordpress/wp-cli-silent-on-pantheon.md).
