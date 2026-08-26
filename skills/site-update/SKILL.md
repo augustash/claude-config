@@ -761,9 +761,16 @@ written for atr existed because the client had to *act* on a lapsed
 subscription — but the standing habit is one short record per round regardless,
 so "what did you do to our site last month" has a file to point at.
 
-`docs/updates/<YYYY-MM-DD>-maintenance.html`, committed with the round. Borrow
-that skill's §6 design rules and §7 integrity check; **ignore its ten-section
-pitch structure** — this is a much smaller genre:
+**Write it to the desktop, not the repo** —
+`~/Desktop/<Client> Website Maintenance - <Month Year>.html`. It is a handover
+document, not a project artifact: it ships to the client and its useful life
+ends there, so versioning it puts a client-facing deliverable in the deploy
+artifact for no reader. A repo copy was committed once on wps and removed the
+same session. Readable filename with spaces — it gets attached to an email.
+
+Borrow the [client-report](../client-report/SKILL.md) §6 design rules and §7
+integrity check; **ignore its ten-section pitch structure** — this is a much
+smaller genre:
 
 1. **Title block** — project, sheet, date, round, prepared by, and whether any
    action is required. Answer that last one in the header, not on page two.
