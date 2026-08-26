@@ -92,7 +92,11 @@ update cannot revert it.
 Verify both directions: payloads build under forced cron, **and** a normal front-end page still
 emits the AIOSEO block, `og:` tags, canonical and JSON-LD.
 
-**Present in 4.9.10** (Lite and Pro). Delete this memory once AIOSEO null-checks that call.
+**Present in 4.9.10, and still in 5.0.1** (Lite and Pro) — re-checked on the atr
+update round 2026-08-26: `app/AIOSEO.php:341` still gates the Head object on
+`!wp_doing_ajax() && !wp_doing_cron()`, and
+`app/Common/RestApi/Controllers/Base.php:134` still calls `aioseo()->head->output()`
+unconditionally. Delete this memory once AIOSEO null-checks that call.
 
 ## Two things that look like the cause and are not
 
