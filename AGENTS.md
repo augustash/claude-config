@@ -249,7 +249,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## WordPress
 
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
-  the ash-woocommerce-cookies plugin for the Varnish cache-busting fix
+  a shopper with a cart item gets zero edge cache; also read it BEFORE installing the fix, which has a safety interaction
 - **WooCommerce purchase gate seams** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-purchase-gate-seams.md`  
   forcing login before purchase takes four hooks, only one of them a real rule
 - **LearnDash closed-course button URL** — `vendor/augustash/claude-config/memory/wordpress/learndash-closed-course-button-url.md`  
