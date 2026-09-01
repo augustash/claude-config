@@ -120,6 +120,8 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo component-spacing ramp is bottom-heavy](memory/augustash/neo-component-spacing-ramp.md) — sections read as run together on mobile while desktop looks right
 - [neo spacing is a token plus an application](memory/augustash/neo-component-spacing-collapse.md) — same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
+- [An eXo component's Twig gets only its declared fields](memory/augustash/exo-alchemist-theme-variables-from-fields.md) — a key set in a handler's viewAlter() never reaches the template; also before embedding a form in a component
+- [A component's CSS loses to `.region.content` rules](memory/augustash/exo-component-css-loses-to-region-content.md) — your rule matches, has no !important, and the theme still wins; usually a submit button
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"

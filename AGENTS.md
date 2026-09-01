@@ -180,6 +180,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
+- **An eXo component's Twig gets only its declared fields** — `vendor/augustash/claude-config/memory/augustash/exo-alchemist-theme-variables-from-fields.md`  
+  a key set in a handler's viewAlter() never reaches the template; also before embedding a form in a component
+- **A component's CSS loses to `.region.content` rules** — `vendor/augustash/claude-config/memory/augustash/exo-component-css-loses-to-region-content.md`  
+  your rule matches, has no !important, and the theme still wins; usually a submit button
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   tracking-param strip/redirect, facets + search submodules
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
