@@ -48,6 +48,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Comment style](memory/preferences/comments.md) — concise; explain the WHY, skip the obvious
 - [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; diagnosis belongs in the PR, not the commit
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
+- [Verify cim is clean, not just cex](memory/preferences/verify-cim-is-clean-before-commit.md) — before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
@@ -71,6 +72,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [D11.4 symfony/runtime allow-plugin](memory/drupal/d11-symfony-runtime.md) — every web request WSODs after a 11.4 bump while drush still works fine
 - [Cross-version DB pull](memory/drupal/cross-version-db-pull.md) — older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - [config_ignore over a config_split module deadlocks deploy](memory/drupal/config-split-ignore-collision.md) — `cim` aborts with "depends on the Y module that will not be installed"
+- [Config made at runtime gets a per-env UUID](memory/drupal/config-created-at-runtime-breaks-cim.md) — `cim` lists one config as both Create and Delete, or refuses because content exists of that bundle
 - [An active split whose modules aren't installed empties its folder on export](memory/drupal/config-split-export-wipes-folder.md) — `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - [A DB push makes cim uninstall the whole dev split at once](memory/drupal/config-split-db-push-mass-uninstall.md) — `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
 - [A redirect never fires while its source path still has an alias](memory/drupal/redirect-shadowed-by-alias.md) — a correct 301 sits in the table unreachable; retiring a node is three steps, not two

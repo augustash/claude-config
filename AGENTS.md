@@ -42,6 +42,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   subject + a tight WHY; diagnosis belongs in the PR, not the commit
 - **Run cex before commit rounds** — `vendor/augustash/claude-config/memory/preferences/cex-before-commit.md`  
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
+- **Verify cim is clean, not just cex** — `vendor/augustash/claude-config/memory/preferences/verify-cim-is-clean-before-commit.md`  
+  before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
   when design judgment is left; skip it for prescriptive handed-over values
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
@@ -85,6 +87,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
 - **config_ignore over a config_split module deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/config-split-ignore-collision.md`  
   `cim` aborts with "depends on the Y module that will not be installed"
+- **Config made at runtime gets a per-env UUID** — `vendor/augustash/claude-config/memory/drupal/config-created-at-runtime-breaks-cim.md`  
+  `cim` lists one config as both Create and Delete, or refuses because content exists of that bundle
 - **An active split whose modules aren't installed empties its folder on export** — `vendor/augustash/claude-config/memory/drupal/config-split-export-wipes-folder.md`  
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - **A DB push makes cim uninstall the whole dev split at once** — `vendor/augustash/claude-config/memory/drupal/config-split-db-push-mass-uninstall.md`  

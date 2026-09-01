@@ -34,4 +34,8 @@ On md this surfaced as six component configs and a `neo_build.info.yml` appearin
 that was supposed to be one new user role: the `cex` needed for the role was the first export
 since several earlier sessions.
 
+**A clean `cex` is not a clean `cim`.** This memory covers sorting the export; it does not
+tell you the import is safe. Finish with [[verify-cim-is-clean-before-commit]] — pull the
+database of the environment you cannot break and confirm `config:status` is empty.
+
 See [[commit-handoff]] for who commits what.
