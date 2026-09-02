@@ -13,6 +13,28 @@ When `x-drupal-cache-max-age: 0` appears on pages that should be cached:
 - **Check contrib modules:** Search for `page_cache_kill_switch->trigger()` calls.
 - **Inspect headers:** `x-drupal-cache-tags` header shows which entities/views are rendering on a page. Sort them: `curl -sI URL | grep cache-tags | tr ' ' '\n' | sort`
 
+## Behind a CDN, x-drupal-cache describes the origin fetch, not your request
+
+`x-drupal-cache` is an ordinary response header, so the CDN **stores and replays it**
+along with the body. On a Fastly/Varnish HIT you are reading what Drupal said when
+the edge last went to origin — possibly minutes ago — not what happened just now.
+
+So repeated requests returning `x-drupal-cache: MISS` do **not** mean page_cache is
+failing to store. Read `age` and `x-cache` first; they are the only headers the edge
+rewrites per request:
+
+```
+req 1/2/3:  x-drupal-cache: MISS   age: 74   x-cache: MISS, HIT
+```
+
+Identical `age` and `last-modified` across consecutive requests is the tell: one
+origin fetch, replayed. To ask Drupal's page cache anything, you must miss the edge —
+add a unique query arg (`?cb=$RANDOM`), which also makes it a fresh render.
+
+This sharpens, rather than contradicts, the "watch the second hit" advice in
+[[bigpipe-pantheon]]: `x-drupal-cache` HIT is still good news, but a MISS beside an
+`x-cache` HIT is no news at all.
+
 ## Session poisoning kills CDN cache
 
 Any module that starts a PHP session for anonymous users will poison CDN/Varnish cache. The `SESS*` cookie causes `Vary: Cookie` to miss on every request. If anonymous page load times spike, check for modules that call `$this->sessionManager->start()` or set session data for anonymous users. Fix: use localStorage or AJAX instead of server-side sessions for anonymous tracking.
