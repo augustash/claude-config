@@ -108,6 +108,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
 - [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
+- [Exo list "Enhanced Cache" keys on almost nothing](memory/drupal/exo-list-enhanced-cache.md) — before ticking Enhanced Cache on an entity list; also when every page shows the results of whichever one was hit first
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
@@ -142,7 +143,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
 - [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past

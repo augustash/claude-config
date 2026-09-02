@@ -156,6 +156,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   the cachetags table has no GC and grows unbounded
 - **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
   listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
+- **Exo list "Enhanced Cache" keys on almost nothing** — `vendor/augustash/claude-config/memory/drupal/exo-list-enhanced-cache.md`  
+  before ticking Enhanced Cache on an entity list; also when every page shows the results of whichever one was hit first
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
   `required: FALSE` is a no-op on a link field
 - **Exo modifier checkbox + class** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
@@ -222,7 +224,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  tracking-param strip/redirect, facets + search submodules
+  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
 - **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
