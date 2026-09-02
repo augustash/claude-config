@@ -11,6 +11,7 @@ Keep commit messages **as concise as possible**. A subject line, and — when th
 **How to apply:**
 - Subject: what changed, imperative, scoped. Follow the repo's existing convention (jacerider/neo repos use gitmoji + conventional commit, kebab-case scope).
 - Body: the WHY in a few lines. The non-obvious constraint, the failure it fixes, the reason this shape over the obvious one.
+- **State the fix, not the bug's history.** Write what the code now does; don't close on what it used to fail to do. "Fulfillment events now send, so flows keyed on one will fire" over "Klaviyo has never received the event" — the second is vague, and leaves the reader unsure whether the change actually resolves it. Past-tense framing is fine mid-body to establish the WHY; it just shouldn't be the last word.
 - Cut: step-by-step diagnosis, how it was verified, measured numbers, alternatives rejected, anything a reader can see in the diff. If that context is genuinely valuable, it goes in the PR description or the handoff note — not the commit.
 - One idea per commit still holds (see the Commits section of the user's global preferences); concision is about the message, not about splitting the change.
 - Applies to upstream contributions too — a fork commit that becomes a PR should read tight, not like a lab report.

@@ -109,6 +109,25 @@ if($c && str_contains($c,"<")) printf("%s %s => %s\n",$p["name"],$p["version"],$
 On one site the sole blocker was `drupal/seven` (`>=10.3 <11.3`) — the admin
 theme silently capping core two minors below target.
 
+**Retiring Seven has a tail that lands weeks later.** Seven is gone from core in
+11.0, so the deploy uninstalls it and switches the admin theme to Claro. The site
+still works, so it reads as done — then the client reports the admin "looks
+wrong": exposed filters that sat on one row wrap onto two, sidebar panels lose
+their headers, favicons vanish. The cause is not styling. Modules that store
+settings **keyed by theme machine name** (`exo_form.settings.themes`,
+`real_favicon.settings.themes`) still have a `seven:` entry and no `claro:` one,
+so their whole treatment silently stops applying. Sweep for it *during* the
+upgrade rather than fielding it later:
+
+```bash
+grep -rn '\bseven\b' config/ | grep -viE 'seven_|\.seven|dependencies'
+```
+
+Copy the old theme's entry to the new key — see [[admin-theme-keyed-config]] for
+the type gotcha and the residue that config alone can't fix. Budget an hour for
+this; on one site it accounted for nearly the whole "we prefer the old admin
+theme" complaint, and reverting the theme was never the answer.
+
 ### Scraping drupal.org for compatibility is not enough
 
 A `core_version_requirement` scrape of your **direct requires** is structurally
@@ -141,72 +160,26 @@ so a scrape under-reports.
 
 ## Phase 3 — Patches (the expensive one)
 
-### composer-patches only applies patches at package INSTALL time
+**The patch procedure lives in [site-update](../site-update/SKILL.md), Phase 2** —
+triage (merged upstream? did the code move? re-target), regeneration, and the
+composer-patches install-time trap that makes an edited patch silently not apply.
+An upgrade hits exactly the same wall as a routine round; it is not a different
+procedure, so it is not duplicated here.
 
-This is the single most costly trap in this skill.
+Read it before starting this phase. The two things an upgrade adds:
 
-If a package's version and `dist.reference` are **identical** between the D10
-and D11 locks, composer does not reinstall it, so **composer-patches never runs
-for it**. On an incremental build (Pantheon reuses the artifact) the package
-keeps whatever patch output it had — including patch content from before you
-edited it.
+**The install-time trap is likelier here, and better hidden.** A D10→D11 lock
+churns nearly every package, which makes it natural to assume everything was
+reinstalled and therefore re-patched. Anything whose version and `dist.reference`
+happened *not* to move was not — and on Pantheon's incremental build it keeps its
+pre-edit patch output while the build reports success. That is the single most
+costly trap in this skill; site-update has the diagnosis and the two-push fix.
 
-Symptoms, all of which mislead:
-
-- Build succeeds. `composer-exit-on-patch-failure: true` never fires, because
-  no patch was *attempted* — nothing failed.
-- The corrected patch file **is** present in the build.
-- Other patches look fine — but only because their content never changed, so
-  cached-and-patched is indistinguishable from freshly-patched.
-- Only the patch whose **content** you edited is stale.
-
-Diagnose by checking patch *output* on the build, not the patch file:
-
-```bash
-terminus drush SITE.ENV -- php:eval '
-echo str_contains(file_get_contents("/code/web/modules/contrib/X/src/Y.php"), "NEW_SYMBOL")
-  ? "patched" : "STALE";'
-```
-
-**Fixes that do NOT work** (all verified):
-
-- editing the patch file — no reinstall, no re-apply
-- renaming the patch / changing its description — same
-- `composer update <pkg>` — "Nothing to modify in lock file"
-- committing `patches.lock.json` — records intent, does not enforce
-- upgrading to composer-patches **v2** — same install-time-only behaviour, and
-  v2 additionally failed to apply patches v1 applied fine ("No available patcher
-  was able to apply"), taking the whole install down
-
-**The fix that works — two pushes:**
-
-1. Remove the package from `composer.json` + lock. Push. Build **uninstalls** it
-   from the artifact. *(Do not run `drush deploy` in this window — the module's
-   config is still enabled while its code is gone. Config is safe as long as you
-   never `pm:uninstall`.)*
-2. Re-add it. Push. Build **installs fresh** → patches apply.
-
-One commit doing both is a no-op: re-adding produces a byte-identical lock
-entry, so composer sees no change.
-
-**Prevention:** keep one patch file per package, regenerated wholesale rather
-than a set of hand-edited files. Generate by diffing pristine against patched:
-
-```bash
-diff -ruN a/ b/ > patches/PKG-combined.patch   # a = pristine, b = patched
-```
-
-### `composer reinstall` is broken under composer-patches v1
-
-The plugin removes **all** patched packages ("Removing package X so that it can
-be re-installed and re-patched"), then composer's own reinstall fails with
-"Package is not installed" — leaving core, commerce and everything else deleted.
-Recovery is `composer install`. Prefer `composer install` over `reinstall`.
-
-### Re-check every patch after any composer thrashing
-
-Packages reinstalled during unrelated operations silently lose their patches.
-Verify by grepping for a known symbol from each patch, not by trusting the log.
+**Budget for a patch sweep, not a patch fix.** Most patches on a D10 site were
+written against D9/D10 code, so expect several to need re-targeting in one pass
+rather than one to fail. Do the sweep before the multidev, and re-check every
+patch after any composer thrashing — packages reinstalled during unrelated
+operations lose their patches silently.
 
 ---
 
@@ -257,6 +230,55 @@ deprecation testing enabled). Works on macOS's case-insensitive filesystem,
 fragile on Linux. Fix the filename **and** the `services.yml` reference together
 — changing only one breaks the other environment. A case-only rename needs two
 `git mv` steps.
+
+**A forked core plugin is a latent upgrade bug.** Custom widgets, formatters and
+handlers that were copy-pasted from core to change one detail keep whatever core
+looked like on the day they were forked. They call core statics that later get
+removed, and nothing flags it: the class loads, the plugin registers, and it only
+fatals when that one form is built. `/product/add/custom` fataled on
+`Datetime::formatExample()` — **removed in D11** — from a widget forked off
+`TimestampDatetimeWidget` to add a "+30 days" default. Every smoke test passed;
+the route just wasn't in any of them.
+
+Find them by intent, not by symptom — grep for core classes called statically
+from custom plugins, then diff each fork against the core original:
+
+```bash
+grep -rn 'use Drupal\\Core\\.*\\Element\\' web/modules/custom --include='*.php'
+find web/core -name "$(basename FORKED_FILE)"   # then diff the two
+```
+
+Take core's own resolution rather than reimplementing the removed call: core
+dropped the format example from that widget instead of replacing it, and its
+current version also stopped clobbering the field's `#description`. Following
+core fixed the fatal *and* restored the field's real help text, which the fork
+had been overwriting with a format hint for years.
+
+**Grep for the removed APIs directly** — it costs seconds and finds the same
+class of bug in contrib you'd otherwise hit one form at a time:
+
+```bash
+grep -rn 'getImplementations(\|formatExample(\|::moduleHandler()->getImplementations' \
+  web/modules/custom web/modules/community web/modules/contrib web/themes --include='*.php' --include='*.module'
+```
+
+`ModuleHandler::getImplementations()` (deprecated 9.4, removed 11) is the common
+one; core's replacement is `invokeAllWith($hook, callable)`, and core's own
+`EntityViewDisplayEditForm::thirdPartySettingsForm()` is the reference shape,
+null-coalesce included. On one site this was a fatal in `exo_alchemist` on
+`/block/add/<bundle>`.
+
+**Half-declared entity relationships fatal only once something reads the other
+half.** Core always pairs `bundle_entity_type` (on the content entity) with
+`bundle_of` (on the bundle entity). A `hook_entity_type_alter()` that sets only
+the first works fine until a module discovers the bundle entity by the forward
+key and then reads the reverse — simple_sitemap does exactly this and throws
+`Entity does not provide bundles for another entity type`. Fix the definition,
+not the consumer:
+
+```bash
+grep -rn "set('bundle_entity_type'" web/modules/custom web/modules/community
+```
 
 ---
 
@@ -514,6 +536,11 @@ curl cannot tell that from a broken query.
 - [ ] Patch *output* verified on the build, not just the patch files
 - [ ] Site **curled**, not just drush-statused; watchdog clean under a watermark
 - [ ] Console errors captured on list + detail pages (jQuery 4 fallout)
+- [ ] **Every entity add/edit form opened, one per bundle** — not just the admin
+      menu. Sweeping the client's whole admin menu (26 paths) came back clean
+      while `/product/add/custom` fataled, because field widgets only execute on
+      forms and no form is reachable from a menu. List pages prove nothing about
+      widget code.
 - [ ] Custom test suite green
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
       real gateways, which tests deliberately never touch
@@ -521,4 +548,5 @@ curl cannot tell that from a broken query.
 ## Related memory
 
 [[d11-symfony-runtime]] · [[cross-version-db-pull]] · [[phpunit-testing]] ·
-[[exo-d11-image-formatters]] · [[config-split-ignore-collision]]
+[[exo-d11-image-formatters]] · [[config-split-ignore-collision]] ·
+[[admin-theme-keyed-config]]

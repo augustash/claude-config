@@ -1,6 +1,6 @@
 ---
 name: client-report
-description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, or any document where we tell a client what we found and what we would do about it.
+description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it.
 ---
 
 # Client report
@@ -9,13 +9,14 @@ A method for producing the document we hand a client when we want them to
 understand what we found and buy what we would do next. Refined on the DMX Power
 rebuild report and the MSP Airport rebuild briefing.
 
-Two outputs, always:
+**The deliverable is one HTML file.** Self-contained, branded, opens by
+double-click in any browser, zips for email. Clients open these in a browser —
+they do not read markdown, and a parallel `<report>.md` twin is not wanted.
+Don't produce one; it is a second copy to keep in sync for no reader.
 
-- **`<report>.html`** — self-contained, branded, opens by double-click, zips for email.
-- **`<report>.md`** — same content, plain. Easier to edit, diff and reuse.
-
-Optionally a third: **`technical-appendix.md`** — the depth the presenter consults
-when someone digs. Keep it out of the client document.
+Alongside it: **`technical-appendix.md`** — the depth the presenter consults when
+someone digs. Internal, markdown is right for it, and it stays out of the client
+document.
 
 ---
 
@@ -230,9 +231,94 @@ receipt is the wrong one, drop it and keep the story; the mechanism is the point
 
 ---
 
-## 5. Design
+## 5. When the document answers a request
+
+Everything above assumes a pitch: we chose what to say. A **response document** is a
+different genre — an accessibility record answering an ADA demand, an audit answering a
+client's written questions, a post-incident report. The reader is holding the request
+while they read. Most of the rules still apply; these are the ones that only apply here.
+
+**Restate what was asked, and map it.** Open with the request itself — each part, and
+where in the document it is answered. Without that, a reader cannot tick off their own
+list, and a document that answers everything still reads as though it dodged something.
+On sisal the record answered all three allegations and never once restated the five-part
+request it was written for; adding that map was the single largest improvement to it.
+
+**Read the source document, not a summary of it.** The sisal demand described its own
+list of allegations as *"illustrative and not exhaustive."* The record answered the three
+items as though three items were the ask — and had nothing to say about the framing. That
+one clause changed how all the volunteered extra work should be presented: not diligence
+beyond the request, but the request being answered as written. Ask for the original.
+
+**Assume an adversarial reader even when the client is friendly.** The document will be
+forwarded to counsel. Strip incidental technical attribution that widens the claim beyond
+this site — a framework name and version in a header invites *"is the framework
+inaccessible?"*, which is a bigger fight than the one being answered. Describe the
+mechanism (`the framework could not construct a validation message`) and keep the name in
+the internal appendix. The evidence loses nothing.
+
+**Sweep for statements the world has falsified.** A response is written over days and
+sent after them. "These corrections take effect only once deployed to production" was
+true when drafted and false the hour the deploy landed — and it was the load-bearing
+sentence of its section. Any sentence in the future tense about your own work is a
+liability the moment that work happens; re-read them all whenever anything ships.
+
+**Never assert something checkable about your own document without checking it.** A line
+claiming each finding recorded all eight requested fields was written, then found to be
+false for two of the three. An adversarial reader checks exactly these. Verify, then
+write the claim that survives verification.
+
+**State a status on every peer, or on none.** A summary table where one row ended
+"Corrected" and the others ended without a status implied the others were not corrected —
+when in truth one needed no correction and one had an improvement pending. Parallel rows
+must answer parallel questions.
+
+### Line editing — the cuts a developer will not make
+
+A strong writer strips these by reflex. Everyone else leaves them in, because each one
+feels careful. All of these were cut from a single document in one sitting:
+
+- **Sentences about the document instead of in it.** *"It is restated here in condensed
+  form, with a pointer to where each part is answered. The condensation is for navigation
+  only; nothing was narrowed."* The table beneath it demonstrated all of that. Meta-text
+  explaining your own structure is the most common filler in a technical document.
+- **Pre-emptive hedges and scope carve-outs.** A block of stated limitations, and *"authenticated
+  and administrative areas were out of scope by direction."* Defensible, and it reads as
+  building an excuse before anyone has complained. Where a limitation genuinely qualifies a
+  finding, put it *on that finding*, not in a list of everything that could be doubted.
+- **Narration of what an artifact already shows.** Two screen-reader transcripts sat side by
+  side, before and after; a paragraph then explained what they demonstrated. If the exhibit
+  works, delete the caption.
+- **Cross-reference links inside prose.** *"— see §4, item 1"* breaks the reading line to
+  offer navigation nobody asked for. State the outcome. In a document short enough to scan,
+  the reader finds the detail themselves.
+- **Words carrying no load.** *"the auditing tools normally used"* → *"the auditing tools
+  used"*.
+
+The test for all of them: does the sentence say the thing, or talk about saying the thing?
+
+---
+
+## 6. Design
 
 Load the `frontend-design` skill first. Then:
+
+**Write a complete HTML document.** `<!DOCTYPE html>`, `<html lang>`, and a `<head>`
+carrying `<meta charset="utf-8">` and a viewport meta. Too obvious to state, and exactly
+what gets skipped when the page is drafted with Artifact conventions in mind — there the
+platform supplies the skeleton, here nothing does. A standalone file with no doctype
+renders in **quirks mode**, where tables do not inherit `color`: every `td` falls back to
+the `body` colour, so body cells go dark on a dark ground while `th` cells keep their
+explicit colour and look fine. A missing charset separately makes the browser guess
+windows-1252, turning every em dash into `â€"`. Both shipped once and cost three rounds of
+"the labels aren't legible" while every contrast measurement came back correct — because
+the CSS was never wrong.
+
+**When a reviewer says something is unreadable twice, stop adjusting CSS and open the
+file.** Measuring the styles you wrote only confirms what you intended. `getComputedStyle`
+on the actual element tells you what the browser did, and walking the ancestor chain finds
+where an inherited value gets dropped. That took about a minute after three rounds of
+guessing.
 
 **Self-contained or it isn't deliverable.** No external fonts, scripts, images or
 CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
@@ -336,24 +422,33 @@ respected, and a print stylesheet that flips dark bands to white.
 
 ---
 
-## 6. Delivery
+## 7. Delivery
 
 - `open` the file after every change so they're reviewing the current state.
-- Keep the markdown in sync with the HTML on every edit, or it rots within an hour —
-  and **verify both after every structural edit**. On MSP the markdown silently kept
-  a question the HTML had dropped, because one regex matched and the other didn't.
+- **Verify the HTML after every structural edit** — print the result, don't assume.
+  Renumbering, remapping and reordering have all failed silently. (This rule used to
+  be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
 - Split depth into `technical-appendix.md` rather than cutting it — the presenting
   dev needs it even though the client shouldn't see it.
-- **Ship a folder, not a loose file.** Zip a directory containing the HTML (named
-  readably, spaces are fine), the markdown source, the appendix, and a short
-  `README.txt` saying what each file is and what the evidence base was. It survives
-  being forwarded to someone who wasn't in the conversation.
+- **Ship a folder only when there is something to keep together.** If the HTML is
+  genuinely self-contained and travels alone — no appendix going with it, no images,
+  fonts or data files — send the loose `.html`. It opens by double-click and needs no
+  unpacking. Wrapping one file in a zip is packaging overhead the recipient has to
+  undo for nothing.
+  When there *are* companions — the `technical-appendix.md`, screenshots, an evidence
+  export — zip a directory containing them, named readably (spaces are fine), plus a
+  short `README.txt` saying what each file is, what the evidence base was, and which
+  file to open. That survives being forwarded to someone who wasn't in the
+  conversation; a bare pile of attachments does not.
 
 **Run an integrity check before packaging.** Cheap, and it has caught real breakage:
-no external `src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts,
-no rules with a missing selector, every nav anchor resolving to an existing id.
+starts with `<!DOCTYPE html>` and declares `<meta charset="utf-8">`, no external
+`src`/`href`, balanced CSS braces, balanced `<div>`/`<section>` counts, no rules with a
+missing selector, every nav anchor resolving to an existing id. If you can open it in a
+browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
+anything else means the head is wrong.
 
-## 7. Working with the reviewer
+## 8. Working with the reviewer
 
 Expect fast, terse, mid-turn corrections. Apply, verify by printing the result, and
 reopen.

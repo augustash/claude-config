@@ -14,6 +14,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   on any tradeoff with a security dimension; also before putting a credential anywhere
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
+- **Check what already exists before writing code we maintain** — `vendor/augustash/claude-config/memory/preferences/prefer-existing-tooling.md`  
+  before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
   topic/specific.md layout and organization rules
 - **Reference scripts, don't embed** — `vendor/augustash/claude-config/memory/preferences/reference-scripts-not-embeds.md`  
@@ -28,6 +30,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - **Style rules cover as much ground as possible** — `vendor/augustash/claude-config/memory/preferences/style-rules-cover-ground.md`  
   before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- **A defect nobody can see still gets fixed** — `vendor/augustash/claude-config/memory/preferences/fix-what-nobody-sees.md`  
+  before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
@@ -46,20 +50,24 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
   when design judgment is left; skip it for prescriptive handed-over values
+- **Deliverables are HTML files, not Claude artifacts** — `vendor/augustash/claude-config/memory/preferences/deliverables-as-html-files.md`  
+  before publishing a report, audit or findings page for a client or the team
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
 - **Feature work goes on a branch, not master** — `vendor/augustash/claude-config/memory/preferences/feature-branch-not-master.md`  
   before pushing anything speculative or in-review; master auto-deploys to dev on Pantheon
+- **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
+  before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
-  who commits what: Claude owns shared memory, dev owns project work
+  before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
   always confirm before terminus against `.live`/`.test`
+- **Don't narrate the deploy** — `vendor/augustash/claude-config/memory/preferences/dont-narrate-the-deploy.md`  
+  before listing post-push updb/cim steps; the payload is useful, the procedure isn't
 - **Local config in settings.local.php** — `vendor/augustash/claude-config/memory/preferences/local-config-in-settings-local.md`  
   dev-only overrides never go through `cset`/UI
-- **Log audit** — `vendor/augustash/claude-config/memory/preferences/log-audit.md`  
-  how to run a server-log review; never exfiltrate log contents
 - **Test reminders** — `vendor/augustash/claude-config/memory/preferences/test-reminders.md`  
   surface existing tests when changing covered code, flag coverage gaps
 - **Trust contrib tests** — `vendor/augustash/claude-config/memory/preferences/trust-contrib-tests.md`  
@@ -76,6 +84,21 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before calling any work "done" or deploying; say what's verified vs assumed up front, never surface caveats after the fact
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
+- **A legacy URL's pageviews say nothing about the words in it** — `vendor/augustash/claude-config/memory/preferences/traffic-count-is-not-a-search-signal.md`  
+  before citing an old URL's traffic as evidence for a word, a label, a slug or a heading
+- **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
+  before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
+
+## Cloudflare
+
+- **WAF rules silently break SSL renewal** — `vendor/augustash/claude-config/memory/cloudflare/waf-blocks-acme-renewal.md`  
+  before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
+- **Free Bot Fight Mode can't be skipped by any WAF rule** — `vendor/augustash/claude-config/memory/cloudflare/bot-fight-mode-unskippable.md`  
+  an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
+- **Cloudflare WAF and event tool** — `vendor/augustash/claude-config/memory/cloudflare/waf-rule-tool.md`  
+  before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- **A WAF rule keyed on http.referer inverts** — `vendor/augustash/claude-config/memory/cloudflare/referer-is-not-a-security-condition.md`  
+  before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
 ## Drupal
 
@@ -83,8 +106,14 @@ These files are authoritative and kept current by the team. Prefer conventions h
   cache debugging, session poisoning, Exo component cache, Redis compress_length
 - **D11.4 symfony/runtime allow-plugin** — `vendor/augustash/claude-config/memory/drupal/d11-symfony-runtime.md`  
   every web request WSODs after a 11.4 bump while drush still works fine
+- **A stored NULL placeholder WSODs every order page on D11** — `vendor/augustash/claude-config/memory/drupal/commerce-log-null-placeholder-d11.md`  
+  admin order pages 500 right after a D11 deploy, old and new alike; the data is far older than the outage
 - **Cross-version DB pull** — `vendor/augustash/claude-config/memory/drupal/cross-version-db-pull.md`  
   older prod DB into newer code; `updatedb` dies on an unknown `router.alias` column
+- **Admin theme change orphans theme-keyed config** — `vendor/augustash/claude-config/memory/drupal/admin-theme-keyed-config.md`  
+  the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
+- **An empty config object kills cim** — `vendor/augustash/claude-config/memory/drupal/cim-empty-config-object.md`  
+  `cim` dies on the same op every run with "delete() on null", and `config:delete` insists the config does not exist
 - **config_ignore over a config_split module deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/config-split-ignore-collision.md`  
   `cim` aborts with "depends on the Y module that will not be installed"
 - **Config made at runtime gets a per-env UUID** — `vendor/augustash/claude-config/memory/drupal/config-created-at-runtime-breaks-cim.md`  
@@ -93,6 +122,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - **A DB push makes cim uninstall the whole dev split at once** — `vendor/augustash/claude-config/memory/drupal/config-split-db-push-mass-uninstall.md`  
   `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
+- **A redirect pass built on aliases and hrefs cannot see view paths** — `vendor/augustash/claude-config/memory/drupal/redirect-discovery-misses-view-paths.md`  
+  a legacy URL with real traffic 404s and is absent from the redirect batch; nothing was looking for its kind
 - **A redirect never fires while its source path still has an alias** — `vendor/augustash/claude-config/memory/drupal/redirect-shadowed-by-alias.md`  
   a correct 301 sits in the table unreachable; retiring a node is three steps, not two
 - **Gating a Drupal file takes three things** — `vendor/augustash/claude-config/memory/drupal/private-file-gate.md`  
@@ -109,6 +140,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   standard index/server names and the DDEV Solr build
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
+  an alert region renders blank, or a field reads as just "edit, required"
+- **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
+  a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
   Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
@@ -119,6 +154,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `aai` vs `ar` umbrella tag + module sub-tag, and how to tell which a site is
 - **Cross-project patches** — `vendor/augustash/claude-config/memory/drupal/patches.md`  
   index of reusable local .patch files and vetted remote URLs
+- **Pantheon's code log runs ahead of the build** — `vendor/augustash/claude-config/memory/drupal/pantheon-build-lag.md`  
+  a deploy or post-deploy script straight after a push reports success against the previous code
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   custom disallow rules via Composer scaffold append
 - **Favicon 404 cluster with the icons all present** — `vendor/augustash/claude-config/memory/drupal/favicon-docroot-icons.md`  
@@ -150,11 +187,19 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   a slider that overflows on mobile only
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
-  enabling exo_icon in a KernelTestBase fatals on a missing `node_type`
+  a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
 - **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
+- **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
+  shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
+  embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
+- **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
+  a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - **Vimeo background=1 embed param** — `vendor/augustash/claude-config/memory/drupal/vimeo-background-param.md`  
   a 403 on the player URL that looks like a privacy setting
+- **Serving a background video at more than one size** — `vendor/augustash/claude-config/memory/drupal/responsive-background-video.md`  
+  handing a phone a smaller clip than a desktop; also before believing MDN that `media` does nothing on a `<video>` source
 - **LiveChat widget click-trap** — `vendor/augustash/claude-config/memory/drupal/livechat-click-trap.md`  
   "menu broken in normal Chrome, fine in private" from an oversized chat container
 - **LiveChat from your own trigger** — `vendor/augustash/claude-config/memory/drupal/livechat-custom-launcher.md`  
@@ -163,19 +208,25 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Augustash internal modules
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
-  GitHub orgs to check before building anything from scratch
+  GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
   edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - **neo_alchemist seeds props with schema examples** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-example-seeding.md`  
-  content on the page nobody authored; editors see repeater rows they never created
+  content on the page nobody authored; editors see repeater rows they never created, or examples you deleted still showing as defaults
 - **The 'default' option discards stored media values** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-option-default-discards-value.md`  
   an image/file/video prop you demonstrably wrote renders the component's example instead; storage looks correct
 - **neo_alchemist heading anchors derive from the title** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-heading-anchor-override.md`  
   a stored anchor is ignored, so re-wording a heading silently moves its id
 - **Saving a neo_component wipes every prop plugin on the shape** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-plugin-settings-wipe.md`  
   before removing one plugin programmatically, or when one you never touched disappears
+- **A builder-written value the editor rejects makes a component unsaveable** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-builder-value-blocks-editor.md`  
+  a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
+- **Editor chrome must not sit in the preview's document flow** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md`  
+  an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
+- **A neo_component created in code fatals on the next load** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-component-create-description.md`  
+  a command dies on EntityBase.php after you created a component in code; the create() reported success
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
@@ -184,6 +235,14 @@ These files are authoritative and kept current by the team. Prefer conventions h
   sections read as run together on mobile while desktop looks right
 - **neo spacing is a token plus an application** — `vendor/augustash/claude-config/memory/augustash/neo-component-spacing-collapse.md`  
   same `spacing` value reads as a bigger gap inside a region; choosing `my-` vs `py-component`
+- **Neo image derivatives are AVIF on D11.2+** — `vendor/augustash/claude-config/memory/augustash/neo-image-avif-on-d11-2.md`  
+  link previews break site-wide after an 11.2 bump while every image still looks right in a browser
+- **component:// srcs get no image style** — `vendor/augustash/claude-config/memory/augustash/neo-image-local-src-no-derivatives.md`  
+  images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
+- **A spent neo-animate reveal seals a stacking context** — `vendor/augustash/claude-config/memory/augustash/neo-animate-identity-transform-stacking.md`  
+  a sibling won't layer between two children no matter what z-index it gets
+- **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
+  every page shares one meta description, or no page has one; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **An eXo component's Twig gets only its declared fields** — `vendor/augustash/claude-config/memory/augustash/exo-alchemist-theme-variables-from-fields.md`  
@@ -194,12 +253,18 @@ These files are authoritative and kept current by the team. Prefer conventions h
   tracking-param strip/redirect, facets + search submodules
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
+- **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
+  before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
-  dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"
+  dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
   terminus secrets vs the legacy secrets.json, and why PEM keys need base64
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
+- **ddev exec expands your variables before bash sees them** — `vendor/augustash/claude-config/memory/augustash/ddev-exec-var-expansion.md`  
+  a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
+- **ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error** — `vendor/augustash/claude-config/memory/augustash/ddev-gulp-in-container.md`  
+  a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
 - **ddev db pull guard** — `vendor/augustash/claude-config/memory/augustash/ddev-db-pull-guard.md`  
   hesitating to `ddev restart` in case the post-start pull clobbers your local database; it won't
 - **ddev-wordpress WP Engine gate** — `vendor/augustash/claude-config/memory/augustash/ddev-wordpress-wpengine-gate.md`  
@@ -216,7 +281,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## WordPress
 
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
-  the ash-woocommerce-cookies plugin for the Varnish cache-busting fix
+  cart cookies bust edge cache site-wide; before installing the fix, check it is even reachable and read the safety interaction
 - **WooCommerce purchase gate seams** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-purchase-gate-seams.md`  
   forcing login before purchase takes four hooks, only one of them a real rule
 - **LearnDash closed-course button URL** — `vendor/augustash/claude-config/memory/wordpress/learndash-closed-course-button-url.md`  
@@ -225,3 +290,13 @@ These files are authoritative and kept current by the team. Prefer conventions h
   analytics cliffs overnight while the site looks fine; two header plugins intersect
 - **Pass CSP Evaluator on WordPress with nonce + strict-dynamic** — `vendor/augustash/claude-config/memory/wordpress/csp-nonce-strict-dynamic.md`  
   clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts
+- **AIOSEO writes llms.txt as a static file** — `vendor/augustash/claude-config/memory/wordpress/aioseo-llms-txt-static-file.md`  
+  production serves your local .ddev.site URLs; also any plugin generating a file into the web root
+- **terminus wp returns no output at all** — `vendor/augustash/claude-config/memory/wordpress/wp-cli-silent-on-pantheon.md`  
+  WP-CLI commands exit 0 printing nothing, or eval-file silently does nothing; check before any destructive run
+- **Object Cache Pro survives a database clone** — `vendor/augustash/claude-config/memory/wordpress/object-cache-survives-db-clone.md`  
+  wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
+- **AIOSEO nulls its Head object in AJAX and cron** — `vendor/augustash/claude-config/memory/wordpress/aioseo-rest-head-null-ajax-cron.md`  
+  WooCommerce product webhooks fail and it reads as a broken scheduler; the queue looks healthy while events silently stop
+- **PHP session GC never runs on Pantheon** — `vendor/augustash/claude-config/memory/wordpress/pantheon-session-gc-never-runs.md`  
+  the database is mostly one session table; also before reserving a quiet window to rebuild a bloated table

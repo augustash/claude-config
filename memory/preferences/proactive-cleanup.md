@@ -13,3 +13,4 @@ When you encounter non-blocking warnings, dead code, orphaned config/data, stale
 - Noticed an index/render warning, a defunct module/sync, orphaned field config, dead code, or stale state adjacent to your task? Flag it and offer to clear it.
 - Keep the cleanup **scoped and confirmed** — one idea, surfaced for a yes, not a sweeping refactor bolted onto an unrelated change. Tidiness is the goal; scope creep is not.
 - Cleanup is its own idea — commit it separately from the feature/fix it rode in with.
+- Deleting something as *dead* has a higher bar than tidying — see [[prove-code-is-dead]].

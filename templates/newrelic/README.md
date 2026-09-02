@@ -4,27 +4,36 @@ Pull worker-saturation / performance data for a Pantheon site straight from New 
 (NerdGraph + NRQL) into JSON — for performance investigations, log-audit perf trends, and
 exhibits (e.g. proving a worker-exhaustion issue is fixed so a plan can be downsized).
 
-## ⚠️ Credentials live OUTSIDE this repo
+## ⚠️ Never put a real `nr.env` in THIS directory
 
-This directory ships inside `vendor/augustash/claude-config` and lands in **every** project.
-Never put a real `nr.env` (account id / `NRAK-` key / app name) here. Per-site config and
-pulled data belong in a site dir somewhere else — e.g. `~/.config/newrelic/<site>/`, or a
-gitignored dir in the consuming project. The script takes that dir as an argument, so it can
-live anywhere. The local `.gitignore` ignores `nr.env`/`out/`/`*.json` as a backstop only.
+This directory ships inside `vendor/augustash/claude-config` and lands in **every** project,
+so an account id / `NRAK-` key / app name left here propagates to all of them. That is the
+only hard rule. The site repo itself is fine, and is the better home: put `nr.env` and the
+pulled data in a **gitignored dir in the consuming project** (`.newrelic/`). The scripts take
+that dir as an argument, so it can live anywhere.
+
+Prefer the site over a parallel `~/.config/newrelic/<site>/` tree, which costs
+discoverability — a credential filed there goes missing the moment you stop thinking about
+it. Fall back to `~/.config` only when the repo is not yours to add an ignore rule to, or
+when `git check-ignore` does not confirm the rule. The local `.gitignore` here ignores
+`nr.env`/`out/`/`*.json` as a backstop only.
 
 ## Usage
 
 ```bash
-# one-time per site (outside this repo):
-mkdir -p ~/.config/newrelic/mspairport
-cp nr.env.example ~/.config/newrelic/mspairport/nr.env
-$EDITOR ~/.config/newrelic/mspairport/nr.env      # fill in account id, NRAK- key, app name
+# one-time per site, from the site root:
+mkdir -p .newrelic
+cp vendor/augustash/claude-config/templates/newrelic/nr.env.example .newrelic/nr.env
+chmod 600 .newrelic/nr.env
+echo '/.newrelic/' >> .gitignore
+git check-ignore -v .newrelic/nr.env   # confirm BEFORE the key goes in
+$EDITOR .newrelic/nr.env               # fill in account id, NRAK- key, app name
 
 # pull data:
-bash nr-pull.sh ~/.config/newrelic/mspairport     # writes JSON to .../mspairport/out/
+bash vendor/augustash/claude-config/templates/newrelic/nr-pull.sh .newrelic
 
 # build a self-contained HTML report + CSVs from that data:
-python3 nr-report.py ~/.config/newrelic/mspairport  # writes out/report.html + out/data-*.csv
+python3 vendor/augustash/claude-config/templates/newrelic/nr-report.py .newrelic
 ```
 
 `nr.env` fields and the full NRQL set are documented in `nr.env.example` and `queries.md`.

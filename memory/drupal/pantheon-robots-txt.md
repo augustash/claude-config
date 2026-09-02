@@ -43,3 +43,26 @@ Signs the convention is being violated on a Pantheon Drupal site:
 3. Add `/web/robots.txt` to root `.gitignore`.
 4. `git rm --cached web/robots.txt` to stop tracking.
 5. Verify with `ddev composer install` — output should show "Append to [web-root]/robots.txt"; re-check the file for the custom rules at the bottom.
+
+## ⚠ You cannot verify robots.txt over HTTP on a Pantheon dev/test/multidev
+
+**Pantheon serves its own PLATFORM robots.txt on every non-live environment** — `User-agent: *`
+/ `Disallow: /` plus an allowlist of SEO-audit bots (rogerbot, SemrushBot, PowerMapper…) — to
+keep unfinished environments out of search indexes. It replaces the site's file entirely, so
+`curl https://dev-<site>.pantheonsite.io/robots.txt` shows Pantheon's ~16 lines no matter what
+the deployed file contains.
+
+⚠ **The failure mode is a confident wrong conclusion, not an error.** Fetching it returns 200
+with a plausible robots.txt, so it reads as "the site's rules are missing" — which is how a
+correctly-appended file was recorded as "never live anywhere" on 2026-08-13. Nothing about the
+response says you are looking at the platform's copy rather than the site's.
+
+**Read the deployed file directly instead:**
+
+```
+terminus remote:drush <site>.<env> -- php:eval 'print file_get_contents(DRUPAL_ROOT . "/robots.txt");'
+```
+
+Only the **live** environment on a real domain serves the site's own robots.txt over HTTP, so
+that is the only place an HTTP check means anything — and it is also the only place a
+`Sitemap:` directive is acted on.

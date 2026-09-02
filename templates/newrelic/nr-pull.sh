@@ -2,9 +2,11 @@
 # Pull a New Relic worker-saturation / performance exhibit for a Pantheon site.
 #
 # Usage:   bash nr-pull.sh <site-dir>
-# Example: bash nr-pull.sh ~/.config/newrelic/mspairport
+# Example: bash nr-pull.sh .newrelic
 #
-# <site-dir> must contain an nr.env (kept OUTSIDE this repo — see README.md) with:
+# <site-dir> holds nr.env and receives out/. Prefer a gitignored dir in the site itself
+# (.newrelic/) over a parallel ~/.config tree — see README.md. It must never be inside
+# vendor/augustash/claude-config, which ships to every project. Contents:
 #   NR_ACCOUNT_ID=1234567
 #   NR_API_KEY=NRAK-xxxxxxxx
 #   NR_APP=mspairport (live)
@@ -44,7 +46,9 @@ nr_run hist-errors        "SELECT count(newrelic.timeslice.value) AS errors FROM
 nr_run hist-cron          "SELECT average(newrelic.timeslice.value)*1000 AS avg_ms, max(newrelic.timeslice.value)*1000 AS max_ms FROM Metric WHERE appName='$APP' AND metricTimesliceName='OtherTransaction/all' SINCE 180 days ago TIMESERIES 1 day"
 
 # --- Recent high-res: FROM Transaction (raw events, ~2wk retention). Supports percentile. ---
-nr_run flights-rt  "SELECT count(*), percentile(duration,50,95,99), max(duration) FROM Transaction WHERE appName='$APP' AND (request.uri LIKE '%/flights%' OR name LIKE '%flights%') SINCE 14 days ago TIMESERIES 1 day"
+# Site-wide response-time percentiles. Optionally narrowed by NR_TXN_FILTER, e.g.
+# NR_TXN_FILTER="request.uri LIKE '%/flights%' OR name LIKE '%flights%'"
+nr_run rt-percentiles "SELECT count(*), percentile(duration,50,95,99), max(duration) FROM Transaction WHERE appName='$APP'${NR_TXN_FILTER:+ AND ($NR_TXN_FILTER)} SINCE 14 days ago TIMESERIES 1 day"
 nr_run error-rate  "SELECT percentage(count(*), WHERE error IS true), count(*) FROM Transaction WHERE appName='$APP' SINCE 14 days ago TIMESERIES 1 day"
 nr_run throughput  "SELECT rate(count(*),1 minute), average(duration) FROM Transaction WHERE appName='$APP' SINCE 14 days ago TIMESERIES 6 hours"
 

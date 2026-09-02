@@ -108,6 +108,27 @@ def lint(text):
             if rel not in listed_set:
                 problems.append(f"{label} '{rel}' exists but is not in '{heading}'")
 
+    # ⚠ An index line that LINKS correctly but does not PARSE is the worst state
+    # available: index_paths() finds it by its link and reports the memory indexed,
+    # while extract_entries() skips it, so AGENTS.md ships without it and the guard
+    # says nothing. Hit 2026-08-12 by a title containing a bracket
+    # (`[neo:description]`), which ends ENTRY_RE's `[^\]]+` title early.
+    for heading in ("### Current global memories", "### Current skills"):
+        in_section = False
+        for line in text.splitlines():
+            if line.startswith(heading):
+                in_section = True
+                continue
+            if in_section and re.match(r"#{1,3} ", line):
+                break
+            if in_section and line.startswith("- ") and LINK_RE.search(line):
+                if not ANY_ENTRY_RE.match(line):
+                    problems.append(
+                        f"index entry under '{heading}' links correctly but does not "
+                        f"parse, so it would be dropped from AGENTS.md silently — "
+                        f"check for a ']' or a missing ' — ' in: {line.strip()[:90]}"
+                    )
+
     # Prose alone didn't hold the hook-not-summary rule — entries reached 1,100 chars by
     # 2026-07-30 — so it's mechanical. See the memory-management skill, §5.
     for line in text.splitlines():
