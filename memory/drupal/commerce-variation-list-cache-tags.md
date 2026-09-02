@@ -43,7 +43,16 @@ list tag, or a full `drush cr`. Same shape as
 no tag will ever evict.
 
 The usual accidental rescue is absent for the same reason as there — a listing
-that rendered *no* rows carries no `commerce_product:N` tags to be hit.
+that rendered *no* rows carries no `commerce_product:N` tags to be hit. That
+asymmetry is the whole bug: a *populated* listing is rescued by the product tag
+on every variation save, so only the empty-state render gets stranded.
+
+**Scope claim honestly.** On KOW the stale page was real and the missing list tag
+was real, but the trigger that first emptied the listing was never pinned down —
+variation status, event date and capacity were each tested and ruled out. Treat
+this memory as "closes a genuine staleness gap", not "explains every empty
+listing"; the fix is worth shipping either way, and saying so is cheaper than
+defending a root cause that does not hold.
 
 ## Diagnosing
 
@@ -69,15 +78,37 @@ terminus drush $SITE.live -- php:eval \
 curl -s -H "X-Consumer-ID: probe$RANDOM" "$URL"   # MISS ⇒ that tag was on the page
 ```
 
-Then check the timestamps, which is what actually names the culprit — a variation
-`changed` newer than its product's `changed` is the whole bug in one row:
+**Two traps that produce confident wrong answers.** Both cost a full round trip
+on KOW 2026-09-02:
+
+*Do not measure invalidation in the `{cachetags}` table on Pantheon.* Redis is
+the checksum backend there (`Drupal\redis\Cache\RedisCacheTagsChecksum`), so the
+DB table is vestigial and its counters sit frozen while invalidation works fine —
+a false negative that reads exactly like a hook that never fired. Ask the service
+that actually holds the number, in two separate processes so the per-request
+static cache doesn't lie:
 
 ```sh
-drush sqlq "SELECT v.variation_id, FROM_UNIXTIME(vfd.changed), vfd.status
-  FROM commerce_product_variation_field_data vfd
-  JOIN commerce_product__variations pv ON pv.variations_target_id = vfd.variation_id
-  WHERE pv.entity_id = <product_id>;"
+drush php:eval "print \Drupal::service('cache_tags.invalidator.checksum')
+  ->getCurrentChecksum(['commerce_product_list:class']);"   # save between calls
 ```
+
+Confirm the hook is even wired before blaming the tag —
+`function_exists()` only proves the file loaded, not that the implementation was
+discovered:
+
+```sh
+drush php:eval "\Drupal::moduleHandler()->invokeAllWith(
+  'commerce_product_variation_update', function (\$cb, string \$m) { print \$m; });"
+```
+
+*Do not regression-test by priming a page that renders the product.* A listing
+showing the item carries `commerce_product:ID`, which Commerce **already**
+invalidates on a variation save — so the page goes MISS with or without the fix
+and the test proves nothing. The bug only exists for a listing cached while it
+rendered *nothing*, which is the state that carries no product tags. Either
+reproduce that empty state, or skip the page entirely and assert on the tag
+checksum above.
 
 ## Fix
 
