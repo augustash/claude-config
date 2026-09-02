@@ -131,6 +131,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   handle in drupal_cache_protection, not CF cache rules
 - **A promotion silently stops applying though its config all checks out** — `vendor/augustash/claude-config/memory/drupal/commerce-promotion-compatibility-none.md`  
   enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- **A variation save leaves every product listing cached stale** — `vendor/augustash/claude-config/memory/drupal/commerce-variation-list-cache-tags.md`  
+  a product shows for logged-in editors but not logged-out visitors; verify with curl, never a logged-in browser
 - **Mail transport vs one bad recipient** — `vendor/augustash/claude-config/memory/drupal/mail-transport-vs-recipient-failure.md`  
   mail errors in watchdog; also before alerting on any provider status code
 - **Reading watchdog from drush** — `vendor/augustash/claude-config/memory/drupal/watchdog-programmatic-reads.md`  

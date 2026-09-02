@@ -94,6 +94,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
 - [A promotion silently stops applying though its config all checks out](memory/drupal/commerce-promotion-compatibility-none.md) — enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- [A variation save leaves every product listing cached stale](memory/drupal/commerce-variation-list-cache-tags.md) — a product shows for logged-in editors but not logged-out visitors; verify with curl, never a logged-in browser
 - [Mail transport vs one bad recipient](memory/drupal/mail-transport-vs-recipient-failure.md) — mail errors in watchdog; also before alerting on any provider status code
 - [Reading watchdog from drush](memory/drupal/watchdog-programmatic-reads.md) — parsing watchdog for analysis; every site reporting an identical entry count means a parse failure
 - [Site thumbnails](memory/drupal/site-thumbnails.md) — wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
