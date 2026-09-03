@@ -186,6 +186,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   adding a per-instance toggle that emits a class
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   a slider that overflows on mobile only
+- **Exo modal shrinks portrait video** — `vendor/augustash/claude-config/memory/drupal/exo-modal-portrait-video-aspect.md`  
+  a vertical video reads as a narrow column on a phone, and no player offers fullscreen
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
   a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
 - **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
