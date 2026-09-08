@@ -38,7 +38,7 @@ which makes it look present when it isn't.
 ## Confirming it in one query, before changing anything
 
 `firewallEventsAdaptive` attributes every action to a named service, so this is a lookup rather
-than a bisect (see [[cloudflare-waf-rule-tool]] for the tool and the token setup):
+than a bisect (see [[waf-rule-tool]] for the tool and the token setup):
 
 ```
 source = botFight    ruleId = bot_fight_mode    action = managed_challenge
@@ -71,4 +71,4 @@ query string at all.
 Verification is free when the broken client polls on a schedule: turn it off, wait one interval,
 and look for 2xx. No need to coordinate a test with the vendor.
 
-Related: [[cloudflare-waf-rule-tool]], [[waf-blocks-acme-renewal]].
+Related: [[waf-rule-tool]], [[waf-blocks-acme-renewal]].

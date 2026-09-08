@@ -42,7 +42,7 @@ penalizes the whole site for a rare edge case.
   already-short). Global `cache.page.max_age` stays long. Unit-tested.
 - `msp` → `msp_service_flight/src/StackMiddleware/FlightsBoardCacheMiddleware.php`
   — heavier: content is max-age 0, cron primes a persistent Redis bin (see
-  [[Cache bin that survives drush cr]]), the middleware serves it with a short
+  [[persistent-cache-bin]]), the middleware serves it with a short
   response max-age. Use when a page is both volatile AND expensive to render on
   each edge refill (also buys origin-load protection).
 

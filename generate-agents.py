@@ -143,6 +143,41 @@ def lint(text):
     return sorted(set(problems))
 
 
+CROSSREF_RE = re.compile(r"\[\[([^\]\n]+)\]\]")
+FENCE_RE = re.compile(r"```.*?```", re.S)
+INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+
+
+def cross_reference_warnings():
+    """[[slug]] links in memory and skill bodies that resolve to nothing.
+
+    A warning rather than an error: a link to a memory not written yet is a
+    legitimate marker, and it is indistinguishable from a typo mechanically.
+    Both are worth seeing — a misspelling sends the next reader hunting for a
+    file that was never going to be there. Found five by hand on 2026-09-08,
+    three of them written as the target's `name:` title instead of its
+    filename, which is why only slug-shaped links are checked: the convention
+    is the filename, 125 links to 0 once those were normalised.
+
+    Code is stripped first — bash `[[ $X -gt 1 ]]` and a `[[^]]` character
+    class both look like links otherwise.
+    """
+    slugs = {p.stem for p in SCRIPT_DIR.glob("memory/**/*.md")}
+    warnings = []
+
+    for path in sorted(SCRIPT_DIR.glob("memory/**/*.md")) + sorted(
+        SCRIPT_DIR.glob("skills/*/SKILL.md")
+    ):
+        body = INLINE_CODE_RE.sub("", FENCE_RE.sub("", path.read_text()))
+        for link in sorted(set(CROSSREF_RE.findall(body))):
+            if SLUG_RE.match(link) and link not in slugs:
+                rel = path.relative_to(SCRIPT_DIR).as_posix()
+                warnings.append(f"{rel} links to [[{link}]], which does not exist")
+
+    return warnings
+
+
 def extract_entries(text):
     """Yield (title, path, description) from the memory index section."""
     in_section = False
@@ -239,6 +274,9 @@ def main():
             print(f"  - {p}", file=sys.stderr)
         print("Fix CLAUDE.md and rerun; AGENTS.md was not written.", file=sys.stderr)
         return 1
+
+    for warning in cross_reference_warnings():
+        print(f"Warning: {warning}", file=sys.stderr)
 
     entries = list(extract_entries(text))
     if not entries:

@@ -10,7 +10,7 @@ metadata:
 policy `script-src 'self' 'unsafe-inline' … https:` trips both `'unsafe-inline'`
 and the `https:` scheme wildcard. You need a passing grade but do **not** want a
 host allowlist to maintain (a new GTM tag would get blackholed — the exact
-failure in [[WP security-header CSP silently breaks analytics]]).
+failure in [[rsssl-csp-enforce-analytics]]).
 
 **The only shape that passes without an allowlist: a per-request nonce +
 `'strict-dynamic'`, with an output buffer that nonces every in-page `<script>`.**

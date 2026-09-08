@@ -1,6 +1,6 @@
 ---
 name: client-report
-description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it.
+description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it. Not for internal or technical write-ups, and not when the finding is one the client would rather be told than sent — confirm a document is actually wanted before building one.
 ---
 
 # Client report
@@ -56,6 +56,12 @@ was a caveat box saying per-page popularity needs GA4, not a quiet fudge.
   `git log --format="%an" | sort -u` first.
 - **Alias collisions.** One alias mapping to six language rows attributed a
   high-traffic page's hits to a content page. Print top matches before trusting a join.
+- **Data that reached us through a sync is not the client's data.** On wps a careers
+  report was drafted around "seventeen postings on department names you've stopped using".
+  The upstream Paylocity feed contained none of them — they were stale nodes our own sync
+  had failed to remove, and the section was about to bill our bug as their naming problem.
+  Pull the source feed and reconcile it against our copy before attributing anything to a
+  client; the per-item deltas are the tell, and they summed to exactly the stale count.
 - **Assuming current state.** A remap that read the existing state wrong was a silent
   no-op. Print the before-state, transform, print the after-state.
 - Config-file semantics — e.g. Drupal's `core.extension.yml` lists *enabled* modules
