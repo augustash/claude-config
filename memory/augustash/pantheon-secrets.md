@@ -43,6 +43,9 @@ $config['key.key.<id>']['key_provider_settings'] = ['key_value' => '…'];
 
 - `secret:site:set <site> ...` (no env) = base value for **all environments**; `<site.env>` = per-env override. Most credentials want the site-level base (omit env).
 - **`--type`/`--scope` only on initial CREATE.** Updating an existing secret must OMIT them or it errors `Secret 'X' already exists. To update the value, omit type and scopes options.` Types: `env, runtime, composer`. Scopes: `ic, user, web`. For app-readable runtime values use **`--type=runtime --scope=web`**.
+- **A per-env override cannot come first.** Setting `<site.env>` for a name with no site-level base errors `Secret 'X' does not exist. You should create the default secret value first.` — so an env-specific credential is always *two* calls: create the base on `<site>` (with `--type`/`--scope`), then set the override on `<site.env>` (without them). The error names the fix but reads like the secret failed to save, so it invites a retry of the same command.
+
+  The useful shape that falls out: make the **base the test credential** and override only on live. Every other environment — dev, test, each multidev — then resolves working test values with nothing to configure per environment, and only one env holds anything live. Pair it with deriving mode from the credential itself rather than storing it separately (e.g. `str_starts_with($key, 'sk_live_')`), and an environment cannot transact live because someone forgot a second setting.
 
 ## Multiline values fail — base64-encode PEMs/certs
 

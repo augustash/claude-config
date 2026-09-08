@@ -240,7 +240,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
-  terminus secrets vs the legacy secrets.json, and why PEM keys need base64
+  terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - **ddev exec expands your variables before bash sees them** — `vendor/augustash/claude-config/memory/augustash/ddev-exec-var-expansion.md`  
