@@ -124,6 +124,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   keeping a warm store from being wiped by a full cache flush
 - **Short edge TTL vs tag-purge for volatile pages** — `vendor/augustash/claude-config/memory/drupal/edge-ttl-vs-tag-purge.md`  
   giving ONE page a short external Cache-Control, and why TTL beats tag-purge
+- **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
+  a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
