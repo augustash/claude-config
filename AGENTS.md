@@ -172,6 +172,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **Detecting a click into a cross-origin iframe** — `vendor/augustash/claude-config/memory/drupal/cross-origin-iframe-click-detection.md`  
+  reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
   embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
