@@ -126,6 +126,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   standard index/server names and the DDEV Solr build
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
+  a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
   an alert region renders blank, or a field reads as just "edit, required"
 - **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
