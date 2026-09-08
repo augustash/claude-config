@@ -50,6 +50,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before publishing a report, audit or findings page for a client or the team
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context
+- **git reflog expire --all destroys every stash** — `vendor/augustash/claude-config/memory/preferences/reflog-expire-eats-stashes.md`  
+  before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  

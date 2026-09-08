@@ -52,6 +52,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
+- [git reflog expire --all destroys every stash](memory/preferences/reflog-expire-eats-stashes.md) — before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
 - [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
