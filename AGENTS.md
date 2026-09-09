@@ -128,6 +128,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build
+- **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
+  every drush command dies on a missing class right after a deploy, including the import that would fix it
+- **setup_future_usage silently removes Affirm and Klarna** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-affirm-setup-future-usage.md`  
+  a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
+- **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
+  a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
