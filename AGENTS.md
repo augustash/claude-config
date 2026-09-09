@@ -136,6 +136,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
 - **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
   a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
+- **An empty Stripe express element usually isn't broken** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-empty-express-element.md`  
+  wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
