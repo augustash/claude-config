@@ -39,6 +39,40 @@ The full index lives in [CLAUDE.md](CLAUDE.md). Examples of what's there:
 - Comment style — concise; skip comments when the code is obvious, explain the WHY when it isn't
 - Drupal caching — known pitfalls around session poisoning, lazy builders without BigPipe, and Exo component cache
 
+## Skills
+
+A **skill** is a procedure Claude loads on demand — a multi-step job with its own method, traps
+and deliverable. Distinct from memory, which is knowledge to recall.
+
+Claude Code only discovers skills in the project's `.claude/skills/`, so a skill in this package
+is not live until it's copied in:
+
+```bash
+cp -R vendor/augustash/claude-config/skills/content-audit .claude/skills/
+```
+
+Commit that copy with the project. Adoption is manual, but staying current is not — the composer
+plugin refreshes every already-adopted copy on each `ddev composer update augustash/claude-config`
+and leaves the ones you never adopted alone, so a WordPress project doesn't inherit the Drupal
+upgrade skill. The package copy is canonical: a local edit to a project copy gets overwritten, so
+refine it here instead. `memory-management` is the exception — the plugin seeds it everywhere.
+
+Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
+once ran that `cp` and absent everywhere else. If `/<name>` comes back `Unknown skill`, that's why
+— the procedure is still on disk at `vendor/augustash/claude-config/skills/<name>/` and can be
+read directly.
+
+- **accessibility-audit** — Test a site's accessibility and produce a defensible record of what was found: an ADA demand letter, a compliance question, a pre-launch check, or a VPAT/remediation scope.
+- **client-proposal-review** — A client hands over a set of decisions (a menu, a design round, a feature list) and some of it would make the site worse. Steers them off the bad parts without losing the good, as a short self-contained HTML document.
+- **client-report** — An evidence-led client report or rebuild pitch: gather real data, frame it so it sells without overclaiming, ship it as a branded HTML page.
+- **content-audit** — Decide what a legacy CMS's content is actually worth migrating: keep/move/consolidate/eliminate per node, find pages that say the same thing in different words, restructure the survivors into the new IA.
+- **content-migration-to-components** — Turn the content that survived into a component tree: work out what shape it really is, choose reuse/extend/build-new, re-type legacy markup as data, verify the built page.
+- **drupal-11-upgrade** — A D10 → D11 upgrade on Pantheon, from composer constraints to multidev verification. Built around the platform gates and the failure modes that report success.
+- **firefox-devtools** — Drive a real Firefox from Claude: console, network, DOM, screenshots, logpoints and profiling on a running site. Needs one-time setup — see below.
+- **log-audit** — Establish what actually happened on the wire, through nginx/php-fpm/New Relic logs. Incident-driven (an integration broke, you need a third party's egress IP, you must pin a change to a deploy) or as a recurring health-and-security sweep.
+- **memory-management** — Writing, curating or auditing a memory: whether it qualifies, which tier, whether it's really a skill, how to word the index entry, and the commit/push steps that finish the write.
+- **site-update** — A routine dependency round on a Drupal or WordPress site, starting at the Pantheon upstream that no package manager will bring you. Owns patch triage for every Drupal skill.
+
 ## Memory organization
 
 Memories follow an `{idea}/{specific}.md` pattern — the directory is the broad topic, the file is the specific detail. Top-level categories:
