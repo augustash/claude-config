@@ -31,16 +31,18 @@ start, and relaunching an already-running instance silently does nothing — so 
 needs a wrapper. Something like `~/.local/bin/firefox-claude`:
 
     #!/bin/zsh
-    FF="/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"
-    # release Firefox: /Applications/Firefox.app/Contents/MacOS/firefox
-    if pgrep -qf "Firefox Developer Edition.app"; then
-      print -u2 "Quit Firefox fully (Cmd-Q) first — the remote agent only starts with the process."
+    APP="Firefox Developer Edition"   # release channel: "Firefox"
+    if pgrep -qf "$APP.app"; then
+      print -u2 "Quit $APP fully (Cmd-Q) first — the remote agent only starts with the process."
       exit 1
     fi
-    exec "$FF" --marionette --remote-debugging-port="${BIDI_PORT:-9222}" "$@"
+    open -a "$APP" --args --marionette --remote-debugging-port="${BIDI_PORT:-9222}"
 
 Both flags are required; the server uses WebDriver Classic and BiDi for different
-capabilities.
+capabilities. `open` rather than exec'ing the binary matters: launchd owns the
+process, so it survives the terminal that started it. The guard matters too —
+`open --args` only passes arguments when the app is not already running, so
+relaunching over a live instance silently yields a Firefox with the agent off.
 
 Requires Node 20.19+ and Firefox 100+. MCP servers and skills both load at Claude
 Code startup, so a session started before setup needs `claude --continue` to pick
