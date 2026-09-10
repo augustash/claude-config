@@ -136,6 +136,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
 - **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
   a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
+- **Moving the Stripe Payment Element off the review step** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-return-step-hardcoded.md`  
+  Stripe takes the money and Drupal records nothing; the customer lands back on the payment step
+- **A Stripe intent outlives the method it was made for** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-intent-survives-gateway-change.md`  
+  a second payment radio confirms against the first one's intent; also before adding a Stripe gateway instance
 - **An empty Stripe express element usually isn't broken** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-empty-express-element.md`  
   wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  

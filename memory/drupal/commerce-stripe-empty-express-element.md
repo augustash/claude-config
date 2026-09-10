@@ -1,6 +1,6 @@
 ---
 name: commerce-stripe-empty-express-element
-description: "An express/wallet element that measures zero height, or a wallet Stripe reports as unavailable, is usually neither. The element can take well over 12s to mount, and a probe element's availablePaymentMethods does not account for paymentMethods.applePay: 'always'."
+description: "An express/wallet element that measures zero height, or a wallet Stripe reports as unavailable, is usually neither. Measure the container rather than the iframe, and a probe element's availablePaymentMethods does not account for paymentMethods.applePay: 'always'."
 type: reference
 ---
 
@@ -9,11 +9,16 @@ type: reference
 The Express Checkout Element renders nothing, or a wallet you expect is missing. Both readings
 are usually measurement errors, and both send you hunting a bug that is not there.
 
-## It can take far longer than you will wait
+## It mounts asynchronously, so an early read returns zero
 
-The element mounts asynchronously and **can exceed 12 seconds**, on a fast local site as
-readily as a remote one. A poll that gives up sooner returns zero, and every conclusion built
-on that zero is wrong.
+A poll that gives up before the element paints returns zero, and every conclusion built on that
+zero is wrong. **Wait on the container reaching a plausible height, never on a fixed delay**
+(see [[no-time-based-test-waits]]).
+
+An earlier version of this note claimed mounts "can exceed 12 seconds". That figure came from a
+*probe* element — the very instrument the next section says cannot be trusted — and has not
+reproduced since: on the same site, the real element paints in a few seconds. Treat a long
+mount as unmeasured rather than expected, and go looking for a cause if one appears.
 
 Measure the **container**, not the iframe:
 
