@@ -73,6 +73,57 @@ read directly.
 - **memory-management** — Writing, curating or auditing a memory: whether it qualifies, which tier, whether it's really a skill, how to word the index entry, and the commit/push steps that finish the write.
 - **site-update** — A routine dependency round on a Drupal or WordPress site, starting at the Pantheon upstream that no package manager will bring you. Owns patch triage for every Drupal skill.
 
+## Firefox automation
+
+Claude can drive a real Firefox — reading the console and network of a page, inspecting the DOM,
+screenshotting, profiling, setting logpoints without editing source. It attaches to **your own
+running Firefox Developer Edition**, not a throwaway instance, so you can open DevTools on the
+very tab being discussed.
+
+Three one-time steps.
+
+**1. Install the launcher.** Firefox only enables its remote agent at process start, so it has to
+be started with the right flags:
+
+```bash
+mkdir -p ~/.local/bin
+cp vendor/augustash/claude-config/templates/firefox-claude ~/.local/bin/firefox-claude
+chmod +x ~/.local/bin/firefox-claude
+```
+
+Make sure `~/.local/bin` is on your `PATH`. Requires Firefox Developer Edition.
+
+**2. Register the MCP server** (once per machine — `--scope user` covers every project):
+
+```bash
+claude mcp add firefox-devtools --scope user -- \
+  npx -y @mozilla/firefox-devtools-mcp@latest \
+  --toolPreset developer --connectExisting --marionettePort 2828
+```
+
+`--connectExisting` is what makes it attach to your session rather than launching its own.
+
+**3. Adopt the skill** in the project, so Claude knows the workflow and its traps:
+
+```bash
+cp -R vendor/augustash/claude-config/skills/firefox-devtools .claude/skills/
+```
+
+Then start the browser with `firefox-claude` instead of clicking the dock icon, and ask Claude to
+look at a page.
+
+**The one gotcha that will bite you:** if Firefox is already running when you call `firefox-claude`,
+the launcher refuses rather than silently focusing a browser with the agent off. Quit Firefox
+completely (Cmd-Q, not just closing windows) and re-run. A DevEd started normally cannot be
+upgraded to a remote-agent one by relaunching. Attach failures are nearly always this.
+
+Two things worth knowing, since it's your real profile:
+
+- Claude sees your actual tabs, cookies and logged-in sessions. It's told not to navigate or close
+  a tab it didn't open, but prefer opening a new one for anything consequential.
+- It is not a test runner. Drupal JS tests are Nightwatch/Playwright on Chrome, and Firefox will
+  not reproduce their failures.
+
 ## Memory organization
 
 Memories follow an `{idea}/{specific}.md` pattern — the directory is the broad topic, the file is the specific detail. Top-level categories:

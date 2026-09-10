@@ -1,0 +1,28 @@
+#!/bin/zsh
+# Launch Firefox Developer Edition with the remote agent enabled, so the
+# firefox-devtools MCP server can attach to it via --connectExisting.
+#
+# Install to ~/.local/bin/firefox-claude and chmod +x. See the "Firefox
+# automation" section of the claude-config README.
+#
+# Uses `open` rather than exec'ing the binary: the app is handed to launchd, so
+# it detaches immediately and does not die when the launching terminal closes.
+#
+# Firefox only enables the remote agent at process start, and `open --args` only
+# passes arguments when the app is not already running — so an already-running
+# DevEd would be silently focused with the agent still off. Refuse instead.
+
+APP="Firefox Developer Edition"
+BIDI_PORT="${BIDI_PORT:-9222}"
+
+if pgrep -qf "$APP.app"; then
+  print -u2 "$APP is already running."
+  print -u2 "Quit it completely (Cmd-Q), then re-run — the remote agent only starts"
+  print -u2 "with the process, and a relaunch would not enable it."
+  exit 1
+fi
+
+# --marionette          WebDriver Classic, port 2828 (matches --marionettePort)
+# --remote-debugging-*  WebDriver BiDi
+# The MCP server uses both; each carries capabilities the other lacks.
+open -a "$APP" --args --marionette --remote-debugging-port="$BIDI_PORT"
