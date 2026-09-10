@@ -43,7 +43,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
-  subject + a tight WHY; diagnosis belongs in the PR, not the commit
+  subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
 - **Run cex before commit rounds** — `vendor/augustash/claude-config/memory/preferences/cex-before-commit.md`  
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
