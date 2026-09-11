@@ -146,6 +146,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
   wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
 - **Narrowing a Stripe intent makes the static method list load-bearing** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-static-method-list.md`  
   before naming payment_method_types on an intent, or when a method enabled at Stripe never reaches checkout
+- **commerce_stripe's express checkout fails silently in three places** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-express-silent-failures.md`  
+  an express order places with no email, no street address, or a delivery choice nothing can read back
+- **Testing Apple, Google, Amazon Pay and Affirm in sandbox** — `vendor/augustash/claude-config/memory/drupal/stripe-wallet-testing.md`  
+  before hunting a wallet button that never appears, or a sandbox that wants a credential you do not have
+- **A guest cannot view their own shipment** — `vendor/augustash/claude-config/memory/drupal/guest-order-shipment-access.md`  
+  a receipt heading with nothing under it, or a missing address, on guest orders only
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  

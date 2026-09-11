@@ -40,6 +40,9 @@ configuration, so a type missing from the annotation can never be enabled, and
 silently: the checkbox is simply not on the form. Upstream declares only
 `stripe_card`.
 
+See also [[commerce-stripe-express-silent-failures]], which is the same
+integration failing in three other places without an error.
+
 **Don't rebuild any of this.** `augustash/commerce_stripe_enhanced` handles it:
 the gateway declares all ten method types, the form narrows them to what the
 account actually has enabled, and the express/pane overlap de-duplicates itself.
