@@ -22,6 +22,12 @@ and the launch-day trap of a disabled production domain disappears.
 
 A disabled domain produces no error anywhere. The button is simply absent.
 
+**Registrations are per-mode.** A test key lists only the sandbox's domains, so
+a domain reading `enabled=False` there says nothing about live — and checking
+with the wrong key is an easy way to raise a launch blocker that isn't one. The
+same separation applies to enabling a method: activating Affirm or Amazon Pay in
+sandbox does not carry to live.
+
 ## Apple Pay outside Safari needs `always`
 
 Stripe: *"Apple Pay on non-Safari desktop browsers is only supported when its
