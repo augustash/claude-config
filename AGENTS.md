@@ -144,6 +144,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a second payment radio confirms against the first one's intent; also before adding a Stripe gateway instance
 - **An empty Stripe express element usually isn't broken** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-empty-express-element.md`  
   wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
+- **Narrowing a Stripe intent makes the static method list load-bearing** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-static-method-list.md`  
+  before naming payment_method_types on an intent, or when a method enabled at Stripe never reaches checkout
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
