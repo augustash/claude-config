@@ -330,6 +330,10 @@ guessing.
 CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 `re.findall(r'(?:src|href)="(?!#)([^"]+)"', html)` returns empty.
 
+**Sign it.** The studio mark goes centered at the very bottom, inlined. See
+[doc-studio-mark](../../memory/preferences/doc-studio-mark.md) for which mark and where
+the files live.
+
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
 scan, and it needs no download. Heavy tight-tracked system sans for headlines.
