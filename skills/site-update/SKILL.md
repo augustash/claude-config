@@ -125,7 +125,15 @@ this step*, not *debug it*:
   `first commit` — 28 pending commits that are not pending at all.
 - Diffing the scaffolding shows our `pantheon.upstream.yml` is the older
   `drupal-project` file (`php_version: 7.4`, no `web_docroot`, no `build_step`)
-  and `upstream-configuration/` doesn't exist.
+  and `upstream-configuration/` doesn't exist. **Or the reverse** — the site
+  was hand-modernised past both upstreams. On cal (2026-09-14) the files existed
+  and were *ahead*: merging `drupal-composer-managed` would have taken PHP
+  8.3 → 8.2 and MariaDB 10.6 → 10.4, stripped the primary-domain redirect,
+  `config_readonly` and the ddev include from `settings.php`, and replaced
+  `composer.json` with its Drupal 9 template. Diff file by file
+  (`git diff HEAD FETCH_HEAD -- <path>` for each path in
+  `git ls-tree -r --name-only FETCH_HEAD`) and read which side is newer before
+  calling anything pending.
 
 Before writing it up as exposure, read `pantheon.yml`: on a site like this the
 platform settings the newer upstream would deliver (`php_version`,
