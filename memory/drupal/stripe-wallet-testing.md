@@ -60,8 +60,7 @@ Then name, birth date, email, a plan, and Confirm. Turn **AutoPay off** first:
 it is enabled by default and makes the bank fields required, which blocks the
 confirm with no visible reason.
 
-Affirm is $35-$30,000 USD, enforced at intent creation - see
-[[commerce-stripe-express-silent-failures]] for where those limits belong.
+Affirm is $35-$30,000 USD, enforced at intent creation.
 
 ## Driving a wallet from automation
 
