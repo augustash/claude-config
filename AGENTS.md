@@ -140,6 +140,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
 - **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
   a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
+- **A Stripe webhook charges a card in another environment** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-webhook-crosses-environments.md`  
+  one checkout produces two succeeded payments seconds apart, the second one bare; also before pointing any environment at a shared Stripe account's webhook
 - **Moving the Stripe Payment Element off the review step** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-return-step-hardcoded.md`  
   Stripe takes the money and Drupal records nothing; the customer lands back on the payment step
 - **A Stripe intent outlives the method it was made for** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-intent-survives-gateway-change.md`  
