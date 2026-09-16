@@ -41,6 +41,6 @@ each field. Suspect this the moment an alert region renders with an empty `.mess
 
 Checking a form: an element's accessible name is empty if it has no `label[for]`,
 `aria-label`, `aria-labelledby`, or `title` — a placeholder does not count. Related:
-[[phunit-testing]] for asserting it, and note that third-party embeds (Klaviyo in
+[[phpunit-testing]] for asserting it, and note that third-party embeds (Klaviyo in
 particular) ship their own permanently-empty `role="alert"` nodes, so confirm an empty
 alert is Drupal's before chasing it.

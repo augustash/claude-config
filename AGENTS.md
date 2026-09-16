@@ -30,6 +30,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - **Style rules cover as much ground as possible** — `vendor/augustash/claude-config/memory/preferences/style-rules-cover-ground.md`  
   before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- **Show the option and require the sign-in** — `vendor/augustash/claude-config/memory/preferences/show-the-option-require-the-signin.md`  
+  before gating a control on the visitor already being signed in, subscribed or otherwise qualified; a missing control reads as a broken one
 - **A defect nobody can see still gets fixed** — `vendor/augustash/claude-config/memory/preferences/fix-what-nobody-sees.md`  
   before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
@@ -45,7 +47,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
-  subject + a tight WHY; diagnosis belongs in the PR, not the commit
+  subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
 - **Run cex before commit rounds** — `vendor/augustash/claude-config/memory/preferences/cex-before-commit.md`  
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - **Verify cim is clean, not just cex** — `vendor/augustash/claude-config/memory/preferences/verify-cim-is-clean-before-commit.md`  
@@ -54,8 +56,14 @@ These files are authoritative and kept current by the team. Prefer conventions h
   when design judgment is left; skip it for prescriptive handed-over values
 - **Deliverables are HTML files, not Claude artifacts** — `vendor/augustash/claude-config/memory/preferences/deliverables-as-html-files.md`  
   before publishing a report, audit or findings page for a client or the team
+- **Sign generated docs with the studio mark** — `vendor/augustash/claude-config/memory/preferences/doc-studio-mark.md`  
+  finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  
   ~/.claude/scratch/ for temporary cross-project context
+- **Reset context before new functionality** — `vendor/augustash/claude-config/memory/preferences/reset-context-before-new-work.md`  
+  at the boundary between features on a long session; Kaza's ~70% rule
+- **git reflog expire --all destroys every stash** — `vendor/augustash/claude-config/memory/preferences/reflog-expire-eats-stashes.md`  
+  before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
 - **Feature work goes on a branch, not master** — `vendor/augustash/claude-config/memory/preferences/feature-branch-not-master.md`  
@@ -138,10 +146,36 @@ These files are authoritative and kept current by the team. Prefer conventions h
   keeping a warm store from being wiped by a full cache flush
 - **Short edge TTL vs tag-purge for volatile pages** — `vendor/augustash/claude-config/memory/drupal/edge-ttl-vs-tag-purge.md`  
   giving ONE page a short external Cache-Control, and why TTL beats tag-purge
+- **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
+  a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build
+- **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
+  every drush command dies on a missing class right after a deploy, including the import that would fix it
+- **setup_future_usage silently removes Affirm and Klarna** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-affirm-setup-future-usage.md`  
+  a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
+- **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
+  a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
+- **A Stripe webhook charges a card in another environment** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-webhook-crosses-environments.md`  
+  one checkout produces two succeeded payments seconds apart, the second one bare; also before pointing any environment at a shared Stripe account's webhook
+- **Moving the Stripe Payment Element off the review step** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-return-step-hardcoded.md`  
+  Stripe takes the money and Drupal records nothing; the customer lands back on the payment step
+- **A Stripe intent outlives the method it was made for** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-intent-survives-gateway-change.md`  
+  a second payment radio confirms against the first one's intent; also before adding a Stripe gateway instance
+- **An empty Stripe express element usually isn't broken** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-empty-express-element.md`  
+  wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
+- **Narrowing a Stripe intent makes the static method list load-bearing** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-static-method-list.md`  
+  before naming payment_method_types on an intent, or when a method enabled at Stripe never reaches checkout
+- **commerce_stripe's express checkout fails silently in three places** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-express-silent-failures.md`  
+  an express order places with no email, no street address, or a delivery choice nothing can read back
+- **Testing Apple, Google, Amazon Pay and Affirm in sandbox** — `vendor/augustash/claude-config/memory/drupal/stripe-wallet-testing.md`  
+  before hunting a wallet button that never appears, or a sandbox that wants a credential you do not have
+- **A guest cannot view their own shipment** — `vendor/augustash/claude-config/memory/drupal/guest-order-shipment-access.md`  
+  a receipt heading with nothing under it, or a missing address, on guest orders only
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
+  a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
   an alert region renders blank, or a field reads as just "edit, required"
 - **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
@@ -182,6 +216,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   the cachetags table has no GC and grows unbounded
 - **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
   listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
+- **Exo list "Enhanced Cache" keys on almost nothing** — `vendor/augustash/claude-config/memory/drupal/exo-list-enhanced-cache.md`  
+  before ticking Enhanced Cache on an entity list; also when every page shows the results of whichever one was hit first
 - **Exo optional link field** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-optional-link.md`  
   `required: FALSE` is a no-op on a link field
 - **Exo modifier checkbox + class** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-modifier-checkbox.md`  
@@ -196,6 +232,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **Detecting a click into a cross-origin iframe** — `vendor/augustash/claude-config/memory/drupal/cross-origin-iframe-click-detection.md`  
+  reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
   embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - **An inline head script is HTML-escaped, so >= and && break it** — `vendor/augustash/claude-config/memory/drupal/html-head-inline-script-escaped.md`  
@@ -254,7 +292,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **A component's CSS loses to `.region.content` rules** — `vendor/augustash/claude-config/memory/augustash/exo-component-css-loses-to-region-content.md`  
   your rule matches, has no !important, and the theme still wins; usually a submit button
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  tracking-param strip/redirect, facets + search submodules
+  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
 - **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
@@ -262,7 +300,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
   dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
-  terminus secrets vs the legacy secrets.json, and why PEM keys need base64
+  terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
   three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - **ddev exec expands your variables before bash sees them** — `vendor/augustash/claude-config/memory/augustash/ddev-exec-var-expansion.md`  

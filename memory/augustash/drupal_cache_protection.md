@@ -12,6 +12,7 @@ type: reference
 - **`drupal_cache_protection_facets`** (submodule) — facet bot protection. Depends on parent. Only enable when `drupal/facets` is present.
 - **`drupal_cache_protection_search`** (submodule) — per-IP rate limit + page-cache kill switch on search routes (`/search`, plus configurable query params like `s`, `keys`, `search_api_fulltext`). Enable on any site with a search route exposed — Drupal core Search, search_api, Solr, custom.
 - **`drupal_cache_protection_node_access`** (submodule) — stops a node access grants rebuild from permanently caching empty listings. Enable wherever `hook_node_grants()` is implemented (`node_unpublished`, `group`, `domain_access`, `workbench_access`). No config. Added Aug 2026; the failure it prevents is [[node-access-rebuild-empties-listings]].
+- **`drupal_cache_protection_listing`** (submodule) — the generic backstop to the one above: catches *any* list that renders empty while matching content exists, whatever the cause. Logs route, page, filters, user and `{node_access}` size, keeps that response out of page/dynamic/edge cache, and invalidates what was already stored. Depends on `exo_list_builder` (hooks `hook_exo_list_builder_entities_alter`). No config. Added Sep 2026.
 
 ## Parent module: tracking params
 
@@ -55,6 +56,18 @@ The module's `strip_params` entry for `utm_*` is therefore **a no-op on Pantheon
 - **`drupal/facets` present** → enable the facets submodule too
 - **Any search route exposed** → enable the search submodule (rate-limit + uncache is free protection regardless of search load)
 - **`hasImplementations('node_grants')` is TRUE** → enable the node_access submodule (its status report entry says so outright when it has nothing to do)
+- **Any `exo_list_builder` list rendered to anonymous visitors** → enable the listing submodule. Cheap by construction: it probes only when a list came back empty, and only reports when the same query returns rows with access checking off
+
+### Reading a listing report
+
+An entry means content matched the query and none of it was visible — not that a
+page looked empty. Two things it deliberately stays quiet about, both learned the
+hard way: an **out-of-range pager page** (`?page=25` of a 21-page list) is a normal
+empty page, not hidden content, and **unpublished** rows are hidden on purpose.
+1.0.20 flagged the first of those on every crawler pager walk; fixed in 1.0.21 by
+gating on the list's own access-checked total before probing. If entries appear
+from a version below that, check the message for a `Page:` field — its absence
+dates them to 1.0.20.
 
 ## Install
 

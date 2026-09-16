@@ -42,6 +42,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Memory audit process](memory/preferences/memory-audit.md) — audit triggers and the `last_audit` daily floor
 - [Leave stopwords out of method names](memory/preferences/method-naming.md) — no `a`/`an`/`the`/`to`; also trips Drupal's ValidFunctionName sniff
 - [Style rules cover as much ground as possible](memory/preferences/style-rules-cover-ground.md) — before scoping a style fix to one page or instance; Kaza's rule on uniformity
+- [Show the option and require the sign-in](memory/preferences/show-the-option-require-the-signin.md) — before gating a control on the visitor already being signed in, subscribed or otherwise qualified; a missing control reads as a broken one
 - [A defect nobody can see still gets fixed](memory/preferences/fix-what-nobody-sees.md) — before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - [Use scale classes, not arbitrary Tailwind values](memory/preferences/tailwind-no-arbitrary-values.md) — Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - [Check mobile on every CSS change](memory/preferences/mobile-breakpoint-check.md) — before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
@@ -49,12 +50,15 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - [Sidescroll dead zones](memory/preferences/sidescroll-dead-zones.md) — a strip that scrolls over its middle but not its edges, or won't drag; also: never hijack a plain vertical wheel
 - [Comment style](memory/preferences/comments.md) — concise; explain the WHY, skip the obvious
-- [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; diagnosis belongs in the PR, not the commit
+- [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - [Verify cim is clean, not just cex](memory/preferences/verify-cim-is-clean-before-commit.md) — before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
+- [Sign generated docs with the studio mark](memory/preferences/doc-studio-mark.md) — finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
+- [Reset context before new functionality](memory/preferences/reset-context-before-new-work.md) — at the boundary between features on a long session; Kaza's ~70% rule
+- [git reflog expire --all destroys every stash](memory/preferences/reflog-expire-eats-stashes.md) — before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
 - [Feature work goes on a branch, not master](memory/preferences/feature-branch-not-master.md) — before pushing anything speculative or in-review; master auto-deploys to dev on Pantheon
 - [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
@@ -99,8 +103,21 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [GTranslate integration](memory/drupal/gtranslate-integration.md) — choosing hosted-subdomain vs the subdirectory addon, which saturates PHP-FPM
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — giving ONE page a short external Cache-Control, and why TTL beats tag-purge
+- [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build
+- [A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy](memory/drupal/event-subscriber-contrib-class-deadlock.md) — every drush command dies on a missing class right after a deploy, including the import that would fix it
+- [setup_future_usage silently removes Affirm and Klarna](memory/drupal/commerce-stripe-affirm-setup-future-usage.md) — a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
+- [commerce_stripe's checkout integrations key on stock pane ids](memory/drupal/commerce-stripe-checkout-pane-ids.md) — a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
+- [A Stripe webhook charges a card in another environment](memory/drupal/commerce-stripe-webhook-crosses-environments.md) — one checkout produces two succeeded payments seconds apart, the second one bare; also before pointing any environment at a shared Stripe account's webhook
+- [Moving the Stripe Payment Element off the review step](memory/drupal/commerce-stripe-return-step-hardcoded.md) — Stripe takes the money and Drupal records nothing; the customer lands back on the payment step
+- [A Stripe intent outlives the method it was made for](memory/drupal/commerce-stripe-intent-survives-gateway-change.md) — a second payment radio confirms against the first one's intent; also before adding a Stripe gateway instance
+- [An empty Stripe express element usually isn't broken](memory/drupal/commerce-stripe-empty-express-element.md) — wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
+- [Narrowing a Stripe intent makes the static method list load-bearing](memory/drupal/commerce-stripe-static-method-list.md) — before naming payment_method_types on an intent, or when a method enabled at Stripe never reaches checkout
+- [commerce_stripe's express checkout fails silently in three places](memory/drupal/commerce-stripe-express-silent-failures.md) — an express order places with no email, no street address, or a delivery choice nothing can read back
+- [Testing Apple, Google, Amazon Pay and Affirm in sandbox](memory/drupal/stripe-wallet-testing.md) — before hunting a wallet button that never appears, or a sandbox that wants a credential you do not have
+- [A guest cannot view their own shipment](memory/drupal/guest-order-shipment-access.md) — a receipt heading with nothing under it, or a missing address, on guest orders only
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - [A required element with no #title announces an empty error](memory/drupal/form-element-title-drives-error-message.md) — an alert region renders blank, or a field reads as just "edit, required"
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
@@ -121,6 +138,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Site thumbnails](memory/drupal/site-thumbnails.md) — wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
 - [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
+- [Exo list "Enhanced Cache" keys on almost nothing](memory/drupal/exo-list-enhanced-cache.md) — before ticking Enhanced Cache on an entity list; also when every page shows the results of whichever one was hit first
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
@@ -128,6 +146,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
 - [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- [Detecting a click into a cross-origin iframe](memory/drupal/cross-origin-iframe-click-detection.md) — reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - [A third-party map iframe eats one-finger page scroll](memory/drupal/third-party-iframe-touch-scroll-trap.md) — embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - [An inline head script is HTML-escaped, so >= and && break it](memory/drupal/html-head-inline-script-escaped.md) — a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
 - [Vimeo background=1 embed param](memory/drupal/vimeo-background-param.md) — a 403 on the player URL that looks like a privacy setting
@@ -158,11 +177,11 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
 - [An eXo component's Twig gets only its declared fields](memory/augustash/exo-alchemist-theme-variables-from-fields.md) — a key set in a handler's viewAlter() never reaches the template; also before embedding a form in a component
 - [A component's CSS loses to `.region.content` rules](memory/augustash/exo-component-css-loses-to-region-content.md) — your rule matches, has no !important, and the theme still wins; usually a submit button
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, facets + search submodules
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
-- [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json, and why PEM keys need base64
+- [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - [ddev exec expands your variables before bash sees them](memory/augustash/ddev-exec-var-expansion.md) — a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
 - [ddev gulp's ddev/ddevWatch tasks die on an opaque JSON error](memory/augustash/ddev-gulp-in-container.md) — a gulp task fails with "Unexpected token 'Y'... is not valid JSON" and nothing names ddev as the cause
@@ -274,6 +293,7 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [content-migration-to-components](skills/content-migration-to-components/SKILL.md) — building a page out of migrated content: what shape it is, reuse/extend/build-new, and verifying the result
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
+- [firefox-devtools](skills/firefox-devtools/SKILL.md) — driving a real Firefox from Claude: console, network, DOM, logpoints and profiling on a running site, for Firefox-specific bugs or devs who prefer its DevTools to Chrome's
 - [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
 - [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress), starting at the Pantheon upstream; owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev
