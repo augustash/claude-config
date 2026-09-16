@@ -32,6 +32,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 #### Preferences & collaboration
 
 - [Mission](memory/preferences/mission.md) — how Claude stewards this corpus; read first, it shapes how every other memory is written
+- [Security outranks convenience](memory/preferences/security-first.md) — on any tradeoff with a security dimension; also before putting a credential anywhere
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is already handled here before writing in it
 - [Check what already exists before writing code we maintain](memory/preferences/prefer-existing-tooling.md) — before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - [Memory structure](memory/preferences/memory-structure.md) — topic/specific.md layout and organization rules
@@ -45,11 +46,13 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A defect nobody can see still gets fixed](memory/preferences/fix-what-nobody-sees.md) — before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - [Use scale classes, not arbitrary Tailwind values](memory/preferences/tailwind-no-arbitrary-values.md) — Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - [Check mobile on every CSS change](memory/preferences/mobile-breakpoint-check.md) — before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
+- [resize_window doesn't resize the viewport](memory/preferences/chrome-mcp-viewport-iframe.md) — before trusting any "mobile" browser screenshot; also when basic auth or zoom coordinates block a capture
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - [Sidescroll dead zones](memory/preferences/sidescroll-dead-zones.md) — a strip that scrolls over its middle but not its edges, or won't drag; also: never hijack a plain vertical wheel
 - [Comment style](memory/preferences/comments.md) — concise; explain the WHY, skip the obvious
 - [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
+- [Verify cim is clean, not just cex](memory/preferences/verify-cim-is-clean-before-commit.md) — before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
 - [Sign generated docs with the studio mark](memory/preferences/doc-studio-mark.md) — finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
@@ -57,6 +60,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Reset context before new functionality](memory/preferences/reset-context-before-new-work.md) — at the boundary between features on a long session; Kaza's ~70% rule
 - [git reflog expire --all destroys every stash](memory/preferences/reflog-expire-eats-stashes.md) — before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
+- [Feature work goes on a branch, not master](memory/preferences/feature-branch-not-master.md) — before pushing anything speculative or in-review; master auto-deploys to dev on Pantheon
 - [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
@@ -66,6 +70,9 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Trust contrib tests](memory/preferences/trust-contrib-tests.md) — cover only the seam we own; never hit a live external API
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
+- [Drupal-native admin UI over React](memory/preferences/drupal-native-admin-ui.md) — before scoping any rich Drupal admin UI; dialog/tabledrag/AJAX get the react-like feel with no build step
+- [Status updates carry decisions, not side effects](memory/preferences/status-updates-decision-relevant.md) — before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
+- [Caveats belong with the delivery](memory/preferences/caveats-with-delivery.md) — before calling any work "done" or deploying; say what's verified vs assumed up front, never surface caveats after the fact
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
 - [A legacy URL's pageviews say nothing about the words in it](memory/preferences/traffic-count-is-not-a-search-signal.md) — before citing an old URL's traffic as evidence for a word, a label, a slug or a heading
 - [Prove code is dead against its consumers](memory/preferences/prove-code-is-dead.md) — before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
@@ -86,6 +93,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Admin theme change orphans theme-keyed config](memory/drupal/admin-theme-keyed-config.md) — the new admin theme "looks wrong": forms sprawl onto two rows, panels render unstyled
 - [An empty config object kills cim](memory/drupal/cim-empty-config-object.md) — `cim` dies on the same op every run with "delete() on null", and `config:delete` insists the config does not exist
 - [config_ignore over a config_split module deadlocks deploy](memory/drupal/config-split-ignore-collision.md) — `cim` aborts with "depends on the Y module that will not be installed"
+- [Config made at runtime gets a per-env UUID](memory/drupal/config-created-at-runtime-breaks-cim.md) — `cim` lists one config as both Create and Delete, or refuses because content exists of that bundle
 - [An active split whose modules aren't installed empties its folder on export](memory/drupal/config-split-export-wipes-folder.md) — `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - [A DB push makes cim uninstall the whole dev split at once](memory/drupal/config-split-db-push-mass-uninstall.md) — `cim` dies "terminated abnormally" and half-applied after pushing a local DB to Pantheon; re-running walks it forward
 - [A redirect pass built on aliases and hrefs cannot see view paths](memory/drupal/redirect-discovery-misses-view-paths.md) — a legacy URL with real traffic 404s and is absent from the redirect batch; nothing was looking for its kind
@@ -123,12 +131,18 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
 - [Cloudflare tracking params](memory/drupal/cloudflare-tracking-params.md) — handle in drupal_cache_protection, not CF cache rules
+- [A promotion silently stops applying though its config all checks out](memory/drupal/commerce-promotion-compatibility-none.md) — enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- [A variation save leaves every product listing cached stale](memory/drupal/commerce-variation-list-cache-tags.md) — a product shows for logged-in editors but not logged-out visitors; verify with curl, never a logged-in browser
+- [Mail transport vs one bad recipient](memory/drupal/mail-transport-vs-recipient-failure.md) — mail errors in watchdog; also before alerting on any provider status code
+- [Reading watchdog from drush](memory/drupal/watchdog-programmatic-reads.md) — parsing watchdog for analysis; every site reporting an identical entry count means a parse failure
+- [Site thumbnails](memory/drupal/site-thumbnails.md) — wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
 - [Cachetags garbage collection](memory/drupal/cachetags-garbage-collection.md) — the cachetags table has no GC and grows unbounded
 - [A node access rebuild permanently caches every listing empty](memory/drupal/node-access-rebuild-empties-listings.md) — listings show their empty message while the content plainly exists; reads as content loss or a stalled search index
 - [Exo list "Enhanced Cache" keys on almost nothing](memory/drupal/exo-list-enhanced-cache.md) — before ticking Enhanced Cache on an entity list; also when every page shows the results of whichever one was hit first
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
+- [Exo modal shrinks portrait video](memory/drupal/exo-modal-portrait-video-aspect.md) — a vertical video reads as a narrow column on a phone, and no player offers fullscreen
 - [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
 - [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
@@ -161,6 +175,8 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
 - [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
+- [An eXo component's Twig gets only its declared fields](memory/augustash/exo-alchemist-theme-variables-from-fields.md) — a key set in a handler's viewAlter() never reaches the template; also before embedding a form in a component
+- [A component's CSS loses to `.region.content` rules](memory/augustash/exo-component-css-loses-to-region-content.md) — your rule matches, has no !important, and the theme still wins; usually a submit button
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
@@ -174,6 +190,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [WP Engine git deploy](memory/augustash/wpengine-git-deploy.md) — reconcile live plugin drift before deploying or the push reverts it
 - [ddev-setup post-update-cmd wiring](memory/augustash/ddev-setup-post-update-cmd.md) — the hook set via `ddev composer config --json` fails to autoload
 - [New Relic audit tool](memory/augustash/newrelic-audit-tool.md) — NerdGraph puller + report generator for Pantheon worker-saturation exhibits
+- [Force a fleet sync — run the collectors on GitHub](memory/augustash/vincent-collectors-manual-run.md) — when V.I.N.CENT's board/Updates/Health look stale and you need fresh data now, outside the twice-daily CI schedule
 
 #### WordPress
 

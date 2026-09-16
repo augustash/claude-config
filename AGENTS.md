@@ -10,6 +10,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Mission** — `vendor/augustash/claude-config/memory/preferences/mission.md`  
   how Claude stewards this corpus; read first, it shapes how every other memory is written
+- **Security outranks convenience** — `vendor/augustash/claude-config/memory/preferences/security-first.md`  
+  on any tradeoff with a security dimension; also before putting a credential anywhere
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
 - **Check what already exists before writing code we maintain** — `vendor/augustash/claude-config/memory/preferences/prefer-existing-tooling.md`  
@@ -36,6 +38,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - **Check mobile on every CSS change** — `vendor/augustash/claude-config/memory/preferences/mobile-breakpoint-check.md`  
   before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
+- **resize_window doesn't resize the viewport** — `vendor/augustash/claude-config/memory/preferences/chrome-mcp-viewport-iframe.md`  
+  before trusting any "mobile" browser screenshot; also when basic auth or zoom coordinates block a capture
 - **Tables sidescroll, never restack into records** — `vendor/augustash/claude-config/memory/preferences/table-sidescroll-default.md`  
   reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - **Sidescroll dead zones** — `vendor/augustash/claude-config/memory/preferences/sidescroll-dead-zones.md`  
@@ -46,6 +50,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
 - **Run cex before commit rounds** — `vendor/augustash/claude-config/memory/preferences/cex-before-commit.md`  
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
+- **Verify cim is clean, not just cex** — `vendor/augustash/claude-config/memory/preferences/verify-cim-is-clean-before-commit.md`  
+  before committing anything under config/; also when `ddev db` seemed to pull but changed nothing
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
   when design judgment is left; skip it for prescriptive handed-over values
 - **Deliverables are HTML files, not Claude artifacts** — `vendor/augustash/claude-config/memory/preferences/deliverables-as-html-files.md`  
@@ -60,6 +66,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
+- **Feature work goes on a branch, not master** — `vendor/augustash/claude-config/memory/preferences/feature-branch-not-master.md`  
+  before pushing anything speculative or in-review; master auto-deploys to dev on Pantheon
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
   before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
@@ -78,6 +86,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
   wait on the condition, never a fixed delay
 - **Transactional email on our account** — `vendor/augustash/claude-config/memory/preferences/transactional-email-on-our-account.md`  
   before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
+- **Drupal-native admin UI over React** — `vendor/augustash/claude-config/memory/preferences/drupal-native-admin-ui.md`  
+  before scoping any rich Drupal admin UI; dialog/tabledrag/AJAX get the react-like feel with no build step
+- **Status updates carry decisions, not side effects** — `vendor/augustash/claude-config/memory/preferences/status-updates-decision-relevant.md`  
+  before narrating pipeline trivia like Slack deploy pings; once acknowledged, never repeat it
+- **Caveats belong with the delivery** — `vendor/augustash/claude-config/memory/preferences/caveats-with-delivery.md`  
+  before calling any work "done" or deploying; say what's verified vs assumed up front, never surface caveats after the fact
 - **Proactively clean up cruft** — `vendor/augustash/claude-config/memory/preferences/proactive-cleanup.md`  
   offer to fix warnings and dead code near the work, in its own commit
 - **A legacy URL's pageviews say nothing about the words in it** — `vendor/augustash/claude-config/memory/preferences/traffic-count-is-not-a-search-signal.md`  
@@ -112,6 +126,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   `cim` dies on the same op every run with "delete() on null", and `config:delete` insists the config does not exist
 - **config_ignore over a config_split module deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/config-split-ignore-collision.md`  
   `cim` aborts with "depends on the Y module that will not be installed"
+- **Config made at runtime gets a per-env UUID** — `vendor/augustash/claude-config/memory/drupal/config-created-at-runtime-breaks-cim.md`  
+  `cim` lists one config as both Create and Delete, or refuses because content exists of that bundle
 - **An active split whose modules aren't installed empties its folder on export** — `vendor/augustash/claude-config/memory/drupal/config-split-export-wipes-folder.md`  
   `cex` silently blanks the split folder, and the status you'd check to rule it out lies
 - **A DB push makes cim uninstall the whole dev split at once** — `vendor/augustash/claude-config/memory/drupal/config-split-db-push-mass-uninstall.md`  
@@ -186,6 +202,16 @@ These files are authoritative and kept current by the team. Prefer conventions h
   keeping an uncacheable form page warm through a mid-day cache eviction
 - **Cloudflare tracking params** — `vendor/augustash/claude-config/memory/drupal/cloudflare-tracking-params.md`  
   handle in drupal_cache_protection, not CF cache rules
+- **A promotion silently stops applying though its config all checks out** — `vendor/augustash/claude-config/memory/drupal/commerce-promotion-compatibility-none.md`  
+  enabled, dated, unlimited, plugins resolve, usage just stops on its own changed date; check compatibility=none vs an auto-add promo
+- **A variation save leaves every product listing cached stale** — `vendor/augustash/claude-config/memory/drupal/commerce-variation-list-cache-tags.md`  
+  a product shows for logged-in editors but not logged-out visitors; verify with curl, never a logged-in browser
+- **Mail transport vs one bad recipient** — `vendor/augustash/claude-config/memory/drupal/mail-transport-vs-recipient-failure.md`  
+  mail errors in watchdog; also before alerting on any provider status code
+- **Reading watchdog from drush** — `vendor/augustash/claude-config/memory/drupal/watchdog-programmatic-reads.md`  
+  parsing watchdog for analysis; every site reporting an identical entry count means a parse failure
+- **Site thumbnails** — `vendor/augustash/claude-config/memory/drupal/site-thumbnails.md`  
+  wanting a periodic picture of each site; also before dismissing a consent banner on a client's site
 - **Cachetags garbage collection** — `vendor/augustash/claude-config/memory/drupal/cachetags-garbage-collection.md`  
   the cachetags table has no GC and grows unbounded
 - **A node access rebuild permanently caches every listing empty** — `vendor/augustash/claude-config/memory/drupal/node-access-rebuild-empties-listings.md`  
@@ -198,6 +224,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   adding a per-instance toggle that emits a class
 - **Exo slider mobile overflow** — `vendor/augustash/claude-config/memory/drupal/exo-alchemist-slider-mobile-overflow.md`  
   a slider that overflows on mobile only
+- **Exo modal shrinks portrait video** — `vendor/augustash/claude-config/memory/drupal/exo-modal-portrait-video-aspect.md`  
+  a vertical video reads as a narrow column on a phone, and no player offers fullscreen
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
   a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
 - **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
@@ -259,6 +287,10 @@ These files are authoritative and kept current by the team. Prefer conventions h
   every page shares one meta description, or no page has one; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
+- **An eXo component's Twig gets only its declared fields** — `vendor/augustash/claude-config/memory/augustash/exo-alchemist-theme-variables-from-fields.md`  
+  a key set in a handler's viewAlter() never reaches the template; also before embedding a form in a component
+- **A component's CSS loses to `.region.content` rules** — `vendor/augustash/claude-config/memory/augustash/exo-component-css-loses-to-region-content.md`  
+  your rule matches, has no !important, and the theme still wins; usually a submit button
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
   tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
@@ -285,6 +317,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   the hook set via `ddev composer config --json` fails to autoload
 - **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
   NerdGraph puller + report generator for Pantheon worker-saturation exhibits
+- **Force a fleet sync — run the collectors on GitHub** — `vendor/augustash/claude-config/memory/augustash/vincent-collectors-manual-run.md`  
+  when V.I.N.CENT's board/Updates/Health look stale and you need fresh data now, outside the twice-daily CI schedule
 
 ## WordPress
 
