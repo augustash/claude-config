@@ -136,6 +136,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   standard index/server names and the DDEV Solr build
 - **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
   every drush command dies on a missing class right after a deploy, including the import that would fix it
+- **An adjustment reaches every gateway, and they disagree on how to read it** — `vendor/augustash/claude-config/memory/drupal/commerce-adjustment-reaches-every-gateway.md`  
+  before adding an adjustment to mark or label a charge; also when a gateway refuses an order or bills an amount already inside another
 - **setup_future_usage silently removes Affirm and Klarna** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-affirm-setup-future-usage.md`  
   a Stripe method enabled in the dashboard never appears in the Payment Element, with no error anywhere
 - **commerce_stripe's checkout integrations key on stock pane ids** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-checkout-pane-ids.md`  
