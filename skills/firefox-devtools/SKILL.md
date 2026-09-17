@@ -61,6 +61,13 @@ them up.
 
 There is no tab-context handshake (unlike Claude in Chrome).
 
+**Do not pass `wait: "complete"` by reflex.** It waits on every subresource --
+analytics, chat widgets, pixels -- which on a marketing or commerce page can
+exceed the server's own 10s BiDi command timeout and fail a navigation that
+actually succeeded. The default (`interactive`, i.e. DOMContentLoaded) is right
+almost always. Reserve `complete` for when you genuinely need subresources
+settled, such as before stopping a performance recording.
+
 ## Tab addressing: use pageId, not pageIdx
 
 **This is the single biggest thing to get right when sharing the dev's browser.**
@@ -98,14 +105,25 @@ installed; see Setup.
 of through the wrapper. Tell the dev to quit fully and relaunch — do not work around
 it by starting a second instance.
 
-## Interacting with the page: the uid workflow
+## Interacting with the page: selector first, uid second
 
-Interaction is snapshot-driven, not coordinate-driven:
+`click_by_uid`, `fill_by_uid` and `hover_by_uid` each take **either** a
+`selector` **or** a `uid`. Reach for `selector`:
+
+    click_by_uid { selector: 'label[for="edit-options-5-33"]' }
+    fill_by_uid  { selector: '#edit-name', value: 'Test' }
+
+That is one call. The uid route is three -- `take_snapshot` to mint the uid,
+then the action, then usually a read to confirm you got the element you meant --
+and the snapshot itself costs a lot of context on any component-heavy page.
+
+Fall back to `uid` only when there is genuinely no stable selector: a generated
+class with no id, name or data attribute, or an element you can only identify by
+its position or accessible name. Then:
 
 1. `take_snapshot` returns an accessibility tree with a `uid` per element.
-2. Act on those uids: `click_by_uid`, `fill_by_uid`, `hover_by_uid`,
-   `fill_form_by_uid`, `drag_by_uid_to_uid`, `upload_file_by_uid`,
-   `screenshot_by_uid`.
+2. Act on it: `click_by_uid`, `fill_by_uid`, `hover_by_uid`, `fill_form_by_uid`,
+   `drag_by_uid_to_uid`, `upload_file_by_uid`, `screenshot_by_uid`.
 
 **uids go stale.** Any navigation, re-render, or element removal invalidates them.
 A stale-uid error means re-run `take_snapshot`, not retry the same uid.
@@ -113,6 +131,27 @@ A stale-uid error means re-run `take_snapshot`, not retry the same uid.
 a uid into a CSS selector when you need a reference that survives a reload.
 
 For keyboard work not tied to an element: `press_key`, `type_text`.
+
+**Styled form controls.** Design systems (exo, and most component libraries) hide
+the real `input` and paint a proxy over it. Clicking the visible swatch does
+nothing -- the wrapper is not the control. Click the label instead:
+`label[for="<input id>"]`. A click that reports success but changes no state is
+almost always this.
+
+## Reading the page: prefer evaluate_script
+
+For *reading* -- a value, a computed style, whether an element exists, what a
+form contains -- use `evaluate_script`, not `take_snapshot`. One call returns
+exactly the shape you asked for.
+
+`take_snapshot` is for minting uids to click, and little else. On a real
+component-built page its tree is mostly anonymous structural wrappers
+(`div > div > div`) that answer no question you actually had, and it is one of
+the largest things you can put in context. Scope it with `selector` when you do
+need it.
+
+Use `saveTo` for anything bulky -- full network logs, big snapshots, long page
+text -- and read the file. Do not flood context.
 
 ## Reading what happened
 

@@ -1,8 +1,63 @@
 diff --git a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
-index 38a1914..eabc192 100755
+index 38a1914..a1dc2d4 100755
 --- a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
 +++ b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
-@@ -16931,6 +16931,25 @@ var init_pages = __esm({
+@@ -16886,7 +16886,54 @@ var init_pages = __esm({
+       /**
+        * Refresh tabs metadata - fetches all window handles and their URLs/titles
+        */
++      /**
++       * PATCH(bidi-list): build the tab list from one browsingContext.getTree
++       * call plus a script.evaluate per context for the title. Neither changes
++       * the selected tab, so listing no longer walks Firefox through every tab
++       * the user has open (the old path did switchTo + getCurrentUrl +
++       * getTitle per tab, raising each window as it went).
++       */
+       async refreshTabs() {
++        if (this.sendBiDiCommand) {
++          try {
++            const tree = await this.sendBiDiCommand("browsingContext.getTree", {});
++            const contexts = (tree && tree.contexts) || [];
++            if (contexts.length) {
++              const current = this.getCurrentContextId ? this.getCurrentContextId() : null;
++              const tabs = [];
++              let selected = 0;
++              for (let i = 0; i < contexts.length; i++) {
++                const c = contexts[i];
++                let title = "";
++                try {
++                  const r = await this.sendBiDiCommand("script.evaluate", {
++                    expression: "document.title",
++                    target: { context: c.context },
++                    awaitPromise: false
++                  });
++                  title = (r && r.result && r.result.value) || "";
++                } catch {
++                }
++                tabs.push({
++                  actor: c.context,
++                  title: title || "Untitled",
++                  url: c.url || "about:blank"
++                });
++                if (c.context === current) {
++                  selected = i;
++                }
++              }
++              this.cachedTabs = tabs;
++              this.cachedSelectedIdx = selected;
++              return;
++            }
++          } catch (e) {
++            logDebug("BiDi tab listing unavailable, falling back to WebDriver walk", e);
++          }
++        }
++        return await this.refreshTabsViaWebDriver();
++      }
++      async refreshTabsViaWebDriver() {
+         try {
+           const handles = await this.driver.getAllWindowHandles();
+           const currentHandle = await this.driver.getWindowHandle();
+@@ -16931,6 +16978,25 @@ var init_pages = __esm({
            this.cachedSelectedIdx = index;
          }
        }
@@ -28,7 +83,7 @@ index 38a1914..eabc192 100755
        /**
         * Create new page (tab)
         */
-@@ -17595,6 +17614,12 @@ var init_firefox = __esm({
+@@ -17595,6 +17661,12 @@ var init_firefox = __esm({
          }
          return this.pages.getTabs();
        }
@@ -41,7 +96,7 @@ index 38a1914..eabc192 100755
        getSelectedTabIdx() {
          if (!this.pages) {
            throw new Error("Not connected");
-@@ -18346,13 +18371,16 @@ function formatPageList(tabs, selectedIdx) {
+@@ -18346,13 +18418,16 @@ function formatPageList(tabs, selectedIdx) {
    if (tabs.length === 0) {
      return "No pages";
    }
@@ -60,7 +115,7 @@ index 38a1914..eabc192 100755
    }
    return lines.join("\n");
  }
-@@ -18433,7 +18461,7 @@ var init_pages2 = __esm({
+@@ -18433,7 +18508,7 @@ var init_pages2 = __esm({
      };
      navigatePageTool = {
        name: "navigate_page",
@@ -69,7 +124,7 @@ index 38a1914..eabc192 100755
        annotations: {
          readOnlyHint: false
        },
-@@ -18444,6 +18472,10 @@ var init_pages2 = __esm({
+@@ -18444,6 +18519,10 @@ var init_pages2 = __esm({
              type: "string",
              description: "Target URL"
            },
@@ -80,7 +135,7 @@ index 38a1914..eabc192 100755
            wait: waitSchema
          },
          required: ["url"]
-@@ -18451,16 +18483,20 @@ var init_pages2 = __esm({
+@@ -18451,16 +18530,20 @@ var init_pages2 = __esm({
      };
      selectPageTool = {
        name: "select_page",
@@ -103,7 +158,7 @@ index 38a1914..eabc192 100755
            },
            url: {
              type: "string",
-@@ -18532,7 +18568,8 @@ var init_pages2 = __esm({
+@@ -18532,7 +18615,8 @@ var init_pages2 = __esm({
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
        const newIdx = await firefox3.createNewPage(url, waitFor);
@@ -113,7 +168,7 @@ index 38a1914..eabc192 100755
      });
      handleNavigatePage = defineToolHandler(async function handleNavigatePage2(args2) {
        const { url, wait } = args2;
-@@ -18542,20 +18579,24 @@ var init_pages2 = __esm({
+@@ -18542,20 +18626,24 @@ var init_pages2 = __esm({
        const waitFor = parseWait(wait);
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
@@ -145,3 +200,157 @@ index 38a1914..eabc192 100755
        await firefox3.refreshTabs();
        const tabs = firefox3.getTabs();
        let selectedIdx;
+@@ -18843,6 +18931,7 @@ The page may not be fully loaded or accessible.`
+ });
+ 
+ // src/tools/input.ts
++var SELECTOR_TARGET_DESC = "CSS selector for the target element. Use this instead of uid to skip the take_snapshot round-trip entirely - it needs no prior snapshot and cannot go stale. Prefer it whenever the element has a stable selector (id, name, data-attr). One of uid or selector is required.";
+ var clickByUidTool, hoverByUidTool, fillByUidTool, dragByUidToUidTool, fillFormByUidTool, uploadFileByUidTool, pressKeyTool, typeTextTool, handleClickByUid, handleHoverByUid, handleFillByUid, handleDragByUidToUid, handleFillFormByUid, handleUploadFileByUid, handlePressKey, handleTypeText, module3;
+ var init_input = __esm({
+   "src/tools/input.ts"() {
+@@ -18852,61 +18941,71 @@ var init_input = __esm({
+     init_module();
+     clickByUidTool = {
+       name: "click_by_uid",
+-      description: "Click element by UID. Set dblClick for double-click.",
++      description: "Click an element, addressed by CSS selector (preferred, no snapshot needed) or by UID from a snapshot. Set dblClick for double-click.",
+       annotations: {
+         readOnlyHint: false
+       },
+       inputSchema: {
+         type: "object",
+         properties: {
++          selector: {
++            type: "string",
++            description: SELECTOR_TARGET_DESC
++          },
+           uid: {
+             type: "string",
+-            description: "Element UID from snapshot"
++            description: "Element UID from snapshot. Only needed when no stable selector exists."
+           },
+           dblClick: {
+             type: "boolean",
+             description: "Double-click (default: false)"
+           }
+-        },
+-        required: ["uid"]
++        }
+       }
+     };
+     hoverByUidTool = {
+       name: "hover_by_uid",
+-      description: "Hover over element by UID.",
++      description: "Hover over an element, addressed by CSS selector (preferred, no snapshot needed) or by UID from a snapshot.",
+       annotations: {
+         readOnlyHint: false
+       },
+       inputSchema: {
+         type: "object",
+         properties: {
++          selector: {
++            type: "string",
++            description: SELECTOR_TARGET_DESC
++          },
+           uid: {
+             type: "string",
+-            description: "Element UID from snapshot"
++            description: "Element UID from snapshot. Only needed when no stable selector exists."
+           }
+-        },
+-        required: ["uid"]
++        }
+       }
+     };
+     fillByUidTool = {
+       name: "fill_by_uid",
+-      description: "Fill text input/textarea by UID.",
++      description: "Fill a text input/textarea, addressed by CSS selector (preferred, no snapshot needed) or by UID from a snapshot.",
+       annotations: {
+         readOnlyHint: false
+       },
+       inputSchema: {
+         type: "object",
+         properties: {
++          selector: {
++            type: "string",
++            description: SELECTOR_TARGET_DESC
++          },
+           uid: {
+             type: "string",
+-            description: "Input element UID from snapshot"
++            description: "Input element UID from snapshot. Only needed when no stable selector exists."
+           },
+           value: {
+             type: "string",
+             description: "Text to fill"
+           }
+         },
+-        required: ["uid", "value"]
++        required: ["value"]
+       }
+     };
+     dragByUidToUidTool = {
+@@ -19029,12 +19128,16 @@ var init_input = __esm({
+       }
+     };
+     handleClickByUid = defineToolHandler(async function handleClickByUid2(args2) {
+-      const { uid, dblClick } = args2;
+-      if (!uid || typeof uid !== "string") {
+-        throw new Error("uid parameter is required and must be a string");
++      const { uid, selector, dblClick } = args2;
++      if (!uid && !selector) {
++        throw new Error("Provide selector (preferred) or uid");
+       }
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
++      if (selector && typeof selector === "string") {
++        await firefox3.clickBySelector(selector);
++        return successResponse(`${dblClick ? "dblclick" : "click"} ${selector}`);
++      }
+       try {
+         await firefox3.clickByUid(uid, dblClick);
+         return successResponse(`${dblClick ? "dblclick" : "click"} ${uid}`);
+@@ -19043,12 +19146,16 @@ var init_input = __esm({
+       }
+     });
+     handleHoverByUid = defineToolHandler(async function handleHoverByUid2(args2) {
+-      const { uid } = args2;
+-      if (!uid || typeof uid !== "string") {
+-        throw new Error("uid parameter is required and must be a string");
++      const { uid, selector } = args2;
++      if (!uid && !selector) {
++        throw new Error("Provide selector (preferred) or uid");
+       }
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
++      if (selector && typeof selector === "string") {
++        await firefox3.hoverBySelector(selector);
++        return successResponse(`hover ${selector}`);
++      }
+       try {
+         await firefox3.hoverByUid(uid);
+         return successResponse(`hover ${uid}`);
+@@ -19057,15 +19164,19 @@ var init_input = __esm({
+       }
+     });
+     handleFillByUid = defineToolHandler(async function handleFillByUid2(args2) {
+-      const { uid, value } = args2;
+-      if (!uid || typeof uid !== "string") {
+-        throw new Error("uid parameter is required and must be a string");
++      const { uid, selector, value } = args2;
++      if (!uid && !selector) {
++        throw new Error("Provide selector (preferred) or uid");
+       }
+       if (value === void 0 || typeof value !== "string") {
+         throw new Error("value parameter is required and must be a string");
+       }
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
++      if (selector && typeof selector === "string") {
++        await firefox3.fillBySelector(selector, value);
++        return successResponse(`fill ${selector}`);
++      }
+       try {
+         await firefox3.fillByUid(uid, value);
+         return successResponse(`fill ${uid}`);

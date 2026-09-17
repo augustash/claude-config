@@ -1,4 +1,4 @@
-# Patched firefox-devtools MCP: stable tab handles
+# Patched firefox-devtools MCP: faster, stabler browser driving
 
 Pins `@mozilla/firefox-devtools-mcp` and patches it so Claude can address tabs by
 a **stable id** instead of a positional index.
@@ -54,6 +54,36 @@ All edits are in `dist/index.js` (the shipped bundle is readable, not minified).
 
 `pageId` is always optional. Index, URL and title addressing still work exactly
 as before, so the patch is additive and nothing regresses if it is dropped.
+
+### 2. Interact by CSS selector, without a snapshot
+
+| Site | Change |
+|------|--------|
+| `clickByUidTool`, `hoverByUidTool`, `fillByUidTool` schemas | Accept `selector`; `uid` is no longer required (one of the two). |
+| `handleClickByUid`, `handleHoverByUid`, `handleFillByUid` | A `selector` routes to the existing `clickBySelector` / `hoverBySelector` / `fillBySelector`. |
+
+`DomInteractions` already implemented all five `*BySelector` methods and the
+wrapper class already delegated them -- they were simply never exposed as MCP
+tools. So this is plumbing, not new behaviour.
+
+Why it matters: acting on an element used to cost `take_snapshot` (to mint a
+uid) then `click_by_uid`, and the snapshot of a component-heavy page is mostly
+meaningless structural divs that also burn a lot of context. With a selector it
+is one call, needs no prior snapshot, and cannot go stale.
+
+### 3. List tabs over BiDi instead of walking them
+
+| Site | Change |
+|------|--------|
+| `PageManagement.refreshTabs` | One `browsingContext.getTree`, then `script.evaluate` per context for the title. The old WebDriver walk is kept as `refreshTabsViaWebDriver` and is used if BiDi is unavailable. |
+
+`PageManagement` was already constructed with a `sendBiDiCommand` callback, so
+the channel existed. Neither BiDi call changes the selected tab, which removes
+the last place Firefox visibly walks through the user's tabs.
+
+Firefox uses the same identifier for a WebDriver Classic window handle and a
+BiDi browsing context, so ids from the BiDi path stay valid as `pageId` -- this
+is verified: `new_page`, `list_pages` and `select_page` all agree on the id.
 
 ## Maintaining across upgrades
 
