@@ -1,8 +1,92 @@
 diff --git a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
-index 38a1914..a1dc2d4 100755
+index 38a1914..cfca7ab 100755
 --- a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
 +++ b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
-@@ -16886,7 +16886,54 @@ var init_pages = __esm({
+@@ -16483,29 +16483,68 @@ var init_dom = __esm({
+       /**
+        * Click element by CSS selector
+        */
+-      async clickBySelector(selector) {
+-        const el = await this.waitForElement(selector, 5e3);
+-        await this.waitForVisible(el, 5e3);
+-        await el.click();
++      /**
++       * PATCH(frames): run fn with WebDriver switched into one or more nested
++       * iframes, then always switch back. Payment fields (Stripe, Braintree,
++       * Affirm) and captchas live in cross-origin iframes: the top document
++       * cannot script them and keystrokes sent to the top context never reach
++       * them, so without switching they are simply unreachable.
++       *
++       * frame is a CSS selector for the iframe, or an array of selectors to
++       * descend nested frames outermost-first.
++       */
++      async withFrame(frame, fn) {
++        if (!frame) {
++          return await fn();
++        }
++        const chain = Array.isArray(frame) ? frame : [frame];
++        try {
++          for (const sel of chain) {
++            let fe;
++            try {
++              fe = await this.waitForElement(sel, 5e3);
++            } catch {
++              throw new Error(`Frame not found: ${sel}`);
++            }
++            await this.driver.switchTo().frame(fe);
++          }
++          return await fn();
++        } finally {
++          try {
++            await this.driver.switchTo().defaultContent();
++          } catch {
++          }
++        }
++      }
++      async clickBySelector(selector, frame) {
++        return await this.withFrame(frame, async () => {
++          const el = await this.waitForElement(selector, 5e3);
++          await this.waitForVisible(el, 5e3);
++          await el.click();
++        });
+       }
+       /**
+        * Hover over element by CSS selector
+        */
+-      async hoverBySelector(selector) {
+-        const el = await this.waitForElement(selector, 5e3);
+-        await this.driver.actions({ async: true }).move({ origin: el }).perform();
++      async hoverBySelector(selector, frame) {
++        return await this.withFrame(frame, async () => {
++          const el = await this.waitForElement(selector, 5e3);
++          await this.driver.actions({ async: true }).move({ origin: el }).perform();
++        });
+       }
+       /**
+        * Fill input field by CSS selector
+        */
+-      async fillBySelector(selector, text) {
+-        const el = await this.waitForElement(selector, 5e3);
+-        try {
+-          await el.clear();
+-        } catch {
+-          await el.sendKeys(Key.chord(Key.CONTROL, "a"), Key.DELETE);
+-        }
+-        await el.sendKeys(text);
++      async fillBySelector(selector, text, frame) {
++        return await this.withFrame(frame, async () => {
++          const el = await this.waitForElement(selector, 5e3);
++          try {
++            await el.clear();
++          } catch {
++            await el.sendKeys(Key.chord(Key.CONTROL, "a"), Key.DELETE);
++          }
++          await el.sendKeys(text);
++        });
+       }
+       /**
+        * Drag & drop using JS events fallback (DataTransfer).
+@@ -16886,7 +16925,54 @@ var init_pages = __esm({
        /**
         * Refresh tabs metadata - fetches all window handles and their URLs/titles
         */
@@ -57,7 +141,7 @@ index 38a1914..a1dc2d4 100755
          try {
            const handles = await this.driver.getAllWindowHandles();
            const currentHandle = await this.driver.getWindowHandle();
-@@ -16931,6 +16978,25 @@ var init_pages = __esm({
+@@ -16931,6 +17017,25 @@ var init_pages = __esm({
            this.cachedSelectedIdx = index;
          }
        }
@@ -83,7 +167,37 @@ index 38a1914..a1dc2d4 100755
        /**
         * Create new page (tab)
         */
-@@ -17595,6 +17661,12 @@ var init_firefox = __esm({
+@@ -17452,23 +17557,23 @@ var init_firefox = __esm({
+           `Script evaluation failed: ${result.exceptionDetails?.text ?? "unknown error"}`
+         );
+       }
+-      async clickBySelector(selector) {
++      async clickBySelector(selector, frame) {
+         if (!this.dom) {
+           throw new Error("Not connected");
+         }
+-        return await this.dom.clickBySelector(selector);
++        return await this.dom.clickBySelector(selector, frame);
+       }
+-      async hoverBySelector(selector) {
++      async hoverBySelector(selector, frame) {
+         if (!this.dom) {
+           throw new Error("Not connected");
+         }
+-        return await this.dom.hoverBySelector(selector);
++        return await this.dom.hoverBySelector(selector, frame);
+       }
+-      async fillBySelector(selector, text) {
++      async fillBySelector(selector, text, frame) {
+         if (!this.dom) {
+           throw new Error("Not connected");
+         }
+-        return await this.dom.fillBySelector(selector, text);
++        return await this.dom.fillBySelector(selector, text, frame);
+       }
+       async dragAndDropBySelectors(sourceSelector, targetSelector) {
+         if (!this.dom) {
+@@ -17595,6 +17700,12 @@ var init_firefox = __esm({
          }
          return this.pages.getTabs();
        }
@@ -96,7 +210,20 @@ index 38a1914..a1dc2d4 100755
        getSelectedTabIdx() {
          if (!this.pages) {
            throw new Error("Not connected");
-@@ -18346,13 +18418,16 @@ function formatPageList(tabs, selectedIdx) {
+@@ -17712,6 +17823,12 @@ var init_firefox = __esm({
+         if (!this.snapshot) {
+           throw new Error("Not connected");
+         }
++        const frame = options && options.frame;
++        if (frame && this.dom) {
++          const rest = { ...options };
++          delete rest.frame;
++          return await this.dom.withFrame(frame, () => this.snapshot.takeSnapshot(rest));
++        }
+         return await this.snapshot.takeSnapshot(options);
+       }
+       async resolveUidToSelector(uid) {
+@@ -18346,13 +18463,16 @@ function formatPageList(tabs, selectedIdx) {
    if (tabs.length === 0) {
      return "No pages";
    }
@@ -115,7 +242,7 @@ index 38a1914..a1dc2d4 100755
    }
    return lines.join("\n");
  }
-@@ -18433,7 +18508,7 @@ var init_pages2 = __esm({
+@@ -18433,7 +18553,7 @@ var init_pages2 = __esm({
      };
      navigatePageTool = {
        name: "navigate_page",
@@ -124,7 +251,7 @@ index 38a1914..a1dc2d4 100755
        annotations: {
          readOnlyHint: false
        },
-@@ -18444,6 +18519,10 @@ var init_pages2 = __esm({
+@@ -18444,6 +18564,10 @@ var init_pages2 = __esm({
              type: "string",
              description: "Target URL"
            },
@@ -135,7 +262,7 @@ index 38a1914..a1dc2d4 100755
            wait: waitSchema
          },
          required: ["url"]
-@@ -18451,16 +18530,20 @@ var init_pages2 = __esm({
+@@ -18451,16 +18575,20 @@ var init_pages2 = __esm({
      };
      selectPageTool = {
        name: "select_page",
@@ -158,7 +285,7 @@ index 38a1914..a1dc2d4 100755
            },
            url: {
              type: "string",
-@@ -18532,7 +18615,8 @@ var init_pages2 = __esm({
+@@ -18532,7 +18660,8 @@ var init_pages2 = __esm({
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
        const newIdx = await firefox3.createNewPage(url, waitFor);
@@ -168,7 +295,7 @@ index 38a1914..a1dc2d4 100755
      });
      handleNavigatePage = defineToolHandler(async function handleNavigatePage2(args2) {
        const { url, wait } = args2;
-@@ -18542,20 +18626,24 @@ var init_pages2 = __esm({
+@@ -18542,20 +18671,24 @@ var init_pages2 = __esm({
        const waitFor = parseWait(wait);
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
@@ -200,15 +327,46 @@ index 38a1914..a1dc2d4 100755
        await firefox3.refreshTabs();
        const tabs = firefox3.getTabs();
        let selectedIdx;
-@@ -18843,6 +18931,7 @@ The page may not be fully loaded or accessible.`
+@@ -18680,6 +18813,11 @@ var init_snapshot2 = __esm({
+             type: "string",
+             description: 'CSS selector to scope snapshot to specific element (e.g., "#app")'
+           },
++          frame: {
++            type: ["string", "array"],
++            items: { type: "string" },
++            description: FRAME_TARGET_DESC
++          },
+           saveTo: {
+             type: ["boolean", "string"],
+             description: "Save the complete snapshot text to a file (ignores maxLines) instead of returning it inline. Pass a file path, an existing directory (generated file inside), or true (generated file under ~/.firefox-devtools-mcp/output/). Relative paths resolve against the current working directory."
+@@ -18728,6 +18866,7 @@ var init_snapshot2 = __esm({
+           maxDepth,
+           includeAll = false,
+           selector,
++          frame,
+           saveTo,
+           preview
+         } = args2 || {};
+@@ -18736,6 +18875,9 @@ var init_snapshot2 = __esm({
+         const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+         const firefox3 = await getFirefox2();
+         const snapshotOptions = {};
++        if (frame) {
++          snapshotOptions.frame = frame;
++        }
+         if (includeAll) {
+           snapshotOptions.includeAll = includeAll;
+         }
+@@ -18843,6 +18985,8 @@ The page may not be fully loaded or accessible.`
  });
  
  // src/tools/input.ts
++var FRAME_TARGET_DESC = "CSS selector for an iframe to act inside, or an array of selectors to descend nested iframes outermost-first. Required for cross-origin iframes (Stripe/Braintree/Affirm card fields, captchas): the top document cannot script them and plain keystrokes never reach them. WebDriver is switched back to the top document afterwards.";
 +var SELECTOR_TARGET_DESC = "CSS selector for the target element. Use this instead of uid to skip the take_snapshot round-trip entirely - it needs no prior snapshot and cannot go stale. Prefer it whenever the element has a stable selector (id, name, data-attr). One of uid or selector is required.";
  var clickByUidTool, hoverByUidTool, fillByUidTool, dragByUidToUidTool, fillFormByUidTool, uploadFileByUidTool, pressKeyTool, typeTextTool, handleClickByUid, handleHoverByUid, handleFillByUid, handleDragByUidToUid, handleFillFormByUid, handleUploadFileByUid, handlePressKey, handleTypeText, module3;
  var init_input = __esm({
    "src/tools/input.ts"() {
-@@ -18852,61 +18941,71 @@ var init_input = __esm({
+@@ -18852,61 +18996,86 @@ var init_input = __esm({
      init_module();
      clickByUidTool = {
        name: "click_by_uid",
@@ -220,6 +378,11 @@ index 38a1914..a1dc2d4 100755
        inputSchema: {
          type: "object",
          properties: {
++          frame: {
++            type: ["string", "array"],
++            items: { type: "string" },
++            description: FRAME_TARGET_DESC
++          },
 +          selector: {
 +            type: "string",
 +            description: SELECTOR_TARGET_DESC
@@ -248,6 +411,11 @@ index 38a1914..a1dc2d4 100755
        inputSchema: {
          type: "object",
          properties: {
++          frame: {
++            type: ["string", "array"],
++            items: { type: "string" },
++            description: FRAME_TARGET_DESC
++          },
 +          selector: {
 +            type: "string",
 +            description: SELECTOR_TARGET_DESC
@@ -276,6 +444,11 @@ index 38a1914..a1dc2d4 100755
 +            type: "string",
 +            description: SELECTOR_TARGET_DESC
 +          },
++          frame: {
++            type: ["string", "array"],
++            items: { type: "string" },
++            description: FRAME_TARGET_DESC
++          },
            uid: {
              type: "string",
 -            description: "Input element UID from snapshot"
@@ -291,54 +464,54 @@ index 38a1914..a1dc2d4 100755
        }
      };
      dragByUidToUidTool = {
-@@ -19029,12 +19128,16 @@ var init_input = __esm({
+@@ -19029,12 +19198,16 @@ var init_input = __esm({
        }
      };
      handleClickByUid = defineToolHandler(async function handleClickByUid2(args2) {
 -      const { uid, dblClick } = args2;
 -      if (!uid || typeof uid !== "string") {
 -        throw new Error("uid parameter is required and must be a string");
-+      const { uid, selector, dblClick } = args2;
++      const { uid, selector, frame, dblClick } = args2;
 +      if (!uid && !selector) {
 +        throw new Error("Provide selector (preferred) or uid");
        }
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
 +      if (selector && typeof selector === "string") {
-+        await firefox3.clickBySelector(selector);
++        await firefox3.clickBySelector(selector, frame);
 +        return successResponse(`${dblClick ? "dblclick" : "click"} ${selector}`);
 +      }
        try {
          await firefox3.clickByUid(uid, dblClick);
          return successResponse(`${dblClick ? "dblclick" : "click"} ${uid}`);
-@@ -19043,12 +19146,16 @@ var init_input = __esm({
+@@ -19043,12 +19216,16 @@ var init_input = __esm({
        }
      });
      handleHoverByUid = defineToolHandler(async function handleHoverByUid2(args2) {
 -      const { uid } = args2;
 -      if (!uid || typeof uid !== "string") {
 -        throw new Error("uid parameter is required and must be a string");
-+      const { uid, selector } = args2;
++      const { uid, selector, frame } = args2;
 +      if (!uid && !selector) {
 +        throw new Error("Provide selector (preferred) or uid");
        }
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
 +      if (selector && typeof selector === "string") {
-+        await firefox3.hoverBySelector(selector);
++        await firefox3.hoverBySelector(selector, frame);
 +        return successResponse(`hover ${selector}`);
 +      }
        try {
          await firefox3.hoverByUid(uid);
          return successResponse(`hover ${uid}`);
-@@ -19057,15 +19164,19 @@ var init_input = __esm({
+@@ -19057,15 +19234,19 @@ var init_input = __esm({
        }
      });
      handleFillByUid = defineToolHandler(async function handleFillByUid2(args2) {
 -      const { uid, value } = args2;
 -      if (!uid || typeof uid !== "string") {
 -        throw new Error("uid parameter is required and must be a string");
-+      const { uid, selector, value } = args2;
++      const { uid, selector, frame, value } = args2;
 +      if (!uid && !selector) {
 +        throw new Error("Provide selector (preferred) or uid");
        }
@@ -348,7 +521,7 @@ index 38a1914..a1dc2d4 100755
        const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
        const firefox3 = await getFirefox2();
 +      if (selector && typeof selector === "string") {
-+        await firefox3.fillBySelector(selector, value);
++        await firefox3.fillBySelector(selector, value, frame);
 +        return successResponse(`fill ${selector}`);
 +      }
        try {

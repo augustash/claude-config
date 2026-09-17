@@ -85,6 +85,24 @@ Firefox uses the same identifier for a WebDriver Classic window handle and a
 BiDi browsing context, so ids from the BiDi path stay valid as `pageId` -- this
 is verified: `new_page`, `list_pages` and `select_page` all agree on the id.
 
+### 4. Act inside cross-origin iframes
+
+| Site | Change |
+|------|--------|
+| `DomInteractions.withFrame(frame, fn)` | Switches WebDriver into one or more nested iframes, runs `fn`, always returns to the top document. |
+| `clickBySelector`, `hoverBySelector`, `fillBySelector` | Take an optional `frame`. |
+| `takeSnapshot` | Takes an optional `frame`, so you can read a frame's DOM to find selectors rather than guess them. |
+| `click_by_uid`, `hover_by_uid`, `fill_by_uid`, `take_snapshot` schemas | Expose `frame`: a CSS selector, or an array to descend nested frames outermost-first. |
+
+Upstream has no frame handling at all -- `grep 'switchTo().frame'` returns
+nothing. That makes payment fields unreachable: Stripe, Braintree and Affirm
+render their card inputs in a cross-origin iframe, so `evaluate_script` cannot
+see them (same-origin policy) and `type_text` sends keystrokes to the top
+document, which silently drops them. The failure is deceptive -- the field shows
+a focus ring, the tool reports success, and nothing is entered.
+
+Same applies to captchas and any embedded third-party widget.
+
 ## Maintaining across upgrades
 
 The patch is managed by `patch-package` and applied by the `postinstall` hook,
