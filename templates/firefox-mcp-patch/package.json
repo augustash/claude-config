@@ -1,0 +1,15 @@
+{
+  "name": "firefox-devtools-mcp-patched",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned + patched @mozilla/firefox-devtools-mcp: stable handle-based tab addressing",
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "dependencies": {
+    "@mozilla/firefox-devtools-mcp": "0.10.2"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0"
+  }
+}

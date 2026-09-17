@@ -1,0 +1,147 @@
+diff --git a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
+index 38a1914..eabc192 100755
+--- a/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
++++ b/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js
+@@ -16931,6 +16931,25 @@ var init_pages = __esm({
+           this.cachedSelectedIdx = index;
+         }
+       }
++      /**
++       * PATCH(handle-addressing): select a tab by its stable Marionette window
++       * handle. One round-trip, no refreshTabs() walk, no per-tab focus churn.
++       */
++      async selectTabByHandle(handle) {
++        try {
++          await this.driver.switchTo().window(handle);
++        } catch (e) {
++          throw new Error(
++            `No page with pageId "${handle}" (tab closed, or handle from an earlier Firefox session). Call list_pages for current pageIds.`
++          );
++        }
++        this.setCurrentContextId(handle);
++        const idx = this.cachedTabs.findIndex((t) => t.actor === handle);
++        if (idx !== -1) {
++          this.cachedSelectedIdx = idx;
++        }
++        return handle;
++      }
+       /**
+        * Create new page (tab)
+        */
+@@ -17595,6 +17614,12 @@ var init_firefox = __esm({
+         }
+         return this.pages.getTabs();
+       }
++      async selectTabByHandle(handle) {
++        if (!this.pages) {
++          throw new Error("Not connected");
++        }
++        return await this.pages.selectTabByHandle(handle);
++      }
+       getSelectedTabIdx() {
+         if (!this.pages) {
+           throw new Error("Not connected");
+@@ -18346,13 +18371,16 @@ function formatPageList(tabs, selectedIdx) {
+   if (tabs.length === 0) {
+     return "No pages";
+   }
+-  const lines = [`${tabs.length} pages (selected: ${selectedIdx})`];
++  const lines = [
++    `${tabs.length} pages (selected: ${selectedIdx}) - format: [idx|pageId]; prefer pageId, it is stable across tab changes`
++  ];
+   for (const tab of tabs) {
+     const idx = tabs.indexOf(tab);
+     const marker = idx === selectedIdx ? ">" : " ";
+     const title = (tab.title || "Untitled").substring(0, 40);
+     const url = (tab.url || "URL unavailable").substring(0, 200);
+-    lines.push(`${marker}[${idx}] ${title} (${url})`);
++    const handle = tab.actor || "?";
++    lines.push(`${marker}[${idx}|${handle}] ${title} (${url})`);
+   }
+   return lines.join("\n");
+ }
+@@ -18433,7 +18461,7 @@ var init_pages2 = __esm({
+     };
+     navigatePageTool = {
+       name: "navigate_page",
+-      description: "Navigate selected tab to URL.",
++      description: "Navigate a tab to URL. Pass pageId to target a specific tab (selects it first); omit to navigate the currently selected tab.",
+       annotations: {
+         readOnlyHint: false
+       },
+@@ -18444,6 +18472,10 @@ var init_pages2 = __esm({
+             type: "string",
+             description: "Target URL"
+           },
++          pageId: {
++            type: "string",
++            description: "Stable tab handle to navigate (default: currently selected tab)"
++          },
+           wait: waitSchema
+         },
+         required: ["url"]
+@@ -18451,16 +18483,20 @@ var init_pages2 = __esm({
+     };
+     selectPageTool = {
+       name: "select_page",
+-      description: "Select active tab by index, URL, or title. Index takes precedence.",
++      description: "Select active tab by pageId, index, URL, or title. pageId takes precedence, then index. Prefer pageId: it is a stable handle, costs one round-trip, and is immune to the user reordering/closing other tabs.",
+       annotations: {
+         readOnlyHint: false
+       },
+       inputSchema: {
+         type: "object",
+         properties: {
++          pageId: {
++            type: "string",
++            description: "Stable tab handle from list_pages/new_page (the part after | in [idx|pageId]). Fastest and safest - no tab-list walk."
++          },
+           pageIdx: {
+             type: "number",
+-            description: "Tab index (0-based, most reliable)"
++            description: "Tab index (0-based). Positional: shifts if tabs are opened/closed/reordered."
+           },
+           url: {
+             type: "string",
+@@ -18532,7 +18568,8 @@ var init_pages2 = __esm({
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
+       const newIdx = await firefox3.createNewPage(url, waitFor);
+-      return successResponse(`new page [${newIdx}] \u2192 ${url}${waitSuffix(waitFor)}`);
++      const newHandle = firefox3.getCurrentContextId();
++      return successResponse(`new page [${newIdx}|${newHandle}] \u2192 ${url}${waitSuffix(waitFor)}`);
+     });
+     handleNavigatePage = defineToolHandler(async function handleNavigatePage2(args2) {
+       const { url, wait } = args2;
+@@ -18542,20 +18579,24 @@ var init_pages2 = __esm({
+       const waitFor = parseWait(wait);
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
+-      await firefox3.refreshTabs();
+-      const tabs = firefox3.getTabs();
+-      const selectedIdx = firefox3.getSelectedTabIdx();
+-      const page = tabs[selectedIdx];
+-      if (!page) {
++      if (args2.pageId && typeof args2.pageId === "string") {
++        await firefox3.selectTabByHandle(args2.pageId);
++      }
++      const contextId = firefox3.getCurrentContextId();
++      if (!contextId) {
+         throw new Error("No page selected");
+       }
+       await firefox3.navigate(url, waitFor);
+-      return successResponse(`[${selectedIdx}] \u2192 ${url}${waitSuffix(waitFor)}`);
++      return successResponse(`[${contextId}] \u2192 ${url}${waitSuffix(waitFor)}`);
+     });
+     handleSelectPage = defineToolHandler(async function handleSelectPage2(args2) {
+-      const { pageIdx, url, title } = args2;
++      const { pageId, pageIdx, url, title } = args2;
+       const { getFirefox: getFirefox2 } = await Promise.resolve().then(() => (init_src(), src_exports));
+       const firefox3 = await getFirefox2();
++      if (pageId && typeof pageId === "string") {
++        await firefox3.selectTabByHandle(pageId);
++        return successResponse(`selected [${pageId}]`);
++      }
+       await firefox3.refreshTabs();
+       const tabs = firefox3.getTabs();
+       let selectedIdx;

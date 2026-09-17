@@ -15,10 +15,16 @@ for it.
 
 Two halves: the MCP server, and a Firefox launched so the server can attach.
 
-**1. Register the server** (once, per machine):
+**1. Register the server** (once, per machine). Use the **patched** build from
+`templates/firefox-mcp-patch/` -- plain `npx @mozilla/firefox-devtools-mcp@latest`
+works, but addresses tabs by a positional index that shifts whenever the dev opens
+or closes a tab, and walks every open tab before every operation (see "Tab
+addressing" below, and that directory's README):
+
+    ~/path/to/claude-config/templates/firefox-mcp-patch/install.sh
 
     claude mcp add firefox-devtools --scope user -- \
-      npx -y @mozilla/firefox-devtools-mcp@latest \
+      node ~/.local/share/firefox-devtools-mcp-patched/node_modules/@mozilla/firefox-devtools-mcp/dist/index.js \
       --toolPreset developer --connectExisting --marionettePort 2828
 
 `--toolPreset developer` matters: the default `basic` preset omits console and
@@ -54,6 +60,39 @@ them up.
 2. `select_page` to focus one; `navigate_page` to move it; `new_page` for a new tab.
 
 There is no tab-context handshake (unlike Claude in Chrome).
+
+## Tab addressing: use pageId, not pageIdx
+
+**This is the single biggest thing to get right when sharing the dev's browser.**
+
+`list_pages` prints each tab as `[idx|pageId]`. The `idx` is a position in a flat
+list of every tab in every window; the `pageId` is a Marionette window handle,
+stable for that tab's lifetime.
+
+**Always pass `pageId`. Never pass `pageIdx`.**
+
+    select_page   { pageId: "..." }        not { pageIdx: 3 }
+    navigate_page { pageId: "...", url }   targets a tab directly
+
+Two reasons, and neither is cosmetic:
+
+- **The index goes stale silently.** The dev is working in this browser. The moment
+  they open, close or reorder a tab, every index after it shifts -- and `pageIdx: 3`
+  now acts on a *different page*, with no error. There is no way to detect this
+  after the fact. `pageId` either resolves to the tab you meant or fails loudly.
+- **`pageId` is one round-trip; `pageIdx` is ~3 per open tab.** Index and URL
+  lookups both rebuild the entire tab list first, switching to and querying every
+  tab -- which is also what makes Firefox visibly strobe through the dev's tabs.
+  The `pageId` path skips it entirely.
+
+`new_page` returns `[idx|pageId]`, so **capture the pageId when you open a tab** and
+reuse it for the rest of the session. A tab Claude opened never needs a lookup.
+
+Re-run `list_pages` only when you need a tab you did not open, or when a `pageId`
+errors as stale (tab closed, or Firefox restarted -- handles do not survive that).
+
+If `select_page` reports no `pageId` parameter, the unpatched upstream server is
+installed; see Setup.
 
 **If attaching fails**, the cause is almost always Firefox launched normally instead
 of through the wrapper. Tell the dev to quit fully and relaunch — do not work around
