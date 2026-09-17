@@ -48,9 +48,14 @@ that totals shipping then counts it, and it still renders as its own line.
 
 Two things worth checking before trusting any of this on a given site: whether a
 `*_promotion` type is carrying a positive amount anywhere, and what each enabled
-gateway does with `isIncluded()`. Affirm's omission is upstream and unpatched
-here — it was designed around rather than fixed, so it is still live for every
-other project.
+gateway does with `isIncluded()`. Affirm's omission is upstream: fixed for us
+by a local patch (`patches/commerce_affirm-skip-included-adjustments.patch` on
+sisal) and filed as
+[#3624073](https://www.drupal.org/project/commerce_affirm/issues/3624073),
+MR !30 against 2.x. Until that lands in a release it is still live for every
+other project, and the patch carries a second hunk declaring schema for
+`checkout_instructions` — undeclared since 2.5.0, and the reason no test could
+save the gateway at all.
 
 See also [[commerce-stripe-express-silent-failures]] for the same integration
 family failing without an error to read.
