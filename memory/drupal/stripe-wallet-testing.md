@@ -74,3 +74,26 @@ Two things that waste time in a browser: a synthetic `.click()` is not a trusted
 event and payment UIs ignore it (use real input), and Drupal's own checkout form
 can be advanced by POSTing the serialised form, which is the only way past an
 address field a Places widget keeps clearing.
+
+## The card element *can* be driven, by plain field names
+
+Unlike the wallet sheets, the Payment Element's card fields are ordinary inputs
+in a cross-origin iframe, so a driver that can target a frame fills them
+directly. The frame is `iframe[title="Secure payment input frame"]` and the
+fields are named, not id'd:
+
+    input[name="number"]  input[name="expiry"]  input[name="cvc"]  input[name="postalCode"]
+
+Two traps. **An accessibility/DOM snapshot of that frame returns only nested
+`div`s** — Stripe's inputs never appear in it, so the fields look absent and the
+obvious next move is to give up on the iframe; address them by selector without
+snapshotting first. And **`postalCode` is easy to miss**: it is Stripe's own
+field, separate from the billing address already collected by Drupal, and
+leaving it empty blocks submission *with no error text* — the Place Order button
+simply does nothing, which reads as a broken button rather than an incomplete
+form.
+
+Verified 2026-09-17 on sisal (Firefox via the devtools MCP, `fill_by_uid` with
+its `frame` argument). Note the same tool's `evaluate_script` ignored `frame`
+and ran against the parent document, so read back state through the driver's
+fill/click results rather than by evaluating JS "inside" the frame.
