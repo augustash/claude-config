@@ -28,17 +28,27 @@ with the wrong key is an easy way to raise a launch blocker that isn't one. The
 same separation applies to enabling a method: activating Affirm or Amazon Pay in
 sandbox does not carry to live.
 
-## Apple Pay outside Safari needs `always`
+## `always` is documented for non-Safari, but do not predict absence from it
 
 Stripe: *"Apple Pay on non-Safari desktop browsers is only supported when its
-property in `paymentMethods` is set to `always`."* So the same setting that stops
-`auto` hiding a wallet on the browser that doesn't own it is what lets Apple Pay
-be tested in Firefox or Chrome at all. Google Pay likewise.
+property in `paymentMethods` is set to `always`."* Read that as what `always`
+guarantees, **not** as what `auto` refuses.
 
-`always` is documented for Apple and Google only. Amazon Pay stays `auto`, and
-`auto` means *"a supported platform **and** when we determine it's advantageous
-for your conversion"* - which is why Amazon Pay shows on desktop and not on an
-iPhone, with nothing to override it.
+Measured against it on 2026-09-18: **Apple Pay and Google Pay both rendered and
+completed payments in Firefox Developer Edition** on macOS with the methods left
+at `auto` - the browser that owns neither wallet. So the documented sentence is
+not a reliable negative, and quoting it to rule out a browser talks a developer
+out of two tests that work. Try the browser; believe the button over the doc.
+
+That matters because `always` is not reachable from config anyway:
+commerce_stripe's `ExpressCheckoutButtonsBuilder` emits only `'auto'` (allowed)
+or `'never'` (unticked) per method, so setting `always` needs a JS-settings
+alter. Worth knowing before promising someone a single-browser test of two
+wallets.
+
+Amazon Pay has no `always` documented at all, and `auto` means *"a supported
+platform **and** when we determine it's advantageous for your conversion"* -
+which is why it shows on desktop and not on an iPhone.
 
 ## Amazon Pay: create the buyer on the spot
 
@@ -50,6 +60,19 @@ drive the outcome (Visa ending 1111 succeeds, Amex ending 0005 declines).
 
 Stripe's Amazon Pay page promises "a test payment page where you can approve or
 decline" - that is the Payment Element flow, not the express button.
+
+## Affirm's sandbox remembers every phone number you have used
+
+The number is the account key, and a number used before comes back as *that*
+sandbox user carrying its prior loan state - so a run that worked last month
+stalls this month with nothing in the integration at fault. Nothing warns you.
+Walk a counter of throwaway numbers and record where you got to; a fresh number
+is a fresh applicant.
+
+Clearing the session needs the cookies for `affirm.com` gone (Firefox: padlock ->
+Clear cookies and site data). `sandbox.affirm.com/u/logout` is a 404, and the
+Sign Out in its header is inside a JS-rendered menu that automation does not
+reliably reach.
 
 ## Affirm: the pin is printed on the page
 

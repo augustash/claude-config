@@ -155,7 +155,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **commerce_stripe's express checkout fails silently in three places** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-express-silent-failures.md`  
   an express order places with no email, no street address, or a delivery choice nothing can read back
 - **Testing Apple, Google, Amazon Pay and Affirm in sandbox** — `vendor/augustash/claude-config/memory/drupal/stripe-wallet-testing.md`  
-  before hunting a wallet button that never appears, or a sandbox that wants a credential you do not have
+  before hunting a wallet button that never appears, ruling out a browser, or a sandbox that wants a credential you do not have
+- **PayPal's sandbox only takes cards it generated** — `vendor/augustash/claude-config/memory/drupal/paypal-sandbox-buyer.md`  
+  a test card number is refused at checkout, or you need to swap sandbox buyers mid-test
+- **An abandoned offsite payment leaves the order locked** — `vendor/augustash/claude-config/memory/drupal/offsite-gateway-abandonment-lock.md`  
+  a customer backs out at PayPal or Affirm and returns to an empty cart; also before tidying an order while someone is at a gateway
 - **A guest cannot view their own shipment** — `vendor/augustash/claude-config/memory/drupal/guest-order-shipment-access.md`  
   a receipt heading with nothing under it, or a missing address, on guest orders only
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
