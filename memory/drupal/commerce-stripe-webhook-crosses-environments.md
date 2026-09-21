@@ -57,3 +57,10 @@ The upstream half - `createPayment()` trusting the order's stored intent over th
 webhook named - is also why a single site can double charge if those two ever diverge. See
 [[commerce-stripe-intent-survives-gateway-change]] for how an order comes to hold an intent
 that is not the one being confirmed.
+
+## Not the return/webhook race
+
+One site's own browser return racing its own webhook produces two *Drupal payments* for one
+intent - a doubled balance with a single charge at Stripe, and nobody billed twice. If Stripe
+shows one charge, you are looking at [[commerce-stripe-return-webhook-race]], not this; the
+fixes point in opposite directions.

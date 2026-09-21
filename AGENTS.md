@@ -144,6 +144,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a payment option renders as a bare gateway-name radio with no card logos; also before renaming a checkout pane
 - **A Stripe webhook charges a card in another environment** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-webhook-crosses-environments.md`  
   one checkout produces two succeeded payments seconds apart, the second one bare; also before pointing any environment at a shared Stripe account's webhook
+- **The browser return and the webhook do the same work twice** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-return-webhook-race.md`  
+  an express order ends on the generic error page but actually placed, or one intent is recorded as two payments while Stripe shows one charge
 - **Moving the Stripe Payment Element off the review step** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-return-step-hardcoded.md`  
   Stripe takes the money and Drupal records nothing; the customer lands back on the payment step
 - **A Stripe intent outlives the method it was made for** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-intent-survives-gateway-change.md`  
