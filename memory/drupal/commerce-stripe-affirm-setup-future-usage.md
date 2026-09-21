@@ -71,5 +71,19 @@ customers rather than stored payment methods — on a gateway swap the old token
 are the outgoing processor's and die regardless, so they are not evidence for
 either side.
 
-Related: [[commerce-stripe-checkout-pane-ids]] for the other place
-`commerce_stripe` silently no-ops on a customised checkout.
+## Same symptom, other causes
+
+"Enabled at Stripe, absent from checkout" has more than one cause, and this one
+is only reached after the others are ruled out — they are cheaper to check:
+
+- [[commerce-stripe-static-method-list]] — the method is simply unticked on the
+  Drupal gateway, which is the decision the moment an intent names
+  `payment_method_types` explicitly. Check this first: it is a checkbox.
+- [[commerce-stripe-empty-express-element]] — a wallet that looks absent from
+  the express element is often a mis-measurement, not an absence.
+- [[commerce-stripe-checkout-pane-ids]] — the other place `commerce_stripe`
+  silently no-ops on a customised checkout; the method is present but renders
+  as a bare gateway-name radio.
+
+The tell for *this* one is that the method is missing from
+`payment_method_types` **on the intent** while the gateway plainly asks for it.

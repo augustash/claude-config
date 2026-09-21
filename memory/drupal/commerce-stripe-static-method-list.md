@@ -29,7 +29,10 @@ After that the Drupal list *is* the decision, and both directions hurt:
   in your dashboard*, which fails intent creation and takes the payment step
   down for every customer.
 - **Enabled at Stripe, unticked in Drupal.** Silently absent, and it reads as
-  Stripe not being set up.
+  Stripe not being set up. Rule this out before anything else — it is a
+  checkbox. If the method is ticked here and *still* absent, the next suspect
+  is [[commerce-stripe-affirm-setup-future-usage]], where Stripe itself drops
+  every single-use method from an intent configured for saved cards.
 
 Two things are worth knowing about where those checkboxes come from. They are
 not commerce_stripe's: `PaymentGatewayBase` generates them from the plugin
