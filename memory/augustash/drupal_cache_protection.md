@@ -8,7 +8,7 @@ type: reference
 
 ## Structure
 
-- **`drupal_cache_protection`** (parent) — tracking-param handling. Middleware at priority 290 reads `redirect_params` (301 to clean URL) and `strip_params` (internal strip, browser URL unchanged) from config. Settings form at `/admin/config/system/cache-protection`. Also ships robots.txt scaffold via `assets/robots-additions.txt` with general bot-throttling rules.
+- **`drupal_cache_protection`** (parent) — tracking-param handling. Middleware at priority 290 reads `redirect_params` (301 to clean URL) and `strip_params` (internal strip, browser URL unchanged) from config. Settings form at `/admin/config/system/cache-protection`. Also ships robots.txt scaffold via `assets/robots-additions.txt`: disallows for `/views/ajax`, `/search`, facet URLs and (1.0.22+) `/checkout/` and `/cart`, plus per-bot throttles/blocks. Only lands if the package is in the site's scaffold `allowed-packages` — see the rename trap below.
 - **`drupal_cache_protection_facets`** (submodule) — facet bot protection. Depends on parent. Only enable when `drupal/facets` is present.
 - **`drupal_cache_protection_search`** (submodule) — per-IP rate limit + page-cache kill switch on search routes (`/search`, plus configurable query params like `s`, `keys`, `search_api_fulltext`). Enable on any site with a search route exposed — Drupal core Search, search_api, Solr, custom.
 - **`drupal_cache_protection_node_access`** (submodule) — stops a node access grants rebuild from permanently caching empty listings. Enable wherever `hook_node_grants()` is implemented (`node_unpublished`, `group`, `domain_access`, `workbench_access`). No config. Added Aug 2026; the failure it prevents is [[node-access-rebuild-empties-listings]].
@@ -68,6 +68,25 @@ empty page, not hidden content, and **unpublished** rows are hidden on purpose.
 gating on the list's own access-checked total before probing. If entries appear
 from a version below that, check the message for a `Page:` field — its absence
 dates them to 1.0.20.
+
+## The rename trap: robots rules that never reach robots.txt
+
+Composer scaffold ignores the file mappings of any package missing from the root's
+`extra.drupal-scaffold.allowed-packages`, **without saying so**. Sites that installed this as
+`ash_facet_protection` still allowlist the *old* name, so the module's `robots.txt` append has been
+skipped ever since the rename. The site's own append (usually just a `Sitemap:` line) still runs,
+so `robots.txt` looks normal.
+
+**Tell:** live `robots.txt` has no `User-agent: AhrefsSiteAudit` block. **Fix:** swap the
+allowlist entry to `augustash/drupal_cache_protection` and re-scaffold. On Pantheon `web/robots.txt`
+is usually untracked, so the build scaffolds it and the fix ships as a `composer.json` change alone.
+
+Found 2026-09-21 on sisal, where the missing checkout disallow had drawn ~10k Googlebot 403s in three
+weeks. `wac` carried the same stale entry that day. Grep `~/Projects/*/composer.json` for
+`ash_facet_protection` before trusting any site's robots rules.
+
+When verifying a re-scaffold locally, read the file through `ddev exec`: the host copy can lag
+the container's write and make a working append look skipped ([[ddev-mutagen-sync-lag]]).
 
 ## Install
 

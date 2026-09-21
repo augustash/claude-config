@@ -166,7 +166,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
 - [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, or when its robots rules are missing from robots.txt
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past

@@ -270,7 +270,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report
+  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, or when its robots rules are missing from robots.txt
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
 - **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
