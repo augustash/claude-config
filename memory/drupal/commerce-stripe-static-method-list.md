@@ -49,6 +49,11 @@ account actually has enabled, and the express/pane overlap de-duplicates itself.
 Its README carries the full reasoning, including why a save-time validation was
 rejected in favour of deriving the list.
 
+The module's own behaviour arrives with the install; the commerce_stripe
+patches it ships alongside do not. It declares no `extra.patches`, so the
+consuming project still declares those itself — see
+[[commerce-stripe-express-silent-failures]].
+
 Also useful when reading either list: Apple Pay and Google Pay have no payment
 method type plugin, because they are a card presented by a wallet rather than
 methods of their own. So narrowing an intent to `card` does not remove them —

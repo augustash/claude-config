@@ -72,7 +72,18 @@ So billing details is the only source that covers all three. Note also that
 ## Don't rebuild any of this
 
 `augustash/commerce_stripe_enhanced` carries a patch for each and the wallet
-handling around them; its README has the full reasoning. See
+handling around them; its README has the full reasoning.
+
+**Carrying is not applying.** The package ships the patch files in its own
+`patches/` directory and declares **no `extra.patches`** of its own, so
+installing it changes nothing about commerce_stripe: the consuming project must
+declare all three in its own composer.json. Its README names only the
+multiple-elements one as "required", which is easy to read as the other two
+being optional — they are not, they are just as unreleased. A site that
+installs the package and trusts the line ships an unpatched commerce_stripe and
+takes express orders with no email and no street.
+
+See
 [[commerce-stripe-static-method-list]] for the related trap that narrowing an
 intent makes the gateway's static method list load-bearing, and
 [[stripe-wallet-testing]] for how to actually test a wallet in sandbox.
