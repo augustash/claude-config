@@ -152,8 +152,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a second payment radio confirms against the first one's intent; also before adding a Stripe gateway instance
 - **An empty Stripe express element usually isn't broken** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-empty-express-element.md`  
   wallets missing or an element measuring zero height; also before trusting a probe element's availablePaymentMethods
-- **A wallet payment's method type still reads stripe_card** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-wallet-not-in-method-type.md`  
-  no Apple/Google Pay ever shows up in `commerce_payment_method.type`, so express reads as not rendering; also before reporting wallet share
+- **The order screen and commerce_payment_method.type disagree about wallets** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-wallet-not-in-method-type.md`  
+  auditing or reporting Stripe wallet usage programmatically, or a wallet-share query returning zero while the orders show otherwise
 - **Narrowing a Stripe intent makes the static method list load-bearing** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-static-method-list.md`  
   before naming payment_method_types on an intent, or when a method enabled at Stripe never reaches checkout
 - **commerce_stripe's express checkout fails silently in three places** — `vendor/augustash/claude-config/memory/drupal/commerce-stripe-express-silent-failures.md`  

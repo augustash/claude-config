@@ -1,40 +1,53 @@
 ---
-name: A wallet payment's method type still reads stripe_card
-description: "commerce_payment_method.type is stripe_card for a genuine Apple Pay, Google Pay, Amazon Pay or Link payment, identically to a keyed card — the wallet lives in the stripe_card_wallet_type field table. Grouping by type therefore reports zero wallets forever, which reads as express checkout not rendering."
+name: The order screen and commerce_payment_method.type disagree about wallets
+description: "Drupal's order admin correctly shows a Stripe wallet payment as \"Visa ending in 1234 (apple_pay)\", but commerce_payment_method.type reads stripe_card for it, identically to a keyed card. Any query, watcher, dashboard or export grouping by type therefore reports zero wallets forever while the order screens plainly show otherwise."
 metadata:
   type: reference
 ---
 
-# A wallet payment's method type still reads `stripe_card`
+# The order screen and `commerce_payment_method.type` disagree about wallets
 
-There is no `stripe_apple_pay` / `stripe_google_pay` / `stripe_amazon_pay` payment method
-type. Those values do not exist, so a query that looks for them finds nothing no matter how
-many wallet payments have landed. At Stripe the wallet is an **attribute of the card**
-(`payment_method.card.wallet.type`), not a method type of its own, and commerce_stripe stores
-it the same way: `commerce_payment_method.type` is `stripe_card` for a real Apple Pay payment
-exactly as it is for a plain keyed card.
+**Trust the order screen; the column lies.** Drupal surfaces a Stripe wallet payment perfectly
+well in the UI — on the order detail page, under Payment → Stripe → details, it renders as
+`Visa ending in 1234 (apple_pay)`. Nothing is hidden and no Stripe API lookup is needed to see
+which wallet was used.
 
-The wallet *is* recorded locally — in its own field table:
+What is misleading is the **`commerce_payment_method.type` column**, which reads `stripe_card`
+for that same Apple Pay payment, exactly as it does for a plain keyed card. There is no
+`stripe_apple_pay` / `stripe_google_pay` / `stripe_amazon_pay` type; those values do not exist.
+At Stripe the wallet is an *attribute of the card* (`payment_method.card.wallet.type`), so
+commerce_stripe keeps one `stripe_card` payment method type and stores the wallet in a field
+beside it.
+
+So the failure mode is specifically a **reporting and automation** one. The order admin is
+right, the SQL is wrong, and the contradiction between them is the tell.
+
+## Where the wallet actually lives
 
 | table | column |
 | --- | --- |
 | `commerce_payment_method__stripe_card_wallet_type` | `stripe_card_wallet_type_value` (e.g. `apple_pay`) |
 | `commerce_payment_method__stripe_card_type` | card brand (`visa`, `amex`, …) |
 
+That first table is also exactly what the admin UI reads: `Card::buildLabel()` in
+`commerce_stripe/src/Plugin/Commerce/PaymentMethodType/Card.php` composes "brand ending in
+number" and then appends `(wallet_type)` from that field when it is non-empty. The UI and a
+correct query are reading the same source — the `type` column was never in that path.
+
 Siblings of the same shape exist per method: `__stripe_card_number`,
 `__stripe_cashapp_buyer_id`, `__stripe_cashapp_cashtag`, `__stripe_klarna_dob`,
 `__stripe_link_email`, `__stripe_paypal_country`, `__stripe_paypal_payer_id`.
 
-## The failure this causes, and why it is dangerous
+## The cost, and why the wrong answer is sticky
 
-The wrong conclusion is **reassuring-shaped**: no wallet-looking `type` values means "no wallet
-has fired yet", which points at an express element that is not rendering — a bug that does not
-exist. On sisal's Stripe go-live (2026-09-21, cutover 16:12 UTC, replacing Authorize.net as
-the primary card gateway), a `GROUP BY pm.type` over 12 live payments returned only
-`stripe_card`, and a recurring watcher polling live for `stripe_apple_pay` was nearly
-scheduled — it would have reported "no wallets" indefinitely. One of those 12 was a real Apple
-Pay (amex, $424.80, order 158180, `pi_3UICsaQmuTzFwDjN1fbABjMg`), confirmed at the Stripe
-dashboard and then in the wallet field table. Express had been working the whole time.
+The false conclusion is **reassuring-shaped**: zero wallet-looking `type` values reads as "no
+wallet has fired yet", which points at an express element that is not rendering — a bug that
+does not exist. On sisal's Stripe go-live (2026-09-21, cutover 16:12 UTC, replacing
+Authorize.net as the primary card gateway), a `GROUP BY pm.type` over 12 live payments returned
+only `stripe_card`, and a recurring watcher polling live for `stripe_apple_pay` was nearly
+scheduled — it would have reported "no wallets" indefinitely no matter how many landed. One of
+those 12 was a real Apple Pay (amex, $424.80, order 158180, `pi_3UICsaQmuTzFwDjN1fbABjMg`) —
+visible on its own order screen the entire time, and confirmed at the Stripe dashboard.
 
 Reporting wallet share from `type` is the same bug wearing a reporting hat: it will always say
 0%.
@@ -59,11 +72,10 @@ opposite error, equally confident.
 
 ## Stripe's dashboard sees more than Drupal does
 
-Drupal only writes payments that **completed**. A wallet intent that was created and then
-failed or was abandoned exists only at Stripe. So for the question this note exists to answer
-badly — *is express rendering at all?* — the dashboard's intent list is the better instrument
-than any Commerce table, because a created-then-failed intent is still proof the element
-painted and was used.
+Drupal only writes payments that **completed**. A wallet intent created and then failed or
+abandoned exists only at Stripe. So for *is express rendering at all?* the dashboard's intent
+list is the better instrument than any Commerce table, because a created-then-failed intent is
+still proof the element painted and was used.
 
 Verified 2026-09-21 on sisal live (D11, commerce_stripe Payment Element).
 
