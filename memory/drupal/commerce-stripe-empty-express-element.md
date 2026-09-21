@@ -59,3 +59,5 @@ outage from an automated tab, and the cheapest disproof is a human pair of eyes 
 - Wallets vanishing for a signed-in customer is a different thing entirely:
   [[commerce-stripe-affirm-setup-future-usage]].
 - A wallet rendering as a bare gateway-name radio: [[commerce-stripe-checkout-pane-ids]].
+- Concluding "no wallet has fired" from the database is its own measurement error:
+  [[commerce-stripe-wallet-not-in-method-type]].
