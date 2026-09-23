@@ -845,6 +845,13 @@ That single fact inverted the document. "Nothing needed from you" became a dated
 upgrade window, and it belongs in the header cell rather than a closing
 paragraph.
 
+**Ask where the client already stands before flagging it again.** The next
+month, wps's draft carried an *Action required: schedule Drupal 11* cell and
+asked them to book an October window. The upgrade was already under way, so
+the cell was cut and the copy turned into "in progress". A standing flag copied
+forward from last month's record is the likeliest part of the draft to be out
+of date, and the repo won't tell you. The dev will.
+
 Check it every round, from the authority, at the moment you write it:
 
 | Stack | Authority |
