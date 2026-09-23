@@ -334,37 +334,70 @@ CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 [doc-studio-mark](../../memory/preferences/doc-studio-mark.md) for which mark and where
 the files live.
 
-**The page is 1080px wide (`max-width: 67.5rem`). Cap the prose, not the page.**
-Kaza's call, corrected more than once before it was written down. A narrow
-sheet reads as a letter squeezed into the middle of a desktop screen. Keep
-paragraphs readable with their own `max-width` (about 46em). Tables, the
-title-block grid and callouts run full width. Short lists such as a checklist
-go into columns above ~48rem so they don't leave half the sheet empty. Starting
-from an older doc means starting from its width too, so check it: wps's
-maintenance record came out at 47rem after being copied from the previous
-month's.
+### The eye behind the corrections
 
-**Space it like a document, not a form.** At 1080 use about 4rem page padding
-(`clamp(1.15rem, 6vw, 4rem)` so phones keep the small end), ~3.8rem between
-sections and ~1rem vertical padding on table rows. Kaza's verdict on half that
-was "tight". Stacked padding is what breaks the rhythm: an intro paragraph's
-bottom padding plus the first section's top padding reads as a bigger break
-than any other. The same goes for a sign-off mark inside the sheet, which already has the
-body's bottom padding above it. Adding the memory's 64px on top made 128px
-each side, which Kaza halved. Use `padding-block: 0 var(--pad)`: the body pad
-sets the space above, the same value mirrors it below, and it stays balanced
-at every width.
+Kaza doesn't want a spec, and a spec would be the wrong tool anyway: most of
+his edits say "better", not "this value". What follows are the directions his
+corrections have pointed, with the reasons. The numbers are where one document
+ended up. Treat them as calibration, not targets. Explore within these. When
+you depart from one on purpose, say so in a line so he can judge it rather
+than discover it.
 
-**Section headings are the largest text after the title.** A tracked uppercase
-11px eyebrow looks refined in isolation and inverts the hierarchy the moment
-the items under it carry 15px bold titles. Kaza caught *Held back on purpose*
-reading smaller than its children. Use about 1.3rem, weight 650, sentence
-case.
+**Design: let it breathe, and let structure show through space.**
 
-**A heading sits closer to what it heads than to what came before.** With the
-space above and below a section heading equal, the heading floats between two
-sections and the boundaries blur. At ~3.8rem above, keep the gap below to about
-a third of that (~1.1rem). Kaza halved it from 2.2rem for exactly this reason.
+- *Air over density.* A client doc is read at a desk, slowly, and cramped reads
+  as hurried. When unsure, open it up. His first reaction to the wps record was
+  "tight", and doubling the page padding, section gaps and row padding fixed it.
+  The same instinct sets the width: a sheet squeezed into the middle of a
+  desktop screen looks like a letter, not a document. He's settled around 1080px
+  twice. Cap the *prose* for readability (~46em), and let tables, grids and
+  callouts use the room. Something that leaves half the page empty, like a short
+  checklist, can take columns.
+- *Generosity has a ceiling.* The sign-off mark went from even-but-large to
+  halved. Space is there to frame things, not to perform. Quiet elements (the
+  mark, captions, labels) get enough room to be clearly separate and no more.
+- *Size follows rank.* Whatever heads a section has to read above what sits in
+  it. A tracked 11px uppercase label looks refined in isolation, and it failed
+  here because the 15px bold item titles beneath it outranked it. Check the
+  hierarchy by squinting at the whole page, not by judging one element.
+- *Proximity carries structure.* Things belong to what they sit nearest. A
+  heading with equal space above and below floats between two sections and
+  blurs the boundary; it should hug its content, at roughly a third of the gap
+  above it. Stacked paddings create false breaks the same way (an intro's bottom
+  padding on top of a section's top padding), so look for places where two
+  spacings add up.
+- *Balance is felt, then measured.* The mark had to look even top to bottom, and
+  then it had to look even at every width. Solve that with a relationship
+  (mirror the body padding) rather than two numbers that happen to match at one
+  size.
+
+**Copy: a record, not a pitch, and every sentence new to the reader.**
+
+- *Nothing the page already says.* He cut the date from a sentence that sat
+  beside a box showing it, a *Held* item that only restated *Next*, and a
+  paragraph that explained what the held items had already said. If the layout
+  carries a fact, the prose doesn't repeat it. When a cut leaves a sentence
+  pointing at nothing ("That is…", "described above"), fix the pointer in the
+  same pass. He accepted those repairs without comment, which is the right
+  outcome.
+- *No ceremony.* No closing stamp, no sign-off paragraph, no "questions are
+  welcome". The document ends when its content does, and the studio mark signs
+  it.
+- *Write from where the client actually is.* An "Action required" cell and a
+  "book an October window" ask were both cut because the upgrade was already
+  under way. Persuasion aimed at someone already in motion reads as not
+  listening. The relationship's current state beats what the calendar implies,
+  and only the dev knows it, so ask.
+- *Their vocabulary, consistently.* On wps the platform is "core", not "Drupal",
+  in every section. Small naming choices like that are his, and they apply to
+  the whole document once stated.
+
+**How he reviews, and how to meet it.** One note at a time, visual first, often
+mid-edit. Apply the note, then look for the principle behind it and apply that
+wherever else it holds (see §8, *Take the note, then generalise it*). Screenshot
+the result at desktop and phone width before reporting, rather than reasoning
+about it. When a correction teaches something new, add it here as a direction
+with its reason, not as a value.
 
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers

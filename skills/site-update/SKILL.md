@@ -807,11 +807,11 @@ Borrow the [client-report](../client-report/SKILL.md) §6 design rules and §7
 integrity check; **ignore its ten-section pitch structure** — this is a much
 smaller genre:
 
-1. **Title block** — project, sheet, date, round, prepared by, and whether any
-   action is required. Answer that last one in the header, not on page two.
-   **Call the platform "core", not "Drupal"**: *Core 10.6.15 → 10.6.17*,
-   *core 11 upgrade*, *Core 10 end of life*. That's Kaza's call on wps and
-   applies to every section of the record.
+1. **Title block** — project, sheet, date, round, prepared by. Add an *Action
+   required* cell only when something is genuinely on the client and not
+   already in motion (see the flag check below). When it applies, it goes in
+   the header, not on page two. Call the platform "core", not "Drupal",
+   throughout: *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
 2. **Updated** — a version table of the ten or so components a non-developer
    recognises, each with a plain-language gloss (*Webform — contact and request
    forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
@@ -833,9 +833,11 @@ smaller genre:
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
    round's template is built, this is the step that gets dropped.
 
-No closing stamp or sign-off paragraph. On wps (2026-09) Kaza cut *"Nothing
-needed for this round"* and its paragraph. Anything the client has to act on
-belongs in the header or *Next*.
+The record ends where its content does: no closing stamp, no sign-off
+paragraph. The design and copy direction behind that, and behind the spacing,
+width and heading scale, is in client-report's *The eye behind the
+corrections*. Read it before drafting, since this record is where most of it
+was learned.
 
 Pull the palette from the **theme's own variables file**, not the logo and not
 memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
