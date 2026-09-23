@@ -361,6 +361,11 @@ the items under it carry 15px bold titles. Kaza caught *Held back on purpose*
 reading smaller than its children. Use about 1.3rem, weight 650, sentence
 case.
 
+**A heading sits closer to what it heads than to what came before.** With the
+space above and below a section heading equal, the heading floats between two
+sections and the boundaries blur. At ~3.8rem above, keep the gap below to about
+a third of that (~1.1rem). Kaza halved it from 2.2rem for exactly this reason.
+
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
 scan, and it needs no download. Heavy tight-tracked system sans for headlines.
