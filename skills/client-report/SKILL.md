@@ -349,9 +349,11 @@ month's.
 sections and ~1rem vertical padding on table rows. Kaza's verdict on half that
 was "tight". Stacked padding is what breaks the rhythm: an intro paragraph's
 bottom padding plus the first section's top padding reads as a bigger break
-than any other. The same goes for a sign-off mark inside the sheet, which sits
-under the body's bottom padding. Give it the same amount underneath or it
-floats high.
+than any other. The same goes for a sign-off mark inside the sheet, which already has the
+body's bottom padding above it. Adding the memory's 64px on top made 128px
+each side, which Kaza halved. Use `padding-block: 0 var(--pad)`: the body pad
+sets the space above, the same value mirrors it below, and it stays balanced
+at every width.
 
 **Section headings are the largest text after the title.** A tracked uppercase
 11px eyebrow looks refined in isolation and inverts the hierarchy the moment
