@@ -42,6 +42,22 @@ ddev drush cr
 ddev drush cim -y
 ```
 
+**Then bring our own tooling current, before the round, not in it:**
+
+```bash
+ddev composer update augustash/claude-config     # vendor tree must be clean first
+ls .claude/skills/                               # want site-update and client-report
+cp -R vendor/augustash/claude-config/skills/{site-update,client-report} .claude/skills/
+```
+
+The update refreshes every adopted skill, but you are reading this one *now*, so
+a stale copy runs the whole round on stale text. Adoption is manual and
+per-project, and this round needs both skills: this one, and
+[client-report](../client-report/SKILL.md) for the record it ends with. A
+project that has neither is common, and `/site-update` then reads as a skill
+that doesn't exist. Commit the adoption on its own; it isn't part of the
+dependency update.
+
 `cim` before the update, not after — you want the site coherent *before* you
 change dependencies, so anything that breaks next is attributable to the update.
 
