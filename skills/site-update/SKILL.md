@@ -807,14 +807,24 @@ Borrow the [client-report](../client-report/SKILL.md) §6 design rules and §7
 integrity check; **ignore its ten-section pitch structure** — this is a much
 smaller genre:
 
-1. **Title block** — project, sheet, date, round, prepared by. Add an *Action
-   required* cell only when something is genuinely on the client and not
-   already in motion (see the flag check below). When it applies, it goes in
-   the header, not on page two. Call the platform "core", not "Drupal",
-   throughout: *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
+1. **Title block** — one band: the client logo on the left, and on the right
+   three label-over-value columns split by hairline rules: *Project* (the
+   domain), *Sheet* (`Maintenance`), *Round* (`2026.09`, mono). Nothing else.
+   Settled on sisal (2026-09-23) after a six-cell grid read as a form. Issued
+   duplicated Round, Prepared by is what the studio mark already says, and a
+   standing "core support" cell said nothing that needed saying. On a phone
+   the columns wrap under the logo and stay one row. Add an *Action required*
+   column only when something is genuinely on the client and not already in
+   motion (see the flag check below). When it applies, it goes in the header,
+   not on page two. Call the platform "core", not "Drupal", throughout:
+   *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
 2. **Updated** — a version table of the ten or so components a non-developer
    recognises, each with a plain-language gloss (*Webform — contact and request
    forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
+   All three column heads share the small-caps label style. A `.num` rule
+   applied to the `th` makes FROM/TO render as large mono with a stray arrow
+   beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
+   cells only.
 3. **Held back on purpose** — the section that earns the document. Every item
    gets its reason in the client's terms. Without it, a short list of versions
    reads as the whole job.
