@@ -334,6 +334,16 @@ CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 [doc-studio-mark](../../memory/preferences/doc-studio-mark.md) for which mark and where
 the files live.
 
+**The page is 1080px wide (`max-width: 67.5rem`). Cap the prose, not the page.**
+Kaza's call, corrected more than once before it was written down. A narrow
+sheet reads as a letter squeezed into the middle of a desktop screen. Keep
+paragraphs readable with their own `max-width` (about 46em). Tables, the
+title-block grid and callouts run full width. Short lists such as a checklist
+go into columns above ~48rem so they don't leave half the sheet empty. Starting
+from an older doc means starting from its width too, so check it: wps's
+maintenance record came out at 47rem after being copied from the previous
+month's.
+
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
 scan, and it needs no download. Heavy tight-tracked system sans for headlines.
