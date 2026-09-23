@@ -336,10 +336,21 @@ the files live.
 
 ### A house style, still forming
 
-This is a style Kaza and Claude are building together, not a rulebook to
-comply with. Most of his notes say "better", not "this value", and they land
-on drafts Claude shaped from its own instincts. The result is better than
-either would reach alone. Below are the directions it has taken so far, with
+This is a style Kaza and Claude are building together, each improving the
+other's work, not a rulebook to comply with. Most of his notes say "better",
+not "this value", and they land on drafts Claude shaped from its own instincts.
+Claude's calls feed back the same way. On the wps record, several of Claude's
+additions stuck without a note:
+
+- repairing sentences left pointing at nothing after a cut
+- spotting the stacked padding that made the first section break larger than
+  the rest
+- spanning the orphaned header cell rather than leaving a hole
+- balancing the mark with a relationship instead of two numbers
+- putting the checklist into columns once the page widened
+
+The result is better than either would reach alone, so offer improvements
+nobody asked for, and say briefly why each one helps. Below are the directions it has taken so far, with
 the reasons. The numbers are where one document ended up: calibration, not
 targets.
 
