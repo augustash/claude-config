@@ -828,6 +828,14 @@ smaller genre:
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
 5. **Next** — only when there is something. Cut it otherwise rather than padding.
+6. **The studio mark**, centred at the very bottom. For August Ash that means the A
+   shape alone, not the wordmark. See
+   [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
+   round's template is built, this is the step that gets dropped.
+
+No closing stamp or sign-off paragraph. On wps (2026-09) Kaza cut *"Nothing
+needed for this round"* and its paragraph. Anything the client has to act on
+belongs in the header or *Next*.
 
 Pull the palette from the **theme's own variables file**, not the logo and not
 memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
