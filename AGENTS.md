@@ -255,8 +255,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a component renders fine but its save never returns to layout level, naming no field; also before adding an enum
 - **Editor chrome must not sit in the preview's document flow** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-preview-overlay-scroll-loop.md`  
   an Alchemist preview that visibly shakes or rings; also before drawing or animating anything over one
-- **A neo_component created in code fatals on the next load** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-component-create-description.md`  
-  a command dies on EntityBase.php after you created a component in code; the create() reported success
+- **Registering a theme SDC with Alchemist in code** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-component-registration.md`  
+  a placed component renders nothing with nothing logged, or a later command dies in EntityBase.php
 - **neo_color scheme tokens and the :root bake** — `vendor/augustash/claude-config/memory/augustash/neo-color-scheme-token-resolution.md`  
   a custom property declared at `:root` won't recolor inside a scheme
 - **Neo's base.css out-ranks the theme on form buttons** — `vendor/augustash/claude-config/memory/augustash/neo-base-css-button-specificity.md`  
