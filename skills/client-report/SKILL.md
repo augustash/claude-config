@@ -344,6 +344,21 @@ from an older doc means starting from its width too, so check it: wps's
 maintenance record came out at 47rem after being copied from the previous
 month's.
 
+**Space it like a document, not a form.** At 1080 use about 4rem page padding
+(`clamp(1.15rem, 6vw, 4rem)` so phones keep the small end), ~3.8rem between
+sections and ~1rem vertical padding on table rows. Kaza's verdict on half that
+was "tight". Stacked padding is what breaks the rhythm: an intro paragraph's
+bottom padding plus the first section's top padding reads as a bigger break
+than any other. The same goes for a sign-off mark inside the sheet, which sits
+under the body's bottom padding. Give it the same amount underneath or it
+floats high.
+
+**Section headings are the largest text after the title.** A tracked uppercase
+11px eyebrow looks refined in isolation and inverts the hierarchy the moment
+the items under it carry 15px bold titles. Kaza caught *Held back on purpose*
+reading smaller than its children. Use about 1.3rem, weight 650, sentence
+case.
+
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
 scan, and it needs no download. Heavy tight-tracked system sans for headlines.
