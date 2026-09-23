@@ -447,6 +447,17 @@ take it. Stable → alpha/beta/rc: **no**, ever, even if it's a higher number.
   gone (see the `composer-drupal-lenient` note in Phase 2), the answer is
   *remove*, not *bump*.
 
+**Read the `Removing` lines of a major's `require` before anything else.** A
+major can drop a dependency it no longer needs, and composer takes the code of
+anything nothing else requires, including modules that are still enabled. The
+exit is green and the next request fatals. It can also pull a sibling below
+stable with no `@beta` anywhere in your constraints. On wps (2026-09-23)
+`geolocation:^4.0` took `geolocation_search_api` 3.15.0 → **4.0.0-beta2** and
+removed `jquery_ui_autocomplete` and `search_api_location_views`, both enabled.
+`grep -nE '<pkg>: ' config/core.extension.yml` for every removed package. Any
+hit means back out: restore `composer.json`, then
+`composer update -W <every package that moved>`.
+
 **Bump risky majors on their own line.** Batch the boring ones; give anything
 that rewrites config or field widgets its own `composer require` so its lock diff
 is isolatable when something turns up two hours later.
