@@ -835,8 +835,8 @@ smaller genre:
 
 The record ends where its content does: no closing stamp, no sign-off
 paragraph. The design and copy direction behind that, and behind the spacing,
-width and heading scale, is in client-report's *The eye behind the
-corrections*. Read it before drafting, since this record is where most of it
+width and heading scale, is in client-report's *A house style, still
+forming*. Read it before drafting, since this record is where most of it
 was learned.
 
 Pull the palette from the **theme's own variables file**, not the logo and not

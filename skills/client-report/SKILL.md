@@ -334,14 +334,20 @@ CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 [doc-studio-mark](../../memory/preferences/doc-studio-mark.md) for which mark and where
 the files live.
 
-### The eye behind the corrections
+### A house style, still forming
 
-Kaza doesn't want a spec, and a spec would be the wrong tool anyway: most of
-his edits say "better", not "this value". What follows are the directions his
-corrections have pointed, with the reasons. The numbers are where one document
-ended up. Treat them as calibration, not targets. Explore within these. When
-you depart from one on purpose, say so in a line so he can judge it rather
-than discover it.
+This is a style Kaza and Claude are building together, not a rulebook to
+comply with. Most of his notes say "better", not "this value", and they land
+on drafts Claude shaped from its own instincts. The result is better than
+either would reach alone. Below are the directions it has taken so far, with
+the reasons. The numbers are where one document ended up: calibration, not
+targets.
+
+Bring your own judgement to every draft. Try things these notes don't cover,
+and push back where one of them seems wrong for the document in front of you.
+When you depart on purpose, say so in a line so it can be weighed together
+rather than discovered. A correction is part of the process, not a failure.
+Fold what it teaches back into this section.
 
 **Design: let it breathe, and let structure show through space.**
 
