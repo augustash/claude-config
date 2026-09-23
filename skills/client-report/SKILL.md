@@ -334,6 +334,88 @@ CSS — it must open offline, on a locked-down laptop, from a zip. Verify:
 [doc-studio-mark](../../memory/preferences/doc-studio-mark.md) for which mark and where
 the files live.
 
+### A house style, still forming
+
+This is a style Kaza and Claude are building together, each improving the
+other's work, not a rulebook to comply with. Most of his notes say "better",
+not "this value", and they land on drafts Claude shaped from its own instincts.
+Claude's calls feed back the same way. On the wps record, several of Claude's
+additions stuck without a note:
+
+- repairing sentences left pointing at nothing after a cut
+- spotting the stacked padding that made the first section break larger than
+  the rest
+- spanning the orphaned header cell rather than leaving a hole
+- balancing the mark with a relationship instead of two numbers
+- putting the checklist into columns once the page widened
+
+The result is better than either would reach alone, so offer improvements
+nobody asked for, and say briefly why each one helps. Below are the directions it has taken so far, with
+the reasons. The numbers are where one document ended up: calibration, not
+targets.
+
+Bring your own judgement to every draft. Try things these notes don't cover,
+and push back where one of them seems wrong for the document in front of you.
+When you depart on purpose, say so in a line so it can be weighed together
+rather than discovered. A correction is part of the process, not a failure.
+Fold what it teaches back into this section.
+
+**Design: let it breathe, and let structure show through space.**
+
+- *Air over density.* A client doc is read at a desk, slowly, and cramped reads
+  as hurried. When unsure, open it up. His first reaction to the wps record was
+  "tight", and doubling the page padding, section gaps and row padding fixed it.
+  The same instinct sets the width: a sheet squeezed into the middle of a
+  desktop screen looks like a letter, not a document. He's settled around 1080px
+  twice. Cap the *prose* for readability (~46em), and let tables, grids and
+  callouts use the room. Something that leaves half the page empty, like a short
+  checklist, can take columns.
+- *Generosity has a ceiling.* The sign-off mark went from even-but-large to
+  halved. Space is there to frame things, not to perform. Quiet elements (the
+  mark, captions, labels) get enough room to be clearly separate and no more.
+- *Size follows rank.* Whatever heads a section has to read above what sits in
+  it. A tracked 11px uppercase label looks refined in isolation, and it failed
+  here because the 15px bold item titles beneath it outranked it. Check the
+  hierarchy by squinting at the whole page, not by judging one element.
+- *Proximity carries structure.* Things belong to what they sit nearest. A
+  heading with equal space above and below floats between two sections and
+  blurs the boundary; it should hug its content, at roughly a third of the gap
+  above it. Stacked paddings create false breaks the same way (an intro's bottom
+  padding on top of a section's top padding), so look for places where two
+  spacings add up.
+- *Balance is felt, then measured.* The mark had to look even top to bottom, and
+  then it had to look even at every width. Solve that with a relationship
+  (mirror the body padding) rather than two numbers that happen to match at one
+  size.
+
+**Copy: a record, not a pitch, and every sentence new to the reader.**
+
+- *Nothing the page already says.* He cut the date from a sentence that sat
+  beside a box showing it, a *Held* item that only restated *Next*, and a
+  paragraph that explained what the held items had already said. If the layout
+  carries a fact, the prose doesn't repeat it. When a cut leaves a sentence
+  pointing at nothing ("That is…", "described above"), fix the pointer in the
+  same pass. He accepted those repairs without comment, which is the right
+  outcome.
+- *No ceremony.* No closing stamp, no sign-off paragraph, no "questions are
+  welcome". The document ends when its content does, and the studio mark signs
+  it.
+- *Write from where the client actually is.* An "Action required" cell and a
+  "book an October window" ask were both cut because the upgrade was already
+  under way. Persuasion aimed at someone already in motion reads as not
+  listening. The relationship's current state beats what the calendar implies,
+  and only the dev knows it, so ask.
+- *Their vocabulary, consistently.* On wps the platform is "core", not "Drupal",
+  in every section. Small naming choices like that are his, and they apply to
+  the whole document once stated.
+
+**How he reviews, and how to meet it.** One note at a time, visual first, often
+mid-edit. Apply the note, then look for the principle behind it and apply that
+wherever else it holds (see §8, *Take the note, then generalise it*). Screenshot
+the result at desktop and phone width before reporting, rather than reasoning
+about it. When a correction teaches something new, add it here as a direction
+with its reason, not as a value.
+
 **System fonts only, and let mono carry the personality.** Every figure in
 `ui-monospace` with `font-variant-numeric: tabular-nums` — columns align, numbers
 scan, and it needs no download. Heavy tight-tracked system sans for headlines.

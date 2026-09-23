@@ -42,6 +42,22 @@ ddev drush cr
 ddev drush cim -y
 ```
 
+**Then bring our own tooling current, before the round, not in it:**
+
+```bash
+ddev composer update augustash/claude-config     # vendor tree must be clean first
+ls .claude/skills/                               # want site-update and client-report
+cp -R vendor/augustash/claude-config/skills/{site-update,client-report} .claude/skills/
+```
+
+The update refreshes every adopted skill, but you are reading this one *now*, so
+a stale copy runs the whole round on stale text. Adoption is manual and
+per-project, and this round needs both skills: this one, and
+[client-report](../client-report/SKILL.md) for the record it ends with. A
+project that has neither is common, and `/site-update` then reads as a skill
+that doesn't exist. Commit the adoption on its own; it isn't part of the
+dependency update.
+
 `cim` before the update, not after — you want the site coherent *before* you
 change dependencies, so anything that breaks next is attributable to the update.
 
@@ -447,6 +463,17 @@ take it. Stable → alpha/beta/rc: **no**, ever, even if it's a higher number.
   gone (see the `composer-drupal-lenient` note in Phase 2), the answer is
   *remove*, not *bump*.
 
+**Read the `Removing` lines of a major's `require` before anything else.** A
+major can drop a dependency it no longer needs, and composer takes the code of
+anything nothing else requires, including modules that are still enabled. The
+exit is green and the next request fatals. It can also pull a sibling below
+stable with no `@beta` anywhere in your constraints. On wps (2026-09-23)
+`geolocation:^4.0` took `geolocation_search_api` 3.15.0 → **4.0.0-beta2** and
+removed `jquery_ui_autocomplete` and `search_api_location_views`, both enabled.
+`grep -nE '<pkg>: ' config/core.extension.yml` for every removed package. Any
+hit means back out: restore `composer.json`, then
+`composer update -W <every package that moved>`.
+
 **Bump risky majors on their own line.** Batch the boring ones; give anything
 that rewrites config or field widgets its own `composer require` so its lock diff
 is isolatable when something turns up two hours later.
@@ -780,11 +807,34 @@ Borrow the [client-report](../client-report/SKILL.md) §6 design rules and §7
 integrity check; **ignore its ten-section pitch structure** — this is a much
 smaller genre:
 
-1. **Title block** — project, sheet, date, round, prepared by, and whether any
-   action is required. Answer that last one in the header, not on page two.
+1. **Title block** — one band: the client logo on the left, and on the right
+   three label-over-value columns split by hairline rules: *Project* (the
+   domain), *Sheet* (`Maintenance`), *Round* (`2026.09`, mono). Nothing else.
+   Settled on sisal (2026-09-23) after a six-cell grid read as a form. Issued
+   duplicated Round, Prepared by is what the studio mark already says, and a
+   standing "core support" cell said nothing that needed saying. On a phone
+   the columns wrap under the logo and stay one row. Add an *Action required*
+   column only when something is genuinely on the client and not already in
+   motion (see the flag check below). When it applies, it goes in the header,
+   not on page two. Call the platform "core", not "Drupal", throughout:
+   *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
 2. **Updated** — a version table of the ten or so components a non-developer
    recognises, each with a plain-language gloss (*Webform — contact and request
    forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
+   **Everything under a section heading is indented to the heading's words**:
+   the indent is the heading icon's width plus its gap
+   (`--indent: calc(var(--bm) + var(--bm-gap))`), so content hangs under the
+   title, not the icon. The table takes the indent on both sides, and its
+   caption line rides with it. Everything else takes it on the left only. On a
+   phone the table gives back its right side, or the component column wraps
+   to six lines. One `section > :not(h2)` rule does it, so give component
+   blocks `margin-block`, not `margin:0`, or they drop back out of the
+   indent. Kaza's standard, sisal 2026-09-23. It replaced a narrower centred
+   44rem column, which was too much margin and gave the table a treatment of
+   its own. All three column heads share the small-caps label style. A `.num` rule
+   applied to the `th` makes FROM/TO render as large mono with a stray arrow
+   beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
+   cells only.
 3. **Held back on purpose** — the section that earns the document. Every item
    gets its reason in the client's terms. Without it, a short list of versions
    reads as the whole job.
@@ -798,6 +848,16 @@ smaller genre:
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
 5. **Next** — only when there is something. Cut it otherwise rather than padding.
+6. **The studio mark**, centred at the very bottom. For August Ash that means the A
+   shape alone, not the wordmark. See
+   [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
+   round's template is built, this is the step that gets dropped.
+
+The record ends where its content does: no closing stamp, no sign-off
+paragraph. The design and copy direction behind that, and behind the spacing,
+width and heading scale, is in client-report's *A house style, still
+forming*. Read it before drafting, since this record is where most of it
+was learned.
 
 Pull the palette from the **theme's own variables file**, not the logo and not
 memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
@@ -817,6 +877,13 @@ out, and the round had just taken core as far as Drupal 10 goes.
 That single fact inverted the document. "Nothing needed from you" became a dated
 upgrade window, and it belongs in the header cell rather than a closing
 paragraph.
+
+**Ask where the client already stands before flagging it again.** The next
+month, wps's draft carried an *Action required: schedule Drupal 11* cell and
+asked them to book an October window. The upgrade was already under way, so
+the cell was cut and the copy turned into "in progress". A standing flag copied
+forward from last month's record is the likeliest part of the draft to be out
+of date, and the repo won't tell you. The dev will.
 
 Check it every round, from the authority, at the moment you write it:
 

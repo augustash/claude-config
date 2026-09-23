@@ -483,6 +483,43 @@ not conflate them; the distinction matters during the two-push patch fix.
 `drush deploy` runs `updatedb` → `cim` → `cr` → `deploy:hook` in the correct
 order for a cross-version upgrade. Do not hand-run `cr`/`cim` before `updatedb`.
 
+### The first push runs a Converge, and a deploy script does not wait for it
+
+The `pantheon.yml` database bump makes the first push to each environment start a
+**"Converge resources based on updated properties"** workflow (the MariaDB
+upgrade), alongside the code sync. A deploy script that waits only for
+"Sync code" runs `drush deploy` in the middle of it. On metro (2026-09-23) that
+produced:
+
+```
+Fatal error: Uncaught Error: Class "Symfony\Component\Console\Event\ConsoleErrorEvent" not found
+```
+
+The message is misleading. Drush died mid-bootstrap and the real error was swallowed.
+Nothing was applied. **A rerun after the converge finished went clean.**
+
+The same run failed silently further along. The script carried on to test and
+live after dev fatalled. The test deploy fired before dev's build was done, so it
+**re-shipped the old artifact**, and the workflow still reported "succeeded". Live
+then said "There is nothing to deploy". Both ran `drush deploy` against D10
+code, printed *No pending updates / no changes to import*, and exited 0.
+
+**How to apply:**
+- Before `drush deploy`, `terminus workflow:list SITE` must show *every* running
+  workflow for that env finished, the Converge included, not only the sync.
+- **"No pending updates" on a D10 → D11 deploy is a failure signal, not success.**
+  The upgrade always carries 11xxx system hooks and CK5/Claro config.
+- Before promoting to the next env, check its code log names the new commit
+  (`terminus env:code-log SITE.test`). Test's newest entry still being the old
+  "build artifacts added by Pantheon" means nothing moved.
+- Assert the code itself: `php:eval 'print \Drupal::VERSION;'` must print 11.x.
+
+**Expect a burst of PHP errors during the swap, then silence.** Serialized
+Layout Builder objects, a missing `resolvable_uri` typed-data plugin and a
+`PageCache` constructor TypeError all come from D10 caches read by D11 code.
+They should stop at the cache rebuild. If they are still logging after
+maintenance mode lifts, they are real.
+
 **Build guard:** Pantheon fails any build whose step produces files that are
 neither committed nor gitignored:
 
@@ -514,6 +551,8 @@ curl cannot tell that from a broken query.
 
 - [ ] `pantheon.yml` — `database: version: 10.6` (unquoted), `php_version: 8.3`
 - [ ] Platform DB actually reports 10.6.x on the target environment
+- [ ] Every env's code log shows the new commit **and** `\Drupal::VERSION` is 11.x
+      there. A green deploy script proves neither.
 - [ ] `symfony/runtime` allowed; `vendor/autoload_runtime.php` exists
 - [ ] Every extension's `core_version_requirement` includes `^11` — custom and
       themes included
@@ -533,4 +572,4 @@ curl cannot tell that from a broken query.
 
 [[d11-symfony-runtime]] · [[cross-version-db-pull]] · [[phpunit-testing]] ·
 [[exo-d11-image-formatters]] · [[config-split-ignore-collision]] ·
-[[admin-theme-keyed-config]]
+[[admin-theme-keyed-config]] · [[pantheon-build-lag]]
