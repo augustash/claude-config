@@ -821,14 +821,17 @@ smaller genre:
 2. **Updated** — a version table of the ten or so components a non-developer
    recognises, each with a plain-language gloss (*Webform — contact and request
    forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
-   **Everything under a section heading sits on one inset column**, about 44rem
-   wide and centred: the table and its caption line, the held items and the
-   checklist. The heading and its rule stay full width, so the content reads as
-   hanging off them, and every section shares one left edge. That's one
-   `section > :not(h2)` rule, so give component blocks `margin-block`, not
-   `margin:0`, or they drop back out of the inset. At that width the checklist
-   takes two columns; three wrapped nearly every item. Kaza's standard,
-   sisal 2026-09-23. All three column heads share the small-caps label style. A `.num` rule
+   **Everything under a section heading is indented to the heading's words**:
+   the indent is the heading icon's width plus its gap
+   (`--indent: calc(var(--bm) + var(--bm-gap))`), so content hangs under the
+   title, not the icon. The table takes the indent on both sides, and its
+   caption line rides with it. Everything else takes it on the left only. On a
+   phone the table gives back its right side, or the component column wraps
+   to six lines. One `section > :not(h2)` rule does it, so give component
+   blocks `margin-block`, not `margin:0`, or they drop back out of the
+   indent. Kaza's standard, sisal 2026-09-23. It replaced a narrower centred
+   44rem column, which was too much margin and gave the table a treatment of
+   its own. All three column heads share the small-caps label style. A `.num` rule
    applied to the `th` makes FROM/TO render as large mono with a stray arrow
    beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
    cells only.
