@@ -809,6 +809,9 @@ smaller genre:
 
 1. **Title block** — project, sheet, date, round, prepared by, and whether any
    action is required. Answer that last one in the header, not on page two.
+   **Call the platform "core", not "Drupal"**: *Core 10.6.15 → 10.6.17*,
+   *core 11 upgrade*, *Core 10 end of life*. That's Kaza's call on wps and
+   applies to every section of the record.
 2. **Updated** — a version table of the ten or so components a non-developer
    recognises, each with a plain-language gloss (*Webform — contact and request
    forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
