@@ -57,7 +57,8 @@ them up.
 ## Startup
 
 1. `list_pages` to see the dev's open tabs.
-2. `select_page` to focus one; `navigate_page` to move it; `new_page` for a new tab.
+2. `select_page` to focus one; `navigate_page` to move it. To open something for
+   the dev, open a **window**, not `new_page` — see "Opening a page" below.
 
 There is no tab-context handshake (unlike Claude in Chrome).
 
@@ -101,9 +102,42 @@ errors as stale (tab closed, or Firefox restarted -- handles do not survive that
 If `select_page` reports no `pageId` parameter, the unpatched upstream server is
 installed; see Setup.
 
-**If attaching fails**, the cause is almost always Firefox launched normally instead
-of through the wrapper. Tell the dev to quit fully and relaunch — do not work around
-it by starting a second instance.
+**If attaching fails**, check which of two causes it is before telling the dev to
+do anything:
+
+- **Firefox was launched normally**, not through the wrapper: nothing listens on
+  2828. Tell the dev to quit fully and relaunch — do not work around it by
+  starting a second instance.
+- **Another client holds the Marionette session.** Marionette takes one client at
+  a time, and an MCP server from an older Claude session — still running,
+  possibly in a terminal nobody is looking at — keeps it until that process dies.
+  Every call then fails with a bare `unknown error` while 2828 is plainly
+  listening and the address bar shows its remote-control stripes. Find the
+  holder: `lsof -nP -iTCP:2828 -iTCP:9222 | grep -v LISTEN` names a geckodriver
+  whose parent is the other session's MCP node process. With the dev's OK, kill
+  that node process; the next call here connects.
+
+## Opening a page: a window, not new_page
+
+`new_page` does not reliably make a new tab. It can take over a tab that already
+exists and navigate it — on sisal (2026-09-24) it returned the pageId of the
+dev's open GitHub tab, sent *that tab* to the test URL, and left an empty
+`about:blank` tab behind. There is no error; it looks like a successful open.
+
+Open a real window from any page you already control instead:
+
+    evaluate_script { function: "() => !!window.open(url, 'claudeWork', 'popup=yes,width=1440,height=960')" }
+
+It is not popup-blocked from a Marionette script, and it keeps your work out of
+the dev's tab strip altogether. Then `list_pages` once to pick up its pageId.
+If `new_page` was already used, `list_pages` straight after and compare against
+the list from before it: a tab whose pageId you already knew but whose URL has
+changed is one it hijacked — put it back with `navigate_page`.
+
+For checks the dev does not need to watch (measurements, screenshots, layout),
+don't use their browser at all: if a second, `--autoProfile` server is configured
+(e.g. `firefox-solo`), it runs its own headless Firefox, with no shared tabs to
+disturb.
 
 ## Interacting with the page: selector first, uid second
 
@@ -200,7 +234,7 @@ the bar on care rather than lowering it:
 - Confirm before any irreversible click — submit, delete, publish, purchase — and
   before accepting a dialog guarding one.
 - These are the dev's actual tabs. Do not close or navigate a tab you did not open
-  without asking; there may be unsaved work in it. Prefer `new_page`.
+  without asking; there may be unsaved work in it. Open your own window instead (see "Opening a page").
 - On a client production site, prefer read-only inspection. Anything that writes
   goes through the dev.
 
