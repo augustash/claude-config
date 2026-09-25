@@ -99,6 +99,10 @@ ddev exec 'terminus upstream:updates:status <site>.dev'   # current | outdated
 ddev exec 'terminus upstream:updates:list <site>.dev'     # what is pending, and why
 ```
 
+If the container's terminus says `You are not logged in`, don't stop to
+authenticate. The `git fetch` below needs no terminus and answers the same
+question.
+
 Three upstreams, one per stack:
 
 | Site | Upstream |
@@ -713,13 +717,42 @@ way rather than through `wp option get woocommerce_helper_data` — that option
 holds the account's OAuth access token and secret, and it must not land in a
 report, a commit or a paste.
 
+### A plugin handed over as a zip
+
+Premium plugins with no update channel arrive as a zip from the dev or the
+client. Installing one is a file swap, and **a file swap never fires
+`register_activation_hook`** — neither does the git deploy that ships it. A
+release that creates tables or adds columns only in its activation hook looks
+installed everywhere and has no schema anywhere, and it fails later, in a daily
+cron or at the first order that touches the missing column.
+
+Before swapping, diff the old copy against the new on what holds data. The
+version number won't tell you how big the change is: on atr the EBizCharge
+gateway went 5.4.1 → 11.0.0 as a full rewrite, with versions now tracking
+WooCommerce's.
+
+```bash
+grep -rhoE "register_(de)?activation_hook\([^;]+|register_uninstall_hook[^;]+" <dir>
+grep -rhoE "this->id\s*=\s*'[^']+'" <dir>          # gateway id → woocommerce_<id>_settings
+grep -rhoE "CREATE TABLE[^(]+|ALTER TABLE" <dir>
+```
+
+Unchanged gateway id and meta keys mean settings and saved cards carry across.
+No deactivation or uninstall hook means a deactivate → activate is safe. Do
+that locally, confirm the tables exist, and **tell the dev it has to be repeated
+on each Pantheon environment after the deploy**. It goes in the commit message
+too, since that's where it will be read at deploy time.
+
+Extract to the scratchpad with `-x '__MACOSX/*'`, and delete any `.DS_Store`
+before you commit.
+
 ### A guard we carry is a patch by another name
 
 An mu-plugin written to work around a contrib bug is exactly the carried fix
 Phase 2 talks about, and a version bump is when to re-check it. Read the new
 release's code, not its changelog:
 [carried-fix-obsolete-check](../../memory/augustash/carried-fix-obsolete-check.md).
-On this round AIOSEO Pro went 5.0.0.1 → 5.0.1 with
+On the 2026-08-26 round AIOSEO Pro went 5.0.0.1 → 5.0.1 with
 [the REST-head null](../../memory/wordpress/aioseo-rest-head-null-ajax-cron.md)
 still unfixed at both ends, so the guard stayed and its "verified against"
 note moved forward — cheap, and it stops the next round re-deriving it.
