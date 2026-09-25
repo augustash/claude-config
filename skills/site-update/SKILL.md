@@ -849,8 +849,8 @@ smaller genre:
    each mapped to something on their site, and the section got sharper for it.
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
-5. **Ideas** — one improvement to the site, found this round. See *One idea
-   per round* below; every record carries one.
+5. **Ideas** — improvements to the site, each one work we'd do. At least one
+   comes from this round's search; see *One idea per round* below.
 6. **Next** — only when something is actually coming that the client needs to
    know about. A paragraph whose message is "nothing is required of you" is
    nothing, so cut it. On ilc a line about core 12's release date and core 11
@@ -880,6 +880,19 @@ clearer organisation, always measured against what *this* site is for, which is
 different every time. An update keeps the site where it is. The idea is what
 moves it forward, and it is the part a client reads as us paying attention.
 Kaza's direction (ilc, 2026-09-25).
+
+**Every idea is billable work, and it is written purely as a site improvement.**
+Improving their site is the client's half; the work is ours. Aim at the first
+and you get both, so the copy never needs our side of the ledger. Leave out
+*"outside routine maintenance"*, *"additional work"* and anything else that
+reads as the sale rather than the result. On ilc a traffic-and-caching log
+review was first drafted as a separate *Recommended* section, pitched as extra
+work. It belonged under Ideas, framed as *keep the site fast for real visitors*.
+
+**The round finds one; the dev may add more.** The search below produces one
+idea. When the dev brings another, such as a service they want to offer, it
+goes under the same heading with the same three-paragraph shape, not a section
+of its own.
 
 **Start from what the site is for.** Before looking for problems, name the main
 visitor and what they come to do. Read it off the site rather than the brief:
