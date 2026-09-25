@@ -392,7 +392,12 @@ Fold what it teaches back into this section.
   shaped for the client it was drawn for, so re-derive it from the next
   client's logo instead of carrying it over. ILC's ring suited ILC. Atrix's logo
   is built from solid red dots, and Kaza swapped the ring for a solid dot
-  because it "follows their logo better" (atr, 2026-09-25). Check the bullet,
+  because it "follows their logo better" (atr, 2026-09-25). He then took it
+  further: the logo's dots step from dark to bright *across the cluster*, each
+  dot one flat colour, so each section's dot takes the next step down the page,
+  enlarged from 14px to 18px so the ramp reads. Sample the colours from the
+  asset itself, since the eye misjudges a subtle ramp. Six dots across the
+  logo's middle row gave `#a7161c`→`#e22437`, one per section. Check the bullet,
   the checkmark and the rule colour against the logo each time.
 
 **Copy: a record, not a pitch, and every sentence new to the reader.**
