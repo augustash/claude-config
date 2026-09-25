@@ -96,6 +96,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — giving ONE page a short external Cache-Control, and why TTL beats tag-purge
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build
 - [A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy](memory/drupal/event-subscriber-contrib-class-deadlock.md) — every drush command dies on a missing class right after a deploy, including the import that would fix it
 - [An adjustment reaches every gateway, and they disagree on how to read it](memory/drupal/commerce-adjustment-reaches-every-gateway.md) — before adding an adjustment to mark or label a charge; also when a gateway refuses an order or bills an amount already inside another
