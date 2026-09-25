@@ -849,8 +849,11 @@ smaller genre:
    each mapped to something on their site, and the section got sharper for it.
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
-5. **Ideas** — improvements to the site, each one work we'd do. At least one
-   comes from this round's search; see *One idea per round* below.
+5. **Monthly Ideas** — improvements to the site, each one work we'd do. At
+   least one comes from this round's search; see *One idea per round* below.
+   Open with one line saying what the section is, so the client reads it as a
+   standing habit rather than a sales insert: *"Each month, while updating the
+   site, we look it over for something we can improve."*
 6. **Next** — only when something is actually coming that the client needs to
    know about. A paragraph whose message is "nothing is required of you" is
    nothing, so cut it. On ilc a line about core 12's release date and core 11
