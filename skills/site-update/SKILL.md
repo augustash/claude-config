@@ -1,6 +1,6 @@
 ---
 name: site-update
-description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Starts at the Pantheon upstream — Drupal, Drupal 7 and WordPress each have one, and no package manager will bring it. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success. On WordPress it covers the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
+description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Starts at the Pantheon upstream — Drupal, Drupal 7 and WordPress each have one, and no package manager will bring it. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success, and ends every round with a client record carrying one idea for improving the site. On WordPress it covers the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
 ---
 
 # Site update pass
@@ -835,9 +835,11 @@ smaller genre:
    applied to the `th` makes FROM/TO render as large mono with a stray arrow
    beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
    cells only.
-3. **Held back on purpose** — the section that earns the document. Every item
-   gets its reason in the client's terms. Without it, a short list of versions
-   reads as the whole job.
+3. **Held back on purpose** — only when something is. Every item gets its
+   reason in the client's terms; without it, a short list of versions reads as
+   the whole job. When nothing was held, cut the heading too. *"Nothing on the
+   site was held back this round"* is a section answering a question nobody
+   asked, and it was struck on ilc (2026-09-25).
 
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
@@ -847,8 +849,13 @@ smaller genre:
    each mapped to something on their site, and the section got sharper for it.
 4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
-5. **Next** — only when there is something. Cut it otherwise rather than padding.
-6. **The studio mark**, centred at the very bottom. For August Ash that means the A
+5. **Ideas** — one improvement to the site, found this round. See *One idea
+   per round* below; every record carries one.
+6. **Next** — only when something is actually coming that the client needs to
+   know about. A paragraph whose message is "nothing is required of you" is
+   nothing, so cut it. On ilc a line about core 12's release date and core 11
+   staying covered was struck as not needed.
+7. **The studio mark**, centred at the very bottom. For August Ash that means the A
    shape alone, not the wordmark. See
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
    round's template is built, this is the step that gets dropped.
@@ -864,6 +871,86 @@ memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
 the document's brand colour cannot drift apart. On wps the theme's red was
 `#e1251b` while `logo.svg` carried `#E02726` — near-identical, and visibly wrong
 side by side.
+
+### One idea per round
+
+Every record carries one idea: a single change that would help the site do its
+job better. That can mean smoother flow, content that's easier to find, or
+clearer organisation, always measured against what *this* site is for, which is
+different every time. An update keeps the site where it is. The idea is what
+moves it forward, and it is the part a client reads as us paying attention.
+Kaza's direction (ilc, 2026-09-25).
+
+**Start from what the site is for.** Before looking for problems, name the main
+visitor and what they come to do. Read it off the site rather than the brief:
+the main navigation, where the content volume sits, and what the forms collect.
+
+```bash
+ddev drush sql:query "SELECT type, COUNT(*) FROM node_field_data WHERE status=1 GROUP BY type"
+```
+
+On ilc, 765 resources and 162 products against 6 plain pages said *document
+library for engineers and contractors*, not marketing site. That pointed the
+search at how people find documents.
+
+**Walk the main journeys and count.** For each of the two or three things a
+visitor comes to do, do it yourself. Note how many steps it takes, how long the
+list is, which filters it offers, and what comes back empty. The strongest
+signal is **structure the site already has but doesn't use**: a field tagged on
+every item that is never offered as a filter, a reference that could link two
+pages and doesn't, a 185-row list with no paging. Ideas like that are cheap,
+because the data exists, and easy to believe, because the gap is concrete.
+
+**Read the code before calling something missing.** A listing's exposed filters
+are in its view config, but a `form_alter` can hide one until something else is
+set, and neither the config nor the default page will show you that. On ilc
+the energy-code filter on typical drawings was pitched as missing, and only
+turned up when the draft was checked: `ilc_filter` suppresses it until a
+visitor chooses one category and presses Apply. The idea survived, reframed as
+*surface the hidden filter and add the room one*, but the first draft told the
+client something false about their own site.
+
+```bash
+grep -rn "<view_id>" web/modules/custom web/themes/custom   # alters and embeds
+```
+
+```bash
+# every field a bundle carries, to set against what its listing exposes
+ls config | grep "field.field.node.<bundle>."
+grep -E "^\s+identifier:" config/views.view.<listing>.yml
+```
+
+**Test the obvious candidate before pitching it.** Commit history shows where
+the pain has been, and an area tuned over and over is a lead, not a verdict. On
+ilc, search had four rounds of commits behind it and looked like the obvious
+idea. Twenty realistic queries (catalog numbers with and without hyphens,
+product names, application terms) found it mostly working. The misses were
+typos and ranking polish. The drawings page, which nobody had touched, was the
+real gap. Probe with what a visitor would actually type, and read the view's
+exposed-filter `identifier` before deciding a query returns nothing. ilc's is
+`?s=`, and a probe against `search_api_fulltext` came back empty for everything.
+
+**Pick one**, by four tests: it serves the site's main purpose, the client can
+see it on their own site, it takes hours rather than a project, and it is built
+from what they already have. One idea gets weighed. A list gets skimmed.
+
+**Write it in three paragraphs**, under a title that names the outcome (*Find a
+typical drawing by room and energy code*):
+
+1. The problem in their terms, with a number and one concrete visitor:
+   *"opens on all 185 drawings in one long table … An engineer after a Title 24
+   classroom riser has to know that first step, then scan the list."*
+2. The change, who it serves, and what makes it cheap.
+3. The offer, in a paragraph of its own: *"We can add it for you in about two
+   hours."* The estimate is the dev's call. Propose one and confirm it before it
+   goes in, rather than printing a number you made up.
+
+**Don't repeat last month's idea.** The record lives on the desktop, not in the
+repo, so the next round can't see what was suggested. Log each idea in the
+project's `.claude/memory/ideas.md` with the round, the idea and what came of it,
+and read that log before starting the next search. An idea the client declined
+doesn't come back. One that went unanswered can be raised once more, if the
+round finds nothing better.
 
 ### State where the platform sits in its support window — looked up, not recalled
 
