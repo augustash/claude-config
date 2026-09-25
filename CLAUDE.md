@@ -288,4 +288,4 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [firefox-devtools](skills/firefox-devtools/SKILL.md) — driving a real Firefox from Claude: console, network, DOM, logpoints and profiling on a running site, for Firefox-specific bugs or devs who prefer its DevTools to Chrome's
 - [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
-- [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress), starting at the Pantheon upstream; owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev
+- [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress) through to its client record and improvement idea; owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev

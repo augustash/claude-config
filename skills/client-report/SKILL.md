@@ -388,6 +388,18 @@ Fold what it teaches back into this section.
   (mirror the body padding) rather than two numbers that happen to match at one
   size.
 
+- *Small marks echo the client's own shapes.* A template's heading bullet was
+  shaped for the client it was drawn for, so re-derive it from the next
+  client's logo instead of carrying it over. ILC's ring suited ILC. Atrix's logo
+  is built from solid red dots, and Kaza swapped the ring for a solid dot
+  because it "follows their logo better" (atr, 2026-09-25). He then took it
+  further: the logo's dots step from dark to bright *across the cluster*, each
+  dot one flat colour, so each section's dot takes the next step down the page,
+  enlarged from 14px to 18px so the ramp reads. Sample the colours from the
+  asset itself, since the eye misjudges a subtle ramp. Six dots across the
+  logo's middle row gave `#a7161c`→`#e22437`, one per section. Check the bullet,
+  the checkmark and the rule colour against the logo each time.
+
 **Copy: a record, not a pitch, and every sentence new to the reader.**
 
 - *Nothing the page already says.* He cut the date from a sentence that sat
