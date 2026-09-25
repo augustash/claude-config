@@ -169,7 +169,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo image derivatives are AVIF on D11.2+](memory/augustash/neo-image-avif-on-d11-2.md) — link previews break site-wide after an 11.2 bump while every image still looks right in a browser
 - [component:// srcs get no image style](memory/augustash/neo-image-local-src-no-derivatives.md) — images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
 - [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
-- [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
+- [Neo's metatag defaults leave the social tags unresolvable](memory/augustash/neo-metatag-description-slogan.md) — a share card titled with a heading from mid-page, one meta description site-wide, or none; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, or when its robots rules are missing from robots.txt
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point

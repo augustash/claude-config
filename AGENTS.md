@@ -275,8 +275,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
 - **A spent neo-animate reveal seals a stacking context** — `vendor/augustash/claude-config/memory/augustash/neo-animate-identity-transform-stacking.md`  
   a sibling won't layer between two children no matter what z-index it gets
-- **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
-  every page shares one meta description, or no page has one; also before setting a site slogan
+- **Neo's metatag defaults leave the social tags unresolvable** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
+  a share card titled with a heading from mid-page, one meta description site-wide, or none; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
