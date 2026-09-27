@@ -532,7 +532,14 @@ respected, and a print stylesheet that flips dark bands to white.
 
 ## 7. Delivery
 
-- `open` the file after every change so they're reviewing the current state.
+- **Reload the tab the reviewer already has; never `open` again.** `open` makes a new
+  tab on every call, and after a dozen notes the reviewer is hunting through duplicates
+  (Kaza, su 2026-09-27). `open` once for the first look. After that, reload that same tab
+  through the [firefox-devtools](../firefox-devtools/SKILL.md) server: `list_pages`
+  once, keep the doc tab's `pageId`, then `navigate_page { pageId, url }` after each
+  edit. If Firefox wasn't started through `firefox-claude`, ask the reviewer to relaunch
+  it rather than falling back to `open`. Take your own screenshots on the headless
+  `firefox-solo` server, not in their browser.
 - **Verify the HTML after every structural edit** — print the result, don't assume.
   Renumbering, remapping and reordering have all failed silently. (This rule used to
   be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
