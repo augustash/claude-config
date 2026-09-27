@@ -399,10 +399,10 @@ Fold what it teaches back into this section.
   asset itself, since the eye misjudges a subtle ramp. Six dots across the
   logo's middle row gave `#a7161c`→`#e22437`, one per section. Check the bullet,
   the checkmark and the rule colour against the logo each time.
-  Echo the logo's *shape*, not its detail. Syracuse Utilities' logo is an
-  orange disc with black stripes, and a striped 18px bullet read as busy; Kaza
-  took it back to a plain orange dot (su, 2026-09-27). At bullet size, one
-  flat shape in the brand colour carries the echo.
+  The echo can stop at colour. Syracuse Utilities' logo is an orange disc with
+  black stripes; the first draft striped the bullet to match, and Kaza chose a
+  plain orange dot instead (su, 2026-09-27). Offer the literal echo, and expect
+  the simpler one to win.
 
 **Copy: a record, not a pitch, and every sentence new to the reader.**
 
