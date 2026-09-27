@@ -383,6 +383,13 @@ Fold what it teaches back into this section.
   above it. Stacked paddings create false breaks the same way (an intro's bottom
   padding on top of a section's top padding), so look for places where two
   spacings add up.
+- *A description line hugs its heading: about 4px, text to text* (su,
+  2026-09-27, after "tighter" twice). Measure between the rendered text, using
+  a `Range` on each text node, not between the element boxes. A description at
+  1.6 line height carries about 5px of leading above its glyphs, so boxes 2px
+  apart still read loose. Set the description's line height near 1.3, then tune
+  the heading margin per heading level. A 26px flex `h2` and a 21px `h3` need
+  different margins to land at the same 4px.
 - *Balance is felt, then measured.* The mark had to look even top to bottom, and
   then it had to look even at every width. Solve that with a relationship
   (mirror the body padding) rather than two numbers that happen to match at one
