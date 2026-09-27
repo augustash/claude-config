@@ -537,7 +537,9 @@ respected, and a print stylesheet that flips dark bands to white.
   (Kaza, su 2026-09-27). `open` once for the first look. After that, reload that same tab
   through the [firefox-devtools](../firefox-devtools/SKILL.md) server: `list_pages`
   once, keep the doc tab's `pageId`, then `navigate_page { pageId, url }` after each
-  edit. If Firefox wasn't started through `firefox-claude`, ask the reviewer to relaunch
+  edit. Bump a query string each time (`?v=3`): a navigation that changes only the
+  `#anchor`, or repeats the same URL, scrolls without reloading, and you end up
+  reviewing the old version. If Firefox wasn't started through `firefox-claude`, ask the reviewer to relaunch
   it rather than falling back to `open`. Take your own screenshots on the headless
   `firefox-solo` server, not in their browser.
 - **Verify the HTML after every structural edit** — print the result, don't assume.
