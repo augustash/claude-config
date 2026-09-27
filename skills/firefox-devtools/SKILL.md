@@ -38,7 +38,8 @@ needs a wrapper. Something like `~/.local/bin/firefox-claude`:
 
     #!/bin/zsh
     APP="Firefox Developer Edition"   # release channel: "Firefox"
-    if pgrep -qf "$APP.app"; then
+    # skip headless instances, e.g. firefox-solo's own browser
+    if pgrep -lf "$APP.app/Contents/MacOS/firefox" | grep -qv -- '-headless'; then
       print -u2 "Quit $APP fully (Cmd-Q) first — the remote agent only starts with the process."
       exit 1
     fi
@@ -49,6 +50,9 @@ capabilities. `open` rather than exec'ing the binary matters: launchd owns the
 process, so it survives the terminal that started it. The guard matters too —
 `open --args` only passes arguments when the app is not already running, so
 relaunching over a live instance silently yields a Firefox with the agent off.
+The guard must skip headless processes: the `firefox-solo` server runs the same
+app bundle headless, and a bare `pgrep -f "$APP.app"` then refuses to launch while
+no GUI Firefox is open at all (su, 2026-09-27).
 
 Requires Node 20.19+ and Firefox 100+. MCP servers and skills both load at Claude
 Code startup, so a session started before setup needs `claude --continue` to pick
