@@ -1,0 +1,31 @@
+<!--
+Ashen Rayne hover credit: the doc sign-off, after the dmx-power.com footer credit.
+Resting: the colour shield. Hover or focus: the wordmark slides out, then IMAGINED after 1.35s.
+Inline both images as base64 before shipping, since docs must open offline:
+  {{SPRITE}} = templates/brand/ashen-rayne-sprite.png  (218x88; row 2 = colour shield + wordmark)
+  {{SHIELD}} = templates/brand/ashen-rayne-shield.png  (35x44)
+The wordmark is the sprite used as a mask and filled with currentColor, so set the
+.credit color to the doc's ink. IMAGINED is sized so its caps match the wordmark's 20px
+x-height, using the system font's .705 cap ratio. Re-derive it if the font changes.
+Needs --ink and --muted defined on :root.
+-->
+<style>
+.mark{display:flex;justify-content:center;padding-block:64px 0}
+.credit{display:inline-flex;align-items:center;height:44px;color:var(--ink);text-decoration:none}
+.credit__shield{display:block;flex:none;width:35px;height:44px}
+.credit__mark{flex:none;width:0;height:44px;overflow:hidden;transition:width .35s}
+.credit__mark span{display:block;width:180px;height:44px;margin-left:3px;background:currentColor;
+  -webkit-mask:url(data:image/png;base64,{{SPRITE}}) no-repeat -38px -44px/218px 88px;
+          mask:url(data:image/png;base64,{{SPRITE}}) no-repeat -38px -44px/218px 88px;
+  opacity:0;transform:translateY(14px);transition:transform .35s,opacity .35s}
+/* caps = the wordmark's 20px x-height (cap ratio .705); top offset puts the baseline on the wordmark's, 34px down */
+.credit__word{flex:none;max-width:0;overflow:hidden;white-space:nowrap;padding-left:0;opacity:0;
+  align-self:flex-start;margin-top:9px;font-size:28.4px;line-height:1;font-weight:700;font-style:italic;text-transform:uppercase;color:inherit;padding-right:.2em;
+  transition:max-width .4s,opacity .3s,padding-left .4s}
+.credit:hover .credit__mark,.credit:focus-visible .credit__mark{width:183px}
+.credit:hover .credit__mark span,.credit:focus-visible .credit__mark span{opacity:1;transform:none}
+.credit:hover .credit__word,.credit:focus-visible .credit__word{max-width:400px;padding-left:6px;opacity:1;transition-delay:1.35s}
+@media (prefers-reduced-motion:reduce){.credit *{transition:none!important}}
+</style>
+<footer class="mark"><a class="credit" href="https://ashenrayne.com" target="_blank" rel="noopener" aria-label="Site by Ashen Rayne — Imagined"><img class="credit__shield" src="data:image/png;base64,{{SHIELD}}
+" alt=""><span class="credit__mark" aria-hidden="true"><span></span></span><span class="credit__word" aria-hidden="true">imagined</span></a></footer>
