@@ -866,9 +866,10 @@ earns its place.
   an urgent panel and blue in an idea.
 - A link goes on its own line under the copy, bold, underlined, with a trailing
   "→".
-- **An Action row ends any note that has the reader's attention.** Once they are
-  alarmed or interested, the next thing they read is what to do, with a link to do it.
-  Don't end on a stopgap sentence instead.
+- **An Action row ends any note that asks something of the client's site.** Once they
+  are alarmed, the next thing they read is what to do, with a link to do it (a
+  licence, a renewal). Don't end on a stopgap sentence instead. An Action is never
+  "contact us".
 - **A Quote row carries an offer**: the hours, then what they buy in one line.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
@@ -905,11 +906,13 @@ yellow-and-white mark vanished on white, so the title block puts it on a rounded
 of the site's header blue. Say so when you do it; it's a departure from the plain
 logo-left title.
 
-**The pitch closes with a way to act.** A rebuild or Horizon pitch ends its central
-panel with an Action row inviting the conversation: the case in two or three
-confident sentences, framed on where it takes them (*"Let's talk about getting you
-there"*), not on our team (*"talk to our sales team"*), and a verified link. For August Ash that's augustash.com/contact-us, which
-has a form and the main line, 952-851-9400.
+**No closing ask to an existing client.** They know how to reach us and who to talk
+to. The whole document is the push, and if it doesn't land, one line won't either. A
+"let's talk" or a contact link at the end reads as needing the work, which undoes
+the confidence the rest of the document built (Kaza, Meridian Display 2026-09-28).
+End the pitch on the case itself, as a statement. Action rows are for things the
+client has to *do* about their site (renew a licence), never for contacting us. A
+cold pitch to a prospect is the only place a contact line belongs.
 
 **Verify every link before it goes in.** Fetch it and read the page title. When
 Cloudflare answers a script with 403, as augustash.com does, load it in the headless
