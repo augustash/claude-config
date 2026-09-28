@@ -43,6 +43,14 @@ The module's `strip_params` entry for `utm_*` is therefore **a no-op on Pantheon
 - IP rate limiting (30 faceted requests/min)
 - Admin settings at `/admin/config/search/facet-protection`
 
+**A parameter of your own in `f[]` gets a 400.** The alias check allows only the `url_alias`
+of real `facets.facet.*` entities, so a site-written pseudo-facet — a list toggle that rides
+the Facets URL contract to inherit the shelf's staging, pills and reset — is rejected as
+"Invalid filter." with nothing in the site's logs. Declare it in the **`extra_aliases`**
+setting (1.0.23+) instead of backing it with a fake facet or moving it out of `f[]`. It still
+counts toward `max_facets` and the rate limit. First used on ar-md (2026-09-28) for
+`f[]=show:discontinued`.
+
 ## Submodule: search protection
 
 - Two flood windows (burst + sustained), either limit triggers a 429
