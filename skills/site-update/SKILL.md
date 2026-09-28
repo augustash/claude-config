@@ -890,6 +890,11 @@ smaller genre:
    about 9% so it defines the note without shouting, the text takes a dark shade
    of the same hue, and the tag is the solid hue. One `--u` custom property per
    severity drives all three (Kaza, Meridian Display 2026-09-28).
+   Every panel ends with an **Action** row under a hairline: the same tag in the
+   panel's colour, what to do, and a checked link to do it (the vendor's pricing or
+   renewal page). Tags share a fixed-width column so all copy and links hang on
+   one line. Don't close with a stopgap sentence instead: once the note has their
+   attention, the next thing they read is what to do.
 
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
