@@ -816,6 +816,14 @@ before any `terminus` against `.live`/`.test`
 
 ---
 
+**WordPress needs its database updates run on every environment.** A WooCommerce bump
+that carries migrations leaves each Pantheon environment behind until `wp wc update`
+runs there, and a core upstream merge wants `wp core update-db`. Neither reliably runs
+itself. Launcher (`l t.<site>.live`) does both on each environment, running
+`wc update` only where WooCommerce is active. It stops the chain if either fails to
+print `Success:`, because `terminus wp` can exit 0 silently. First run on Meridian
+Display, 2026-09-28: five WooCommerce migrations on each of dev, test and live.
+
 ## Reporting back
 
 Lead with the decisions, not the transcript. What went up, what you held and why,
