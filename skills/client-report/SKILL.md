@@ -879,6 +879,10 @@ earns its place.
   licence, a renewal). Don't end on a stopgap sentence instead. An Action is never
   "contact us".
 - **A Quote row carries an offer**: the hours, then what they buy in one line.
+- **A Limit row names what holds the site back**, stated as the case: what it could
+  be, and what stands in the way. Meridian's order-process panel ends on one: *"far
+  more potential than it can reach today, and getting there takes a rebuild."* It's a
+  statement, not an ask.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
