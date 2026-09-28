@@ -474,7 +474,10 @@ Headings are one word, and a sticky section nav sits under the title block
 *Components*.
 
 The record ends where its content does: no closing stamp, no sign-off
-paragraph. The design and copy direction behind that, and behind the spacing,
+paragraph. One short send-off line is allowed: centred, bold, a step below the
+section headings, directly above the studio mark. It works when a Horizon has
+opened the door (*"Now is the time to dream big."*, Meridian Display 2026-09-28). One
+line, never a paragraph. The design and copy direction behind that, and behind the spacing,
 width and heading scale, is §7's *A house style, still forming*. Read it before
 drafting, since this record is where most of it was learned.
 
@@ -924,7 +927,10 @@ to. The whole document is the push, and if it doesn't land, one line won't eithe
 the confidence the rest of the document built (Kaza, Meridian Display 2026-09-28).
 End the pitch on the case itself, as a statement. Action rows are for things the
 client has to *do* about their site (renew a licence), never for contacting us. A
-cold pitch to a prospect is the only place a contact line belongs.
+cold pitch to a prospect is the only place a contact line belongs. The same goes for a
+scoping question to close a record's Horizon (*"What does your team work from
+today?"*): it's an ask in disguise, and it was cut. Scoping starts when they reach
+out.
 
 **Verify every link before it goes in.** Fetch it and read the page title. When
 Cloudflare answers a script with 403, as augustash.com does, load it in the headless
