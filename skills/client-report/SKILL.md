@@ -592,6 +592,15 @@ and read that log before starting the next search. An idea the client declined
 doesn't come back. One that went unanswered can be raised once more, if the
 round finds nothing better.
 
+**Always draft the idea; sending it is the dev's call.** This applies to every
+genre, response documents included. The dev may cut the section from a given doc
+for reasons that have nothing to do with its merit: the timing, the reader, or the
+relationship. On metro's form-incident review, Kaza cut a scan-alert idea with
+*"it was good, I'm just choosing not to follow-up with it this time"*, and asked
+that ideas keep being written. When one is cut, remove the section and its nav
+item, and log it as *drafted, not sent*. It hasn't been raised with the client,
+so it's still available for a later round (metro, 2026-09-28).
+
 ### The support window — looked up, not recalled
 
 The one claim in a maintenance record that is worth a client's attention is how
