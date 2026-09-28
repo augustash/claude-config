@@ -595,11 +595,11 @@ round finds nothing better.
 **Always draft the idea; sending it is the dev's call.** This applies to every
 genre, response documents included. The dev may cut the section from a given doc
 for reasons that have nothing to do with its merit: the timing, the reader, or the
-relationship. On metro's form-incident review, Kaza cut a scan-alert idea with
-*"it was good, I'm just choosing not to follow-up with it this time"*, and asked
-that ideas keep being written. When one is cut, remove the section and its nav
-item, and log it as *drafted, not sent*. It hasn't been raised with the client,
-so it's still available for a later round (metro, 2026-09-28).
+relationship. On metro's form-incident review, Kaza cut the Ideas section with
+*"it was good, I'm just choosing not to follow-up with it this time"*. That was a
+call about one doc. It doesn't retire the section, and it doesn't bank the idea
+for later. Remove the section and its nav item, leave the idea out of the ideas
+log, and draft one again in the next doc (metro, 2026-09-28).
 
 ### The support window — looked up, not recalled
 
