@@ -8,7 +8,12 @@ text.
 - **August Ash work** → the A mark:
   [templates/brand/august-ash-mark.svg](../../templates/brand/august-ash-mark.svg)
   (two-tone blue, from the augustash.com `logo_mark` block). Inline the SVG as-is.
-- **Ashen Rayne work** → the shield:
+- **Ashen Rayne work** → the hover credit:
+  [templates/brand/ashen-rayne-credit.html](../../templates/brand/ashen-rayne-credit.html).
+  It is the colour shield at rest; on hover the wordmark slides out, then *IMAGINED*,
+  after the dmx-power.com footer credit (Kaza, su 2026-09-27). The plain shield below
+  remains the static fallback.
+- **Ashen Rayne, static** → the shield:
   [templates/brand/ashen-rayne-shield.png](../../templates/brand/ashen-rayne-shield.png),
   the colour shield cropped from the DMX Power footer-credit sprite. Inline it as a
   `data:image/png;base64` URI.
