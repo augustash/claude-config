@@ -874,6 +874,18 @@ smaller genre:
    site was held back this round"* is a section answering a question nobody
    asked, and it was struck on ilc (2026-09-25).
 
+   **Close every held item with an urgency line** (Kaza, Meridian Display
+   2026-09-28): a tag (*Urgent* / *No rush*) and one sentence on why. Grade it
+   from a vulnerability database against the held version, not from memory
+   (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
+   against the site's exposure: if registration is closed and only admins have
+   accounts, a flaw needing a login is out of reach, so only unauthenticated ones
+   make an item urgent. A known exploitable flaw means update it, or name a
+   stopgap (a firewall) when the update is walled. No known issue means *No
+   rush*, and saying so plainly is what keeps the client from treating every
+   held item as an emergency. If an urgent item exists, it goes in the header's
+   *Action required* cell, displacing a routine licence ask.
+
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
    cut it, however real the decision was. On wps *"three build tools … one
