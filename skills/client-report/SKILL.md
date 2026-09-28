@@ -235,6 +235,14 @@ it plants a doubt in a document whose whole job is confidence. The same cut appl
 to any credential, defect or near-miss on our side that never reached production:
 disclosing it reads as honesty to us and as alarm to them.
 
+**Write what we propose in the conditional.** A pitch describes a system that doesn't
+exist yet, and present tense quietly claims it does: *"their account keeps each
+retailer's stores"* reads as a feature they already have. Use *would* and *should*
+for everything we would build (*"their account should keep…"*, *"the invoice would
+go out"*), and keep the present tense for what is true today (*"you already supply
+dielines"*). Step labels in a flow strip can stay imperative, because they read as
+a process rather than a claim (Kaza, Meridian Display 2026-09-28).
+
 **Never claim a capability that is not live yet.** On DMX the catalog band was titled
 "a catalog that can sell" and led with "every build is orderable" — while cart and
 checkout were switched off. The honest framing was stronger anyway: their product
