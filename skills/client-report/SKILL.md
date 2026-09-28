@@ -891,8 +891,9 @@ of the site's header blue. Say so when you do it; it's a departure from the plai
 logo-left title.
 
 **The pitch closes with a way to act.** A rebuild or Horizon pitch ends its central
-panel with an Action row to our sales team: confident copy, the case in two or three
-sentences, and a verified link. For August Ash that's augustash.com/contact-us, which
+panel with an Action row inviting the conversation: the case in two or three
+confident sentences, framed on where it takes them (*"Let's talk about getting you
+there"*), not on our team (*"talk to our sales team"*), and a verified link. For August Ash that's augustash.com/contact-us, which
 has a form and the main line, 952-851-9400.
 
 **Verify every link before it goes in.** Fetch it and read the page title. When
