@@ -885,6 +885,11 @@ smaller genre:
    rush*, and saying so plainly is what keeps the client from treating every
    held item as an emergency. If an urgent item exists, it goes in the header's
    *Action required* cell, displacing a routine licence ask.
+   Render the line as its own tinted panel under the item, coloured by severity:
+   red for urgent, amber for plan-for-it, green for no rush. The fill is the hue at
+   about 9% so it defines the note without shouting, the text takes a dark shade
+   of the same hue, and the tag is the solid hue. One `--u` custom property per
+   severity drives all three (Kaza, Meridian Display 2026-09-28).
 
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
