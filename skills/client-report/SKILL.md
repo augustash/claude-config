@@ -364,12 +364,23 @@ blocked ones. The page written for atr existed because the client had to *act* o
 a lapsed subscription, but the standing habit is one short record per round
 regardless, so "what did you do to our site last month" has a file to point at.
 
-**Write it to the desktop, not the repo** —
-`~/Desktop/<Client> Website Maintenance - <Month Year>.html`. It is a handover
-document, not a project artifact: it ships to the client and its useful life
-ends there, so versioning it puts a client-facing deliverable in the deploy
-artifact for no reader. A repo copy was committed once on wps and removed the
-same session. Readable filename with spaces — it gets attached to an email.
+**Two copies: the desktop one is sent, the repo one is kept.**
+
+- **To send:** `~/Desktop/<Client> Website Maintenance - <Month Year>.html`. It has a
+  readable filename with spaces, because it gets attached to an email.
+- **To keep:** `private/records/<round>.html` (for example `2026.09.html`), committed.
+  The next round reads it for what was held, promised (*Next*) and pitched, and to
+  carry the design forward (Kaza, Meridian Display 2026-09-28).
+- **`private/` is not optional.** On WordPress on Pantheon the repo root *is* the
+  docroot: `meridiandisplay.com/readme.html` returns 200, so a record committed
+  anywhere else is public, and records list unpatched vulnerabilities. Pantheon
+  never serves `private/` at the code root. On Drupal, `web/` is the docroot, so
+  `private/` is safe there too. Markdown isn't served either way (`.md` returns 404),
+  which is why project memory is fine where it is.
+- **After the first deploy, prove it:**
+  `curl -s -o /dev/null -w '%{http_code}' https://dev-<site>.pantheonsite.io/private/records/<round>.html`
+  must not return 200. On a host other than Pantheon (WP Engine), find its protected
+  path before committing a record at all.
 
 Evidence, framing, design and components (§1–2, §7) all apply, as does the §8
 integrity check. **Ignore §4's ten-section pitch structure**: this is a much
@@ -559,8 +570,8 @@ typical drawing by room and energy code*):
    a rebuild pitched under Horizon, say so in the idea and say that nothing built
    for it is thrown away (Kaza, Meridian Display 2026-09-28).
 
-**Don't repeat last month's idea.** The record lives on the desktop, not in the
-repo, so the next round can't see what was suggested. Log each idea in the
+**Don't repeat last month's idea.** Read last round's record in `private/records/`,
+and the ideas log, before the search. Log each idea in the
 project's `.claude/memory/ideas.md` with the round, the idea and what came of it,
 and read that log before starting the next search. An idea the client declined
 doesn't come back. One that went unanswered can be raised once more, if the
