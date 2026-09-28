@@ -10,6 +10,13 @@ understand what we found and buy what we would do next. Refined on the DMX Power
 rebuild report and the MSP Airport rebuild briefing, and on the monthly maintenance
 records (§6). Every client doc we build uses this skill's design system (§7).
 
+**The goal is the client's website getting better.** Every doc we build carries ideas,
+and most of them are work we would sell. That is deliberate, and it stays honest
+because the aim is the improvement, not the sale: show a client a better version of
+their own site, grounded in their data and their business, and the work follows. When
+a line reads as selling rather than improving, it's aimed wrong, so rewrite it toward
+what the site gains (Kaza, Meridian Display 2026-09-28).
+
 **The deliverable is one HTML file.** Self-contained, branded, opens by
 double-click in any browser, zips for email. Clients open these in a browser —
 they do not read markdown, and a parallel `<report>.md` twin is not wanted.
