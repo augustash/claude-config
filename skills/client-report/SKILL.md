@@ -49,6 +49,13 @@ bogus distribution (every page in one narrow band = crawler traffic, plus alias
 collisions inflating a node with the flights board's 129k hits). The right response
 was a caveat box saying per-page popularity needs GA4, not a quiet fudge.
 
+**Quote the steady baseline, not a spiky total.** A twelve-month count that includes a
+spam wave overclaims. On Meridian, 850 form entries shrank to *about 33 a month since
+February* once a four-month spike, most likely spam past the filter, was set aside. Break
+every count down by month before using it. Check order figures for refunds (WooCommerce
+`wc_get_orders` returns refunds unless you pass `type => shop_order`) and for
+pass-through such as shipping, which was half of Meridian's online revenue.
+
 **Verify before you claim.** Specific traps that have bitten:
 
 - **Author-name variants in git.** `kazajhodo` (2018) and `KazaJhodo` (2020) are the
@@ -151,6 +158,17 @@ shipments, one flagged late and switched to expedited. Label invented figures as
 illustrative, and make them add up, because the reader will check. Kaza's direction:
 *"it's good for clients to see complexity. It indicates we've really thought about
 their business."*
+
+**Their customers stay out of the document.** Form entries and orders name the
+client's own customers, and naming one in a document that will be forwarded isn't
+ours to do. Write the category instead: *brands putting product into grocers, club
+stores and natural-food chains*, never the brand or the chain. Keep the names in
+the project notes as the evidence behind the line.
+
+**Use their industry's words, all the way through.** Borrow the terms their buyers
+already use and hold them: on Meridian that was *retailer, store, distribution centre,
+rollout, in-hands date, dieline*. The reader should recognise their own business,
+not a web agency's description of it.
 
 **Check what the client already owns before recommending a build.** The strongest
 findings are usually *capability already paid for and not connected* — a licensed
@@ -545,10 +563,86 @@ it a *ramp* in the section's own hue — number, heading, body, aside at three o
 weights of one colour — rather than a single flat tone. That's what makes a panel look
 designed into its surroundings instead of dropped onto them.
 
-**A long report wants a sticky section nav.** Anchor every section, put the bar under
-the masthead rule, mark the active one with `IntersectionObserver`, give sections
-`scroll-margin-top`, hide it in print. Use an opaque ground — a translucent bar shifts
-colour as it passes over differently-coloured sections.
+**Every doc gets a sticky section nav, and one-word section headings.** A reader who
+can see what the document holds jumps to the part that interests them, and reads far
+more of it (Kaza, Meridian Display 2026-09-28). Headings are one word where one will do
+(*Updated, Held, Checked, Next, Ideas, Horizon*). The nav goes directly under the
+title block and lists them:
+- Mark the active section with `IntersectionObserver` and hide the nav in print.
+- Use an opaque ground: a translucent bar shifts colour as it passes over
+  differently-coloured sections.
+- Give sections a *small* `scroll-margin-top` (about 8px). Their own top padding
+  already clears the heading, and a large margin shows the tail of the previous
+  section under the nav after a jump.
+- Centre the items on desktop; left-align on a phone, where the list scrolls sideways
+  and keeps the active item in view.
+- No bottom border at rest. The hairline appears only once the nav is stuck, toggled
+  by an `IntersectionObserver` on a 1px sentinel just above it. At rest the title
+  block's rule already separates it.
+
+### Components
+
+The standing parts our docs are built from. Each one was settled through review, so
+reach for these before inventing a new device, and extend this list when a new one
+earns its place.
+
+**Markers: a tag and hanging copy.** A row with a small solid pill tag (*Action*,
+*Quote*, *Urgent*, *No rush*) followed by the copy, laid out as a grid:
+- The tag sits in a fixed-width column (about 84px), so every row's copy and link
+  start at the same x down the whole panel. Wrapped text hangs under the copy, not
+  under the tag.
+- The tag takes the colour of the panel it sits in, so the same markup reads red in
+  an urgent panel and blue in an idea.
+- A link goes on its own line under the copy, bold, underlined, with a trailing
+  "→".
+- **An Action row ends any note that has the reader's attention.** Once they are
+  alarmed or interested, the next thing they read is what to do, with a link to do it.
+  Don't end on a stopgap sentence instead.
+- **A Quote row carries an offer**: the hours, then what they buy in one line.
+
+**Severity panels.** A note that grades something (urgency, risk, status) becomes a
+tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
+green for no rush.
+- One `--u` custom property per severity drives three things: the fill (the hue at
+  about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
+  tag. Retuning a level is then one line.
+- Every panel ends with an Action row. Plain green *No rush* panels matter as much as
+  the red one: they stop the client treating everything held as an emergency.
+
+**Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
+optional actor label (*Buyer*, *Meridian*), a bold step name and at most one line of
+detail.
+- Colour the card's top edge by actor, using the client's primary and secondary brand
+  colours, so hand-offs show at a glance.
+- Eight steps sit as 4 × 2, and two columns on a phone.
+- When two flows exist (the shared process and the customer's own side), give each
+  its own strip, not one long one.
+
+**Mock UI, mid-task.** When the pitch is an interaction (drag into boxes, split a
+cart), draw a static mock of it caught halfway: some state filled in, one element
+mid-drag, a count of what's left.
+- It uses the worked example's own numbers, so it reconciles with the tables after it.
+- Label it illustrative in an `aria-label` or caption.
+- The picture sells an interaction better than any sentence about it.
+
+**Evidence strip.** Two or three measured figures in large mono, each with a short
+line of what it counts, on a left rule in the brand's secondary colour. Only numbers
+that survived §1's checks go here.
+
+**A logo drawn for a dark ground sits on a plate of its own header colour.** Meridian's
+yellow-and-white mark vanished on white, so the title block puts it on a rounded plate
+of the site's header blue. Say so when you do it; it's a departure from the plain
+logo-left title.
+
+**The pitch closes with a way to act.** A rebuild or Horizon pitch ends its central
+panel with an Action row to our sales team: confident copy, the case in two or three
+sentences, and a verified link. For August Ash that's augustash.com/contact-us, which
+has a form and the main line, 952-851-9400.
+
+**Verify every link before it goes in.** Fetch it and read the page title. When
+Cloudflare answers a script with 403, as augustash.com does, load it in the headless
+browser. A pricing or renewal link that 404s in a client's hands undoes the note it
+sits in.
 
 **Quality floor, unannounced:** responsive, keyboard focus visible, reduced motion
 respected, and a print stylesheet that flips dark bands to white.

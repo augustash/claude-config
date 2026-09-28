@@ -880,21 +880,13 @@ smaller genre:
    (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
    against the site's exposure: if registration is closed and only admins have
    accounts, a flaw needing a login is out of reach, so only unauthenticated ones
-   make an item urgent. A known exploitable flaw means update it, or name a
-   stopgap (a firewall) when the update is walled. No known issue means *No
-   rush*, and saying so plainly is what keeps the client from treating every
-   held item as an emergency. If an urgent item exists, it goes in the header's
-   *Action required* cell, displacing a routine licence ask.
-   Render the line as its own tinted panel under the item, coloured by severity:
-   red for urgent, amber for plan-for-it, green for no rush. The fill is the hue at
-   about 9% so it defines the note without shouting, the text takes a dark shade
-   of the same hue, and the tag is the solid hue. One `--u` custom property per
-   severity drives all three (Kaza, Meridian Display 2026-09-28).
-   Every panel ends with an **Action** row under a hairline: the same tag in the
-   panel's colour, what to do, and a checked link to do it (the vendor's pricing or
-   renewal page). Tags share a fixed-width column so all copy and links hang on
-   one line. Don't close with a stopgap sentence instead: once the note has their
-   attention, the next thing they read is what to do.
+   make an item urgent. A known exploitable flaw means update it, and when the
+   update is walled, the Action names what unblocks it (the licence to buy). No
+   known issue means *No rush*, and saying so plainly is what keeps the client from
+   treating every held item as an emergency. If an urgent item exists, it goes in
+   the header's *Action required* cell, displacing a routine licence ask. Render it
+   as client-report's **severity panel**, ending in an **Action** row with a
+   checked link (*Components*).
 
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
@@ -918,12 +910,9 @@ smaller genre:
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
    round's template is built, this is the step that gets dropped.
 
-Section headings are one word (*Updated, Held, Checked, Next, Ideas, Horizon*),
-and a sticky section nav sits under the title block listing them, so a client
-sees at a glance what the record holds and jumps to the part that interests
-them (Kaza, Meridian Display 2026-09-28). The active section is marked by
-`IntersectionObserver`, sections get a small `scroll-margin-top` (their own top
-padding already clears the heading), and the nav hides in print.
+Headings are one word, and a sticky section nav sits under the title block. Both
+are client-report standards (§6, *sticky section nav*), and so is every component
+named here.
 
 The record ends where its content does: no closing stamp, no sign-off
 paragraph. The design and copy direction behind that, and behind the spacing,
@@ -1029,9 +1018,8 @@ typical drawing by room and energy code*):
    hours."* The estimate is the dev's call. Propose one and confirm it before it
    goes in, rather than printing a number you made up.
 
-   Render the offer as a **Quote** marker, the same tag-and-hanging-copy row as
-   the held items' Action rows, in the idea panel's own colour: the hours, then
-   what they buy in one line. Break the estimate down internally first, since that
+   Render the offer as a **Quote** marker (client-report, *Components*): the
+   hours, then what they buy in one line. Break the estimate down internally first, since that
    breakdown is what you confirm with the dev. When the idea is a stopgap ahead of
    a rebuild pitched under Horizon, say so in the idea and say that nothing built
    for it is thrown away (Kaza, Meridian Display 2026-09-28).
