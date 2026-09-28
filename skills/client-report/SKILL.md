@@ -953,7 +953,12 @@ respected, and a print stylesheet that flips dark bands to white.
   `#anchor`, or repeats the same URL, scrolls without reloading, and you end up
   reviewing the old version. If Firefox wasn't started through `firefox-claude`, ask the reviewer to relaunch
   it rather than falling back to `open`. Take your own screenshots on the headless
-  `firefox-solo` server, not in their browser.
+  `firefox-solo` server, not in their browser. If it won't start, headless Chrome
+  (`--headless=new --screenshot`) works. It won't render narrower than about 500px,
+  though, so a `--window-size=390,…` shot shows content cut off on the right that
+  isn't really there. To see a true phone width, load the doc in a
+  `<iframe style="width:375px">` inside a wrapper page, and pass
+  `--allow-file-access-from-files` (metro, 2026-09-28).
 - **Verify the HTML after every structural edit** — print the result, don't assume.
   Renumbering, remapping and reordering have all failed silently. (This rule used to
   be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
