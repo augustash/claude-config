@@ -868,7 +868,7 @@ smaller genre:
    applied to the `th` makes FROM/TO render as large mono with a stray arrow
    beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
    cells only.
-3. **Held back on purpose** — only when something is. Every item gets its
+3. **Held** — only when something is. Every item gets its
    reason in the client's terms; without it, a short list of versions reads as
    the whole job. When nothing was held, cut the heading too. *"Nothing on the
    site was held back this round"* is a section answering a question nobody
@@ -902,9 +902,9 @@ smaller genre:
    carries a fault that breaks deployments"* was struck for exactly this: it
    describes our machinery, and the reader has no way to care. What survived
    each mapped to something on their site, and the section got sharper for it.
-4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
+4. **Checked** — the Phase 5 list, in their vocabulary. *Careers
    listing and its job search filters*, not *`/careers` returned 200*.
-5. **Monthly Ideas** — improvements to the site, each one work we'd do. At
+5. **Ideas** — improvements to the site, each one work we'd do. At
    least one comes from this round's search; see *One idea per round* below.
    Directly under the heading goes a small muted description line, *"How can
    we improve…"*, so the client reads the section as a standing habit rather
@@ -917,6 +917,13 @@ smaller genre:
    shape alone, not the wordmark. See
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
    round's template is built, this is the step that gets dropped.
+
+Section headings are one word (*Updated, Held, Checked, Next, Ideas, Horizon*),
+and a sticky section nav sits under the title block listing them, so a client
+sees at a glance what the record holds and jumps to the part that interests
+them (Kaza, Meridian Display 2026-09-28). The active section is marked by
+`IntersectionObserver`, sections get a small `scroll-margin-top` (their own top
+padding already clears the heading), and the nav hides in print.
 
 The record ends where its content does: no closing stamp, no sign-off
 paragraph. The design and copy direction behind that, and behind the spacing,
