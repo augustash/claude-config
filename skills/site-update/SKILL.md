@@ -1022,6 +1022,13 @@ typical drawing by room and energy code*):
    hours."* The estimate is the dev's call. Propose one and confirm it before it
    goes in, rather than printing a number you made up.
 
+   Render the offer as a **Quote** marker, the same tag-and-hanging-copy row as
+   the held items' Action rows, in the idea panel's own colour: the hours, then
+   what they buy in one line. Break the estimate down internally first, since that
+   breakdown is what you confirm with the dev. When the idea is a stopgap ahead of
+   a rebuild pitched under Horizon, say so in the idea and say that nothing built
+   for it is thrown away (Kaza, Meridian Display 2026-09-28).
+
 **Don't repeat last month's idea.** The record lives on the desktop, not in the
 repo, so the next round can't see what was suggested. Log each idea in the
 project's `.claude/memory/ideas.md` with the round, the idea and what came of it,
