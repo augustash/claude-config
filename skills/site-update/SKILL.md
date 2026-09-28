@@ -930,6 +930,12 @@ idea. When the dev brings another, such as a service they want to offer, it
 goes under the same heading with the same three-paragraph shape, not a section
 of its own.
 
+**When the round turns up a rebuild, it gets a Horizon section.** One small idea
+still leads, because it is billable now. When the evidence says the site needs more
+than hours, pitch it under *Horizon* after the Ideas, as on su and Meridian Display.
+Follow client-report's *Show the complexity* rule: the full model goes in the
+project's `.claude/memory/`, and the record gets a worked example of it.
+
 **Start from what the site is for.** Before looking for problems, name the main
 visitor and what they come to do. Read it off the site rather than the brief:
 the main navigation, where the content volume sits, and what the forms collect.

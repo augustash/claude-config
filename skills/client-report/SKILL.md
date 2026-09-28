@@ -134,6 +134,24 @@ wasted opportunity. "There is no search reporting" → "a standing search-qualit
 report tells your teams, in your customers' own words, what people came looking for
 and did not find." Watch for these on every pass.
 
+**Show the complexity, as a worked example.** A client seeing the hard parts of their
+own business laid out reads it as proof that we have thought about it. Simplifying them
+away reads as not having looked. So the thinking goes into two places:
+
+- **The project notes get the full model** (`.claude/memory/`): data shapes, edge cases,
+  sequencing, what it costs and why. Write it while the detail is fresh, because it is
+  the scoping document the sale will need.
+- **The client gets a variation of it**, in their terms. One realistic case followed all
+  the way through, with numbers that reconcile, beats a list of features. Then a short
+  *what makes it work* list names the hard parts and what we would need from them.
+
+On Meridian Display (2026-09-28) the rebuild pitch showed a single order: two artworks
+of one display, split across two chains' stores and DCs, consolidated into six
+shipments, one flagged late and switched to expedited. Label invented figures as
+illustrative, and make them add up, because the reader will check. Kaza's direction:
+*"it's good for clients to see complexity. It indicates we've really thought about
+their business."*
+
 **Check what the client already owns before recommending a build.** The strongest
 findings are usually *capability already paid for and not connected* — a licensed
 platform the site never calls, data already synced but never displayed, a metric
