@@ -1,6 +1,6 @@
 ---
 name: site-update
-description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Starts at the Pantheon upstream — Drupal, Drupal 7 and WordPress each have one, and no package manager will bring it. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success. On WordPress it covers the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
+description: Run a routine dependency-update pass on a client site — Drupal (composer) or WordPress. Starts at the Pantheon upstream — Drupal, Drupal 7 and WordPress each have one, and no package manager will bring it. Covers the phase order that keeps the site bootable, patch triage and the composer-patches mechanics that make an edited patch silently not apply, which bumps to take and which to hold, what to do when a licence or marketplace paygate blocks one, and the verification that catches a break the tooling reported as success, and ends every round by handing off to the client-report skill for the client record. On WordPress it covers the WooCommerce round. Owns patch handling for every Drupal skill. Also use after upgrading ddev itself, to re-assert the project scaffolding. Use for scheduled or ad-hoc maintenance rounds. NOT for a major core version increment — that's an upgrade, see drupal-11-upgrade — and not for adding a new dependency.
 ---
 
 # Site update pass
@@ -46,9 +46,15 @@ ddev drush cim -y
 
 ```bash
 ddev composer update augustash/claude-config     # vendor tree must be clean first
+grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock || echo "lock behind vendor: re-run the update"
 ls .claude/skills/                               # want site-update and client-report
 cp -R vendor/augustash/claude-config/skills/{site-update,client-report} .claude/skills/
 ```
+
+The `cp` is safe only because the update just put the lock on vendor's HEAD. **If you refine a
+skill later in the round, re-run the update rather than copying again**: a copy newer than the
+lock is rewritten by the Pantheon build, which then fails on modified tracked files (kow
+2026-09-29).
 
 The update refreshes every adopted skill, but you are reading this one *now*, so
 a stale copy runs the whole round on stale text. Adoption is manual and
@@ -98,6 +104,10 @@ before the dependency work, since applying it can move `composer.json` itself:
 ddev exec 'terminus upstream:updates:status <site>.dev'   # current | outdated
 ddev exec 'terminus upstream:updates:list <site>.dev'     # what is pending, and why
 ```
+
+If the container's terminus says `You are not logged in`, don't stop to
+authenticate. The `git fetch` below needs no terminus and answers the same
+question.
 
 Three upstreams, one per stack:
 
@@ -605,12 +615,9 @@ grep -oiE "the website encountered|TypeError|ArgumentCountError" /tmp/o.html
 
 Core minors move typed signatures and default behaviour, and the fallout lands in
 contrib and in our own modules. If something is off after core moved, check these
-before debugging from scratch — each is a known shape, and two of them look fine
-in a browser:
+before debugging from scratch — each is a known shape, and one of them looks
+fine in a browser:
 
-- [exo-d11-image-formatters](../../memory/drupal/exo-d11-image-formatters.md) —
-  **11.4** added an 11th `ImageFormatter` constructor arg; any image field or eXo
-  Gallery WSODs with `ArgumentCountError` or `TypeError` on arg #11
 - [neo-image-avif-on-d11-2](../../memory/augustash/neo-image-avif-on-d11-2.md) —
   **11.2** switched Neo derivatives to AVIF; every page looks perfect and every
   link preview is broken
@@ -618,7 +625,9 @@ in a browser:
   covered in Phase 1, included here because this is where you'd notice it
 
 The general shape is a parent class gaining a constructor arg or a property type,
-which is invisible to static analysis and fatal at render. Grep our custom and
+which is invisible to static analysis and fatal at render. **11.4** did exactly
+this to `ImageFormatter` (an 11th constructor arg); exo's image formatters
+WSODed on it until exo 2.0.29, so on an older exo the fix is to bump it. Grep our custom and
 augustash modules for `__construct` overrides that call `parent::__construct()`
 with a positional list whenever core's minor moves.
 
@@ -713,13 +722,42 @@ way rather than through `wp option get woocommerce_helper_data` — that option
 holds the account's OAuth access token and secret, and it must not land in a
 report, a commit or a paste.
 
+### A plugin handed over as a zip
+
+Premium plugins with no update channel arrive as a zip from the dev or the
+client. Installing one is a file swap, and **a file swap never fires
+`register_activation_hook`** — neither does the git deploy that ships it. A
+release that creates tables or adds columns only in its activation hook looks
+installed everywhere and has no schema anywhere, and it fails later, in a daily
+cron or at the first order that touches the missing column.
+
+Before swapping, diff the old copy against the new on what holds data. The
+version number won't tell you how big the change is: on atr the EBizCharge
+gateway went 5.4.1 → 11.0.0 as a full rewrite, with versions now tracking
+WooCommerce's.
+
+```bash
+grep -rhoE "register_(de)?activation_hook\([^;]+|register_uninstall_hook[^;]+" <dir>
+grep -rhoE "this->id\s*=\s*'[^']+'" <dir>          # gateway id → woocommerce_<id>_settings
+grep -rhoE "CREATE TABLE[^(]+|ALTER TABLE" <dir>
+```
+
+Unchanged gateway id and meta keys mean settings and saved cards carry across.
+No deactivation or uninstall hook means a deactivate → activate is safe. Do
+that locally, confirm the tables exist, and **tell the dev it has to be repeated
+on each Pantheon environment after the deploy**. It goes in the commit message
+too, since that's where it will be read at deploy time.
+
+Extract to the scratchpad with `-x '__MACOSX/*'`, and delete any `.DS_Store`
+before you commit.
+
 ### A guard we carry is a patch by another name
 
 An mu-plugin written to work around a contrib bug is exactly the carried fix
 Phase 2 talks about, and a version bump is when to re-check it. Read the new
 release's code, not its changelog:
 [carried-fix-obsolete-check](../../memory/augustash/carried-fix-obsolete-check.md).
-On this round AIOSEO Pro went 5.0.0.1 → 5.0.1 with
+On the 2026-08-26 round AIOSEO Pro went 5.0.0.1 → 5.0.1 with
 [the REST-head null](../../memory/wordpress/aioseo-rest-head-null-ajax-cron.md)
 still unfixed at both ends, so the guard stayed and its "verified against"
 note moved forward — cheap, and it stops the next round re-deriving it.
@@ -774,6 +812,16 @@ reporting them:
 
 ## Deploying
 
+**Deploy with the launcher, not by hand:** `l t.<pantheon-site>.live` from the project
+directory (`l` is the alias for `~/Projects/launcher/launcher.sh`; `.test` or `.dev` stops
+earlier). It is the team's standard deploy for Drupal and WordPress alike. It waits for the
+push's dev build, promotes the code with `env:deploy`, and runs `drush deploy` (updb, cim,
+cache rebuild, deploy hooks) on each environment, or the WordPress database updates below.
+It **stops the chain** the moment a step fails, so a `cim` that breaks on test never reaches
+live. Hand-rolled `terminus env:deploy` plus `drush` loses that guard, which is why it isn't
+the way. On kow 2026-09-29 a session started deploying by hand and Kaza had to point at it.
+Asking to push and deploy is the go-ahead for the full chain to live.
+
 Pantheon's code log reports a deploy against the **previous** build for a short
 window after a push, so a post-deploy check straight after can pass on the old
 code. See
@@ -783,116 +831,30 @@ before any `terminus` against `.live`/`.test`
 
 ---
 
+**WordPress needs its database updates run on every environment.** A WooCommerce bump
+that carries migrations leaves each Pantheon environment behind until `wp wc update`
+runs there, and a core upstream merge wants `wp core update-db`. Neither reliably runs
+itself. The launcher deploy above does both on each environment, running
+`wc update` only where WooCommerce is active. It stops the chain if either fails to
+print `Success:`, because `terminus wp` can exit 0 silently. First run on Meridian
+Display, 2026-09-28: five WooCommerce migrations on each of dev, test and live.
+
 ## Reporting back
 
 Lead with the decisions, not the transcript. What went up, what you held and why,
 what you verified, what's left. The held list is the part worth reading — it's
 the only place judgment was exercised.
 
+Say what the hold list costs later, too. Holding a module because its next major
+targets the next core major is correct *and* it is a countdown: each one is work
+that lands with the upgrade. A hold list that quietly becomes an upgrade scope is
+worth surfacing before the client asks.
+
 ### Every round ends with a client record
 
-Not just the blocked ones. The [client-report](../client-report/SKILL.md) page
-written for atr existed because the client had to *act* on a lapsed
-subscription — but the standing habit is one short record per round regardless,
-so "what did you do to our site last month" has a file to point at.
-
-**Write it to the desktop, not the repo** —
-`~/Desktop/<Client> Website Maintenance - <Month Year>.html`. It is a handover
-document, not a project artifact: it ships to the client and its useful life
-ends there, so versioning it puts a client-facing deliverable in the deploy
-artifact for no reader. A repo copy was committed once on wps and removed the
-same session. Readable filename with spaces — it gets attached to an email.
-
-Borrow the [client-report](../client-report/SKILL.md) §6 design rules and §7
-integrity check; **ignore its ten-section pitch structure** — this is a much
-smaller genre:
-
-1. **Title block** — one band: the client logo on the left, and on the right
-   three label-over-value columns split by hairline rules: *Project* (the
-   domain), *Sheet* (`Maintenance`), *Round* (`2026.09`, mono). Nothing else.
-   Settled on sisal (2026-09-23) after a six-cell grid read as a form. Issued
-   duplicated Round, Prepared by is what the studio mark already says, and a
-   standing "core support" cell said nothing that needed saying. On a phone
-   the columns wrap under the logo and stay one row. Add an *Action required*
-   column only when something is genuinely on the client and not already in
-   motion (see the flag check below). When it applies, it goes in the header,
-   not on page two. Call the platform "core", not "Drupal", throughout:
-   *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
-2. **Updated** — a version table of the ten or so components a non-developer
-   recognises, each with a plain-language gloss (*Webform — contact and request
-   forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
-   **Everything under a section heading is indented to the heading's words**:
-   the indent is the heading icon's width plus its gap
-   (`--indent: calc(var(--bm) + var(--bm-gap))`), so content hangs under the
-   title, not the icon. The table takes the indent on both sides, and its
-   caption line rides with it. Everything else takes it on the left only. On a
-   phone the table gives back its right side, or the component column wraps
-   to six lines. One `section > :not(h2)` rule does it, so give component
-   blocks `margin-block`, not `margin:0`, or they drop back out of the
-   indent. Kaza's standard, sisal 2026-09-23. It replaced a narrower centred
-   44rem column, which was too much margin and gave the table a treatment of
-   its own. All three column heads share the small-caps label style. A `.num` rule
-   applied to the `th` makes FROM/TO render as large mono with a stray arrow
-   beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
-   cells only.
-3. **Held back on purpose** — the section that earns the document. Every item
-   gets its reason in the client's terms. Without it, a short list of versions
-   reads as the whole job.
-
-   **A hold the client cannot perceive does not belong here.** Build tooling,
-   composer plugins, anything whose entire existence is upstream of their site —
-   cut it, however real the decision was. On wps *"three build tools … one
-   carries a fault that breaks deployments"* was struck for exactly this: it
-   describes our machinery, and the reader has no way to care. What survived
-   each mapped to something on their site, and the section got sharper for it.
-4. **Checked afterwards** — the Phase 5 list, in their vocabulary. *Careers
-   listing and its job search filters*, not *`/careers` returned 200*.
-5. **Next** — only when there is something. Cut it otherwise rather than padding.
-6. **The studio mark**, centred at the very bottom. For August Ash that means the A
-   shape alone, not the wordmark. See
-   [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
-   round's template is built, this is the step that gets dropped.
-
-The record ends where its content does: no closing stamp, no sign-off
-paragraph. The design and copy direction behind that, and behind the spacing,
-width and heading scale, is in client-report's *A house style, still
-forming*. Read it before drafting, since this record is where most of it
-was learned.
-
-Pull the palette from the **theme's own variables file**, not the logo and not
-memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
-the document's brand colour cannot drift apart. On wps the theme's red was
-`#e1251b` while `logo.svg` carried `#E02726` — near-identical, and visibly wrong
-side by side.
-
-### State where the platform sits in its support window — looked up, not recalled
-
-The one claim in a maintenance record that is worth a client's attention is how
-much runway the current major has, and it is exactly the claim most likely to be
-written from memory and be wrong. On wps the draft said *"Drupal 10 is supported
-into 2027, so there is room to plan"*; the schedule says **Drupal 10 reaches end
-of life 9 December 2026**, and `10.6.x` is the final minor — about fifteen weeks
-out, and the round had just taken core as far as Drupal 10 goes.
-
-That single fact inverted the document. "Nothing needed from you" became a dated
-upgrade window, and it belongs in the header cell rather than a closing
-paragraph.
-
-**Ask where the client already stands before flagging it again.** The next
-month, wps's draft carried an *Action required: schedule Drupal 11* cell and
-asked them to book an October window. The upgrade was already under way, so
-the cell was cut and the copy turned into "in progress". A standing flag copied
-forward from last month's record is the likeliest part of the draft to be out
-of date, and the repo won't tell you. The dev will.
-
-Check it every round, from the authority, at the moment you write it:
-
-| Stack | Authority |
-|---|---|
-| Drupal | [drupal.org core release schedule](https://www.drupal.org/about/core/policies/core-release-cycles/schedule) |
-| WordPress | [wordpress.org/about/roadmap](https://wordpress.org/about/roadmap/) — and the PHP version's own EOL, which bites first more often |
-
-It also reframes Phase 3's hold list. Holding a module because its 4.x targets
-the next major is correct *and* it is a countdown: each one is work that lands
-with the upgrade. Say so in the internal report — a hold list that quietly
-becomes an upgrade scope is worth surfacing before the client asks.
+**Write it with the [client-report](../client-report/SKILL.md) skill, §6 *The
+maintenance record*.** That section owns the record end to end: where it is saved,
+its layout, the urgency grading of held items, the one-idea search and ideas log,
+Horizon when the round turns up a rebuild, and the support-window check. Load it
+before drafting. This skill's job ends at the facts the record is built from: what
+moved, what was held and why, what was verified.

@@ -26,6 +26,51 @@ in it. Meanwhile `og_description` **is not in Neo's defaults at all**, so a site
 populated meta description and still no Open Graph description. Check all four; fixing only
 the one an audit named leaves the other three looking done.
 
+## The whole Open Graph identity set is absent too, not just og_description
+
+Neo's `metatag.metatag_defaults.global` ships `og_image*`, the `og_*` address tags and
+`twitter_cards_*` — and **none of `og_title`, `og_type`, `og_site_name`, `og_url`,
+`og_locale`**. So a Neo site serves a share card with an image and no title.
+
+⚠ **Do NOT reason that a missing `og:title` falls back to `<title>`.** That is what the
+fallback chain implies and it is not what LinkedIn does. On dmx-power.com (2026-09-25), with
+`<title>DMX Power</title>` present and correct, LinkedIn's crawler walked the DOM and titled
+the card **"Read the fault code"** — an `<h3>` from step 01 of an owner-steps list partway down
+the homepage. The client screenshotted it from the post composer while drafting a launch post.
+
+That is the real shape of the "random snippet" complaint, and it is worth holding onto because
+the documented behaviour argues the other way: I had the diagnosis right, talked myself out of
+it by reasoning from the spec, and only the client's screenshot settled it. **A crawler's
+observed output beats its documented fallback.**
+
+The fix is config, not code — add to `metatag.metatag_defaults.global`:
+
+```
+og_title: '[neo:title] | [site:name]'
+og_site_name: '[site:name]'
+og_type: website
+og_locale: en_US
+```
+
+⚠ **Override `og_title` on the front-page default**, which already sets `title: '[site:name]'`.
+The global pattern resolves there to `DMX Power | DMX Power`, because `neo_tokens_title()`
+returns the site name unconditionally on the front page.
+
+⚠ **`og_url` belongs in `hook_metatags_alter()`, copied from `canonical_url` — not given a
+token.** Canonical is `[current-page:url]` globally, `[node:url]` on nodes and `[term:url]` on
+terms, and any bundle may override it again; copying is what keeps the pair in step. A scraper
+that sees the two disagree treats one page as two objects, so a shared link with `?fbclid=` or
+`?utm_*` splits its engagement. Nothing about this is visible from a browser.
+
+⚠ **Deploying the fix does not fix the preview.** LinkedIn caches per URL for ~7 days with no
+purge button; re-scraping through **Post Inspector** (`linkedin.com/post-inspector/`) is the
+only way, and it needs a login. Facebook is the same via Sharing Debugger's "Scrape Again". So
+after any og change, force a re-scrape of every URL about to be posted **before** the client
+posts, or they get the cached broken card on the one post that matters.
+
+⚠ **On LinkedIn the card is title + domain only — no description renders.** So a home page's
+`og:title` is the entire message there, and a bare site name reads as two words in a feed.
+
 ## Fixing it
 
 Two seams, and which one is right depends on how many description sources the site has.

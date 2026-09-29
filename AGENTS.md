@@ -43,7 +43,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Comment style** — `vendor/augustash/claude-config/memory/preferences/comments.md`  
   concise; explain the WHY, skip the obvious
 - **Commit messages** — `vendor/augustash/claude-config/memory/preferences/commit-messages.md`  
-  subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
+  before every commit: no Co-Authored-By or session trailers; subject + a tight WHY
 - **Run cex before commit rounds** — `vendor/augustash/claude-config/memory/preferences/cex-before-commit.md`  
   before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
@@ -93,6 +93,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
 - **Cloudflare WAF and event tool** — `vendor/augustash/claude-config/memory/cloudflare/waf-rule-tool.md`  
   before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- **A Single Redirect needs its own token permission** — `vendor/augustash/claude-config/memory/cloudflare/single-redirect-permission.md`  
+  a redirect rule 403s on a token that works for everything else; also before pointing a retired domain at its replacement
 - **A WAF rule keyed on http.referer inverts** — `vendor/augustash/claude-config/memory/cloudflare/referer-is-not-a-security-condition.md`  
   before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
@@ -132,6 +134,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   giving ONE page a short external Cache-Control, and why TTL beats tag-purge
 - **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
+  search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build
 - **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
@@ -181,7 +185,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
   a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
-  Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
+  Selenium setup and tag-scoped runs; also a wait that never waits, or a suite flaky only on clicks
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
   serial runs, condition waits, warm caches first
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
@@ -216,8 +220,6 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a slider that overflows on mobile only
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
   a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
-- **eXo image formatters — D11.4 constructor break** — `vendor/augustash/claude-config/memory/drupal/exo-d11-image-formatters.md`  
-  images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **Detecting a click into a cross-origin iframe** — `vendor/augustash/claude-config/memory/drupal/cross-origin-iframe-click-detection.md`  
@@ -273,18 +275,18 @@ These files are authoritative and kept current by the team. Prefer conventions h
   images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
 - **A spent neo-animate reveal seals a stacking context** — `vendor/augustash/claude-config/memory/augustash/neo-animate-identity-transform-stacking.md`  
   a sibling won't layer between two children no matter what z-index it gets
-- **The `neo:description` token falls back to the site slogan** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
-  every page shares one meta description, or no page has one; also before setting a site slogan
+- **Neo's metatag defaults leave the social tags unresolvable** — `vendor/augustash/claude-config/memory/augustash/neo-metatag-description-slogan.md`  
+  a share card titled with a heading from mid-page, one meta description site-wide, or none; also before setting a site slogan
 - **neo_icon renders an empty span for a style-prefixed id** — `vendor/augustash/claude-config/memory/augustash/neo-icon-id-prefix.md`  
   an icon silently renders empty; also before pasting what `neoi-list` prints
 - **drupal_cache_protection** — `vendor/augustash/claude-config/memory/augustash/drupal_cache_protection.md`  
-  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, or when its robots rules are missing from robots.txt
+  tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, when its robots rules are missing from robots.txt, or a custom f[] param 400s
 - **recently_read (augustash fork)** — `vendor/augustash/claude-config/memory/augustash/recently-read.md`  
   a fork we own; never re-sync with upstream, the divergence is the point
 - **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
   before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
-  dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
+  before committing any `.claude/skills` copy, or when a Pantheon build fails on a modified `.claude/skills/**`; also the dirty-vendor trap
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
   terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  

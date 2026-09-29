@@ -284,7 +284,7 @@ ends the discussion rather than starting a tracked one.
 ## 8. Output
 
 **One self-contained HTML file, in the project's `docs/`.** Same contract as
-[client-report](../client-report/SKILL.md) §5 — real `<!DOCTYPE html>`, `<meta charset>`,
+[client-report](../client-report/SKILL.md) §7 — real `<!DOCTYPE html>`, `<meta charset>`,
 viewport, system fonts only, zero external references. Verify with
 `grep -oE '(src|href)="[^#][^"]*"'` returning nothing.
 

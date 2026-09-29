@@ -1,13 +1,22 @@
 ---
 name: client-report
-description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it. Not for internal or technical write-ups, and not when the finding is one the client would rather be told than sent — confirm a document is actually wanted before building one.
+description: Build an evidence-led client report or rebuild pitch — gather real data, frame it so it sells without overclaiming, and ship it as a self-contained branded HTML page. Use for rebuild bids, site audits, discovery findings, value summaries, the monthly maintenance record every site-update round ends with, response documents answering a written request (legal demand, client questionnaire, post-incident), or any document where we tell a client what we found and what we would do about it. Owns our doc design system and components for every client doc. Not for internal or technical write-ups, and not when the finding is one the client would rather be told than sent — confirm a document is actually wanted before building one.
 ---
 
 # Client report
 
 A method for producing the document we hand a client when we want them to
 understand what we found and buy what we would do next. Refined on the DMX Power
-rebuild report and the MSP Airport rebuild briefing.
+rebuild report and the MSP Airport rebuild briefing, and on the monthly maintenance
+records (§6). Every client doc we build uses this skill's design system (§7).
+
+**The goal is to help the client grow.** Their growth is what grows us, so we don't
+need to aim at selling; we aim at making them better, and the work follows on its
+own. Every doc carries ideas, and most are work we would do, but each one earns its
+place by what it does for their business: grounded in their data, in their words,
+measured against what their site is for. When a line reads as selling rather than
+helping them grow, it's aimed wrong, so rewrite it toward what they gain (Kaza,
+Meridian Display 2026-09-28).
 
 **The deliverable is one HTML file.** Self-contained, branded, opens by
 double-click in any browser, zips for email. Clients open these in a browser —
@@ -48,6 +57,13 @@ document. On MSP, an attempt to rank content pages this way produced an obviousl
 bogus distribution (every page in one narrow band = crawler traffic, plus alias
 collisions inflating a node with the flights board's 129k hits). The right response
 was a caveat box saying per-page popularity needs GA4, not a quiet fudge.
+
+**Quote the steady baseline, not a spiky total.** A twelve-month count that includes a
+spam wave overclaims. On Meridian, 850 form entries shrank to *about 33 a month since
+February* once a four-month spike, most likely spam past the filter, was set aside. Break
+every count down by month before using it. Check order figures for refunds (WooCommerce
+`wc_get_orders` returns refunds unless you pass `type => shop_order`) and for
+pass-through such as shipping, which was half of Meridian's online revenue.
 
 **Verify before you claim.** Specific traps that have bitten:
 
@@ -134,6 +150,35 @@ wasted opportunity. "There is no search reporting" → "a standing search-qualit
 report tells your teams, in your customers' own words, what people came looking for
 and did not find." Watch for these on every pass.
 
+**Show the complexity, as a worked example.** A client seeing the hard parts of their
+own business laid out reads it as proof that we have thought about it. Simplifying them
+away reads as not having looked. So the thinking goes into two places:
+
+- **The project notes get the full model** (`.claude/memory/`): data shapes, edge cases,
+  sequencing, what it costs and why. Write it while the detail is fresh, because it is
+  the scoping document the sale will need.
+- **The client gets a variation of it**, in their terms. One realistic case followed all
+  the way through, with numbers that reconcile, beats a list of features. Then a short
+  *what makes it work* list names the hard parts and what we would need from them.
+
+On Meridian Display (2026-09-28) the rebuild pitch showed a single order: two artworks
+of one display, split across two chains' stores and DCs, consolidated into six
+shipments, one flagged late and switched to expedited. Label invented figures as
+illustrative, and make them add up, because the reader will check. Kaza's direction:
+*"it's good for clients to see complexity. It indicates we've really thought about
+their business."*
+
+**Their customers stay out of the document.** Form entries and orders name the
+client's own customers, and naming one in a document that will be forwarded isn't
+ours to do. Write the category instead: *brands putting product into grocers, club
+stores and natural-food chains*, never the brand or the chain. Keep the names in
+the project notes as the evidence behind the line.
+
+**Use their industry's words, all the way through.** Borrow the terms their buyers
+already use and hold them: on Meridian that was *retailer, store, distribution centre,
+rollout, in-hands date, dieline*. The reader should recognise their own business,
+not a web agency's description of it.
+
 **Check what the client already owns before recommending a build.** The strongest
 findings are usually *capability already paid for and not connected* — a licensed
 platform the site never calls, data already synced but never displayed, a metric
@@ -189,6 +234,14 @@ own migration is not** — it is invisible to them, it is not what they are buyi
 it plants a doubt in a document whose whole job is confidence. The same cut applies
 to any credential, defect or near-miss on our side that never reached production:
 disclosing it reads as honesty to us and as alarm to them.
+
+**Write what we propose in the conditional.** A pitch describes a system that doesn't
+exist yet, and present tense quietly claims it does: *"their account keeps each
+retailer's stores"* reads as a feature they already have. Use *would* and *should*
+for everything we would build (*"their account should keep…"*, *"the invoice would
+go out"*), and keep the present tense for what is true today (*"you already supply
+dielines"*). Step labels in a flow strip can stay imperative, because they read as
+a process rather than a claim (Kaza, Meridian Display 2026-09-28).
 
 **Never claim a capability that is not live yet.** On DMX the catalog band was titled
 "a catalog that can sell" and led with "every build is orderable" — while cart and
@@ -305,7 +358,283 @@ The test for all of them: does the sentence say the thing, or talk about saying 
 
 ---
 
-## 6. Design
+## 6. The maintenance record
+
+The third genre: the short record a client gets after every maintenance round. It is
+not a pitch and not a response, though it can carry one of each: a held item the
+client has to act on, and a Horizon when the round turns up a rebuild. The round
+itself (updates, holds, verification) is [site-update](../site-update/SKILL.md)'s job;
+the record is this skill's.
+
+
+Every [site-update](../site-update/SKILL.md) round ends with one, not just the
+blocked ones. The page written for atr existed because the client had to *act* on
+a lapsed subscription, but the standing habit is one short record per round
+regardless, so "what did you do to our site last month" has a file to point at.
+
+**The HTML is sent; a Markdown summary is kept.**
+
+- **To send:** `~/Desktop/<Client> Website Maintenance - <Month Year>.html`. It has a
+  readable filename with spaces, because it gets attached to an email. Never commit
+  it.
+- **To keep:** `.claude/memory/records/<round>.md` (for example `2026.09.md`),
+  committed and indexed in the project's `MEMORY.md`. It holds:
+  - what was updated
+  - each held item, with the urgency and action the client was given
+  - what *Next* promised
+  - the idea (with its quote) and any Horizon pitch
+  - what's still awaiting the client
+
+  The next round, run by whoever picks it up, starts by reading it. It carries the
+  context; this skill carries the design (Kaza, Meridian Display 2026-09-28).
+- **Why not the HTML in the repo:** on WordPress on Pantheon the repo root *is* the
+  docroot, so `meridiandisplay.com/readme.html` returns 200. A committed record would
+  be public, and records list unpatched vulnerabilities. Pantheon returned 404 for
+  `.md` files in the repo, including at the root, which is why project memory is safe
+  there. On another host (WP Engine), confirm `.md` isn't served before committing any
+  memory that names a vulnerability.
+
+Evidence, framing, design and components (§1–2, §7) all apply, as does the §8
+integrity check. **Ignore §4's ten-section pitch structure**: this is a much
+smaller genre.
+
+**The layout:**
+
+1. **Title block** — one band: the client logo on the left, and on the right
+   three label-over-value columns split by hairline rules: *Project* (the
+   domain), *Sheet* (`Maintenance`), *Round* (`2026.09`, mono). Nothing else.
+   Settled on sisal (2026-09-23) after a six-cell grid read as a form. Issued
+   duplicated Round, Prepared by is what the studio mark already says, and a
+   standing "core support" cell said nothing that needed saying. On a phone
+   the columns wrap under the logo and stay one row. Add an *Action required*
+   column only when something is genuinely on the client and not already in
+   motion (see the flag check below). When it applies, it goes in the header,
+   not on page two. Call the platform "core", not "Drupal", throughout:
+   *Core 10.6.15 → 10.6.17*, *Core 10 end of life*.
+2. **Updated** — a version table of the ten or so components a non-developer
+   recognises, each with a plain-language gloss (*Webform — contact and request
+   forms*). One caption line absorbs the rest: *"plus 36 supporting libraries."*
+   **Everything under a section heading is indented to the heading's words**:
+   the indent is the heading icon's width plus its gap
+   (`--indent: calc(var(--bm) + var(--bm-gap))`), so content hangs under the
+   title, not the icon. The table takes the indent on both sides, and its
+   caption line rides with it. Everything else takes it on the left only. On a
+   phone the table gives back its right side, or the component column wraps
+   to six lines. One `section > :not(h2)` rule does it, so give component
+   blocks `margin-block`, not `margin:0`, or they drop back out of the
+   indent. Kaza's standard, sisal 2026-09-23. It replaced a narrower centred
+   44rem column, which was too much margin and gave the table a treatment of
+   its own. All three column heads share the small-caps label style. A `.num` rule
+   applied to the `th` makes FROM/TO render as large mono with a stray arrow
+   beside COMPONENT, so reset `thead th.num` and keep the arrow on the value
+   cells only.
+3. **Held** — only when something is. Every item gets its
+   reason in the client's terms; without it, a short list of versions reads as
+   the whole job. When nothing was held, cut the heading too. *"Nothing on the
+   site was held back this round"* is a section answering a question nobody
+   asked, and it was struck on ilc (2026-09-25).
+
+   **Close every held item with an urgency line** (Kaza, Meridian Display
+   2026-09-28): a tag (*Urgent* / *All good*) and one sentence on why. Grade it
+   from a vulnerability database against the held version, not from memory
+   (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
+   against the site's exposure: if registration is closed and only admins have
+   accounts, a flaw needing a login is out of reach, so only unauthenticated ones
+   make an item urgent. A known exploitable flaw means update it, and when the
+   update is walled, the Action names what unblocks it (the licence to buy). No
+   known issue means *All good* (Kaza's change from *No rush*, kow
+   2026-09-29), and saying so plainly is what keeps the client from
+   treating every held item as an emergency. If an urgent item exists, it goes in
+   the header's *Action required* cell, displacing a routine licence ask. Render it
+   as a §7 **severity panel**, ending in an **Action** row with a checked link
+   when the client has something to do.
+
+   **A hold the client cannot perceive does not belong here.** Build tooling,
+   composer plugins, anything whose entire existence is upstream of their site —
+   cut it, however real the decision was. On wps *"three build tools … one
+   carries a fault that breaks deployments"* was struck for exactly this: it
+   describes our machinery, and the reader has no way to care. What survived
+   each mapped to something on their site, and the section got sharper for it.
+4. **Checked** — site-update's Phase 5 verification, in their vocabulary. *Careers
+   listing and its job search filters*, not *`/careers` returned 200*.
+5. **Ideas** — improvements to the site, each one work we'd do. At
+   least one comes from this round's search; see *One idea per round* below.
+   Directly under the heading goes a small muted description line, *"How can
+   we improve…"*, so the client reads the section as a standing habit rather
+   than a sales insert. Kaza cut a full-sentence version to this.
+6. **Next** — only when something is actually coming that the client needs to
+   know about. A paragraph whose message is "nothing is required of you" is
+   nothing, so cut it. On ilc a line about core 12's release date and core 11
+   staying covered was struck as not needed.
+7. **The studio mark**, centred at the very bottom. For August Ash that means the A
+   shape alone, not the wordmark. See
+   [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
+   round's template is built, this is the step that gets dropped.
+
+Headings are one word, and a sticky section nav sits under the title block
+(§7, *sticky section nav*). The panels, markers and flow strips named here are §7's
+*Components*.
+
+The record ends where its content does: no closing stamp, no sign-off
+paragraph. One short send-off line is allowed: centred, bold, a step below the
+section headings, directly above the studio mark. It works when a Horizon has
+opened the door (*"Now is the time to dream big."*, Meridian Display 2026-09-28). One
+line, never a paragraph. The design and copy direction behind that, and behind the spacing,
+width and heading scale, is §7's *A house style, still forming*. Read it before
+drafting, since this record is where most of it was learned.
+
+Pull the palette from the **theme's own variables file**, not the logo and not
+memory, and inline the logo as an SVG with `fill="currentColor"` so the mark and
+the document's brand colour cannot drift apart. On wps the theme's red was
+`#e1251b` while `logo.svg` carried `#E02726` — near-identical, and visibly wrong
+side by side.
+
+### One idea per round
+
+Every record carries one idea: a single change that would help the site do its
+job better. That can mean smoother flow, content that's easier to find, or
+clearer organisation, always measured against what *this* site is for, which is
+different every time. An update keeps the site where it is. The idea is what
+moves it forward, and it is the part a client reads as us paying attention.
+Kaza's direction (ilc, 2026-09-25).
+
+**Every idea is billable work, and it is written purely as a site improvement.**
+Improving their site is the client's half; the work is ours. Aim at the first
+and you get both, so the copy never needs our side of the ledger. Leave out
+*"outside routine maintenance"*, *"additional work"* and anything else that
+reads as the sale rather than the result. On ilc a traffic-and-caching log
+review was first drafted as a separate *Recommended* section, pitched as extra
+work. It belonged under Ideas, framed as *keep the site fast for real visitors*.
+
+**The round finds one; the dev may add more.** The search below produces one
+idea. When the dev brings another, such as a service they want to offer, it
+goes under the same heading with the same three-paragraph shape, not a section
+of its own.
+
+**When the round turns up a rebuild, it gets a Horizon section.** One small idea
+still leads, because it is billable now. When the evidence says the site needs more
+than hours, pitch it under *Horizon* after the Ideas, as on su and Meridian Display.
+Follow §2's *Show the complexity* rule: the full model goes in the
+project's `.claude/memory/`, and the record gets a worked example of it.
+
+**Start from what the site is for.** Before looking for problems, name the main
+visitor and what they come to do. Read it off the site rather than the brief:
+the main navigation, where the content volume sits, and what the forms collect.
+
+```bash
+ddev drush sql:query "SELECT type, COUNT(*) FROM node_field_data WHERE status=1 GROUP BY type"
+```
+
+On ilc, 765 resources and 162 products against 6 plain pages said *document
+library for engineers and contractors*, not marketing site. That pointed the
+search at how people find documents.
+
+**Walk the main journeys and count.** For each of the two or three things a
+visitor comes to do, do it yourself. Note how many steps it takes, how long the
+list is, which filters it offers, and what comes back empty. The strongest
+signal is **structure the site already has but doesn't use**: a field tagged on
+every item that is never offered as a filter, a reference that could link two
+pages and doesn't, a 185-row list with no paging. Ideas like that are cheap,
+because the data exists, and easy to believe, because the gap is concrete.
+
+**Read the code before calling something missing.** A listing's exposed filters
+are in its view config, but a `form_alter` can hide one until something else is
+set, and neither the config nor the default page will show you that. On ilc
+the energy-code filter on typical drawings was pitched as missing, and only
+turned up when the draft was checked: `ilc_filter` suppresses it until a
+visitor chooses one category and presses Apply. The idea survived, reframed as
+*surface the hidden filter and add the room one*, but the first draft told the
+client something false about their own site.
+
+```bash
+grep -rn "<view_id>" web/modules/custom web/themes/custom   # alters and embeds
+```
+
+```bash
+# every field a bundle carries, to set against what its listing exposes
+ls config | grep "field.field.node.<bundle>."
+grep -E "^\s+identifier:" config/views.view.<listing>.yml
+```
+
+**Test the obvious candidate before pitching it.** Commit history shows where
+the pain has been, and an area tuned over and over is a lead, not a verdict. On
+ilc, search had four rounds of commits behind it and looked like the obvious
+idea. Twenty realistic queries (catalog numbers with and without hyphens,
+product names, application terms) found it mostly working. The misses were
+typos and ranking polish. The drawings page, which nobody had touched, was the
+real gap. Probe with what a visitor would actually type, and read the view's
+exposed-filter `identifier` before deciding a query returns nothing. ilc's is
+`?s=`, and a probe against `search_api_fulltext` came back empty for everything.
+
+**Pick one**, by four tests: it serves the site's main purpose, the client can
+see it on their own site, it takes hours rather than a project, and it is built
+from what they already have. One idea gets weighed. A list gets skimmed.
+
+**Write it in three paragraphs**, under a title that names the outcome (*Find a
+typical drawing by room and energy code*):
+
+1. The problem in their terms, with a number and one concrete visitor:
+   *"opens on all 185 drawings in one long table … An engineer after a Title 24
+   classroom riser has to know that first step, then scan the list."*
+2. The change, who it serves, and what makes it cheap.
+3. The offer, in a paragraph of its own: *"We can add it for you in about two
+   hours."* The estimate is the dev's call. Propose one and confirm it before it
+   goes in, rather than printing a number you made up.
+
+   Render the offer as a §7 **Quote** marker: the
+   hours, then what they buy in one line. Break the estimate down internally first, since that
+   breakdown is what you confirm with the dev. When the idea is a stopgap ahead of
+   a rebuild pitched under Horizon, say so in the idea and say that nothing built
+   for it is thrown away (Kaza, Meridian Display 2026-09-28).
+
+**Don't repeat last month's idea.** Read last round's record summary in
+`.claude/memory/records/`, and the ideas log, before the search. Log each idea in the
+project's `.claude/memory/ideas.md` with the round, the idea and what came of it,
+and read that log before starting the next search. An idea the client declined
+doesn't come back. One that went unanswered can be raised once more, if the
+round finds nothing better.
+
+**Always draft the idea; sending it is the dev's call.** This applies to every
+genre, response documents included. The dev may cut the section from a given doc
+for reasons that have nothing to do with its merit: the timing, the reader, or the
+relationship. On metro's form-incident review, Kaza cut the Ideas section with
+*"it was good, I'm just choosing not to follow-up with it this time"*. That was a
+call about one doc. It doesn't retire the section, and it doesn't bank the idea
+for later. Remove the section and its nav item, leave the idea out of the ideas
+log, and draft one again in the next doc (metro, 2026-09-28).
+
+### The support window — looked up, not recalled
+
+The one claim in a maintenance record that is worth a client's attention is how
+much runway the current major has, and it is exactly the claim most likely to be
+written from memory and be wrong. On wps the draft said *"Drupal 10 is supported
+into 2027, so there is room to plan"*; the schedule says **Drupal 10 reaches end
+of life 9 December 2026**, and `10.6.x` is the final minor — about fifteen weeks
+out, and the round had just taken core as far as Drupal 10 goes.
+
+That single fact inverted the document. "Nothing needed from you" became a dated
+upgrade window, and it belongs in the header cell rather than a closing
+paragraph.
+
+**Ask where the client already stands before flagging it again.** The next
+month, wps's draft carried an *Action required: schedule Drupal 11* cell and
+asked them to book an October window. The upgrade was already under way, so
+the cell was cut and the copy turned into "in progress". A standing flag copied
+forward from last month's record is the likeliest part of the draft to be out
+of date, and the repo won't tell you. The dev will.
+
+Check it every round, from the authority, at the moment you write it:
+
+| Stack | Authority |
+|---|---|
+| Drupal | [drupal.org core release schedule](https://www.drupal.org/about/core/policies/core-release-cycles/schedule) |
+| WordPress | [wordpress.org/about/roadmap](https://wordpress.org/about/roadmap/) — and the PHP version's own EOL, which bites first more often |
+
+It also reframes the round's hold list: see site-update, *Reporting back*.
+
+---
+
+## 7. Design
 
 Load the `frontend-design` skill first. Then:
 
@@ -383,10 +712,33 @@ Fold what it teaches back into this section.
   above it. Stacked paddings create false breaks the same way (an intro's bottom
   padding on top of a section's top padding), so look for places where two
   spacings add up.
+- *A description line hugs its heading: about 4px, text to text* (su,
+  2026-09-27, after "tighter" twice). Measure between the rendered text, using
+  a `Range` on each text node, not between the element boxes. A description at
+  1.6 line height carries about 5px of leading above its glyphs, so boxes 2px
+  apart still read loose. Set the description's line height near 1.3, then tune
+  the heading margin per heading level. A 26px flex `h2` and a 21px `h3` need
+  different margins to land at the same 4px.
 - *Balance is felt, then measured.* The mark had to look even top to bottom, and
   then it had to look even at every width. Solve that with a relationship
   (mirror the body padding) rather than two numbers that happen to match at one
   size.
+
+- *Small marks echo the client's own shapes.* A template's heading bullet was
+  shaped for the client it was drawn for, so re-derive it from the next
+  client's logo instead of carrying it over. ILC's ring suited ILC. Atrix's logo
+  is built from solid red dots, and Kaza swapped the ring for a solid dot
+  because it "follows their logo better" (atr, 2026-09-25). He then took it
+  further: the logo's dots step from dark to bright *across the cluster*, each
+  dot one flat colour, so each section's dot takes the next step down the page,
+  enlarged from 14px to 18px so the ramp reads. Sample the colours from the
+  asset itself, since the eye misjudges a subtle ramp. Six dots across the
+  logo's middle row gave `#a7161c`→`#e22437`, one per section. Check the bullet,
+  the checkmark and the rule colour against the logo each time.
+  The echo can stop at colour. Syracuse Utilities' logo is an orange disc with
+  black stripes; the first draft striped the bullet to match, and Kaza chose a
+  plain orange dot instead (su, 2026-09-27). Offer the literal echo, and expect
+  the simpler one to win.
 
 **Copy: a record, not a pitch, and every sentence new to the reader.**
 
@@ -411,7 +763,7 @@ Fold what it teaches back into this section.
 
 **How he reviews, and how to meet it.** One note at a time, visual first, often
 mid-edit. Apply the note, then look for the principle behind it and apply that
-wherever else it holds (see §8, *Take the note, then generalise it*). Screenshot
+wherever else it holds (see §9, *Take the note, then generalise it*). Screenshot
 the result at desktop and phone width before reporting, rather than reasoning
 about it. When a correction teaches something new, add it here as a direction
 with its reason, not as a value.
@@ -504,19 +856,125 @@ it a *ramp* in the section's own hue — number, heading, body, aside at three o
 weights of one colour — rather than a single flat tone. That's what makes a panel look
 designed into its surroundings instead of dropped onto them.
 
-**A long report wants a sticky section nav.** Anchor every section, put the bar under
-the masthead rule, mark the active one with `IntersectionObserver`, give sections
-`scroll-margin-top`, hide it in print. Use an opaque ground — a translucent bar shifts
-colour as it passes over differently-coloured sections.
+**Every doc gets a sticky section nav, and one-word section headings.** A reader who
+can see what the document holds jumps to the part that interests them, and reads far
+more of it (Kaza, Meridian Display 2026-09-28). Headings are one word where one will do
+(*Updated, Held, Checked, Next, Ideas, Horizon*). The nav goes directly under the
+title block and lists them:
+- Mark the active section with `IntersectionObserver` and hide the nav in print.
+- Use an opaque ground: a translucent bar shifts colour as it passes over
+  differently-coloured sections.
+- Give sections a *small* `scroll-margin-top` (about 8px). Their own top padding
+  already clears the heading, and a large margin shows the tail of the previous
+  section under the nav after a jump.
+- Centre the items on desktop; left-align on a phone, where the list scrolls sideways
+  and keeps the active item in view.
+- No bottom border at rest. The hairline appears only once the nav is stuck, toggled
+  by an `IntersectionObserver` on a 1px sentinel just above it. At rest the title
+  block's rule already separates it.
+
+### Components
+
+The standing parts our docs are built from. Each one was settled through review, so
+reach for these before inventing a new device, and extend this list when a new one
+earns its place.
+
+**Markers: a tag and hanging copy.** A row with a small solid pill tag (*Action*,
+*Quote*, *Urgent*, *All good*) followed by the copy, laid out as a grid:
+- The tag sits in a fixed-width column (about 84px), so every row's copy and link
+  start at the same x down the whole panel. Wrapped text hangs under the copy, not
+  under the tag.
+- The tag takes the colour of the panel it sits in, so the same markup reads red in
+  an urgent panel and blue in an idea.
+- A link goes on its own line under the copy, bold, underlined, with a trailing
+  "→".
+- **An Action row ends any note that asks something of the client's site.** Once they
+  are alarmed, the next thing they read is what to do, with a link to do it (a
+  licence, a renewal). Don't end on a stopgap sentence instead. An Action is never
+  "contact us".
+- **No action, no Action row.** When the hold is ours to resolve (waiting on an
+  upstream release, a test we'll schedule), leave the row out rather than writing
+  "None needed". A row that says nothing is required is filler, and it dilutes the
+  panels where something is (Kaza, kow 2026-09-29).
+- **A Quote row carries an offer**: the hours, then what they buy in one line.
+- **A Limit row names what holds the site back**, stated as the case: what it could
+  be, and what stands in the way. Meridian's order-process panel ends on one: *"far
+  more potential than it can reach today, and getting there takes a rebuild."* It's a
+  statement, not an ask.
+
+**Severity panels.** A note that grades something (urgency, risk, status) becomes a
+tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
+green for no rush.
+- One `--u` custom property per severity drives three things: the fill (the hue at
+  about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
+  tag. Retuning a level is then one line.
+- A panel ends with an Action row only when the client has something to do. Plain
+  green *All good* panels matter as much as the red one: they stop the client treating
+  everything held as an emergency.
+
+**Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
+optional actor label (*Buyer*, *Meridian*), a bold step name and at most one line of
+detail.
+- Colour the card's top edge by actor, using the client's primary and secondary brand
+  colours, so hand-offs show at a glance.
+- Eight steps sit as 4 × 2, and two columns on a phone.
+- When two flows exist (the shared process and the customer's own side), give each
+  its own strip, not one long one.
+
+**Mock UI, mid-task.** When the pitch is an interaction (drag into boxes, split a
+cart), draw a static mock of it caught halfway: some state filled in, one element
+mid-drag, a count of what's left.
+- It uses the worked example's own numbers, so it reconciles with the tables after it.
+- Label it illustrative in an `aria-label` or caption.
+- The picture sells an interaction better than any sentence about it.
+
+**Evidence strip.** Two or three measured figures in large mono, each with a short
+line of what it counts, on a left rule in the brand's secondary colour. Only numbers
+that survived §1's checks go here.
+
+**A logo drawn for a dark ground sits on a plate of its own header colour.** Meridian's
+yellow-and-white mark vanished on white, so the title block puts it on a rounded plate
+of the site's header blue. Say so when you do it; it's a departure from the plain
+logo-left title.
+
+**No closing ask to an existing client.** They know how to reach us and who to talk
+to. The whole document is the push, and if it doesn't land, one line won't either. A
+"let's talk" or a contact link at the end reads as needing the work, which undoes
+the confidence the rest of the document built (Kaza, Meridian Display 2026-09-28).
+End the pitch on the case itself, as a statement. Action rows are for things the
+client has to *do* about their site (renew a licence), never for contacting us. A
+cold pitch to a prospect is the only place a contact line belongs. The same goes for a
+scoping question to close a record's Horizon (*"What does your team work from
+today?"*): it's an ask in disguise, and it was cut. Scoping starts when they reach
+out.
+
+**Verify every link before it goes in.** Fetch it and read the page title. When
+Cloudflare answers a script with 403, as augustash.com does, load it in the headless
+browser. A pricing or renewal link that 404s in a client's hands undoes the note it
+sits in.
 
 **Quality floor, unannounced:** responsive, keyboard focus visible, reduced motion
 respected, and a print stylesheet that flips dark bands to white.
 
 ---
 
-## 7. Delivery
+## 8. Delivery
 
-- `open` the file after every change so they're reviewing the current state.
+- **Reload the tab the reviewer already has; never `open` again.** `open` makes a new
+  tab on every call, and after a dozen notes the reviewer is hunting through duplicates
+  (Kaza, su 2026-09-27). `open` once for the first look. After that, reload that same tab
+  through the [firefox-devtools](../firefox-devtools/SKILL.md) server: `list_pages`
+  once, keep the doc tab's `pageId`, then `navigate_page { pageId, url }` after each
+  edit. Bump a query string each time (`?v=3`): a navigation that changes only the
+  `#anchor`, or repeats the same URL, scrolls without reloading, and you end up
+  reviewing the old version. If Firefox wasn't started through `firefox-claude`, ask the reviewer to relaunch
+  it rather than falling back to `open`. Take your own screenshots on the headless
+  `firefox-solo` server, not in their browser. If it won't start, headless Chrome
+  (`--headless=new --screenshot`) works. It won't render narrower than about 500px,
+  though, so a `--window-size=390,…` shot shows content cut off on the right that
+  isn't really there. To see a true phone width, load the doc in a
+  `<iframe style="width:375px">` inside a wrapper page, and pass
+  `--allow-file-access-from-files` (metro, 2026-09-28).
 - **Verify the HTML after every structural edit** — print the result, don't assume.
   Renumbering, remapping and reordering have all failed silently. (This rule used to
   be about keeping a markdown twin in sync; the twin is gone, the verification isn't.)
@@ -540,7 +998,7 @@ missing selector, every nav anchor resolving to an existing id. If you can open 
 browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
 anything else means the head is wrong.
 
-## 8. Working with the reviewer
+## 9. Working with the reviewer
 
 Expect fast, terse, mid-turn corrections. Apply, verify by printing the result, and
 reopen.

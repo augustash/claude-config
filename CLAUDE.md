@@ -48,7 +48,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - [Sidescroll dead zones](memory/preferences/sidescroll-dead-zones.md) — a strip that scrolls over its middle but not its edges, or won't drag; also: never hijack a plain vertical wheel
 - [Comment style](memory/preferences/comments.md) — concise; explain the WHY, skip the obvious
-- [Commit messages](memory/preferences/commit-messages.md) — subject + a tight WHY; also before folding an incidental fix into the commit that surfaced it
+- [Commit messages](memory/preferences/commit-messages.md) — before every commit: no Co-Authored-By or session trailers; subject + a tight WHY
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
 - [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
@@ -75,6 +75,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [WAF rules silently break SSL renewal](memory/cloudflare/waf-blocks-acme-renewal.md) — before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
 - [Free Bot Fight Mode can't be skipped by any WAF rule](memory/cloudflare/bot-fight-mode-unskippable.md) — an API client gets 403 + HTML while the origin log shows nothing; the skip rule exempting it is a no-op
 - [Cloudflare WAF and event tool](memory/cloudflare/waf-rule-tool.md) — before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
+- [A Single Redirect needs its own token permission](memory/cloudflare/single-redirect-permission.md) — a redirect rule 403s on a token that works for everything else; also before pointing a retired domain at its replacement
 - [A WAF rule keyed on http.referer inverts](memory/cloudflare/referer-is-not-a-security-condition.md) — before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
 
 #### Drupal
@@ -96,6 +97,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — giving ONE page a short external Cache-Control, and why TTL beats tag-purge
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build
 - [A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy](memory/drupal/event-subscriber-contrib-class-deadlock.md) — every drush command dies on a missing class right after a deploy, including the import that would fix it
 - [An adjustment reaches every gateway, and they disagree on how to read it](memory/drupal/commerce-adjustment-reaches-every-gateway.md) — before adding an adjustment to mark or label a charge; also when a gateway refuses an order or bills an amount already inside another
@@ -120,7 +122,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - [A required element with no #title announces an empty error](memory/drupal/form-element-title-drives-error-message.md) — an alert region renders blank, or a field reads as just "edit, required"
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand
-- [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
+- [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup and tag-scoped runs; also a wait that never waits, or a suite flaky only on clicks
 - [Playwright UI test writing](memory/drupal/playwright-testing.md) — serial runs, condition waits, warm caches first
 - [Update-hook testing](memory/drupal/update-hook-testing.md) — when an update hook deserves an update-path test and when it doesn't
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` vs `ar` umbrella tag + module sub-tag, and how to tell which a site is
@@ -138,7 +140,6 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
 - [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
-- [eXo image formatters — D11.4 constructor break](memory/drupal/exo-d11-image-formatters.md) — images or an eXo Gallery field WSOD after a 11.4 bump; ArgumentCountError *or* TypeError on constructor arg #11
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - [Detecting a click into a cross-origin iframe](memory/drupal/cross-origin-iframe-click-detection.md) — reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - [A third-party map iframe eats one-finger page scroll](memory/drupal/third-party-iframe-touch-scroll-trap.md) — embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
@@ -168,12 +169,12 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Neo image derivatives are AVIF on D11.2+](memory/augustash/neo-image-avif-on-d11-2.md) — link previews break site-wide after an 11.2 bump while every image still looks right in a browser
 - [component:// srcs get no image style](memory/augustash/neo-image-local-src-no-derivatives.md) — images that load slowly, or a naturalWidth far bigger than the slot, while the twig plainly asks for a crop
 - [A spent neo-animate reveal seals a stacking context](memory/augustash/neo-animate-identity-transform-stacking.md) — a sibling won't layer between two children no matter what z-index it gets
-- [The `neo:description` token falls back to the site slogan](memory/augustash/neo-metatag-description-slogan.md) — every page shares one meta description, or no page has one; also before setting a site slogan
+- [Neo's metatag defaults leave the social tags unresolvable](memory/augustash/neo-metatag-description-slogan.md) — a share card titled with a heading from mid-page, one meta description site-wide, or none; also before setting a site slogan
 - [neo_icon renders an empty span for a style-prefixed id](memory/augustash/neo-icon-id-prefix.md) — an icon silently renders empty; also before pasting what `neoi-list` prints
-- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, or when its robots rules are missing from robots.txt
+- [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, when its robots rules are missing from robots.txt, or a custom f[] param 400s
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
-- [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
+- [Internal package distribution](memory/augustash/internal-package-distribution.md) — before committing any `.claude/skills` copy, or when a Pantheon build fails on a modified `.claude/skills/**`; also the dirty-vendor trap
 - [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - [ddev exec expands your variables before bash sees them](memory/augustash/ddev-exec-var-expansion.md) — a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
@@ -237,6 +238,15 @@ project never adopted alone (a WordPress project shouldn't inherit the Drupal up
 The package copy is canonical, so a local edit to a project copy gets overwritten — refine it
 here instead. Commit the refreshed copy with the bump.
 
+**A project's skill copies must equal the skill in the commit its `composer.lock` pins.** A
+hosting build (Pantheon installs require-dev) runs the same sync from the *locked* ref, so any
+copy that differs gets rewritten and the build fails with `The build step affected files that
+are not ignored by git`. Only `composer update augustash/claude-config` moves the lock and the
+copies together. So never `cp` a skill while vendor is ahead of the lock: after refining a skill
+here and pushing, run that update in the project, and before committing any skill copy confirm
+`grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock`. Incident
+history in [internal-package-distribution](memory/augustash/internal-package-distribution.md).
+
 Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
 once ran that `cp` and absent everywhere else — which reads as a skill that goes missing at
 random rather than one that was never installed. If `/<name>` comes back `Unknown skill`, that's
@@ -258,7 +268,9 @@ is optional transparency, not a review gate. The maintenance expectation mirrors
 - **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
   better pattern emerges, a stated preference generalises, or a mistake is worth not
   repeating, fold it in *during that session* while the detail is fresh — don't defer
-  it to a cleanup pass that never comes.
+  it to a cleanup pass that never comes. Then bring the project along with
+  `composer update augustash/claude-config`, not a hand `cp`, or its next deploy fails
+  (see *A project's skill copies must equal…* above).
 - **Active.** During a memory audit, give the skills the same pass: are they still
   accurate, has one grown two topics that want splitting, is anything now wrong?
 - **Capture the corrections, not just the wins.** A skill that records only what
@@ -281,11 +293,11 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 
 - [accessibility-audit](skills/accessibility-audit/SKILL.md) — testing a site's accessibility and writing a defensible record: an ADA demand letter, a compliance question, or a pre-launch check
 - [client-proposal-review](skills/client-proposal-review/SKILL.md) — a client hands over a set of decisions (a menu, a design round, a feature list) and some of it would make the site worse
-- [client-report](skills/client-report/SKILL.md) — writing an evidence-led client report or rebuild pitch and shipping it as a branded HTML page
+- [client-report](skills/client-report/SKILL.md) — writing any client doc: a pitch, an audit, a request response or the monthly maintenance record; owns the doc design system
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
 - [content-migration-to-components](skills/content-migration-to-components/SKILL.md) — building a page out of migrated content: what shape it is, reuse/extend/build-new, and verifying the result
 - [drupal-11-upgrade](skills/drupal-11-upgrade/SKILL.md) — running a D10→D11 upgrade on Pantheon, built around the failures that report success
 - [firefox-devtools](skills/firefox-devtools/SKILL.md) — driving a real Firefox from Claude: console, network, DOM, logpoints and profiling on a running site, for Firefox-specific bugs or devs who prefer its DevTools to Chrome's
 - [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
-- [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress), starting at the Pantheon upstream; owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev
+- [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress); owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev

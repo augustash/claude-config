@@ -571,5 +571,5 @@ curl cannot tell that from a broken query.
 ## Related memory
 
 [[d11-symfony-runtime]] · [[cross-version-db-pull]] · [[phpunit-testing]] ·
-[[exo-d11-image-formatters]] · [[config-split-ignore-collision]] ·
+[[config-split-ignore-collision]] ·
 [[admin-theme-keyed-config]] · [[pantheon-build-lag]]

@@ -110,5 +110,4 @@ D10 non-event. Optional field values (`->value` on a field empty on some entitie
 common carrier. Worth a sweep after any D10→D11 upgrade — the placeholder-position grep is
 `['\"][@%][A-Za-z0-9_]+['\"] *=> *.*(->value|getData\()`.
 
-See also [[d11-symfony-runtime]], [[exo-d11-image-formatters]] and
-[[shs-d11-bundle-cache-tags]] for other D11 upgrade breakage.
+See also [[d11-symfony-runtime]] and [[shs-d11-bundle-cache-tags]] for other D11 upgrade breakage.
