@@ -18,6 +18,18 @@ For augustash-internal composer packages whose purpose is dev tooling, shared co
 - Place internal dev-tooling packages in `require-dev`, not `require` — they shouldn't reach production builds.
 - This convention applies to internal-only packages where the team controls both producer and consumer. Public packages or runtime-critical libraries should still use semver tags.
 
+**The invariant under most of what follows: a project's adopted `.claude/skills/*` copies must
+equal the skills in the claude-config commit its `composer.lock` pins.** A Pantheon build installs
+require-dev on some sites, so the plugin's `syncSkills()` runs there from the *locked* ref and
+rewrites any copy that differs; the build then aborts on `The build step affected files that are
+not ignored by git`. Every way of breaking it has been hit: a `--lock` refresh pinning an old ref
+(sisal 2026-09-17), an update locking the previous commit right after a push (wps 2026-09-23,
+three times), and a skill refined in vendor mid-session then `cp`'d into the project without
+bumping the lock (kow 2026-09-29, the dev build failed after the push). One move keeps it:
+`composer update augustash/claude-config`, re-run until
+`grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock` passes, then
+commit the lock and the copies together. A hand `cp` is only safe straight after that check.
+
 **Gotcha — a dirty vendor working tree silently skips the update hook:** Because prefer-source makes the vendor copy a real git checkout, `composer update <package>` updates it through composer's `VcsDownloader`, which **refuses to touch a working tree that has uncommitted changes** — it aborts that package with `Source directory ... has uncommitted changes`. The lockfile reference may still get rewritten, so it *looks* like the update happened, but the source checkout and the package's composer hooks (`POST_PACKAGE_UPDATE` / `POST_PACKAGE_INSTALL`, e.g. claude-config's `wire()` that fixes `.claude/CLAUDE.md`) never run. The classic trigger is running the package's *own* test suite: PHPUnit writes `.phpunit.cache/`, build steps drop artifacts, etc., into the vendor tree — if those aren't gitignored *in the package repo*, every test run leaves the tree dirty and the next consumer `composer update` quietly no-ops the hook.
 
 **How to apply:** Keep the package's git ignore list covering all test/build artifacts so running its suite never dirties the tree (PHPUnit 10 uses `.phpunit.cache/`, not the old `.phpunit.result.cache`). When an update seems to do nothing, check `git -C vendor/<vendor>/<package> status` and look for the `VcsDownloader` abort — clean the tree (commit, stash, or `git checkout --`) and re-run. Confirm success by the hook's own console output (`claude-config: normalized …`), not just the `Upgrading … ec54871 => …` lock line.

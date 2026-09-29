@@ -115,8 +115,12 @@ project installs it with composer's `prefer-source`):
    `AGENTS.md`. **Not an optional follow-up; it's part of the write.**
 4. From inside the package: `git add -A && git commit && git push`. Other projects pick it up
    on their next `composer update augustash/claude-config`.
+5. **If the change touched a skill this project has adopted**, run
+   `composer update augustash/claude-config` in the project and commit the lock with the
+   refreshed copy. Never `cp` it across by hand: a copy ahead of the lock fails the next
+   Pantheon build (see `CLAUDE.md`, *A project's skill copies must equal…*).
 
-All four steps are Claude's job, including the push — this is a self-contained shared package
+All of these steps are Claude's job, including the push — this is a self-contained shared package
 other projects depend on, so leaving local-only edits defeats the purpose. This differs from
 project-level work, where **the developer commits**. Memory is Claude-owned and committed
 autonomously; showing the diff first is optional transparency, not a required review gate.

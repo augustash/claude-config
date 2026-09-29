@@ -46,9 +46,15 @@ ddev drush cim -y
 
 ```bash
 ddev composer update augustash/claude-config     # vendor tree must be clean first
+grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock || echo "lock behind vendor: re-run the update"
 ls .claude/skills/                               # want site-update and client-report
 cp -R vendor/augustash/claude-config/skills/{site-update,client-report} .claude/skills/
 ```
+
+The `cp` is safe only because the update just put the lock on vendor's HEAD. **If you refine a
+skill later in the round, re-run the update rather than copying again**: a copy newer than the
+lock is rewritten by the Pantheon build, which then fails on modified tracked files (kow
+2026-09-29).
 
 The update refreshes every adopted skill, but you are reading this one *now*, so
 a stale copy runs the whole round on stale text. Adoption is manual and

@@ -173,7 +173,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [drupal_cache_protection](memory/augustash/drupal_cache_protection.md) — tracking-param strip/redirect, plus the facets, search, node_access and empty-listing submodules; also before acting on a listing report, when its robots rules are missing from robots.txt, or a custom f[] param 400s
 - [recently_read (augustash fork)](memory/augustash/recently-read.md) — a fork we own; never re-sync with upstream, the divergence is the point
 - [A carried fix that conflicts may be obsolete](memory/augustash/carried-fix-obsolete-check.md) — before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
-- [Internal package distribution](memory/augustash/internal-package-distribution.md) — dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
+- [Internal package distribution](memory/augustash/internal-package-distribution.md) — before committing any `.claude/skills` copy, or when a Pantheon build fails on a modified `.claude/skills/**`; also the dirty-vendor trap
 - [Pantheon Secrets](memory/augustash/pantheon-secrets.md) — terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - [ddev-drupal Pantheon site var](memory/augustash/ddev-drupal-pantheon-site-var.md) — three generations of site/env var names in `.ddev/config.yaml`; grep all forms
 - [ddev exec expands your variables before bash sees them](memory/augustash/ddev-exec-var-expansion.md) — a `bash -c` dies on "X: unbound variable" one line after you set X, or a script you just wrote 127s as not found
@@ -237,6 +237,15 @@ project never adopted alone (a WordPress project shouldn't inherit the Drupal up
 The package copy is canonical, so a local edit to a project copy gets overwritten — refine it
 here instead. Commit the refreshed copy with the bump.
 
+**A project's skill copies must equal the skill in the commit its `composer.lock` pins.** A
+hosting build (Pantheon installs require-dev) runs the same sync from the *locked* ref, so any
+copy that differs gets rewritten and the build fails with `The build step affected files that
+are not ignored by git`. Only `composer update augustash/claude-config` moves the lock and the
+copies together. So never `cp` a skill while vendor is ahead of the lock: after refining a skill
+here and pushing, run that update in the project, and before committing any skill copy confirm
+`grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock`. It has broken builds on sisal, wps (three times) and kow; see
+[internal-package-distribution](memory/augustash/internal-package-distribution.md).
+
 Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
 once ran that `cp` and absent everywhere else — which reads as a skill that goes missing at
 random rather than one that was never installed. If `/<name>` comes back `Unknown skill`, that's
@@ -258,7 +267,9 @@ is optional transparency, not a review gate. The maintenance expectation mirrors
 - **Passive.** Any session that exercises a skill is a chance to sharpen it. When a
   better pattern emerges, a stated preference generalises, or a mistake is worth not
   repeating, fold it in *during that session* while the detail is fresh — don't defer
-  it to a cleanup pass that never comes.
+  it to a cleanup pass that never comes. Then bring the project along with
+  `composer update augustash/claude-config`, not a hand `cp`, or its next deploy fails
+  (see *A project's skill copies must equal…* above).
 - **Active.** During a memory audit, give the skills the same pass: are they still
   accurate, has one grown two topics that want splitting, is anything now wrong?
 - **Capture the corrections, not just the wins.** A skill that records only what

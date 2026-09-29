@@ -284,7 +284,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **A carried fix that conflicts may be obsolete** — `vendor/augustash/claude-config/memory/augustash/carried-fix-obsolete-check.md`  
   before resolving a merge conflict on a local fix carried against a fast-moving upstream, or rebasing one forward
 - **Internal package distribution** — `vendor/augustash/claude-config/memory/augustash/internal-package-distribution.md`  
-  dev-master + prefer-source, no tags; the dirty-vendor and `--no-dev` deploy traps; a vendor clone claiming it's "N commits ahead"; a skill running text the package moved past
+  before committing any `.claude/skills` copy, or when a Pantheon build fails on a modified `.claude/skills/**`; also the dirty-vendor trap
 - **Pantheon Secrets** — `vendor/augustash/claude-config/memory/augustash/pantheon-secrets.md`  
   terminus secrets vs the legacy secrets.json; also when a per-env set errors that the secret does not exist, or a PEM value refuses to set
 - **ddev-drupal Pantheon site var** — `vendor/augustash/claude-config/memory/augustash/ddev-drupal-pantheon-site-var.md`  
