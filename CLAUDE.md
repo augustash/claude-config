@@ -243,8 +243,8 @@ copy that differs gets rewritten and the build fails with `The build step affect
 are not ignored by git`. Only `composer update augustash/claude-config` moves the lock and the
 copies together. So never `cp` a skill while vendor is ahead of the lock: after refining a skill
 here and pushing, run that update in the project, and before committing any skill copy confirm
-`grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock`. It has broken builds on sisal, wps (three times) and kow; see
-[internal-package-distribution](memory/augustash/internal-package-distribution.md).
+`grep -q "$(git -C vendor/augustash/claude-config rev-parse HEAD)" composer.lock`. Incident
+history in [internal-package-distribution](memory/augustash/internal-package-distribution.md).
 
 Because adoption is per-project and nothing back-fills it, a skill is present wherever someone
 once ran that `cp` and absent everywhere else — which reads as a skill that goes missing at

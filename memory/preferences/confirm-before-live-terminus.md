@@ -13,4 +13,7 @@ Always confirm before running terminus commands against `live` (and generally `t
 
 Confirmation can be batched — if the user OKs a list of read-only commands ("all of those are fine"), proceed with that whole list without re-asking. Confirmation does need to be re-requested when leaving a confirmed batch into new commands (especially if any new command might write).
 
+An explicit request to deploy to live *is* that confirmation for the launcher chain — see
+site-update's *Deploying* section, which is the standard deploy.
+
 Related: [[ddev-drupal-pantheon-site-var]]
