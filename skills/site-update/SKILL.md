@@ -609,12 +609,9 @@ grep -oiE "the website encountered|TypeError|ArgumentCountError" /tmp/o.html
 
 Core minors move typed signatures and default behaviour, and the fallout lands in
 contrib and in our own modules. If something is off after core moved, check these
-before debugging from scratch — each is a known shape, and two of them look fine
-in a browser:
+before debugging from scratch — each is a known shape, and one of them looks
+fine in a browser:
 
-- [exo-d11-image-formatters](../../memory/drupal/exo-d11-image-formatters.md) —
-  **11.4** added an 11th `ImageFormatter` constructor arg; any image field or eXo
-  Gallery WSODs with `ArgumentCountError` or `TypeError` on arg #11
 - [neo-image-avif-on-d11-2](../../memory/augustash/neo-image-avif-on-d11-2.md) —
   **11.2** switched Neo derivatives to AVIF; every page looks perfect and every
   link preview is broken
@@ -622,7 +619,9 @@ in a browser:
   covered in Phase 1, included here because this is where you'd notice it
 
 The general shape is a parent class gaining a constructor arg or a property type,
-which is invisible to static analysis and fatal at render. Grep our custom and
+which is invisible to static analysis and fatal at render. **11.4** did exactly
+this to `ImageFormatter` (an 11th constructor arg); exo's image formatters
+WSODed on it until exo 2.0.29, so on an older exo the fix is to bump it. Grep our custom and
 augustash modules for `__construct` overrides that call `parent::__construct()`
 with a positional list whenever core's minor moves.
 

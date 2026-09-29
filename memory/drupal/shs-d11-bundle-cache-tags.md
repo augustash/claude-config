@@ -60,7 +60,7 @@ has to ride as a `cweagans/composer-patches` entry, not an edit to the installed
 [[patches]]. Pinning back to 2.0.5 also works but drops the other 2.0.6 fixes (truncated
 values, duplicate values, multilingual term names, PHP 8.5 deprecations).
 
-Same shape as [[exo-d11-image-formatters]] — a contrib module adopting a new-core API without
+The general shape: a contrib module adopting a new-core API without
 tightening its own `core_version_requirement`. When a contrib bump breaks a site on the older
 core branch, check the diff for core methods that don't exist locally before assuming config
 or data drift:

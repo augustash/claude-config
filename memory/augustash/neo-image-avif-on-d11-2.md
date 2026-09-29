@@ -75,4 +75,4 @@ a way to mark a derivative "no conversion" (or to set its output format), so mac
 surfaces can opt out while on-page images keep AVIF. Not a bug report.
 
 Related: [[neo-metatag-description-slogan]] (the same shipped metatag defaults, other half of
-the same audit), [[exo-d11-image-formatters]].
+the same audit).
