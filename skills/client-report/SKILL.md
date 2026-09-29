@@ -442,8 +442,8 @@ smaller genre.
    accounts, a flaw needing a login is out of reach, so only unauthenticated ones
    make an item urgent. A known exploitable flaw means update it, and when the
    update is walled, the Action names what unblocks it (the licence to buy). No
-   known issue means *All good* (it read as *No rush* until kow, 2026-09-29: "no rush"
-   still implies a clock), and saying so plainly is what keeps the client from
+   known issue means *All good* (Kaza's change from *No rush*, kow
+   2026-09-29), and saying so plainly is what keeps the client from
    treating every held item as an emergency. If an urgent item exists, it goes in
    the header's *Action required* cell, displacing a routine licence ask. Render it
    as a §7 **severity panel**, ending in an **Action** row with a checked link
