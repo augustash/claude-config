@@ -445,7 +445,8 @@ smaller genre.
    known issue means *No rush*, and saying so plainly is what keeps the client from
    treating every held item as an emergency. If an urgent item exists, it goes in
    the header's *Action required* cell, displacing a routine licence ask. Render it
-   as a §7 **severity panel**, ending in an **Action** row with a checked link.
+   as a §7 **severity panel**, ending in an **Action** row with a checked link
+   when the client has something to do.
 
    **A hold the client cannot perceive does not belong here.** Build tooling,
    composer plugins, anything whose entire existence is upstream of their site —
@@ -890,6 +891,10 @@ earns its place.
   are alarmed, the next thing they read is what to do, with a link to do it (a
   licence, a renewal). Don't end on a stopgap sentence instead. An Action is never
   "contact us".
+- **No action, no Action row.** When the hold is ours to resolve (waiting on an
+  upstream release, a test we'll schedule), leave the row out rather than writing
+  "None needed". A row that says nothing is required is filler, and it dilutes the
+  panels where something is (Kaza, kow 2026-09-29).
 - **A Quote row carries an offer**: the hours, then what they buy in one line.
 - **A Limit row names what holds the site back**, stated as the case: what it could
   be, and what stands in the way. Meridian's order-process panel ends on one: *"far
@@ -902,8 +907,9 @@ green for no rush.
 - One `--u` custom property per severity drives three things: the fill (the hue at
   about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
   tag. Retuning a level is then one line.
-- Every panel ends with an Action row. Plain green *No rush* panels matter as much as
-  the red one: they stop the client treating everything held as an emergency.
+- A panel ends with an Action row only when the client has something to do. Plain
+  green *No rush* panels matter as much as the red one: they stop the client treating
+  everything held as an emergency.
 
 **Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
 optional actor label (*Buyer*, *Meridian*), a bold step name and at most one line of
