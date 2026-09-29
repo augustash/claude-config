@@ -435,14 +435,15 @@ smaller genre.
    asked, and it was struck on ilc (2026-09-25).
 
    **Close every held item with an urgency line** (Kaza, Meridian Display
-   2026-09-28): a tag (*Urgent* / *No rush*) and one sentence on why. Grade it
+   2026-09-28): a tag (*Urgent* / *All good*) and one sentence on why. Grade it
    from a vulnerability database against the held version, not from memory
    (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
    against the site's exposure: if registration is closed and only admins have
    accounts, a flaw needing a login is out of reach, so only unauthenticated ones
    make an item urgent. A known exploitable flaw means update it, and when the
    update is walled, the Action names what unblocks it (the licence to buy). No
-   known issue means *No rush*, and saying so plainly is what keeps the client from
+   known issue means *All good* (it read as *No rush* until kow, 2026-09-29: "no rush"
+   still implies a clock), and saying so plainly is what keeps the client from
    treating every held item as an emergency. If an urgent item exists, it goes in
    the header's *Action required* cell, displacing a routine licence ask. Render it
    as a §7 **severity panel**, ending in an **Action** row with a checked link
@@ -879,7 +880,7 @@ reach for these before inventing a new device, and extend this list when a new o
 earns its place.
 
 **Markers: a tag and hanging copy.** A row with a small solid pill tag (*Action*,
-*Quote*, *Urgent*, *No rush*) followed by the copy, laid out as a grid:
+*Quote*, *Urgent*, *All good*) followed by the copy, laid out as a grid:
 - The tag sits in a fixed-width column (about 84px), so every row's copy and link
   start at the same x down the whole panel. Wrapped text hangs under the copy, not
   under the tag.
@@ -908,7 +909,7 @@ green for no rush.
   about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
   tag. Retuning a level is then one line.
 - A panel ends with an Action row only when the client has something to do. Plain
-  green *No rush* panels matter as much as the red one: they stop the client treating
+  green *All good* panels matter as much as the red one: they stop the client treating
   everything held as an emergency.
 
 **Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
