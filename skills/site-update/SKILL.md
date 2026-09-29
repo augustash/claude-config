@@ -812,6 +812,16 @@ reporting them:
 
 ## Deploying
 
+**Deploy with the launcher, not by hand:** `l t.<pantheon-site>.live` from the project
+directory (`l` is the alias for `~/Projects/launcher/launcher.sh`; `.test` or `.dev` stops
+earlier). It is the team's standard deploy for Drupal and WordPress alike. It waits for the
+push's dev build, promotes the code with `env:deploy`, and runs `drush deploy` (updb, cim,
+cache rebuild, deploy hooks) on each environment, or the WordPress database updates below.
+It **stops the chain** the moment a step fails, so a `cim` that breaks on test never reaches
+live. Hand-rolled `terminus env:deploy` plus `drush` loses that guard, which is why it isn't
+the way. On kow 2026-09-29 a session started deploying by hand and Kaza had to point at it.
+Asking to push and deploy is the go-ahead for the full chain to live.
+
 Pantheon's code log reports a deploy against the **previous** build for a short
 window after a push, so a post-deploy check straight after can pass on the old
 code. See
@@ -824,7 +834,7 @@ before any `terminus` against `.live`/`.test`
 **WordPress needs its database updates run on every environment.** A WooCommerce bump
 that carries migrations leaves each Pantheon environment behind until `wp wc update`
 runs there, and a core upstream merge wants `wp core update-db`. Neither reliably runs
-itself. Launcher (`l t.<site>.live`) does both on each environment, running
+itself. The launcher deploy above does both on each environment, running
 `wc update` only where WooCommerce is active. It stops the chain if either fails to
 print `Success:`, because `terminus wp` can exit 0 silently. First run on Meridian
 Display, 2026-09-28: five WooCommerce migrations on each of dev, test and live.
