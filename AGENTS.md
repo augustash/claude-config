@@ -185,7 +185,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Drupal ajax buttons fire on mousedown** — `vendor/augustash/claude-config/memory/drupal/ajax-buttons-fire-on-mousedown.md`  
   a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - **Drupal Nightwatch testing** — `vendor/augustash/claude-config/memory/drupal/nightwatch-testing.md`  
-  Selenium setup and tag-scoped runs; the W3C patch breaks D11 updates
+  Selenium setup and tag-scoped runs; also a wait that never waits, or a suite flaky only on clicks
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
   serial runs, condition waits, warm caches first
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
