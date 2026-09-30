@@ -163,6 +163,10 @@ The match is on `-headless` plus the MCP profile path. The dev's GUI Firefox has
 neither, so it is safe to kill without asking. The next call launches a fresh
 instance. Do not fall back to curl or to the dev's browser because of this error.
 
+The same stale browser is left behind when the solo server **disconnects mid-session** (the
+tools vanish from the session). Kill the headless instance first, then ask the dev to run
+`/mcp` and reconnect `firefox-solo`. Claude cannot reconnect an MCP server itself.
+
 The first screenshot after a navigation may be mid-page, because Firefox restores
 scroll position. It can look like a solid block of colour. `window.scrollTo(0, 0)`
 before capturing.
