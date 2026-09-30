@@ -144,7 +144,28 @@ changed is one it hijacked — put it back with `navigate_page`.
 For checks the dev does not need to watch (measurements, screenshots, layout),
 don't use their browser at all: if a second, `--autoProfile` server is configured
 (e.g. `firefox-solo`), it runs its own headless Firefox, with no shared tabs to
-disturb.
+disturb. It is also the fast one, so it should be the default for Claude's own
+checks.
+
+**If the solo server fails on its first call, a previous session's Firefox is
+still holding its profile.** Every call fails at once with
+`Process (pid=N) unexpectedly closed with status 0`: the new Firefox starts, finds
+the profile locked, and quits. `--autoProfile` is *persistent* (one profile under
+`~/.firefox-devtools-mcp/`), and the headless Firefox an older Claude session
+launched outlives that session. It has happened on every session start after the
+first, not occasionally (Kaza, 2026-09-30). Kill the stale browser, never the
+dev's own:
+
+    ps -axo pid,command | grep 'firefox --marionette -headless' | grep firefox-devtools-mcp
+    kill <that pid>
+
+The match is on `-headless` plus the MCP profile path. The dev's GUI Firefox has
+neither, so it is safe to kill without asking. The next call launches a fresh
+instance. Do not fall back to curl or to the dev's browser because of this error.
+
+The first screenshot after a navigation may be mid-page, because Firefox restores
+scroll position. It can look like a solid block of colour. `window.scrollTo(0, 0)`
+before capturing.
 
 ## Interacting with the page: selector first, uid second
 
