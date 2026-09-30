@@ -26,8 +26,10 @@ consistent without adding a masthead that competes with the content.
 
 **How to apply:**
 
-- Put it after the footer: `display: flex; justify-content: center; padding-block: 64px 0`,
-  with the page's own bottom padding supplying the space below. About **56px wide** for
+- Put it after the footer: `display: flex; justify-content: center; padding-block: 64px`.
+  The mark pads **both** sides itself. Leaving the bottom to "the page's own padding" once
+  left the shield flush against the bottom edge, because the credit sat after the padded
+  content column, outside it (Kaza, DMX catalog questions, 2026-09-30). About **56px wide** for
   the A mark and **44px tall** for the shield.
 - Inline it either way. [[deliverables-as-html-files]] requires a doc that opens offline,
   so never link the file.
