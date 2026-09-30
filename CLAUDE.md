@@ -117,6 +117,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A guest cannot view their own shipment](memory/drupal/guest-order-shipment-access.md) — a receipt heading with nothing under it, or a missing address, on guest orders only
 - [mailsystem resolves a per-module sender before its defaults](memory/drupal/mailsystem-per-module-overrides-defaults.md) — one module's mail vanishes with no error while everything else reaches Mailpit
 - [Commerce's required price blocks every variation save](memory/drupal/commerce-price-required-on-a-catalog.md) — an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
+- [Webforms are live-only config](memory/drupal/webforms-live-only-config.md) — before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - [Webform drops '#attached' from an element's YAML](memory/drupal/webform-element-attached-dropped.md) — a field renders with its data attributes and nothing listening to them
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
 - [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
@@ -152,6 +153,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 #### Augustash internal modules
 
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
+- [Deploys run through launcher](memory/augustash/launcher-deploy.md) — before any Pantheon deploy, or reaching for raw `terminus env:deploy`; the tool, its invocation, and why Claude hands live over
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - [Alchemist layout Save needs a second click](memory/augustash/neo-alchemist-layout-save-confirm.md) — edits sit in a draft behind a confirm modal; reads exactly like a persistence bug
 - [neo_alchemist seeds props with schema examples](memory/augustash/neo-alchemist-example-seeding.md) — content on the page nobody authored; editors see repeater rows they never created, or examples you deleted still showing as defaults

@@ -6,7 +6,7 @@ metadata:
 ---
 
 Once the commits are handed over ([[commit-handoff]]), the deploy is **not** a subject to
-explain. Kaza's deployment script already runs the post-deploy Drupal work — `updb`, `cim`,
+explain. Kaza's deployment script ([[launcher-deploy]]) already runs the post-deploy Drupal work — `updb`, `cim`,
 `cr` — across each environment; spelling out a `terminus drush <site>.<env> -- deploy`
 sequence tells a senior Drupal architect something he has run hundreds of times.
 

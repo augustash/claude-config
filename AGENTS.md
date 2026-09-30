@@ -174,6 +174,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   one module's mail vanishes with no error while everything else reaches Mailpit
 - **Commerce's required price blocks every variation save** — `vendor/augustash/claude-config/memory/drupal/commerce-price-required-on-a-catalog.md`  
   an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
+- **Webforms are live-only config** — `vendor/augustash/claude-config/memory/drupal/webforms-live-only-config.md`  
+  before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - **Webform drops '#attached' from an element's YAML** — `vendor/augustash/claude-config/memory/drupal/webform-element-attached-dropped.md`  
   a field renders with its data attributes and nothing listening to them
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
@@ -241,6 +243,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **Augustash repositories** — `vendor/augustash/claude-config/memory/augustash/repositories.md`  
   GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
+- **Deploys run through launcher** — `vendor/augustash/claude-config/memory/augustash/launcher-deploy.md`  
+  before any Pantheon deploy, or reaching for raw `terminus env:deploy`; the tool, its invocation, and why Claude hands live over
 - **Neo module skills sync** — `vendor/augustash/claude-config/memory/augustash/neo-skills-sync.md`  
   after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
 - **Alchemist layout Save needs a second click** — `vendor/augustash/claude-config/memory/augustash/neo-alchemist-layout-save-confirm.md`  
