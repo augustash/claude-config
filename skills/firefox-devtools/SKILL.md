@@ -142,26 +142,35 @@ the list from before it: a tab whose pageId you already knew but whose URL has
 changed is one it hijacked — put it back with `navigate_page`.
 
 For checks the dev does not need to watch (measurements, screenshots, layout),
-don't use their browser at all: if a second, `--autoProfile` server is configured
-(e.g. `firefox-solo`), it runs its own headless Firefox, with no shared tabs to
-disturb. It is also the fast one, so it should be the default for Claude's own
-checks.
+don't use their browser at all: the `firefox-solo` server runs its own headless
+Firefox, with no shared tabs to disturb. It is also the fast one, so it should be
+the default for Claude's own checks.
 
-**If the solo server fails on its first call, a previous session's Firefox is
-still holding its profile.** Every call fails at once with
-`Process (pid=N) unexpectedly closed with status 0`: the new Firefox starts, finds
-the profile locked, and quits. `--autoProfile` is *persistent* (one profile under
-`~/.firefox-devtools-mcp/`), and the headless Firefox an older Claude session
-launched outlives that session. It has happened on every session start after the
-first, not occasionally (Kaza, 2026-09-30). Kill the stale browser, never the
-dev's own:
+**Register solo through `firefox-solo.sh`, not `--autoProfile`.** `--autoProfile`
+gives every session one shared profile, so two live Claude sessions lock each
+other out: the second Firefox starts, finds the profile locked and quits, and
+every call fails with `Process (pid=N) unexpectedly closed with status 0`. It
+hit on every session start after the first, and mid-session when a forked
+background session launched its own (Kaza, 2026-09-30). The wrapper gives each
+session `~/.firefox-devtools-mcp/solo-<claude pid>` and reaps profiles whose
+owner has exited, with any Firefox still on them. Registration is printed by
+`templates/firefox-mcp-patch/install.sh`.
 
-    ps -axo pid,command | grep 'firefox --marionette -headless' | grep firefox-devtools-mcp
-    kill <that pid>
+**If solo fails anyway, find the owner before killing anything.** Run
+`~/.local/share/firefox-devtools-mcp-patched/firefox-reap.sh --dry`. It walks each
+headless MCP Firefox up its chain (firefox → geckodriver → MCP node → claude) and
+prints the owning Claude pid and `--session-id`:
 
-The match is on `-headless` plus the MCP profile path. The dev's GUI Firefox has
-neither, so it is safe to kill without asking. The next call launches a fresh
-instance. Do not fall back to curl or to the dev's browser because of this error.
+- **orphan** — the chain reached launchd before any claude. Its session is gone;
+  kill it (drop `--dry`). No need to ask.
+- **in use by another claude** — a live session, possibly a forked background one
+  the dev isn't watching. Killing it breaks that session. Tell the dev which
+  session holds it and let them decide.
+
+The dev's own Firefox is never a candidate: it runs neither `--marionette
+-headless` nor an MCP profile, and a GUI Firefox with a parent of launchd is
+normal, not an orphan. Do not fall back to curl or to the dev's browser because
+of this error.
 
 The first screenshot after a navigation may be mid-page, because Firefox restores
 scroll position. It can look like a solid block of colour. `window.scrollTo(0, 0)`
