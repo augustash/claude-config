@@ -173,7 +173,7 @@ normal, not an orphan. Do not fall back to curl or to the dev's browser because
 of this error.
 
 The same stale browser is left behind when the solo server **disconnects mid-session** (the
-tools vanish from the session). Kill the headless instance first, then ask the dev to run
+tools vanish from the session). Run `firefox-reap.sh` first (it kills only orphans), then ask the dev to run
 `/mcp` and reconnect `firefox-solo`. Claude cannot reconnect an MCP server itself.
 
 The first screenshot after a navigation may be mid-page, because Firefox restores
