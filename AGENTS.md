@@ -174,6 +174,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   one module's mail vanishes with no error while everything else reaches Mailpit
 - **Commerce's required price blocks every variation save** — `vendor/augustash/claude-config/memory/drupal/commerce-price-required-on-a-catalog.md`  
   an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
+- **Webforms are live-only config** — `vendor/augustash/claude-config/memory/drupal/webforms-live-only-config.md`  
+  before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - **Webform drops '#attached' from an element's YAML** — `vendor/augustash/claude-config/memory/drupal/webform-element-attached-dropped.md`  
   a field renders with its data attributes and nothing listening to them
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
