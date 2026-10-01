@@ -140,6 +140,14 @@ Collapsing per-method `@covers ::method` into one class-level `#[CoversClass]` l
 
 **Data-provider gotcha, worth knowing before it bites:** PHPUnit 10+ passes string keys in a data set as **named arguments**. A provider returning `'expected_theme' => ...` against a `$expectedTheme` parameter fails with `Unknown named parameter $expected_theme` — it silently stopped being a label and became a binding. Rename the keys to match the parameters exactly.
 
+**Drupal 11.3 adds a sibling requirement:** every kernel (and browser) test class needs `#[RunTestsInSeparateProcesses]` (`PHPUnit\Framework\Attributes`); without it 11.3 deprecates and 12.0 throws. An abstract base doesn't pass it down — put it on each concrete class.
+
+## Fixture gotchas that pass or fail for the wrong reason
+
+- **A kernel test has no roles.** `user_role_grant_permissions('anonymous', …)` against a role that doesn't exist silently does nothing — so an anonymous-access test denies everything, and a "stays hidden" assertion passes without testing anything. `Role::create(['id' => RoleInterface::ANONYMOUS_ID, 'permissions' => [...]])->save()` instead.
+- **A FunctionalJavascript test should render in the theme the route really uses.** An entity form is an admin route, so install the admin theme (`system.theme:admin` + `view the administration theme`), not the public one. A public theme pulls its whole dependency graph into the test — a footer link by node route, component prop types from another module — and the test breaks each time the theme grows, nowhere near what it covers.
+- **Mink's `evaluateScript()` prepends `return`** when the script doesn't start with one, so a multi-statement probe (`var x = …; …`) is a syntax error and returns nothing. `executeScript()` the statements into `window.__probe`, then `evaluateScript('return window.__probe')`.
+
 ## Do not use `--list-groups`
 
 **Do not use `--list-groups`** to explore available groups. It scans every test file in the tree, including contrib modules, and commonly dies on poorly-maintained contrib test files (missing trait references, undefined variables in Unit tests, etc.). Target a specific path instead — kernel/unit tests under `modules/custom` or `modules/contrib/{module}/tests/src/Kernel` run fine because phpunit only loads the files it actually needs.

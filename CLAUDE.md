@@ -98,6 +98,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Short edge TTL vs tag-purge for volatile pages](memory/drupal/edge-ttl-vs-tag-purge.md) — giving ONE page a short external Cache-Control, and why TTL beats tag-purge
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
+- [An autocomplete endpoint is a PHP worker per keystroke](memory/drupal/autocomplete-per-keystroke.md) — building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build
 - [A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy](memory/drupal/event-subscriber-contrib-class-deadlock.md) — every drush command dies on a missing class right after a deploy, including the import that would fix it
 - [An adjustment reaches every gateway, and they disagree on how to read it](memory/drupal/commerce-adjustment-reaches-every-gateway.md) — before adding an adjustment to mark or label a charge; also when a gateway refuses an order or bills an amount already inside another
@@ -119,7 +120,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commerce's required price blocks every variation save](memory/drupal/commerce-price-required-on-a-catalog.md) — an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
 - [Webforms are live-only config](memory/drupal/webforms-live-only-config.md) — before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - [Webform drops '#attached' from an element's YAML](memory/drupal/webform-element-attached-dropped.md) — a field renders with its data attributes and nothing listening to them
-- [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+- [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
 - [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - [A required element with no #title announces an empty error](memory/drupal/form-element-title-drives-error-message.md) — an alert region renders blank, or a field reads as just "edit, required"
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand

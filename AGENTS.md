@@ -136,6 +136,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
+- **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  
+  building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build
 - **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
@@ -179,7 +181,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Webform drops '#attached' from an element's YAML** — `vendor/augustash/claude-config/memory/drupal/webform-element-attached-dropped.md`  
   a field renders with its data attributes and nothing listening to them
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
-  DDEV setup; D9/10 and D11 phpunit.xml are not interchangeable; PHPUnit 11 metadata changes
+  DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
   a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
