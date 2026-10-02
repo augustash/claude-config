@@ -40,6 +40,11 @@ stopped a hand-rolled deploy mid-command to say so.
   for its build to finish before promoting (launcher `02660e4`, 2026-09-29), so don't poll
   `workflow:list` for the dev sync yourself — Claude still did on kow 2026-10-02 from the old
   advice here. [[pantheon-build-lag]] still applies to scripts run *outside* launcher.
+- **Copying content DOWN is plain Terminus, not the launcher** — it has no clone command.
+  `terminus env:clone-content <site>.live test --yes` (then `dev`) copies database and files;
+  add `--db-only` only when you are sure no uploads differ. Clear caches on each target after
+  (`terminus remote:drush <site>.<env> -- cr`); the clone does not. Reading from live is fine
+  once asked; it writes only the lower environment.
 - **If the tool is wrong, change the tool** — it's Kaza's repo (push to `origin master`).
   Fixing a bug needs no ceremony; ask before changing wait semantics he'd feel day to day.
   Test first: `zsh -n include/terminus`, a real `l t.<site>.dev` run (idempotent), and a
