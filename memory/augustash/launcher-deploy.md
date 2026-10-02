@@ -36,11 +36,10 @@ stopped a hand-rolled deploy mid-command to say so.
   production deploys by outcome, so `l t.<site>.live` is refused just like `env:deploy`. Hand
   it over as `! l t.<site>.live` so the output lands in the session, then verify on live.
   Dev is fine to run once asked ([[confirm-before-live-terminus]]).
-- **Residual race right after a push.** The sync check proceeds when *nothing* is in flight,
-  and there's a window between `git push` and Pantheon creating the `Sync code on "dev"`
-  workflow where that's true — so it can deploy the previous artifact ("nothing to deploy" on
-  live is the tell). Push, let dev's sync start or finish, then deploy; afterwards assert on
-  the code itself, per [[pantheon-build-lag]].
+- **Run it straight after the push.** Launcher waits for the pushed commit to show on dev and
+  for its build to finish before promoting (launcher `02660e4`, 2026-09-29), so don't poll
+  `workflow:list` for the dev sync yourself — Claude still did on kow 2026-10-02 from the old
+  advice here. [[pantheon-build-lag]] still applies to scripts run *outside* launcher.
 - **If the tool is wrong, change the tool** — it's Kaza's repo (push to `origin master`).
   Fixing a bug needs no ceremony; ask before changing wait semantics he'd feel day to day.
   Test first: `zsh -n include/terminus`, a real `l t.<site>.dev` run (idempotent), and a
