@@ -192,6 +192,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   Selenium setup and tag-scoped runs; also a wait that never waits, or a suite flaky only on clicks
 - **Playwright UI test writing** — `vendor/augustash/claude-config/memory/drupal/playwright-testing.md`  
   serial runs, condition waits, warm caches first
+- **Deploy hooks run alphabetically, not in file order** — `vendor/augustash/claude-config/memory/drupal/deploy-hook-order.md`  
+  chained deploy hooks that worked on dev misfire on live, where they all ran together
 - **Update-hook testing** — `vendor/augustash/claude-config/memory/drupal/update-hook-testing.md`  
   when an update hook deserves an update-path test and when it doesn't
 - **Test tag/group convention** — `vendor/augustash/claude-config/memory/drupal/test-tags.md`  

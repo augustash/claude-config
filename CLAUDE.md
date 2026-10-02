@@ -126,6 +126,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand
 - [Drupal Nightwatch testing](memory/drupal/nightwatch-testing.md) — Selenium setup and tag-scoped runs; also a wait that never waits, or a suite flaky only on clicks
 - [Playwright UI test writing](memory/drupal/playwright-testing.md) — serial runs, condition waits, warm caches first
+- [Deploy hooks run alphabetically, not in file order](memory/drupal/deploy-hook-order.md) — chained deploy hooks that worked on dev misfire on live, where they all ran together
 - [Update-hook testing](memory/drupal/update-hook-testing.md) — when an update hook deserves an update-path test and when it doesn't
 - [Test tag/group convention](memory/drupal/test-tags.md) — `aai` vs `ar` umbrella tag + module sub-tag, and how to tell which a site is
 - [Cross-project patches](memory/drupal/patches.md) — index of reusable local .patch files and vetted remote URLs
