@@ -1,7 +1,8 @@
 ---
-name: Deploy hooks run in alphabetical order, not file order
+name: deploy-hook-order
 description: pending hook_deploy_NAME functions are sorted by full function name before running, so hooks that build on each other break when several are pending at once — typically on the environment that receives them all together, i.e. live
-type: reference
+metadata:
+  type: reference
 ---
 # Deploy hooks run in alphabetical order, not file order
 
