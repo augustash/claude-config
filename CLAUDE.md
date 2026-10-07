@@ -142,7 +142,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Exo optional link field](memory/drupal/exo-alchemist-optional-link.md) — `required: FALSE` is a no-op on a link field
 - [Exo modifier checkbox + class](memory/drupal/exo-alchemist-modifier-checkbox.md) — adding a per-instance toggle that emits a class
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
-- [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or a module you enabled dies on a cascade of unrelated missing field types
+- [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or enabling commerce_rug dies on a cascade of unrelated missing plugins
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - [Detecting a click into a cross-origin iframe](memory/drupal/cross-origin-iframe-click-detection.md) — reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - [A third-party map iframe eats one-finger page scroll](memory/drupal/third-party-iframe-touch-scroll-trap.md) — embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
