@@ -18,6 +18,13 @@ parallel `<report>.md` is not wanted, because nobody reads it and it is a second
 copy to keep in sync. (Markdown is still right for the internal
 `technical-appendix.md`, which is a different document, not a copy of the same one.)
 
+**Design explorations too.** A UI concept or mockup ("take a crack at the design first")
+is the same: a local HTML prototype, not the claude.ai Design canvas or any other
+artifact type, even when a tool offers one or the request says "Claude design". Kaza,
+on sisal 2026-10-07: *"we don't publish things to the claude.ai cloud, we work locally."*
+Make it a working, responsive prototype he can resize and click, opened in his
+browser ([[user-browser-firefox]] on his machine).
+
 **Not in the site repo either.** Kaza's rule, on atr 2026-08-26: *"I don't want
 these committed or stored in the site."* A report written during a maintenance
 round went to `private/reports/` on the reasoning below — and on a

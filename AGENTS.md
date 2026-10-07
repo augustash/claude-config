@@ -49,7 +49,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Load the design skill when the work has to match something** — `vendor/augustash/claude-config/memory/preferences/use-design-skill.md`  
   when design judgment is left; skip it for prescriptive handed-over values
 - **Deliverables are HTML files, not Claude artifacts** — `vendor/augustash/claude-config/memory/preferences/deliverables-as-html-files.md`  
-  before publishing a report, audit or findings page for a client or the team
+  before publishing a report, audit, findings page or design mockup; we work locally, never on the claude.ai cloud
 - **Sign generated docs with the studio mark** — `vendor/augustash/claude-config/memory/preferences/doc-studio-mark.md`  
   finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
 - **Scratch context** — `vendor/augustash/claude-config/memory/preferences/scratch-context.md`  

@@ -51,7 +51,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commit messages](memory/preferences/commit-messages.md) — before every commit: no Co-Authored-By or session trailers; subject + a tight WHY
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
-- [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit or findings page for a client or the team
+- [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit, findings page or design mockup; we work locally, never on the claude.ai cloud
 - [Sign generated docs with the studio mark](memory/preferences/doc-studio-mark.md) — finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
 - [Reset context before new functionality](memory/preferences/reset-context-before-new-work.md) — at the boundary between features on a long session; Kaza's ~70% rule
