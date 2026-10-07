@@ -55,8 +55,8 @@ commerce_number_pattern, commerce_order, color_field, exo, exo_icon, exo_imagine
 photoswipe, google_tag, commerce_rug
 ```
 
-Reference: `web/modules/custom/commerce_rug/tests/src/Kernel/RugRateCardTest.php` on sisal,
-which also shows the fixture traps (`RugColor::preCreate()` appends the default size to any
+Reference: `web/modules/custom/commerce_rug/tests/src/Kernel/RugKernelTestBase.php` on sisal
+(extend it rather than copying the list); `RugRateCardTest` beside it shows the fixture traps (`RugColor::preCreate()` appends the default size to any
 sizes you pass; borders and colors need an explicit `weight`; the module's install config
 ships no pads).
 
