@@ -37,7 +37,9 @@ stopped a hand-rolled deploy mid-command to say so.
   it over as `! l t.<site>.live` so the output lands in the session, then verify on live.
   Dev is fine to run once asked ([[confirm-before-live-terminus]]).
 - **Run it straight after the push.** Launcher waits for the pushed commit to show on dev and
-  for its build to finish before promoting (launcher `02660e4`, 2026-09-29), so don't poll
+  for its build to finish before promoting (launcher `02660e4`, 2026-09-29), and since
+  `cdb665d` (2026-10-08) does the same on a multidev, reading its own branch; before that a
+  multidev deploy ran on the old code and reported success. So don't poll
   `workflow:list` for the dev sync yourself — Claude still did on kow 2026-10-02 from the old
   advice here. [[pantheon-build-lag]] still applies to scripts run *outside* launcher.
 - **Copying content DOWN is plain Terminus, not the launcher** — it has no clone command.
