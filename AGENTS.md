@@ -30,6 +30,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before scoping a style fix to one page or instance; Kaza's rule on uniformity
 - **Show the option and require the sign-in** — `vendor/augustash/claude-config/memory/preferences/show-the-option-require-the-signin.md`  
   before gating a control on the visitor already being signed in, subscribed or otherwise qualified; a missing control reads as a broken one
+- **An aside opens from its trigger's side** — `vendor/augustash/claude-config/memory/preferences/aside-opens-over-its-trigger.md`  
+  before choosing which edge an off-canvas panel, drawer or filter sheet slides in from
 - **A defect nobody can see still gets fixed** — `vendor/augustash/claude-config/memory/preferences/fix-what-nobody-sees.md`  
   before dismissing a sub-pixel or off-screen flaw as too small to bother with, or filing it as an acceptable quirk
 - **Use scale classes, not arbitrary Tailwind values** — `vendor/augustash/claude-config/memory/preferences/tailwind-no-arbitrary-values.md`  
