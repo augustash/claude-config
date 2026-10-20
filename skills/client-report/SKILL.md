@@ -1107,6 +1107,12 @@ and let them answer on the page.
   pressed button clears it. The intro that frames the question stays visible above it,
   worded conditionally (*"if the store moves…"*). Saved as `data-answer`. The snapshot
   strips `hidden` from gated content, so the file still reads in full without script.
+- **A plain yes/no question gets a check and an X after the sentence** (Kaza, gif
+  2026-10-20). No panel and no buttons labelled Yes/No: two round icon buttons, green when
+  the check is pressed, red when the X is. Each carries an `aria-label` that says what the
+  answer means (*"Yes, remove it"*). Same `data-answer` state and Save as the panel version.
+  Keep a Questions list to what the client must answer. Questions we can settle with them
+  directly, or that only matter to our build, stay out of the doc.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
