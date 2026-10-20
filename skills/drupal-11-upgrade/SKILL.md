@@ -264,6 +264,26 @@ not the consumer:
 grep -rn "set('bundle_entity_type'" web/modules/custom web/modules/community
 ```
 
+**A contrib minor that changes its JS contract breaks maps you defined
+yourself.** leaflet 10.3 → 10.4 started calling
+`zoomControl.setPosition(map_settings.zoomControlPosition)` unconditionally. A
+custom `hook_leaflet_map_info()` map that predates the key passes `undefined`,
+Leaflet throws `Cannot read properties of undefined (reading 'indexOf')` in
+`addTo`, and every map on the site dies with no server-side error (mace,
+2026-10-20). Leaflet's own map definitions carry the key, so only yours break.
+Compare your map info against the module's current defaults in `leaflet.module`:
+
+```bash
+grep -rn "function .*_leaflet_map_info" web/modules/custom
+```
+
+**Moving a module off an unsupported 1.x for an advisory is a major upgrade,
+not a patch.** drupal/diff's access-bypass advisory has no fixed 1.x release;
+2.x added `: array` to `FieldDiffBuilderInterface::build()`, so address 2.0.x's
+diff plugin fatals the moment `compareRevisions()` runs. Exercise every custom
+caller of the module's services before taking it, and do not fold it into a
+go-live.
+
 ---
 
 ## Phase 5 — jQuery 4
@@ -442,6 +462,15 @@ Three distinct categories, needing different fixes:
 3. **Type mismatches** → cast the values; checkbox settings stored as `0`/`1`
    need to be real booleans
 
+**Missing schema also shows up as config drift that never clears.** D11 orders
+a simple config's keys by its schema on save and appends any undeclared key at
+the end. Sync has the old order, so `config:status` reports the object as
+Different after every import, though the values are identical, and real drift
+hides behind it. A sync value typed differently from its schema (`dpi: '96'`
+against `type: integer`) does the same once anything re-saves the config. The
+fix is the schema or the sync file, never a re-import. Seen on `exo_form.settings`
+(fixed in exo `0aa2be2`) and `entity_print.print_engine.dompdf`.
+
 Reuse parent types wherever a plugin subclasses a core/contrib one rather than
 restating keys. Type genuinely non-enumerable structures (pluggable settings
 forms, per-component UUID keys) as `type: ignore`.
@@ -513,10 +542,20 @@ code, printed *No pending updates / no changes to import*, and exited 0.
   (`terminus env:code-log SITE.test`). Test's newest entry still being the old
   "build artifacts added by Pantheon" means nothing moved.
 - Assert the code itself: `php:eval 'print \Drupal::VERSION;'` must print 11.x.
+- **The Converge is not the last workflow.** "Change database version" and the
+  code sync can still be running after the Converge succeeds, so a wait keyed on
+  the newest workflow proceeds early. On mace and mspairport (both 2026-10-20) the
+  launcher ran `drush deploy` on dev against D10 code. It printed "No pending
+  updates", then died on a `ContainerNotInitializedException` class-not-found
+  fatal. Nothing was applied and a rerun was clean once every workflow had
+  finished. The launcher now scans the whole list for anything in flight.
 
 **Expect a burst of PHP errors during the swap, then silence.** Serialized
 Layout Builder objects, a missing `resolvable_uri` typed-data plugin and a
-`PageCache` constructor TypeError all come from D10 caches read by D11 code.
+`PageCache` constructor TypeError, a missing
+`ProxyClass\File\MimeType\MimeTypeGuesser` and
+`ThemeRegistry::getPreprocessInvokes()` returning null all come from D10 caches
+read by D11 code.
 They should stop at the cache rebuild. If they are still logging after
 maintenance mode lifts, they are real.
 
@@ -568,6 +607,17 @@ curl cannot tell that from a broken query.
       while `/product/add/custom` fataled, because field widgets only execute on
       forms and no form is reachable from a menu. List pages prove nothing about
       widget code.
+- [ ] **Rehearsed on a fresh live clone** right before go-live
+      (`terminus env:clone-content SITE.live <multidev>`, then deploy). A
+      multidev that has been on D11 for months has a database that already
+      upgraded; only live's current data proves the path. Crawl each entity's
+      add/edit **and view** page per bundle, logged in, with `pageerror` captured.
+      On mace this found a dead Leaflet map and two view-page 500s that the
+      form pass alone missed.
+- [ ] `composer audit --locked` clean, or each remaining advisory consciously
+      deferred. A long-lived upgrade branch drifts behind core security
+      releases: mace was about to go live on 11.4.9 under a critical RCE fixed in
+      11.4.10.
 - [ ] Custom test suite green
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
       real gateways, which tests deliberately never touch
