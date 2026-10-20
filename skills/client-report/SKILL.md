@@ -1095,6 +1095,13 @@ and let them answer on the page.
 - Once a decision covers a question, take it out of the Questions list. Asking twice
   invites two different answers.
 - Print shows only the answer given: an unpressed *Choose this* is hidden.
+- **A yes/no that gates content** (gif's *"Are we moving the store off Klaviyo?"*): Yes
+  and No buttons, and everything that only matters on a yes carries
+  `data-gate="<panel id>"` and stays hidden until Yes, including a follow-up item in
+  Questions. No keeps it hidden and shows our one-line answer in the panel. Clicking the
+  pressed button clears it. The intro that frames the question stays visible above it,
+  worded conditionally (*"if the store moves…"*). Saved as `data-answer`. The snapshot
+  strips `hidden` from gated content, so the file still reads in full without script.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
