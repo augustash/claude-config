@@ -256,6 +256,14 @@ go out"*), and keep the present tense for what is true today (*"you already supp
 dielines"*). Step labels in a flow strip can stay imperative, because they read as
 a process rather than a claim (Kaza, Meridian Display 2026-09-28).
 
+**Once the client has chosen the work, switch to *will*.** The conditional is for
+work they haven't committed to yet. A plan for a project they've already asked for
+(gif's move from Klaviyo to Pipedrive) talks about what we are going to do: *"what will
+happen each time someone sends the form"*, *"we'll build and test against a sandbox"*.
+Leaving *would* there makes agreed work sound optional (Kaza, gif 2026-10-20). An
+option that's still genuinely open in the same doc, like a choice the client hasn't
+made, can take the present (*"that's the natural replacement"*) instead.
+
 **Never claim a capability that is not live yet.** On DMX the catalog band was titled
 "a catalog that can sell" and led with "every build is orderable" — while cart and
 checkout were switched off. The honest framing was stronger anyway: their product
