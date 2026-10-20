@@ -1061,8 +1061,10 @@ for the client's own team) is not.
 - **They have to save**, because a browser can't write back to the file it opened. Save
   sits at the right edge of the nav bar, aligned with the content while the section links
   stay centred (Kaza), and falls back to the end of the scrolling row on a phone. It is gold (the client's own yellow where they have one)
-  while there are unsaved choices, green once saved. **It is always visible** (Kaza, gif
-  2026-10-20): green *Saved* when nothing has changed, gold *Save* once something has.
+  while there are unsaved choices, green once saved. **It is always visible on a doc that holds
+  something to answer** (Kaza, gif 2026-10-20): green *Saved* when nothing has changed, gold
+  *Save* once something has. A doc with nothing to approve, decide or tick has no Save at all;
+  the script hides it when no `.decision`, `.approve` or `[data-done]` is on the page.
   Hiding it until the first choice, as cal's record did, left the reviewer asking where
   saving was. The snapshot writes it back as green *Saved*, not hidden. It uses `showSaveFilePicker`
   where the browser has it (Chrome, Edge) and downloads a copy everywhere else, and a
