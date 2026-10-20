@@ -33,7 +33,8 @@ WordPress check that `.claude/` isn't served.
 **So are project docs the client answers, the ones that lead into a build** (Kaza, gif
 2026-10-20). A scoping or plan doc with decisions for the client to fill in goes in
 `.claude/docs/<topic>/` (gif: `.claude/docs/pipedrive/`), committed, with its
-`technical-appendix.md` beside it. When the client sends back the filled-in copy, it's saved
+`technical-appendix.md` beside it. The copy that goes out is copied to `~/Desktop/` for the dev
+to send; the repo copy is the record. When the client sends back the filled-in copy, it's saved
 next to the original as `… - answered.html` and committed. The answered doc plus the
 appendix is then the brief the build starts from, with nothing to reconstruct. Everything
 below still holds for other deliverables: one-off reports and findings pages.
