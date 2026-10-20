@@ -1077,6 +1077,25 @@ for the client's own team) is not.
 - Cal's October 2026 record is the reference implementation, tested through a full
   save-and-reopen round trip.
 
+**Decisions: a question the client answers in the doc** (Kaza, gif 2026-10-20). When we
+need a call from them, ask it where the topic lives, not only in a closing question list,
+and let them answer on the page.
+- The panel: the question as its heading and one line of context. Then a *Recommended*
+  marker with our answer and a **Choose this** button, a centred **or** between rules, and
+  a labelled textarea for their own answer.
+- Picking one hides the other: choosing the recommendation hides the textarea and the
+  *or*, and typing in the textarea hides the recommendation and the *or*. Clicking
+  *Chosen* again, or clearing the text, brings both back. Answered, the panel turns
+  green. Keep `[hidden]` winning over the panel's own `display` rules
+  (`.decision [hidden]{display:none!important}`), or the toggle silently does nothing.
+- It saves through the same Save button and snapshot as approvals. The choice is stored
+  as `data-choice="recommended"`, and the typed answer is written into the textarea's
+  text in the snapshot, since `.value` never reaches the markup. On load the script reads
+  both back, and Save starts as *Saved*. The first answer opens the same short note.
+- Once a decision covers a question, take it out of the Questions list. Asking twice
+  invites two different answers.
+- Print shows only the answer given: an unpressed *Choose this* is hidden.
+
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
 green for no rush.
