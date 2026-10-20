@@ -128,6 +128,28 @@ the type gotcha and the residue that config alone can't fix. Budget an hour for
 this; on one site it accounted for nearly the whole "we prefer the old admin
 theme" complaint, and reverting the theme was never the answer.
 
+**A module that left core with no contrib replacement kills the import.** Dropping
+`rdf` (or `action`, `tracker`, …) from composer.json is right, but live still has
+it installed, so `cim` tries to uninstall it. Uninstalling loads the module, its
+code is gone, and the import dies with `The module rdf does not exist` after
+`updb` has already run. A second deploy gets through, which leaves live
+half-imported in between. Retire it in a `hook_post_update_NAME()` instead, which
+runs before the import: delete its config (`listAll('rdf.')`), clear
+`core.extension:module.rdf` and drop its `system.schema` key. Check what is left
+with a fresh live DB, not a multidev, since a multidev may already have had it removed
+by hand (mspairport, 2026-10-20):
+
+```bash
+drush php:eval '$l=\Drupal::service("extension.list.module");
+foreach (array_keys(\Drupal::config("core.extension")->get("module")) as $m)
+  if (!$l->exists($m)) echo "MISSING $m\n";'
+```
+
+When you rehearse this locally, flush a Redis cache backend before each fresh pull.
+Redis survives the DB import, so a second pull starts with caches from the first
+run's post-upgrade state against a pre-upgrade DB. `updb`'s batch subprocess then
+dies with "Bootstrap failed", which looks like a bug in your fix.
+
 ### Scraping drupal.org for compatibility is not enough
 
 A `core_version_requirement` scrape of your **direct requires** is structurally
@@ -558,6 +580,24 @@ Layout Builder objects, a missing `resolvable_uri` typed-data plugin and a
 read by D11 code.
 They should stop at the cache rebuild. If they are still logging after
 maintenance mode lifts, they are real.
+
+**A deploy that dies inside `updb` leaves live in maintenance mode, and the rerun
+keeps it there.** `updb` saves the current maintenance flag, turns it on, and
+restores the saved value at the end. Kill it partway and the flag stays on.
+The rerun then saves *on* and restores *on*, reports success, and the site
+stays down. The edge hides it: cached pages keep returning 200 while every
+uncached page serves a 503 maintenance page, so a homepage check passes. On
+mspairport (2026-10-20) the first live deploy died silently during the
+post-updates. A rerun finished cleanly and left the site in maintenance for
+another few minutes until someone checked an uncached URL. After any deploy that
+needed a rerun:
+
+```bash
+terminus drush SITE.live -- state:get system.maintenance_mode   # must be 0/empty
+terminus drush SITE.live -- state:set system.maintenance_mode 0 --input-format=integer
+```
+
+and verify with an uncached URL such as `/search?keys=x`, never the homepage alone.
 
 **Build guard:** Pantheon fails any build whose step produces files that are
 neither committed nor gitignored:
