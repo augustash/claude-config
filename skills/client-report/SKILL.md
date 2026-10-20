@@ -1084,7 +1084,7 @@ for the client's own team) is not.
 need a call from them, ask it where the topic lives, not only in a closing question list,
 and let them answer on the page.
 - The panel: the question as its heading and one line of context. Then a *Recommended*
-  marker with our answer and a **Choose this** button, a centred **or** between rules, and
+  marker with our answer and a **Choose** button, a centred **or** between rules, and
   a labelled textarea for their own answer.
 - Picking one hides the other: choosing the recommendation hides the textarea and the
   *or*, and typing in the textarea hides the recommendation and the *or*. Clicking
@@ -1097,7 +1097,7 @@ and let them answer on the page.
   both back, and Save starts as *Saved*. The first answer opens the same short note.
 - Once a decision covers a question, take it out of the Questions list. Asking twice
   invites two different answers.
-- Print shows only the answer given: an unpressed *Choose this* is hidden.
+- Print shows only the answer given: an unpressed *Choose* is hidden.
 - **A yes/no that gates content** (gif's *"Are we moving the store off Klaviyo?"*): Yes
   and No buttons, and everything that only matters on a yes carries
   `data-gate="<panel id>"` and stays hidden until Yes, including a follow-up item in
