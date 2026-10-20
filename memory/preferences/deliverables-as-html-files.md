@@ -28,8 +28,15 @@ browser (Firefox Developer Edition).
 **POM maintenance records are the exception: they're committed** to
 `.claude/docs/pom/` in the project (Kaza, cal 2026-10-19), so the record, the client's
 approved copy and the round's notes travel together. See client-report §6, including the
-WordPress check that `.claude/` isn't served. Everything below still holds for other
-deliverables.
+WordPress check that `.claude/` isn't served.
+
+**So are project docs the client answers, the ones that lead into a build** (Kaza, gif
+2026-10-20). A scoping or plan doc with decisions for the client to fill in goes in
+`.claude/docs/<topic>/` (gif: `.claude/docs/pipedrive/`), committed, with its
+`technical-appendix.md` beside it. When the client sends back the filled-in copy, it's saved
+next to the original as `… - answered.html` and committed. The answered doc plus the
+appendix is then the brief the build starts from, with nothing to reconstruct. Everything
+below still holds for other deliverables: one-off reports and findings pages.
 
 **Not in the site repo either.** Kaza's rule, on atr 2026-08-26: *"I don't want
 these committed or stored in the site."* A report written during a maintenance
