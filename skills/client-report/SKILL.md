@@ -938,6 +938,9 @@ title block and lists them:
 The reader closes what they've read and keeps the page to what they're working through.
 - The `h2` holds a `<button type="button" aria-expanded aria-controls>` wrapping the
   heading text and a chevron to its right. Down means open, rotated -90° means closed.
+  The chevron sits **directly after the heading text** (a small gap, ~6px), not pushed to
+  the far edge with `margin-left:auto` (Kaza, gif 2026-10-20): out at the edge it reads as
+  detached from the heading it toggles.
   Everything after the heading sits in one `.sec-body` wrapper, which carries the
   heading indent in place of the per-child `section > :not(h2)` rule. A caption that
   set its own left indent then has to drop it, or it doubles.
