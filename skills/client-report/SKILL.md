@@ -1092,6 +1092,10 @@ optional actor label (*Buyer*, *Meridian*), a bold step name and at most one lin
 detail.
 - Colour the card's top edge by actor, using the client's primary and secondary brand
   colours, so hand-offs show at a glance.
+- Actor colours have to differ in lightness, not just hue. A 4px edge in navy and one in
+  dark blue read as the same actor (Kaza, gif 2026-10-20: `#1f293b` beside `#004a7d`). When
+  the palette has two dark tones, take the brighter sibling for one of them (gif's
+  `#36aece`), and carry that actor's colour into any other diagram in the doc.
 - Eight steps sit as 4 × 2, and two columns on a phone.
 - When two flows exist (the shared process and the customer's own side), give each
   its own strip, not one long one.
