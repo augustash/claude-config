@@ -264,6 +264,75 @@ not the consumer:
 grep -rn "set('bundle_entity_type'" web/modules/custom web/modules/community
 ```
 
+**Run PHPStan over your own code against the new tree — and read two finding
+types as fatals, not lint.** Point `mglaman/phpstan-drupal` at `custom`,
+`community` and the theme after the composer update:
+
+- `... is not covariant with return type ArrayIterator` — a class-load fatal
+  (`must be compatible with ItemList::getIterator()`). Every pre-`ComputedItemListTrait`
+  computed field overrides `getIterator()` untyped; D11 typed the parent, so the
+  first page that loads the entity dies. On aailoft this was dismissed as noise,
+  and it 500'd 78 pages. Add `: \ArrayIterator`.
+- `Call to an undefined method <ConcreteClass>::x()` at **level 2**. Level 1
+  can't see methods called on untyped variables, which is where most removed
+  contrib APIs hide. Level 2 is noisy through interfaces, so filter to messages
+  whose class doesn't end in `Interface`.
+
+**Core hooks that became classes silently disable `function_exists()`
+guards.** D11.1+ moved procedural hooks into `src/Hook/*Hooks.php`, and some
+have no legacy forward left. A module that calls core's hook function directly
+behind a guard then does nothing, with no error anywhere. `exo_link_menu`
+does exactly this with `menu_ui_form_node_form_alter()`: the menu settings
+disappear from every node form. The fix is `\Drupal::service(MenuUiHooks::class)->formNodeFormAlter()`,
+and the submit handler to swap is now `MenuUiHooks::class . ':formNodeFormSubmit'`.
+Structural diffing of a form (field names only in D10) caught it. See
+[[exo-link-menu-d11-menu-settings]].
+
+```bash
+grep -rn "function_exists('[a-z_]*_form_[a-z_]*alter')" web/modules web/themes --include='*.module' --include='*.php'
+```
+
+**A `updb` that crashes mid-run leaves the site in maintenance mode.** Drush
+bootstraps fine and `status` is green, while every page returns 503 "Site under
+maintenance". After any failed `updb`, run
+`drush state:get system.maintenance_mode` before you debug the "outage".
+
+### Commerce 2 → 3 rides along
+
+Commerce 2.x stops at D10, so a D11 upgrade of a store is also a Commerce major.
+It removed APIs that custom commerce code leans on, and none of them show until
+the code path runs:
+
+| Removed | Replacement | Where it bit |
+|---|---|---|
+| `ProductType::getVariationTypeId()` | `getVariationTypeIds()` (exists in 2.x too) | `updb`'s final cache rebuild, via a bundle-field hook |
+| `ProductVariation::isActive()` | `isPublished()` | a cart order processor, which fataled every page for anyone with a cart |
+| `commerce_price.number_formatter_factory` | `commerce_price.currency_formatter->format($n, $code, [...])` | a "name your amount" donation widget |
+| `PaymentGatewayBase::__construct()` | property injection in `create()`; override `create()`, call `parent::create()` | a contrib gateway that built `new static(...)` itself |
+
+The fourth one fails quietly. A gateway that bypasses `parent::create()` builds without
+its payment type or `minorUnitsConverter`, and breaks only when something
+refunds or voids an old payment through it.
+
+**The product-revisions patch (#2656896) needs re-targeting, not re-running.**
+Sites that made products revisionable on 2.x carry that schema in the DB. The
+patch's own update hook has already run (check `commerce_product` schema ≥
+its number), so the re-targeted patch should carry the entity definition and
+forms only. Also drop any companion patch that renamed upstream's colliding
+update number. Prove it with `entityDefinitionUpdateManager()->getChangeSummary()`
+= 0 and `isRevisionable()` still `TRUE`. Stock 3.x has no product revisions, so
+shipping without the patch makes every product's definition disagree with its tables.
+
+**A half-applied patch leaves debris, not just a `.rej`.** When the `-p1` attempt
+fails partway, composer-patches retries at other `-p` levels and scatters
+directories (`Controller/`, `Form/`, `b/`, `product/`) across the package root.
+Rebuild against the pristine release; don't inspect the installed copy.
+
+**Abandoned Commerce 2 contrib that past orders reference** (a disabled gateway
+with historical payments) can't just be uninstalled: removing the gateway
+orphans those orders. Vendor the pristine release into `web/modules/community`,
+declare `^11`, and fix its DI.
+
 ---
 
 ## Phase 5 — jQuery 4
@@ -568,12 +637,33 @@ curl cannot tell that from a broken query.
       while `/product/add/custom` fataled, because field widgets only execute on
       forms and no form is reachable from a menu. List pages prove nothing about
       widget code.
+- [ ] **Regression crawl diffed against a D10 baseline captured first**, from
+      the same live DB: status, size and error markers per URL, anon *and* admin.
+      A per-bundle sample isn't enough on its own:
+      - Crawl as an admin **with something in their cart**. Cart order
+        processors only run then, and one fataled every admin page.
+      - Add every entity type's `version-history` page. Forked revision
+        overviews break silently.
+      - Run a real-browser pass, which catches 500s on links Quicklink
+        prefetches that no URL list contains.
+      - Diff form *structure*, not just status. A form that lost a whole element
+        still returns 200. Only its size dropped (~110 KB, the missing menu
+        parent `<select>`).
+- [ ] **Deploy rehearsed locally**: re-import the untouched live DB, run
+      `drush deploy` exactly as Pantheon will, then `config:status` must be clean.
+      A hand-stepped local DB is not what production will be.
 - [ ] Custom test suite green
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
-      real gateways, which tests deliberately never touch
+      real gateways, which tests deliberately never touch. A cloned DB carries
+      live gateway keys, a real mail sender (e.g. `mailgun_mail`) and any CRM
+      credentials. Locally, switch to the gateway's test-mode twin in the DB,
+      route mail to Mailpit via `settings.local.php`, and clear the CRM's
+      credentials from state *before* the first order. Afterwards, `cim` puts
+      the gateways back. Never place an order on a multidev cloned from live.
 
 ## Related memory
 
 [[d11-symfony-runtime]] · [[cross-version-db-pull]] · [[phpunit-testing]] ·
 [[config-split-ignore-collision]] ·
-[[admin-theme-keyed-config]] · [[pantheon-build-lag]]
+[[admin-theme-keyed-config]] · [[pantheon-build-lag]] ·
+[[exo-link-menu-d11-menu-settings]] · [[solr-empty-after-content-clone]]

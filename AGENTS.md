@@ -251,6 +251,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a slider that overflows on mobile only
 - **exo_icon breaks kernel tests** — `vendor/augustash/claude-config/memory/drupal/exo-icon-kernel-tests.md`  
   a KernelTestBase fatals on a missing `node_type`, or enabling commerce_rug dies on a cascade of unrelated missing plugins
+- **exo_link_menu drops node-form menu settings on D11.1+** — `vendor/augustash/claude-config/memory/drupal/exo-link-menu-d11-menu-settings.md`  
+  editors can't add a page to a menu after a D11 upgrade; the node form still loads fine, just without the section
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
 - **Detecting a click into a cross-origin iframe** — `vendor/augustash/claude-config/memory/drupal/cross-origin-iframe-click-detection.md`  
