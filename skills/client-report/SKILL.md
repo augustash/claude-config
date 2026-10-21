@@ -546,6 +546,14 @@ Headings are one word, and a sticky section nav sits under the title block
 (§7, *sticky section nav*). The panels, markers and flow strips named here are §7's
 *Components*.
 
+**Write it from the day the client reads it.** By then the round is deployed, so
+everything the round did is past tense: *"Core 7.1.3 was a security release"*, not *is*;
+*"the updates brought security fixes"*, not *carry*; a check that found nothing *showed*
+nothing. Present tense stays for what is still true on their site (*"certificates download
+as before"*) and for what is still open (Next, Held). Kaza caught *is* on atr 2026.10: *"to
+imply it's been completed. When the client reads this, we'll have already pushed the
+changes."*
+
 The record ends where its content does: no closing stamp, no sign-off
 paragraph. One short send-off line is allowed: centred, bold, a step below the
 section headings, directly above the studio mark. It works when a Horizon has
