@@ -717,6 +717,14 @@ Check it every round, from the authority, at the moment you write it:
 | Drupal | [drupal.org core release schedule](https://www.drupal.org/about/core/policies/core-release-cycles/schedule) |
 | WordPress | [wordpress.org/about/roadmap](https://wordpress.org/about/roadmap/) — and the PHP version's own EOL, which bites first more often |
 
+**On Pantheon, PHP's own end of life is not the site's exposure.** Pantheon backports
+security fixes to PHP versions upstream has dropped and rolls them out across its
+platform, so a site on 8.1 after 8.1's EOL is still patched. Don't write *"stopped getting
+security fixes"* or *"each new flaw stays open"*: both are false there. The case for moving
+up still stands, and it is a *Plan* item rather than *Urgent*: every fix now depends on the
+host backporting it, and the newer version is supported upstream again (Kaza, atr
+2026-10-21).
+
 It also reframes the round's hold list: see site-update, *Reporting back*.
 
 ---
