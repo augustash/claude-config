@@ -432,6 +432,22 @@ Three shapes do not translate mechanically, and each fails differently:
 - **No-argument `.once()`** defaulted to the id `once`. Give it a real, unique id
   — reusing one id across two behaviours means the second never runs.
 
+**`drupal/jquery_once` hides the whole phase.** Its `hook_library_info_alter()`
+replaces `core/jquery` with a bundled **3.7.1**, site-wide, to keep `.once()`
+alive. A "D11" site with it installed never runs jQuery 4, so none of the
+breakage above appears and the upgrade looks clean. Check before trusting a
+quiet console: `jQuery.fn.jquery` on the live page must read `4.x`. On
+mspairport it shipped to live on 3.7.1. Removing it there turned up `$.type`
+breaking 79 of 100 pages (webui-popover and slick) that had never been on 4.
+Retire it like rdf, with a post-update that clears its `core.extension` entry and
+schema key, so the module and its code can leave in one deploy.
+
+**Ask the browser which APIs are gone, not `jquery.js`.** Grepping for
+`type:` matched an unrelated key and reported `$.type` present. It was removed.
+`typeof jQuery.type` on a jQuery 4 page is the answer. Core's 4.0.0 still has
+`isFunction` and `isNumeric`, and lacks `type`, `isArray`, `trim`, `isWindow`,
+`parseJSON`, `now`, `camelCase`, `nodeName` and `unique`.
+
 Note eXo bundles its own `lib/jquery.once/jquery.once.min.js`, so `.once()` may
 keep working at runtime long after you have removed the core dependency. That
 masks the problem locally; do not read "it still works" as "it is migrated".
