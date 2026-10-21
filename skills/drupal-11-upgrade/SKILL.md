@@ -299,6 +299,17 @@ Compare your map info against the module's current defaults in `leaflet.module`:
 grep -rn "function .*_leaflet_map_info" web/modules/custom
 ```
 
+**A contact form with its Subject field hidden stops mailing.** Contact is contrib
+on D11, and its `hook_mail()` hands the NULL subject to a now-typed `Html::escape()`.
+The message is stored first, so nothing is lost, but no email goes out and the visitor
+gets a 500. Only a POST reaches it, so every crawl passes. mspairport ran 16 hours
+like this after go-live. See
+[contact-hidden-subject-d11](../../memory/drupal/contact-hidden-subject-d11.md):
+
+```bash
+grep -l '^  subject: true' config/core.entity_form_display.contact_message.*.yml
+```
+
 **Moving a module off an unsupported 1.x for an advisory is a major upgrade,
 not a patch.** drupal/diff's access-bypass advisory has no fixed 1.x release;
 2.x added `: array` to `FieldDiffBuilderInterface::build()`, so address 2.0.x's
@@ -659,6 +670,9 @@ curl cannot tell that from a broken query.
       releases: mace was about to go live on 11.4.9 under a critical RCE fixed in
       11.4.10.
 - [ ] Custom test suite green
+- [ ] **Every contact form and webform submitted** on the rehearsal clone, and the
+      mail seen arriving (Mailpit or the reroute address). A GET-only crawl cannot
+      see a submit handler fataling.
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
       real gateways, which tests deliberately never touch
 

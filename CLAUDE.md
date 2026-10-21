@@ -127,6 +127,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [An abandoned offsite payment leaves the order locked](memory/drupal/offsite-gateway-abandonment-lock.md) — a customer backs out at PayPal or Affirm and returns to an empty cart; also before tidying an order while someone is at a gateway
 - [A guest cannot view their own shipment](memory/drupal/guest-order-shipment-access.md) — a receipt heading with nothing under it, or a missing address, on guest orders only
 - [mailsystem resolves a per-module sender before its defaults](memory/drupal/mailsystem-per-module-overrides-defaults.md) — one module's mail vanishes with no error while everything else reaches Mailpit
+- [A hidden contact Subject breaks every submission on D11](memory/drupal/contact-hidden-subject-d11.md) — contact form 500s on submit after a D11 deploy, or messages stored but no email ever arrives
 - [The Postmark plugin sends no attachments](memory/drupal/postmark-drops-attachments.md) — before ticking a webform email handler's attachments on a Postmark site; the submit throws where Postmark actually sends
 - [Commerce's required price blocks every variation save](memory/drupal/commerce-price-required-on-a-catalog.md) — an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
 - [A fixed media alt still renders the old one](memory/drupal/media-thumbnail-alt.md) — an alt corrected on the media entity while cards and product pages keep printing the old text

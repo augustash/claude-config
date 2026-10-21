@@ -191,6 +191,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a receipt heading with nothing under it, or a missing address, on guest orders only
 - **mailsystem resolves a per-module sender before its defaults** — `vendor/augustash/claude-config/memory/drupal/mailsystem-per-module-overrides-defaults.md`  
   one module's mail vanishes with no error while everything else reaches Mailpit
+- **A hidden contact Subject breaks every submission on D11** — `vendor/augustash/claude-config/memory/drupal/contact-hidden-subject-d11.md`  
+  contact form 500s on submit after a D11 deploy, or messages stored but no email ever arrives
 - **The Postmark plugin sends no attachments** — `vendor/augustash/claude-config/memory/drupal/postmark-drops-attachments.md`  
   before ticking a webform email handler's attachments on a Postmark site; the submit throws where Postmark actually sends
 - **Commerce's required price blocks every variation save** — `vendor/augustash/claude-config/memory/drupal/commerce-price-required-on-a-catalog.md`  
