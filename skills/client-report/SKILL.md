@@ -722,7 +722,8 @@ security fixes to PHP versions upstream has dropped and rolls them out across it
 platform, so a site on 8.1 after 8.1's EOL is still patched. Don't write *"stopped getting
 security fixes"* or *"each new flaw stays open"*: both are false there. The case for moving
 up still stands, and it is a *Plan* item rather than *Urgent*: every fix now depends on the
-host backporting it, and the newer version is supported upstream again (Kaza, atr
+host backporting it, which lands later than on a supported version and leaves the site
+vulnerable for longer, and the newer version is supported upstream again (Kaza, atr
 2026-10-21).
 
 It also reframes the round's hold list: see site-update, *Reporting back*.
