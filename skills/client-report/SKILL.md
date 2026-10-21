@@ -398,7 +398,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
 
 - **To send:** `.claude/docs/pom/<Client> Website Maintenance - <Month Year>.html` in
   the project, **committed** (Kaza, cal 2026-10-19). It has a readable filename with
-  spaces, because it gets attached to an email. A doc with companion files (screenshots,
+  spaces, because it gets attached to an email. Once the dev has signed off, copy it to
+  `~/Desktop/` for them to send, and keep the committed copy as the record (Kaza, atr
+  2026-10-21). A doc with companion files (screenshots,
   an appendix) gets a dated folder instead: `.claude/docs/pom/<YYYY.MM>/`. When the
   client sends back their approved copy, save it beside the original as
   `… - approved.html` and commit it, so the approvals are on record.
