@@ -155,6 +155,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  
   building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
+- **On a login-walled site every probe is a full render** — `vendor/augustash/claude-config/memory/drupal/login-wall-scanner-probes.md`  
+  a log sweep finds no 404s on a site behind anonymous_redirect; also before testing a probe block on ddev
 - **Search API / Solr convention** — `vendor/augustash/claude-config/memory/drupal/search-api-solr-convention.md`  
   standard index/server names and the DDEV Solr build; also solr1–solr3 containers still running, or a collection refusing 3 shards
 - **A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy** — `vendor/augustash/claude-config/memory/drupal/event-subscriber-contrib-class-deadlock.md`  
@@ -255,6 +257,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a KernelTestBase fatals on a missing `node_type`, or enabling commerce_rug dies on a cascade of unrelated missing plugins
 - **Every hierarchical select on the site renders empty** — `vendor/augustash/claude-config/memory/drupal/shs-d11-bundle-cache-tags.md`  
   shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- **charts 5.2.4 moved data-chart** — `vendor/augustash/claude-config/memory/drupal/charts-data-chart-moved.md`  
+  custom chart colours or types quietly revert after a charts bump, with #attributes warnings per chart
 - **Detecting a click into a cross-origin iframe** — `vendor/augustash/claude-config/memory/drupal/cross-origin-iframe-click-detection.md`  
   reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - **A third-party map iframe eats one-finger page scroll** — `vendor/augustash/claude-config/memory/drupal/third-party-iframe-touch-scroll-trap.md`  
