@@ -402,6 +402,15 @@ regardless, so "what did you do to our site last month" has a file to point at.
   an appendix) gets a dated folder instead: `.claude/docs/pom/<YYYY.MM>/`. When the
   client sends back their approved copy, save it beside the original as
   `… - approved.html` and commit it, so the approvals are on record.
+
+  **One record at a time: each round's replaces the last** (Kaza, atr 2026-10-21).
+  Before drafting, read the record already in `.claude/docs/pom/`, since it shows where
+  the site stood and what was promised. Carry forward what still applies: an open hold,
+  a *Next* item not yet done, an idea still unanswered. Drop what the round closed. Then
+  `git mv` the old file to the new month's name and write over it, so the folder never
+  grows a pile of stale records and git history keeps every version. The approved copy
+  goes the same way: once the next round's record is written, the old `… - approved.html`
+  is removed.
 - **To keep:** `.claude/memory/records/<round>.md` (for example `2026.09.md`),
   committed and indexed in the project's `MEMORY.md`. It holds:
   - what was updated
@@ -415,8 +424,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
 - **Before the first commit on a WordPress site, check `.claude/` isn't served.** On
   WordPress on Pantheon the repo root *is* the docroot (`meridiandisplay.com/readme.html`
   returns 200), and these records list unpatched vulnerabilities and prices. Request
-  the doc's URL on the dev environment; it must not return 200. On Drupal only `web/`
-  is served, so the repo root is safe.
+  a committed `.claude/` file's URL on test or live, next to the homepage returning 200;
+  the file must not return 200. Dev is no proof: a locked dev answers 401 to everything
+  (atr 2026-10-21). On Drupal only `web/` is served, so the repo root is safe.
 
 Evidence, framing, design and components (§1–2, §7) all apply, as does the §8
 integrity check. **Ignore §4's ten-section pitch structure**: this is a much
