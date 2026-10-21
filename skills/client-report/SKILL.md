@@ -537,6 +537,15 @@ smaller genre.
    Name what the plan would do for *this* site, from what the round found: a
    commerce site's bot traffic, a listing site's search. When it doesn't fit, cut
    the section rather than offer it anyway.
+
+   atr 2026.10 is the model Kaza confirmed (*"exactly what I want"*): one paragraph, opening
+   on a real event from the site's own month (a bot crawling every wishlist link until we
+   blocked it), then what the plan adds, then a close tying it to a finding in this record
+   (*"Problems like this month's part-number search would turn up on their own"*). No
+   price, no ask. **Fit isn't the only gate: the account lead decides whether a client
+   is approached about a plan at all.** atr's was right on the merits and still cut,
+   because Thor didn't want to push them up yet. Draft it, let the dev cut it, and note
+   the hold in the round record so the next round asks before offering it again.
 7. **The studio mark**, centred at the very bottom. For August Ash that means the A
    shape alone, not the wordmark. See
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
