@@ -542,10 +542,8 @@ smaller genre.
    on a real event from the site's own month (a bot crawling every wishlist link until we
    blocked it), then what the plan adds, then a close tying it to a finding in this record
    (*"Problems like this month's part-number search would turn up on their own"*). No
-   price, no ask. **Fit isn't the only gate: the account lead decides whether a client
-   is approached about a plan at all.** atr's was right on the merits and still cut,
-   because Thor didn't want to push them up yet. Draft it, let the dev cut it, and note
-   the hold in the round record so the next round asks before offering it again.
+   price, no ask. Before drafting one, check the project's `.claude/memory/` for a hold
+   on plan offers to that client.
 7. **The studio mark**, centred at the very bottom. For August Ash that means the A
    shape alone, not the wordmark. See
    [doc-studio-mark](../../memory/preferences/doc-studio-mark.md). Once a
