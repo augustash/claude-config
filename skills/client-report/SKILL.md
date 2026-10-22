@@ -413,6 +413,13 @@ regardless, so "what did you do to our site last month" has a file to point at.
   grows a pile of stale records and git history keeps every version. The approved copy
   goes the same way: once the next round's record is written, the old `… - approved.html`
   is removed.
+
+  **Another client's record is a reference, not a template** (Kaza, sal 2026-10-22). Docs
+  lag this skill, since the rules move faster than any one record, so build from the
+  skill and open a past record only for mechanics. And assess every claim for *this*
+  site: a sal draft's plan paragraph carried "bots signing up for accounts" in from
+  another site's month, and sal's sign-ups turned out to be teachers on school-district
+  addresses.
 - **To keep:** `.claude/memory/records/<round>.md` (for example `2026.09.md`),
   committed and indexed in the project's `MEMORY.md`. It holds:
   - what was updated
@@ -844,6 +851,12 @@ Fold what it teaches back into this section.
   black stripes; the first draft striped the bullet to match, and Kaza chose a
   plain orange dot instead (su, 2026-09-27). Offer the literal echo, and expect
   the simpler one to win.
+  The echo can also be the shape. EQ Learn's logo is a burst of coloured shards
+  at different angles, so each section's bullet became one shard, a clipped kite in
+  that shard's sampled colour, rotated to its angle in the burst. Down the page the
+  headings walk round the pinwheel. Kaza: *"super cool… good idea and well executed"*
+  (sal, 2026-10-22). Look for a mark the logo repeats with variation; that variation
+  is what gives each section its own bullet.
 
 **Copy: a record, not a pitch, and every sentence new to the reader.**
 
@@ -1249,6 +1262,11 @@ starts with `<!DOCTYPE html>` and declares `<meta charset="utf-8">`, no external
 missing selector, every nav anchor resolving to an existing id. If you can open it in a
 browser, `document.compatMode` must be `CSS1Compat` and `document.characterSet` `UTF-8` —
 anything else means the head is wrong.
+
+**Sweep the copy for the client's English** at the same time: grep for `licence`,
+`catalogue`, `behaviour`, `colour`, `centre` and their kin on a US client. A sal record
+reached review with six *licence*s. See
+[us-spelling-in-client-copy](../../memory/preferences/us-spelling-in-client-copy.md).
 
 ## 9. Working with the reviewer
 
