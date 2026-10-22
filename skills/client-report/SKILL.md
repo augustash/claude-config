@@ -402,9 +402,12 @@ regardless, so "what did you do to our site last month" has a file to point at.
   `~/Desktop/` for them to send, and keep the committed copy as the record (Kaza, atr
   2026-10-21). A doc with companion files (screenshots,
   an appendix) gets a dated folder instead: `.claude/docs/pom/<YYYY.MM>/`. When the
-  client sends back their approved copy, write it over the record under the same
-  filename and commit it. The approvals are then on record, git keeps the version we
-  sent, and the folder still holds one file (Kaza, sal 2026-10-22, replacing a separate
+  client sends back their approved copy, the dev drops it on `~/Desktop/` and asks you
+  to pick it up. Read the answers out of it (`data-approved`, `data-answer`, the typed
+  replies), write it over the record under the same filename, and commit. Then remove
+  the Desktop copies, both the one we sent and the one that came back. The repo holds
+  one update doc per project, git keeps the version we sent, and nothing is left
+  stranded on the Desktop (Kaza, sal 2026-10-22, replacing a separate
   `… - approved.html` beside the original).
 
   **One record at a time: each round's replaces the last** (Kaza, atr 2026-10-21).
