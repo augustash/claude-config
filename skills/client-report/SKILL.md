@@ -413,7 +413,10 @@ regardless, so "what did you do to our site last month" has a file to point at.
   a *Next* item not yet done, an idea still unanswered. Drop what the round closed. Then
   `git mv` the old file to the new month's name and write over it, so the folder never
   grows a pile of stale records and git history keeps every version. One copy per
-  project, always: the newest round's record, approved or not.
+  project, always: the newest round's record, approved or not. The same goes for the
+  round's memory record (`.claude/memory/records/`): write the new round, drop the old.
+  The idea is to carry over what's needed and clean up the rest, so maintenance never
+  piles up (Kaza, sal 2026-10-22).
 
   **Another client's record is a reference, not a template** (Kaza, sal 2026-10-22). Docs
   lag this skill, since the rules move faster than any one record, so build from the
