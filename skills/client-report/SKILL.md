@@ -402,17 +402,18 @@ regardless, so "what did you do to our site last month" has a file to point at.
   `~/Desktop/` for them to send, and keep the committed copy as the record (Kaza, atr
   2026-10-21). A doc with companion files (screenshots,
   an appendix) gets a dated folder instead: `.claude/docs/pom/<YYYY.MM>/`. When the
-  client sends back their approved copy, save it beside the original as
-  `… - approved.html` and commit it, so the approvals are on record.
+  client sends back their approved copy, write it over the record under the same
+  filename and commit it. The approvals are then on record, git keeps the version we
+  sent, and the folder still holds one file (Kaza, sal 2026-10-22, replacing a separate
+  `… - approved.html` beside the original).
 
   **One record at a time: each round's replaces the last** (Kaza, atr 2026-10-21).
   Before drafting, read the record already in `.claude/docs/pom/`, since it shows where
   the site stood and what was promised. Carry forward what still applies: an open hold,
   a *Next* item not yet done, an idea still unanswered. Drop what the round closed. Then
   `git mv` the old file to the new month's name and write over it, so the folder never
-  grows a pile of stale records and git history keeps every version. The approved copy
-  goes the same way: once the next round's record is written, the old `… - approved.html`
-  is removed.
+  grows a pile of stale records and git history keeps every version. One copy per
+  project, always: the newest round's record, approved or not.
 
   **Another client's record is a reference, not a template** (Kaza, sal 2026-10-22). Docs
   lag this skill, since the rules move faster than any one record, so build from the
