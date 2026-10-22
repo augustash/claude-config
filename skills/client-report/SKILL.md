@@ -1104,9 +1104,13 @@ for the client's own team) is not.
   marks the whole item approved (brand-green outline and tint) and swaps the ? for a
   checkmark; clicking again undoes it. It's a `<button aria-pressed>` whose
   `aria-label` names the item.
-- The first approval opens a short note (a `<dialog>`, never `alert()`): they're
-  approving work, and once they've chosen, they press Save and email the doc back.
-  Don't name us in it: who it goes back to is implied (Kaza).
+- The first approval or answer opens a short note (a `<dialog>`, never `alert()`):
+  once they've chosen, they press Save and email the doc back. Keep it generic, since
+  the same note serves approvals, decisions and anything else the client can press.
+  sal's read *"Your choices are marked. When you've finished, press Save in the bar at
+  the top, then email the saved document back."* A line about approving work was cut
+  because it didn't fit a decision (Kaza, sal 2026-10-22). Don't name us in it: who it
+  goes back to is implied (Kaza).
 - **They have to save**, because a browser can't write back to the file it opened. Save
   sits at the right edge of the nav bar, aligned with the content while the section links
   stay centred (Kaza), and falls back to the end of the scrolling row on a phone. It is gold (the client's own yellow where they have one)
