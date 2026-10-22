@@ -397,10 +397,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
 **The HTML is sent; a Markdown summary is kept.**
 
 - **To send:** `.claude/docs/pom/<Client> Website Maintenance - <Month Year>.html` in
-  the project, **committed** (Kaza, cal 2026-10-19), **once, after the dev's review is
-  done**, together with its round summary and ideas log. Review notes are edits to the
-  file, not commits: on msp (2026-10-22) each note got its own commit, nine for one
-  record, and Kaza called it out. It has a readable filename with
+  the project, **committed** (Kaza, cal 2026-10-19), once it's done, like code: after
+  the dev's review, together with its round summary and ideas log, not a commit per
+  review note. It has a readable filename with
   spaces, because it gets attached to an email. Once the dev has signed off, copy it to
   `~/Desktop/` for them to send, and keep the committed copy as the record (Kaza, atr
   2026-10-21). A doc with companion files (screenshots,
