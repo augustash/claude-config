@@ -1,0 +1,59 @@
+<!--
+  How we judge accessibility: the short page a record shows from its Accessibility pass.
+
+  NOT a document to embed whole. It is a block library: a record assembles only the blocks
+  that apply to that client, filled with their facts (their deadline, the vendor tools on
+  their site, their documents). A client reads what affects them and nothing else (Kaza,
+  metro 2026-10-23: "they only need to know what is actually affecting them").
+
+  Living source: the rule itself lives in memory/accessibility/ada-title-ii-web-rule.md, and
+  that memory is what gets reviewed against new rulings (memory-audit, 30-day check). Build
+  every round's page fresh from the current memory and these blocks, so a ruling change
+  reaches the next record without anyone remembering to.
+    reviewed: 2026-10-23
+
+  Blocks, in page order. Include a block only when its condition holds.
+-->
+
+<!-- ALWAYS (public-sector client): the requirement and their date.
+     {{ENTITY}}, {{DATE}}; add the special-district sentence only when their bucket is unsettled. -->
+<section data-block="requirement">
+  <h2>What the law asks of {{ENTITY}}</h2>
+  <p>The ADA’s rule for public agencies requires {{ENTITY}}’s websites to meet <strong>WCAG 2.1, Level AA</strong>: 50 criteria, such as “every image has a text alternative” and “everything works from a keyboard”. There is no passing score. Each criterion is met or it isn’t, on every page, and a task that takes several steps counts only if every step does.</p>
+  <p>The deadline is <strong>{{DATE}}</strong>.</p>
+</section>
+
+<!-- WHEN the client's sites carry vendor tools placed under contract. Name theirs. -->
+<section data-block="vendors">
+  <h2>It covers the tools on your site</h2>
+  <p>The rule includes what other companies provide on {{ENTITY}}’s sites under contract: {{VENDORS}}. When one of those falls short, it counts against the site, so we report them alongside our own findings.</p>
+</section>
+
+<!-- WHEN the site hosts documents (PDF, Word, slides, spreadsheets). Use their count and examples. -->
+<section data-block="documents">
+  <h2>Most of your documents are exempt</h2>
+  <p>{{DOCUMENTS}}</p>
+</section>
+
+<!-- WHEN the site keeps old material that could be moved to a marked archive. -->
+<section data-block="archive">
+  <h2>An archive keeps old pages out of scope</h2>
+  <p>Pages made before the deadline are exempt if they’re kept only for reference, never updated, and kept in an area clearly marked as an archive. {{ARCHIVE}}</p>
+</section>
+
+<!-- ALWAYS: how findings are weighed (the minimal-impact provision, in plain words). -->
+<section data-block="weighing">
+  <h2>How we weigh what we find</h2>
+  <p>The rule treats a shortfall as acceptable when it barely matters: when people with disabilities can still get the same information and do the same things, as quickly, privately and independently as anyone else. So we rank problems by how much they stop people, not by how many there are, and recommend the ones that block someone first.</p>
+</section>
+
+<!-- ALWAYS: how we report. -->
+<section data-block="reporting">
+  <h2>How we report</h2>
+  <p>We test pages on desktop and phone, with automated checks, by keyboard and with a screen reader. Each of the 50 criteria is then marked <strong>Supports</strong>, <strong>Partially supports</strong>, <strong>Does not support</strong>, <strong>Not applicable</strong> or <strong>Not yet tested</strong>. We never mark a criterion as met without testing it. Each recommendation names the criteria it meets or moves toward.</p>
+</section>
+
+<!-- ALWAYS: the one-line limit. -->
+<section data-block="limits">
+  <p class="rules-limit">This is a record of what we tested and found, not legal advice or a certification. Which deadline applies to {{ENTITY}} is a question for its counsel.</p>
+</section>

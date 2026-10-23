@@ -8,6 +8,10 @@ audit process defines, actually enforced).
 
 Wired as a SessionStart hook pointing at this file in the installed package:
   vendor/augustash/claude-config/templates/memory-audit-check.py
+Also checks living documents: any memory whose frontmatter `metadata` carries
+`reviewed: YYYY-MM-DD` and `review_every_days: N` is flagged once it's older than N days
+(the ADA rule memory, for one, which client records build from).
+
 Silent (no output, exit 0) when fresh, when the date can't be parsed, or on any
 error — a hook must never block or noise up session start.
 """
@@ -27,6 +31,34 @@ AUDIT_FILE = (
     / "preferences"
     / "memory-audit.md"
 )
+
+
+MEMORY_DIR = AUDIT_FILE.parent.parent
+
+
+def stale_living_docs() -> list:
+    """Memories that declare a review cycle and are past it."""
+    out = []
+    try:
+        files = sorted(MEMORY_DIR.rglob("*.md"))
+    except Exception:
+        return out
+    for f in files:
+        try:
+            head = f.read_text(encoding="utf-8").split("\n---", 1)[0]
+        except Exception:
+            continue
+        r = re.search(r"\breviewed:\s*(\d{4}-\d{2}-\d{2})", head)
+        n = re.search(r"\breview_every_days:\s*(\d+)", head)
+        if not (r and n):
+            continue
+        try:
+            age = (datetime.date.today() - datetime.date.fromisoformat(r.group(1))).days
+        except ValueError:
+            continue
+        if age > int(n.group(1)):
+            out.append(f"{f.relative_to(MEMORY_DIR)} (reviewed {r.group(1)}, every {n.group(1)} days)")
+    return out
 
 
 def main() -> int:
@@ -51,16 +83,26 @@ def main() -> int:
         return 0
 
     age = (datetime.date.today() - last).days
-    if age <= AUDIT_MAX_AGE_DAYS:
+    living = stale_living_docs()
+    if age <= AUDIT_MAX_AGE_DAYS and not living:
         return 0
 
-    reminder = (
+    parts = []
+    if living:
+        parts.append(
+            "Living documents due for review against their sources: " + "; ".join(living)
+            + ". Re-check each one's sources for changes (rulings, amendments), update it, "
+            "and bump its `reviewed` date."
+        )
+    if age > AUDIT_MAX_AGE_DAYS:
+        parts.append((
         f"Shared-memory audit is {age} days stale (last_audit: {last.isoformat()}, "
         f"floor is {AUDIT_MAX_AGE_DAYS} day). Per memory-audit.md, run the pre-check "
         "(`git -C vendor/augustash/claude-config log --since=<last_audit>`); if nothing "
         "changed, just bump last_audit to today, else do a review pass. Fold it into "
         "this session's work rather than making it a separate ceremony."
-    )
+    ))
+    reminder = " ".join(parts)
 
     # SessionStart hooks surface additionalContext to the model.
     print(

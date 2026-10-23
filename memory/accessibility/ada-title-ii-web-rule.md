@@ -3,6 +3,8 @@ name: ada-title-ii-web-rule
 description: What the ADA Title II web rule actually requires of a public-entity client, read from the regulation; the basis for reporting their standing.
 metadata:
   type: reference
+  reviewed: 2026-10-23
+  review_every_days: 30
 ---
 
 # ADA Title II web rule (28 CFR 35, Subpart H)
@@ -55,6 +57,12 @@ passes.
   doesn't stop disabled users getting the same information, interactions, transactions and
   services with substantially equivalent timeliness, privacy, independence and ease of use.
   This is where severity lives legally: a blocked task fails it, a cosmetic slip may not.
+
+**Living document.** Client records build their "How we judge accessibility" page from this
+memory and the block library in `templates/client-report/accessibility-rules.html`, so keep it
+current: the SessionStart audit hook flags it every 30 days. On review, check the Federal Register
+and ADA.gov for amendments to Subpart H and any change to the WCAG version it names, update this
+file, and bump `reviewed`.
 
 **How to apply:** report a public client's accessibility as the ACR-style criterion table
 plus the deadline, name the exceptions that apply to their content, and judge each finding

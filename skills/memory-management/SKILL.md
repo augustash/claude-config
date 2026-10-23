@@ -144,6 +144,13 @@ reminder when stale. The composer Plugin wires that hook into every project's
 `.claude/settings.json` (`addAuditHook()`, idempotent), so the whole team gets it with no
 per-project setup. Fold the audit into the session's work — not a separate ceremony.
 
+**Living documents** keep their own cycle. A memory that clients' documents are built from,
+and that the outside world can change under it (a regulation, a vendor's terms), declares
+`reviewed: YYYY-MM-DD` and `review_every_days: N` in its frontmatter `metadata`; the same hook
+flags it once it's overdue. Review means re-reading its sources for changes, not re-reading the
+note: update it, then bump `reviewed`. First case: the ADA Title II rule
+([ada-title-ii-web-rule](../../memory/accessibility/ada-title-ii-web-rule.md)), 30 days.
+
 **Pre-check first.** `git -C vendor/augustash/claude-config log --since=<last_audit>`. If
 nothing changed, bump `last_audit` to today and move on; the cost of a daily cadence is that
 the pre-check stays cheap.
