@@ -127,6 +127,27 @@ Inside the Accessibility section (POM+ bar, see client-report):
   2.5.3 and 4.1.2*. A scoping item says so (*Sets the scope for documents under the rule*).
 - **"All 50 criteria"** at the end, collapsible: criterion, status chip, where it stands.
 
+### The goal
+
+The plan is a route to the requirement, so the record shows where the goal is and what reaches
+it (Kaza, metro 2026-10-23):
+
+- **The list is the whole path, not one quarter.** Every fix needed to clear every known
+  failure, in §5's order. The build must check that each failing criterion is covered by an
+  item above the line, or the line is drawn somewhere the items don't reach.
+- **A goal bar** at the top of the Accessibility section: thin, full width, filling red to green
+  (the gradient spans the track, so the fill shows the colour of where it has reached).
+  *15 of 26 tested criteria met · Goal: all 26 (19.5 hrs) · 20 more to test*. Count against
+  *tested* criteria, so it never claims what hasn't been checked.
+- **Approving projects the outcome.** A lighter fill shows where approved items land; a
+  criterion counts once every item that fixes it is approved (each item carries `data-sc`).
+- **A green band behind the items that reach the goal**, the full width of the panel, marked at
+  the top ("To the goal · these items get you there") and bottom ("Goal · every criterion
+  we've tested, met (N hrs)"). Items past the goal stay in the same list, below the line; the
+  line is what separates them, not a heading.
+- **Reach goal** beside the bar, with the approximate price: one click selects every item to
+  the goal, and again clears them.
+
 ## 8. Vendor scores are a second line, at most
 
 When the client uses Siteimprove or similar, its number is what their team is graded on, so

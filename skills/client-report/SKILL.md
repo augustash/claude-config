@@ -1051,6 +1051,37 @@ The reader closes what they've read and keeps the page to what they're working t
 
 ### Components
 
+**POM+ lives in its own place: a bar at the foot of the record** (Kaza, metro 2026-10-23,
+"POM is clearly in its own area and POM+ carries some serious punching weight"). Metro's
+October 2026 record is the reference implementation. This replaces a POM+ section in the
+page and POM+ headings in *Next*:
+- **The bar.** A fixed bottom bar: the client code and an italic *POM+* on the left (the plus
+  enlarged to the cap height of POM), one tab per pass, and a running total of everything
+  selected on the right, visible open or closed. Navy ground with a faint tiled pattern of
+  italic pluses and a soft inset shadow.
+- **Opening a pass slides the whole bar up** to just under the site bar (or the top of the
+  screen), covering the report: the pass reads on the bar's own ground, in a dark scheme
+  (translucent panels, light text, the brand's bright blue for tags, light red for Urgent,
+  light green for approved). Close or Escape slides it down; focus returns to the tab.
+- **POM+ is a state, not a place.** In a combined file, switching sites while POM+ is open
+  lands on the new site's POM+, on the same pass when it has one, without the slide.
+- **Each pass holds its own items.** Findings and the Work items that act on them sit together
+  under the pass, each Work row carrying a *POM+* chip so it reads as POM+ spend. The client's
+  own tasks sit at the end of a pass as a done-toggle list headed *For your team*, introduced
+  with "Recommendations to check."
+- **Save shows a summary first**: what's selected, grouped (per site in a combined file, then
+  POM+ / Work), with the total, ending "Send us the saved document and we'll get it done."
+  Then the file saves.
+- **The client copy can drop POM+ wholesale**: remove the `<aside class="pom">` (and any
+  `dialog.rules`) and nothing else references it. A dev-review copy keeps it (metro 2026.10:
+  the full file went to the reviewer, the stripped one to the client).
+
+**Several sites, one file.** A client with several sites gets one combined record built by
+`templates/client-report/combine.py`: a site bar of client codes across the top (not domains;
+a row of *.com*s is noise), each site's own record underneath, and a returned copy splits back
+into each site's record. Each site keeps its own POM+ bar, which follows the site bar.
+
+
 The standing parts our docs are built from. Each one was settled through review, so
 reach for these before inventing a new device, and extend this list when a new one
 earns its place.
