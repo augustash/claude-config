@@ -79,6 +79,10 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Outbound call timeouts](memory/standards/outbound-call-timeouts.md) — any call to a vendor during a page request; also php-slow led by a third-party call, or workers maxing out
 - [Drupal log settings](memory/standards/drupal-log-settings.md) — cron logging off, 10,000-row dblog; also a log that reaches back only hours
 
+#### Accessibility
+
+- [ADA Title II web rule](memory/accessibility/ada-title-ii-web-rule.md) — a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+
 #### Cloudflare
 
 - [WAF rules silently break SSL renewal](memory/cloudflare/waf-blocks-acme-renewal.md) — before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it

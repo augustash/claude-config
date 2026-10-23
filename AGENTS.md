@@ -103,6 +103,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Drupal log settings** — `vendor/augustash/claude-config/memory/standards/drupal-log-settings.md`  
   cron logging off, 10,000-row dblog; also a log that reaches back only hours
 
+## Accessibility
+
+- **ADA Title II web rule** — `vendor/augustash/claude-config/memory/accessibility/ada-title-ii-web-rule.md`  
+  a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+
 ## Cloudflare
 
 - **WAF rules silently break SSL renewal** — `vendor/augustash/claude-config/memory/cloudflare/waf-blocks-acme-renewal.md`  
