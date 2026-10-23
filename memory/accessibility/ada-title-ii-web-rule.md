@@ -47,6 +47,27 @@ passes.
 - **Individualized, secured documents** about one person.
 - **Social media posts** from before the deadline.
 
+**Definitions established from the DOJ's own explanation** (the 2024 final rule's preamble,
+89 FR 31320, govinfo.gov/content/pkg/FR-2024-04-24/pdf/2024-07758.pdf). Quote these, don't
+paraphrase from memory:
+- **"Otherwise secured"** (§ 35.201(d)): *"Content may be otherwise secured if it requires a
+  member of the public to use some process of authentication or login to access the content.
+  Unless subject to another exception, conventional electronic documents that are on a public
+  entity's general, public web platform would not be covered by the exception."* A file at a
+  public address that opens without signing in doesn't qualify, however unguessable its name
+  (MACE's tenant self-audit PDFs, 2026-10-23). The same passage notes entities keep their
+  existing Title II duty to provide accessible versions of such documents when someone needs one.
+- **Staff-only content**: commenters asked whether content *"used solely by employees"* is
+  covered. The DOJ did not exempt it; it restated that Subpart H covers content *"provided or
+  made available by public entities within the scope of title II"*, and that complying *"will
+  not relieve title II entities of their distinct employment-related obligations under title
+  I of the ADA."* There is no exemption to cite for staff-only screens; plan as covered.
+
+**When a question isn't settled by the rule text, find the definition before writing it to a
+client.** The preamble answers most of them; search it (pdftotext the govinfo PDF, then grep).
+Secondary commentary disagrees on several points and is not a source (Kaza, 2026-10-23: "we
+don't guess at any of these rules. We find the definitions and establish them").
+
 **Relief provisions:**
 - **§ 35.202** conforming alternate version: only where direct access is technically or
   legally impossible.
