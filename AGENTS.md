@@ -89,6 +89,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
   before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
+## Pricing
+
+- **Quote the tooling, not the minutes** — `vendor/augustash/claude-config/memory/pricing/quote-the-tooling.md`  
+  before putting hours on a Work row, especially when our module or harness makes the fix quick
+
 ## August Ash standards
 
 - **How standards work** — `vendor/augustash/claude-config/memory/standards/how-they-work.md`  
