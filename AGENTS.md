@@ -231,6 +231,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a deploy or post-deploy script straight after a push reports success against the previous code
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   custom disallow rules via Composer scaffold append
+- **`%2e` in a path runs PHP on Pantheon** — `vendor/augustash/claude-config/memory/drupal/pantheon-encoded-dot-php.md`  
+  `/index%2ephp/` links in cached menus, or a scanner reaching `settings%2ephp`; ddev won't reproduce it
 - **Favicon 404 cluster with the icons all present** — `vendor/augustash/claude-config/memory/drupal/favicon-docroot-icons.md`  
   thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - **Pantheon Quicksilver cache warmer** — `vendor/augustash/claude-config/memory/drupal/pantheon-quicksilver-cache-warmer.md`  

@@ -147,6 +147,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cross-project patches](memory/drupal/patches.md) — index of reusable local .patch files and vetted remote URLs
 - [Pantheon's code log runs ahead of the build](memory/drupal/pantheon-build-lag.md) — a deploy or post-deploy script straight after a push reports success against the previous code
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — custom disallow rules via Composer scaffold append
+- [`%2e` in a path runs PHP on Pantheon](memory/drupal/pantheon-encoded-dot-php.md) — `/index%2ephp/` links in cached menus, or a scanner reaching `settings%2ephp`; ddev won't reproduce it
 - [Favicon 404 cluster with the icons all present](memory/drupal/favicon-docroot-icons.md) — thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
