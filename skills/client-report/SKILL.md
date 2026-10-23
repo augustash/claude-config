@@ -1173,6 +1173,12 @@ and let them answer on the page.
   2026-10-20). No panel and no buttons labelled Yes/No: two round icon buttons, green when
   the check is pressed, red when the X is. Each carries an `aria-label` that says what the
   answer means (*"Yes, remove it"*). Same `data-answer` state and Save as the panel version.
+- **A question that asks for a fact gets the field alone** (Kaza, metro 2026-10-23). When
+  the answer is something only the client has, like an address to notify, there's nothing
+  for us to recommend: the panel is the question, its line of context, and a labelled input
+  (`type="email"` for an address, with a placeholder in the client's own mail domain). No
+  *Recommended* row, no *Choose*, no *or*. Typing marks it answered, and the snapshot
+  writes the input's `value` attribute.
   Keep a Questions list to what the client must answer. Questions we can settle with them
   directly, or that only matter to our build, stay out of the doc.
 
