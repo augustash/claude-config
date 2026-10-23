@@ -179,30 +179,10 @@ quarter opens a year:
 
 ### The client's requirements govern the plan
 
-Work out what the law asks of *this* client before ranking anything (Kaza, metro 2026-10-23).
-The rule decides the scope and the order; a vendor score (Siteimprove and the like) is at most
-a second line. Built first on metro; the record there is the reference.
-
-1. **Which rule set.** A state or local government body is the ADA Title II rule:
-   [ada-title-ii-web-rule](../../memory/accessibility/ada-title-ii-web-rule.md), a living
-   memory with a review cycle. Other kinds of client (a private business, a federal
-   contractor) need their own set; write it the same way before using it.
-2. **Establish, never guess.** Every statement traces to the regulation, WCAG or the DOJ's
-   published explanation. When the text doesn't settle a question, find the definition (the
-   memory says where) and record it there before it reaches a client.
-3. **Gather the site's facts.** The vendor tools it carries under contract, named. Its
-   documents: how many, and which are still used to apply for or take part in something
-   (search titles for application, form, permit, request). Old material that a marked archive
-   would take out of scope. What sits behind a sign-in.
-4. **Mark all 50 criteria** Supports / Partially / Does not / N/A / Not yet tested from the
-   verified findings. Never mark one met without testing it.
-5. **Rank by the rules.** Exempt content drops out; what stops someone finishing a task
-   (§ 35.205's minimal-impact test) comes first; then reach; the deadline sets the pace.
-   On metro this put the permit-form PDFs ahead of every page fix.
-6. **Write the "Your requirements" page** from the block library in
-   `templates/client-report/accessibility-rules.html`: only the blocks that apply, filled with
-   the site's facts, ending with how the rules order the plan. It opens full screen from the
-   Accessibility section's upper right. Two sites of one client can have different pages.
+Every accessibility quarter runs [accessibility-compliance](../accessibility-compliance/SKILL.md)
+on top of the audit: establish what the law asks of this site, mark all 50 criteria, rank the
+plan by those rules, and write the client's "Your requirements" page. The audit finds the
+defects; that skill decides what they're measured against and the order they're fixed in.
 
 ### Later quarters
 

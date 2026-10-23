@@ -320,6 +320,7 @@ authoritative trigger is each SKILL.md's own `description:` frontmatter — that
 what Claude Code actually loads for discovery, so keep it sharp there.
 
 - [accessibility-audit](skills/accessibility-audit/SKILL.md) — testing a site's accessibility and writing a defensible record: an ADA demand letter, a compliance question, or a pre-launch check; also the quarterly POM+ scan
+- [accessibility-compliance](skills/accessibility-compliance/SKILL.md) — a client's accessibility standing or plan is being reported: what the law asks of this site, all 50 criteria, ranking, and their "Your requirements" page
 - [client-proposal-review](skills/client-proposal-review/SKILL.md) — a client hands over a set of decisions (a menu, a design round, a feature list) and some of it would make the site worse
 - [client-report](skills/client-report/SKILL.md) — writing any client doc: a pitch, an audit, a request response or the monthly maintenance record; owns the doc design system
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration
