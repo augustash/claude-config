@@ -178,7 +178,8 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 #### Augustash internal modules
 
-- [POM plans](memory/pom/levels.md) — at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+, and AshenRayne having none
+- [POM plans](memory/pom/levels.md) — at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+
+- [AshenRayne sites](memory/ashenrayne/sites.md) — at the start of a round on an AshenRayne site; which sites they are and the few things that differ from August Ash
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - [Deploys run through launcher](memory/augustash/launcher-deploy.md) — before any Pantheon deploy, or reaching for raw `terminus env:deploy`; the tool, its invocation, and running live when asked
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
