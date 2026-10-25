@@ -136,8 +136,10 @@ Inside the Accessibility section (POM+ bar, see client-report):
   and a status bar across all 50 criteria with counts (Supports / Partially / Does not / N/A /
   Not yet tested).
 - **Then the write-up**, terse, ending on the order ("ordered by your requirements").
-- **Each Work item names the criteria it moves**: *Meets 2.2.2* or *Moves toward 1.3.1,
-  2.5.3 and 4.1.2*. A scoping item says so (*Sets the scope for documents under the rule*).
+- **Each Work item carries the criteria it moves in its markup** (`data-sc`), for the goal
+  math, but doesn't print them: criterion numbers mean nothing to a client (Kaza, local49
+  2026-10-24). The item's own words say what it fixes; the *All 50 criteria* table is where the
+  numbers live for anyone who wants them.
 - **"All 50 criteria"** at the end, collapsible: criterion, status chip, where it stands.
 
 ### The goal
