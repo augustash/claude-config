@@ -82,6 +82,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 #### Accessibility
 
 - [ADA Title II web rule](memory/accessibility/ada-title-ii-web-rule.md) — a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+- [ADA Title I: employers and unions](memory/accessibility/ada-title-i-employment.md) — an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
 
 #### Cloudflare
 

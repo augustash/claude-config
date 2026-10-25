@@ -107,6 +107,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
 
 - **ADA Title II web rule** — `vendor/augustash/claude-config/memory/accessibility/ada-title-ii-web-rule.md`  
   a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+- **ADA Title I: employers and unions** — `vendor/augustash/claude-config/memory/accessibility/ada-title-i-employment.md`  
+  an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
 
 ## Cloudflare
 
