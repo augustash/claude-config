@@ -10,21 +10,34 @@ answers that from the law itself, site by site, and turns the answer into the or
 things in. Established on metroairports.org (2026-10-23); its record is the reference
 implementation (`metro/.claude/docs/pom/`).
 
+**Every client is its own requirement.** There is no default standard to measure against.
+Who the client is (a government body, a business open to the public, an employer or a union, a
+federally funded program) and what their site does decide which law reaches them, which pages
+weigh most, and whether there's a deadline. Find out what applies to *this* client before
+measuring anything (Kaza, 2026-10-24).
+
+**Our goal is to help them meet it.** The goal bar, the path of items and Reach goal all point
+at the client's requirement, not at a generic score or at WCAG for its own sake. When the
+requirement exempts something, it drops out; when it weighs something heavily, it leads.
+
 **The rules govern the plan.** Not a vendor score, not the count of findings, not what was
 easiest to find. Whatever the rule exempts drops out; whatever stops someone finishing a task
 comes first. Kaza: *"we need to actually understand the rule. Then we can meet it."*
 
 ---
 
-## 1. Pick the rule set
+## 1. Find the client's rule set
 
-Which law applies depends on who the client is, so every client gets a set:
+Which law applies depends on who the client is. The table is where to start looking, not a
+lookup: a client can sit in two rows (a union that also runs a training program open to the
+public) or in none. When none fits, research what does and write it as a set per §2.
 
 | Client | Rule set |
 |---|---|
 | State or local government body (agency, authority, commission, school district) | ADA Title II web rule, [ada-title-ii-web-rule](../../memory/accessibility/ada-title-ii-web-rule.md) |
 | Private business open to the public | ADA Title III. No web regulation: courts use WCAG 2.1 AA as the yardstick. **Not yet written as a set**; write it per §2 before using it |
 | Federal agency or federally funded program | Section 508 / Section 504. **Not yet written as a set** |
+| Labor organization (union), or an employer's hiring and job pages | ADA Title I, which covers a union's membership, training and job referral, plus any state human rights law that reaches the same activities. No web regulation and no deadline; WCAG 2.1 AA as the yardstick. **Not yet written as a set** |
 
 A rule set is a **living memory**: it carries `reviewed:` and `review_every_days:` in its
 frontmatter, and the SessionStart audit hook flags it when it's due. On review, re-read its
