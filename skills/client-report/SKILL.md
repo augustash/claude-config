@@ -524,12 +524,11 @@ smaller genre.
    heading reads as a template (Kaza). Explanation belongs on the item in *Next*,
    not here. Work already done gets a clause, not a paragraph. The section ends in one centred **Fix**
    button that opens *Next*; a Fix per heading read as duplicates (Kaza). *Accessibility* says what was
-   tested and what already works. The year plan isn't shown: it's ours, in the
-   project's `.claude/memory/accessibility-plan.md`.
-   **Every AshenRayne client gets this section too**, untiered and unnamed: a plain
-   one-word heading (*Health* on dmx) and never the word POM. When nothing is quoted
-   there is no *Next*, so a finding that needs action gets its own right-aligned Fix
-   pointing at the item that acts on it, usually the Idea (dmx 2026.10).
+   tested and what already works, then shows the whole path to the client's requirement
+   (accessibility-compliance §7); our pacing notes stay in the project's
+   `.claude/memory/accessibility-plan.md`.
+   **Every AshenRayne client gets the passes too**, untiered and unnamed, in the *Health*
+   bar (§7, *AshenRayne records: the Health bar*) and never the word POM.
 5. **Next**: where the action is (Kaza, cal 2026-10-19). Work from the ordinary POM
    round comes first, Urgent first and then by importance. Then come the POM+ headings
    that have work, mirrored from *POM+* in the same order, each holding its own items
@@ -1075,6 +1074,29 @@ page and POM+ headings in *Next*:
 - **The client copy can drop POM+ wholesale**: remove the `<aside class="pom">` (and any
   `dialog.rules`) and nothing else references it. A dev-review copy keeps it (metro 2026.10:
   the full file went to the reviewer, the stripped one to the client).
+
+**AshenRayne records: the Health bar** (Kaza, local49 2026-10-24). The same bar and the same
+passes, carried in AshenRayne's own way. The August Ash bar above doesn't change, and the two
+don't share styling. local49's October 2026 record is the reference implementation.
+- **The label** is the client code, a beating heart and an italic *Health*. The heart is
+  AshenRayne's sign that a site is being looked after (the deploy status line uses it too):
+  a double beat about every 1.2s, and still under reduced motion.
+- **The ground is the client's brand primary**, so the bar is noticed. White lettering and
+  translucent white panels on it, with the brand's second colour as the accent (tags,
+  kickers, the "not yet" segment). Approved items, answered questions and done tasks turn
+  solid white with the approval green, so a choice stands out on the colour.
+- **The pattern is the client's own mark**, traced from their logo, not a generic shape:
+  `templates/client-report/trace-logo-mark.py` isolates it from the largest raster on the
+  site and potrace turns it into a path. Tile it diagonally, small and faint (local49: 21.7px
+  wide, a 60 × 35px tile so three rows show in the closed bar, 8% white). Keep the traced
+  mark and tile in the project's `.claude/docs/pom/brand/` for the next round.
+- **One brand colour throughout the doc.** Checks, arrows, tags and the bar all take the
+  brand primary itself, never a darker or lighter cousin of it.
+- **Work rows state the price alone**, with no plan chip.
+- Everything else works as on the POM+ bar: each pass holds its findings, Work items,
+  questions and team checklists; the running *Selected* total; the slide-up sheet; and Save's
+  summary. The Accessibility pass follows accessibility-compliance §7, and its requirements
+  page opens on the bar's ground.
 
 **Several sites, one file.** A client with several sites gets one combined record built by
 `templates/client-report/combine.py`: a site bar of client codes across the top (not domains;
