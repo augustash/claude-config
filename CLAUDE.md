@@ -79,6 +79,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Outbound call timeouts](memory/standards/outbound-call-timeouts.md) — any call to a vendor during a page request; also php-slow led by a third-party call, or workers maxing out
 - [Drupal log settings](memory/standards/drupal-log-settings.md) — cron logging off, 10,000-row dblog; also a log that reaches back only hours
 - [Sitemap base URL](memory/standards/sitemap-base-url.md) — every round; also sitemap links on http, on a host that redirects, or on http://default
+- [Turnstile replaces antibot](memory/standards/turnstile-replaces-antibot.md) — every round on a site with Turnstile; also antibot still installed, or a form left with no challenge
 
 #### Accessibility
 
