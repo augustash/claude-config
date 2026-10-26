@@ -65,7 +65,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
-  before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
+  before branching, committing or writing a commit message in a module clone or fork; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
   before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  

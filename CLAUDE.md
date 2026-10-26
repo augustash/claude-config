@@ -59,7 +59,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Reset context before new functionality](memory/preferences/reset-context-before-new-work.md) — at the boundary between features on a long session; Kaza's ~70% rule
 - [git reflog expire --all destroys every stash](memory/preferences/reflog-expire-eats-stashes.md) — before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
-- [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
+- [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone or fork; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
 - [Don't narrate the deploy](memory/preferences/dont-narrate-the-deploy.md) — before listing post-push updb/cim steps; the payload is useful, the procedure isn't
