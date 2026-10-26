@@ -205,6 +205,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a customer backs out at PayPal or Affirm and returns to an empty cart; also before tidying an order while someone is at a gateway
 - **A guest cannot view their own shipment** — `vendor/augustash/claude-config/memory/drupal/guest-order-shipment-access.md`  
   a receipt heading with nothing under it, or a missing address, on guest orders only
+- **Submitting forms locally after a live pull** — `vendor/augustash/claude-config/memory/drupal/local-form-submission.md`  
+  before submitting forms on ddev: captcha fails on localhost, antibot never unlocks, or Mailpit is empty though watchdog says sent
 - **mailsystem resolves a per-module sender before its defaults** — `vendor/augustash/claude-config/memory/drupal/mailsystem-per-module-overrides-defaults.md`  
   one module's mail vanishes with no error while everything else reaches Mailpit
 - **A hidden contact Subject breaks every submission on D11** — `vendor/augustash/claude-config/memory/drupal/contact-hidden-subject-d11.md`  
