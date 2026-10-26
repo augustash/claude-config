@@ -78,6 +78,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [How standards work](memory/standards/how-they-work.md) — every update round, before writing a standard, or when a dev wants to override one
 - [Outbound call timeouts](memory/standards/outbound-call-timeouts.md) — any call to a vendor during a page request; also php-slow led by a third-party call, or workers maxing out
 - [Drupal log settings](memory/standards/drupal-log-settings.md) — cron logging off, 10,000-row dblog; also a log that reaches back only hours
+- [Sitemap base URL](memory/standards/sitemap-base-url.md) — every round; also sitemap links on http, on a host that redirects, or on http://default
 
 #### Accessibility
 
