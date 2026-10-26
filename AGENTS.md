@@ -221,6 +221,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a field renders with its data attributes and nothing listening to them
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
+- **Unticking the last facet reloads the page unchanged on D11.4** — `vendor/augustash/claude-config/memory/drupal/facets-last-filter-d11-4.md`  
+  the only active filter won't deselect, but deselects fine once a second filter or any query param is present
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
   a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
