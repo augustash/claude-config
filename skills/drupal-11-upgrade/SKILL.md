@@ -55,6 +55,18 @@ Locally: `ddev utility migrate-database mariadb:10.6` migrates in place and
 preserves data — it does *not* wipe the DB. (A `ddev db` post-start hook may
 re-pull, but that is the hook, not the migration.)
 
+Three things about running it on a branch that already says 10.6:
+
+- It won't start while `config.yaml` names 10.6 and the volume is still 10.5
+  ("configured database type does not match"). Set the config back to the
+  volume's version first; the migration sets it forward again.
+- It rewrites `config.yaml` wholesale in ddev's own format and drops keys it
+  doesn't carry, `mutagen_enabled` among them. `git checkout .ddev/config.yaml`
+  afterwards.
+- The hook can pull live while the new DB is empty, then the reimport replaces
+  that pull. `drush updatedb:status` tells you which you have: pending 11xxx
+  updates mean your reimported D10 copy (wac, 2026-10-26).
+
 Verify the platform actually moved before deploying anything else:
 
 ```bash
@@ -144,6 +156,17 @@ drush php:eval '$l=\Drupal::service("extension.list.module");
 foreach (array_keys(\Drupal::config("core.extension")->get("module")) as $m)
   if (!$l->exists($m)) echo "MISSING $m\n";'
 ```
+
+**A stub module is the other way through.** Replace the module's code with an
+empty `web/modules/stub/<name>/<name>.info.yml` (`hidden: true`,
+`core_version_requirement: ^10 || ^11`). `updb` sees the module on disk, and `cim`
+uninstalls it the normal way in the same deploy. It suits a dead custom module
+best: wac's `staff_import` was uninstalled by config but still full of removed D11
+APIs, so swapping it for a stub removed the fatal-on-reenable risk in the release
+that uninstalled it (2026-10-26). Check the module has no `.install` schema or
+owned config the uninstall would need first. **Delete the stubs only after live
+has imported.** Any environment or local copy still on pre-release data hits the
+missing-module failure again once they're gone.
 
 When you rehearse this locally, flush a Redis cache backend before each fresh pull.
 Redis survives the DB import, so a second pull starts with caches from the first
@@ -299,6 +322,19 @@ Compare your map info against the module's current defaults in `leaflet.module`:
 grep -rn "function .*_leaflet_map_info" web/modules/custom
 ```
 
+**A custom menu block extending `SystemMenuBlock` 500s on save.** D11's
+`SystemMenuBlock::blockValidate()` sets its error on
+`$form['menu_levels']['add_active_trail_class']`. A subclass that builds its own
+form has no such element, so whenever the initial level isn't 1 (or depth isn't 1
+without expand-all) `setError()` receives NULL and throws a `TypeError`. Only the
+block's own save path reaches it. Live hides it behind config_readonly, so it
+surfaces the first time someone edits the block locally or on dev (wac
+`menu_block_trail`, 2026-10-26). Override `blockValidate()` in the subclass:
+
+```bash
+grep -rn 'extends SystemMenuBlock' web/modules/custom web/modules/community
+```
+
 **A contact form with its Subject field hidden stops mailing.** Contact is contrib
 on D11, and its `hook_mail()` hands the NULL subject to a now-typed `Html::escape()`.
 The message is stored first, so nothing is lost, but no email goes out and the visitor
@@ -447,6 +483,11 @@ schema key, so the module and its code can leave in one deploy.
 `typeof jQuery.type` on a jQuery 4 page is the answer. Core's 4.0.0 still has
 `isFunction` and `isNumeric`, and lacks `type`, `isArray`, `trim`, `isWindow`,
 `parseJSON`, `now`, `camelCase`, `nodeName` and `unique`.
+
+`augustash/jquery_once` is not that module. It only provides the
+`core/jquery.once` library on top of core's jQuery 4, so it masks nothing; it is
+tech debt, since uninstalling it breaks every library still declaring the
+dependency (wac's theme, 2026-10-26).
 
 Note eXo bundles its own `lib/jquery.once/jquery.once.min.js`, so `.once()` may
 keep working at runtime long after you have removed the core dependency. That
@@ -685,10 +726,20 @@ curl cannot tell that from a broken query.
       deferred. A long-lived upgrade branch drifts behind core security
       releases: mace was about to go live on 11.4.9 under a critical RCE fixed in
       11.4.10.
+- [ ] **Default branch merged into the upgrade branch** right before release, and
+      `composer.json`'s `extra` diffed against it. A long-lived branch misses what
+      landed meanwhile, and a `composer.lock` conflict resolved to the branch side
+      hides it. On wac master had fixed the scaffold allowlist that lets
+      drupal_cache_protection's robots rules land; the branch would have shipped
+      robots.txt without them (2026-10-26).
 - [ ] Custom test suite green
 - [ ] **Every contact form and webform submitted** on the rehearsal clone, and the
       mail seen arriving (Mailpit or the reroute address). A GET-only crawl cannot
-      see a submit handler fataling.
+      see a submit handler fataling. Locally, set captcha test keys, unlock antibot
+      and keep mail off the client's SMTP first:
+      [local-form-submission](../../memory/drupal/local-form-submission.md).
+- [ ] The August Ash standards walked (site-update Phase 5), the
+      [sitemap base URL](../../memory/standards/sitemap-base-url.md) included
 - [ ] Checkout exercised — via the `manual` gateway in tests, and by hand for
       real gateways, which tests deliberately never touch
 
