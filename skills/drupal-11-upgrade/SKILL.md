@@ -572,6 +572,14 @@ $c = new class { use \Drupal\Core\Config\Schema\SchemaCheckTrait;
   public function r($t,$n,$d){ return $this->checkConfigSchema($t,$n,$d); } };
 ```
 
+It returns `TRUE` when clean, an array of errors, or **`FALSE` when the object
+has no schema at all**. A sweep that only prints the arrays misses the third
+case, and no-schema objects are the ones D11 doesn't validate, so nothing else
+flags them. Report `FALSE` as its own list. On wac (2026-10-27) a sweep that
+dropped it called the job done while `site_settings.site` and
+`real_favicon.settings` had no schema; a fourth category, then: **no schema at
+all**, usually a custom module's settings form.
+
 ---
 
 ## Phase 7 — Tests
