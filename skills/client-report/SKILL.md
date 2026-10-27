@@ -491,15 +491,16 @@ smaller genre.
    asked, and it was struck on ilc (2026-09-25).
 
    **Close every held item with an urgency line** (Kaza, Meridian Display
-   2026-09-28): a tag (*Urgent* / *All good*) and one sentence on why. Grade it
+   2026-09-28): a tag (*Urgent* / *Good*) and one sentence on why. Grade it
    from a vulnerability database against the held version, not from memory
    (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
    against the site's exposure: if registration is closed and only admins have
    accounts, a flaw needing a login is out of reach, so only unauthenticated ones
    make an item urgent. A known exploitable flaw means update it, and when the
    update is walled, the Action names what unblocks it (the licence to buy). No
-   known issue means *All good* (Kaza's change from *No rush*, kow
-   2026-09-29), and saying so plainly is what keeps the client from
+   known issue means *Good* (Kaza: *No rush* became *All good* on kow
+   2026-09-29, then *Good* on wps 2026-10-27, "better than all good, for all of
+   them"), and saying so plainly is what keeps the client from
    treating every held item as an emergency. If an urgent item exists, it goes in
    the header's *Action required* cell, displacing a routine licence ask. Render it
    as a §7 **severity panel**, ending in an **Action** row with a checked link
@@ -1109,10 +1110,14 @@ reach for these before inventing a new device, and extend this list when a new o
 earns its place.
 
 **Markers: a tag and hanging copy.** A row with a small solid pill tag (*Action*,
-*Work*, *Urgent*, *All good*) followed by the copy, laid out as a grid:
+*Work*, *Urgent*, *Good*) followed by the copy, laid out as a grid:
 - The tag sits in a fixed-width column (about 84px), so every row's copy and link
   start at the same x down the whole panel. Wrapped text hangs under the copy, not
   under the tag.
+- A panel holding a single marker sizes the column to its tag instead
+  (`auto`, ~12px gap). With nothing to align against, the 84px column only leaves
+  dead space after a short tag like *Good*, which Kaza called a wonky gap (wps
+  2026-10-27).
 - The tag takes the colour of the panel it sits in, so the same markup reads red in
   an urgent panel and blue in an idea.
 - A link goes on its own line under the copy, bold, underlined, with a trailing
@@ -1242,7 +1247,7 @@ green for no rush.
   about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
   tag. Retuning a level is then one line.
 - A panel ends with an Action row only when the client has something to do. Plain
-  green *All good* panels matter as much as the red one: they stop the client treating
+  green *Good* panels matter as much as the red one: they stop the client treating
   everything held as an emergency.
 
 **Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
