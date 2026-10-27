@@ -32,8 +32,14 @@ ddev drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("webform"
 2. Webforms are usually config-ignored ([[webforms-live-only-config]]), so add a `captcha`
    element (or drop a pinned `#captcha_type`) in a `MODULE.deploy.php` hook rather than in
    `config/`. Deploy hooks run after `cim`, so they land in the same deploy.
-3. `drush pmu antibot`, then `cex`. The uninstall strips antibot's third-party settings from
-   the live webforms itself.
+3. Uninstall antibot in a **`post_update` hook** (`module_installer->uninstall(['antibot'])`),
+   then `pmu` + `cex` locally to drop it from `core.extension`. The uninstall strips antibot's
+   third-party settings from each webform itself. Leaving the uninstall to `cim` fails the
+   deploy wherever webforms are config-ignored: the import can't touch those webforms, so it
+   refuses to remove a module they still depend on ("Configuration webform.webform.contact
+   depends on the Antibot module that will not be installed after import"). A post-update runs
+   in `updb`, before `cim`. A local `pmu` hides this, so only the deploy shows it: wac's
+   drupal11 multidev failed exactly so, 2026-10-27, and passed with the hook.
 4. Remove `drupal/antibot` from composer in the **next** release. Live still has it enabled
    until this one imports, and Drupal 11 refuses `updb` while an enabled module is missing.
 
