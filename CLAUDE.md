@@ -144,6 +144,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A scheduled transition with no state loops forever](memory/drupal/scheduler-scmi-revision-loop.md) — cron warns "Unpublishing failed … returned a failure code" every run; a node with tens of thousands of revisions
 - [Webforms are live-only config](memory/drupal/webforms-live-only-config.md) — before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - [Webform drops '#attached' from an element's YAML](memory/drupal/webform-element-attached-dropped.md) — a field renders with its data attributes and nothing listening to them
+- [entity_print saves a failed render as an empty PDF](memory/drupal/entity-print-empty-pdf.md) — a generated PDF opens blank and is 0 bytes on disk while the log says it was created; also before a PHP or core upgrade on a wkhtmltopdf site
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
 - [Unticking the last facet reloads the page unchanged on D11.4](memory/drupal/facets-last-filter-d11-4.md) — the only active filter won't deselect, but deselects fine once a second filter or any query param is present
 - [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter

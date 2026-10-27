@@ -225,6 +225,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - **Webform drops '#attached' from an element's YAML** — `vendor/augustash/claude-config/memory/drupal/webform-element-attached-dropped.md`  
   a field renders with its data attributes and nothing listening to them
+- **entity_print saves a failed render as an empty PDF** — `vendor/augustash/claude-config/memory/drupal/entity-print-empty-pdf.md`  
+  a generated PDF opens blank and is 0 bytes on disk while the log says it was created; also before a PHP or core upgrade on a wkhtmltopdf site
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
 - **Unticking the last facet reloads the page unchanged on D11.4** — `vendor/augustash/claude-config/memory/drupal/facets-last-filter-d11-4.md`  

@@ -28,7 +28,11 @@ $config['smtp.settings']['smtp_password'] = '';
 ```
 
 Check a module-level row in `mailsystem.settings:modules` doesn't route around it
-([[mailsystem-per-module-overrides-defaults]]). Then read Mailpit from inside the
+([[mailsystem-per-module-overrides-defaults]]). An API mailer does the same: a custom or
+SendGrid/Postmark sender carries its key down with the DB and never touches Mailpit (mace,
+2026-10-27, SendGrid). And confirm reroute_email is actually *enabled*
+(`drush pm:list --filter=reroute`): its `settings.local.php` overrides do nothing on a site
+where the module is only installed by composer, which is how mace had been for years. Then read Mailpit from inside the
 container: `ddev exec 'curl -s "http://127.0.0.1:8025/api/v1/messages?limit=10"'`.
 
 **2. Captchas fail on localhost.** The production site key isn't registered for `*.ddev.site`
