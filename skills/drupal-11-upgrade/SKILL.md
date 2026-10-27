@@ -168,6 +168,14 @@ owned config the uninstall would need first. **Delete the stubs only after live
 has imported.** Any environment or local copy still on pre-release data hits the
 missing-module failure again once they're gone.
 
+**Any uninstall that config-ignored config depends on must happen before `cim`.**
+`cim` can't strip a dependency from config it isn't allowed to touch, so it refuses
+the uninstall: "Configuration webform.webform.contact depends on the Antibot module
+that will not be installed after import". Check each module the release uninstalls
+against the `config_ignore` patterns, and uninstall the ones that collide in a
+post-update. A local `pmu` + `cex` hides it; wac's drupal11 multidev failed on antibot
+this way (2026-10-27). The full fix is in the turnstile-replaces-antibot standard.
+
 When you rehearse this locally, flush a Redis cache backend before each fresh pull.
 Redis survives the DB import, so a second pull starts with caches from the first
 run's post-upgrade state against a pre-upgrade DB. `updb`'s batch subprocess then
