@@ -114,6 +114,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **ADA Title I: employers and unions** — `vendor/augustash/claude-config/memory/accessibility/ada-title-i-employment.md`  
   an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
 
+## Seo
+
+- **A readable PDF that search engines can't read** — `vendor/augustash/claude-config/memory/seo/pdf-vector-text-ocr.md`  
+  a manual extracts only its headings, or `ocrmypdf --skip-text` succeeds and adds nothing
+
 ## Cloudflare
 
 - **WAF rules silently break SSL renewal** — `vendor/augustash/claude-config/memory/cloudflare/waf-blocks-acme-renewal.md`  

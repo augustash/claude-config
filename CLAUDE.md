@@ -86,6 +86,10 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [ADA Title II web rule](memory/accessibility/ada-title-ii-web-rule.md) — a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
 - [ADA Title I: employers and unions](memory/accessibility/ada-title-i-employment.md) — an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
 
+#### SEO
+
+- [A readable PDF that search engines can't read](memory/seo/pdf-vector-text-ocr.md) — a manual extracts only its headings, or `ocrmypdf --skip-text` succeeds and adds nothing
+
 #### Cloudflare
 
 - [WAF rules silently break SSL renewal](memory/cloudflare/waf-blocks-acme-renewal.md) — before adding or reviewing any WAF/geo/bot rule; the site looks fine for two months, then every browser rejects it
