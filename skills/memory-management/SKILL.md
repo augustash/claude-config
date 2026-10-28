@@ -151,7 +151,7 @@ flags it once it's overdue. Review means re-reading its sources for changes, not
 note: update it, then bump `reviewed`. First case: the ADA Title II rule
 ([ada-title-ii-web-rule](../../memory/accessibility/ada-title-ii-web-rule.md)), 30 days.
 
-**Pre-check first.** `git -C vendor/augustash/claude-config log --since=<last_audit>`. If
+**Pre-check first.** `git -C vendor/augustash/claude-config pull --no-rebase` and only then `log --since=<last_audit>` — against a stale clone the log reads empty while an audit sits on the remote (2026-10-28, nearly overwrote one). If
 nothing changed, bump `last_audit` to today and move on; the cost of a daily cadence is that
 the pre-check stays cheap.
 
