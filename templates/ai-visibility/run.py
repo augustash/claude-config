@@ -118,13 +118,24 @@ def ask_gemini(cfg, keys, q):
 
 
 def ask_perplexity(cfg, keys, q):
-    d = post("https://api.perplexity.ai/chat/completions",
-             {"model": cfg["model"], "messages": [{"role": "user", "content": q}]},
+    # Agent API (Sonar chat/completions ended 2026-09-27). Without a model it routes to a
+    # third-party model, so pin perplexity/sonar; without the web_search tool Sonar
+    # answers from training only.
+    d = post("https://api.perplexity.ai/v1/agent",
+             {"model": cfg["model"], "input": q, "tools": [{"type": "web_search"}]},
              {"Authorization": f"Bearer {keys['PERPLEXITY_API_KEY']}"})
-    text = d["choices"][0]["message"]["content"]
-    urls = d.get("citations") or [r.get("url") for r in d.get("search_results", [])]
-    return {"text": text, "urls": [u for u in urls if u], "searches": [], "model": d.get("model"),
-            "tokens": (d.get("usage") or {}).get("total_tokens")}
+    if d.get("error"):
+        raise RuntimeError(str(d["error"])[:200])
+    text, urls, searches = "", [], []
+    for o in d.get("output", []):
+        if o.get("type") == "search_results":
+            searches += o.get("queries", [])
+            urls += [r.get("url") for r in o.get("results", []) if r.get("url")]
+        elif o.get("type") == "message":
+            text += "".join(c.get("text", "") for c in o.get("content", []))
+    u = d.get("usage") or {}
+    return {"text": text, "urls": urls, "searches": searches, "model": d.get("model"),
+            "tokens": u.get("total_tokens"), "cost_usd": (u.get("cost") or {}).get("total_cost")}
 
 
 ENGINES = {"openai": (ask_openai, "OPENAI_API_KEY"),
@@ -279,10 +290,12 @@ def cmd_report(a):
     s = summarize(rows_of(cur), cfg["brand"]["name"])
     p = summarize(rows_of(prev), cfg["brand"]["name"]) if prev else {}
     errs = sum("error" in r for r in rows_of(cur))
-    tok = Counter()
+    tok, usd = Counter(), Counter()
     for r in rows_of(cur):
         if r.get("tokens"):
             tok[r["engine"]] += r["tokens"]
+        if r.get("cost_usd"):
+            usd[r["engine"]] += r["cost_usd"]
     lines = [f"# AI visibility — {cur.stem}", "",
              f"Compared against: {prev.stem if prev else 'nothing (baseline)'}. Errors this round: {errs}.", "",
              "Δ is marked **↑/↓** only when it beats two standard errors; anything smaller is run-to-run noise.", ""]
@@ -308,7 +321,8 @@ def cmd_report(a):
         lines += ["", "Competitors named: " + ", ".join(f"{b} {c}" for b, c in allx["competitors"].most_common(8)),
                   "", "Top cited domains: " + ", ".join(f"{dm} {c}" for dm, c in allx["domains"].most_common(12)), ""]
     lines += ["## Usage", "", "Tokens by engine (bill from these at each provider's current rate; "
-              "OpenAI also charges per web search call): " + (", ".join(f"{e} {n:,}" for e, n in tok.items()) or "none"), ""]
+              "OpenAI also charges per web search call): " + (", ".join(f"{e} {n:,}" for e, n in tok.items()) or "none"),
+              "", "Reported cost (engines that return one): " + (", ".join(f"{e} ${c:.2f}" for e, c in usd.items()) or "none"), ""]
     report = "\n".join(lines)
     (d / "reports").mkdir(exist_ok=True)
     (d / "reports" / f"{cur.stem}.md").write_text(report + "\n")

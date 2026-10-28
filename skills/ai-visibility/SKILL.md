@@ -73,9 +73,9 @@ Everything tied to a person's or client's account stays on the developer's machi
 | Engine | Route | Notes |
 |---|---|---|
 | OpenAI | API, Responses + `web_search` | Pin a dated snapshot. One web-search answer ran ~20–40k tokens; use a mini model for weekly volume, a flagship monthly. The `*-chat-latest` aliases lag ChatGPT's real default. |
-| Gemini | API | A **new free key gets zero Search-grounding quota** (429) — grounding needs billing. Ungrounded is free and is the trained-knowledge read. `gemini-flash-latest` 429'd where the pinned model worked; older models 404 "no longer available to new users". Pin, and expect 503 "high demand" (the runner retries). |
+| Gemini | API | A **new free key gets zero Search-grounding quota** (429) — grounding needs billing. Ungrounded is free but the **free tier is 20 requests per day per model** — a full round needs billing; until then run one pass of ≤20 queries. It is the trained-knowledge read. `gemini-flash-latest` 429'd where the pinned model worked; older models 404 "no longer available to new users". Pin, and expect 503 "high demand" (the runner retries). |
 | Perplexity | API, `sonar` | Pay-as-you-go from a free account. Pro ($20/mo) is the consumer app, not needed. Logged-out web asks you to sign up. |
-| Copilot | Browser only | No consumer API. The Azure "Grounding with Bing" route is a stand-in, not worth the setup. Smaller query subset. |
+| Copilot | Manual, monthly | No consumer API; the Azure "Grounding with Bing" route is a stand-in, not worth the setup. Driven from automation it throws "Verify you are human" on the first question — don't click through a bot check. The developer runs ~10 queries by hand and `ingest`s the answers. It also ignores `?q=`. |
 | ChatGPT web | Browser, logged out | `chatgpt.com/?q=` answers with sources; spot-check that the API matches. |
 | Google AI Overviews | SerpApi (paid, small free tier) | Direct Google from automation hits the "unusual traffic" captcha. |
 | Grok, Claude, Meta AI | Browser, monthly | Low reach for B2B buyers; promote to weekly only if they diverge. |
