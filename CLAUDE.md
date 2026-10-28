@@ -53,13 +53,13 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Commit messages](memory/preferences/commit-messages.md) — before every commit: no Co-Authored-By or session trailers; subject + a tight WHY
 - [Run cex before commit rounds](memory/preferences/cex-before-commit.md) — before drawing commit boundaries on a Drupal project; the first export after a gap carries other sessions' config
 - [Load the design skill when the work has to match something](memory/preferences/use-design-skill.md) — when design judgment is left; skip it for prescriptive handed-over values
-- [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit, findings page or design mockup; we work locally, never on the claude.ai cloud
+- [Deliverables are HTML files, not Claude artifacts](memory/preferences/deliverables-as-html-files.md) — before publishing a report, audit, findings page or mockup, or deciding where a client doc is stored
 - [Sign generated docs with the studio mark](memory/preferences/doc-studio-mark.md) — finishing any client or team doc; which mark (AAI A or Ashen Rayne shield) and where the files live
 - [Scratch context](memory/preferences/scratch-context.md) — ~/.claude/scratch/ for temporary cross-project context
 - [Reset context before new functionality](memory/preferences/reset-context-before-new-work.md) — at the boundary between features on a long session; Kaza's ~70% rule
 - [git reflog expire --all destroys every stash](memory/preferences/reflog-expire-eats-stashes.md) — before any reflog expire, gc --prune, or "remove an unreachable commit" recipe on a working clone
 - [Git merge over rebase](memory/preferences/git-merge-not-rebase.md) — `pull --no-rebase` by default
-- [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
+- [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone or fork; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
 - [Don't narrate the deploy](memory/preferences/dont-narrate-the-deploy.md) — before listing post-push updb/cim steps; the payload is useful, the procedure isn't
@@ -67,6 +67,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Test reminders](memory/preferences/test-reminders.md) — surface existing tests when changing covered code, flag coverage gaps
 - [Trust contrib tests](memory/preferences/trust-contrib-tests.md) — cover only the seam we own; never hit a live external API
 - [No time-based test waits](memory/preferences/no-time-based-test-waits.md) — wait on the condition, never a fixed delay
+- [Quote the tooling, not the minutes](memory/pricing/quote-the-tooling.md) — before putting hours on a Work row, especially when our module or harness makes the fix quick
 - [Transactional email on our account](memory/preferences/transactional-email-on-our-account.md) — before pointing a site at the client's existing ESP, or treating the subscription fee as the deciding factor
 - [Proactively clean up cruft](memory/preferences/proactive-cleanup.md) — offer to fix warnings and dead code near the work, in its own commit
 - [A legacy URL's pageviews say nothing about the words in it](memory/preferences/traffic-count-is-not-a-search-signal.md) — before citing an old URL's traffic as evidence for a word, a label, a slug or a heading
@@ -77,6 +78,13 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [How standards work](memory/standards/how-they-work.md) — every update round, before writing a standard, or when a dev wants to override one
 - [Outbound call timeouts](memory/standards/outbound-call-timeouts.md) — any call to a vendor during a page request; also php-slow led by a third-party call, or workers maxing out
 - [Drupal log settings](memory/standards/drupal-log-settings.md) — cron logging off, 10,000-row dblog; also a log that reaches back only hours
+- [Sitemap base URL](memory/standards/sitemap-base-url.md) — every round; also sitemap links on http, on a host that redirects, or on http://default
+- [Turnstile replaces antibot](memory/standards/turnstile-replaces-antibot.md) — every round on a site with Turnstile; also antibot still installed, or a form left with no challenge
+
+#### Accessibility
+
+- [ADA Title II web rule](memory/accessibility/ada-title-ii-web-rule.md) — a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+- [ADA Title I: employers and unions](memory/accessibility/ada-title-i-employment.md) — an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
 
 #### Cloudflare
 
@@ -109,6 +117,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - [An autocomplete endpoint is a PHP worker per keystroke](memory/drupal/autocomplete-per-keystroke.md) — building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
+- [On a login-walled site every probe is a full render](memory/drupal/login-wall-scanner-probes.md) — a log sweep finds no 404s on a site behind anonymous_redirect; also before testing a probe block on ddev
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build; also solr1–solr3 containers still running, or a collection refusing 3 shards
 - [A subscriber naming a contrib class in getSubscribedEvents deadlocks deploy](memory/drupal/event-subscriber-contrib-class-deadlock.md) — every drush command dies on a missing class right after a deploy, including the import that would fix it
 - [An adjustment reaches every gateway, and they disagree on how to read it](memory/drupal/commerce-adjustment-reaches-every-gateway.md) — before adding an adjustment to mark or label a charge; also when a gateway refuses an order or bills an amount already inside another
@@ -126,14 +135,18 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [PayPal's sandbox only takes cards it generated](memory/drupal/paypal-sandbox-buyer.md) — a test card number is refused at checkout, or you need to swap sandbox buyers mid-test
 - [An abandoned offsite payment leaves the order locked](memory/drupal/offsite-gateway-abandonment-lock.md) — a customer backs out at PayPal or Affirm and returns to an empty cart; also before tidying an order while someone is at a gateway
 - [A guest cannot view their own shipment](memory/drupal/guest-order-shipment-access.md) — a receipt heading with nothing under it, or a missing address, on guest orders only
+- [Submitting forms locally after a live pull](memory/drupal/local-form-submission.md) — before submitting forms on ddev: captcha fails on localhost, antibot never unlocks, or Mailpit is empty though watchdog says sent
 - [mailsystem resolves a per-module sender before its defaults](memory/drupal/mailsystem-per-module-overrides-defaults.md) — one module's mail vanishes with no error while everything else reaches Mailpit
+- [A hidden contact Subject breaks every submission on D11](memory/drupal/contact-hidden-subject-d11.md) — contact form 500s on submit after a D11 deploy, or messages stored but no email ever arrives
 - [The Postmark plugin sends no attachments](memory/drupal/postmark-drops-attachments.md) — before ticking a webform email handler's attachments on a Postmark site; the submit throws where Postmark actually sends
 - [Commerce's required price blocks every variation save](memory/drupal/commerce-price-required-on-a-catalog.md) — an editor ticks a field, presses Save and nothing happens; also before placing a 0.00 placeholder anywhere
 - [A fixed media alt still renders the old one](memory/drupal/media-thumbnail-alt.md) — an alt corrected on the media entity while cards and product pages keep printing the old text
 - [A scheduled transition with no state loops forever](memory/drupal/scheduler-scmi-revision-loop.md) — cron warns "Unpublishing failed … returned a failure code" every run; a node with tens of thousands of revisions
 - [Webforms are live-only config](memory/drupal/webforms-live-only-config.md) — before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - [Webform drops '#attached' from an element's YAML](memory/drupal/webform-element-attached-dropped.md) — a field renders with its data attributes and nothing listening to them
+- [entity_print saves a failed render as an empty PDF](memory/drupal/entity-print-empty-pdf.md) — a generated PDF opens blank and is 0 bytes on disk while the log says it was created; also before a PHP or core upgrade on a wkhtmltopdf site
 - [Drupal PHPUnit testing](memory/drupal/phpunit-testing.md) — DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
+- [Unticking the last facet reloads the page unchanged on D11.4](memory/drupal/facets-last-filter-d11-4.md) — the only active filter won't deselect, but deselects fine once a second filter or any query param is present
 - [An exposed taxonomy filter reads as a list that repeats](memory/drupal/exposed-taxonomy-filter-options.md) — a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - [A required element with no #title announces an empty error](memory/drupal/form-element-title-drives-error-message.md) — an alert region renders blank, or a field reads as just "edit, required"
 - [Drupal ajax buttons fire on mousedown](memory/drupal/ajax-buttons-fire-on-mousedown.md) — a scripted reproduction comes back clean while the developer hits the bug every single time by hand
@@ -145,6 +158,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cross-project patches](memory/drupal/patches.md) — index of reusable local .patch files and vetted remote URLs
 - [Pantheon's code log runs ahead of the build](memory/drupal/pantheon-build-lag.md) — a deploy or post-deploy script straight after a push reports success against the previous code
 - [Pantheon robots.txt](memory/drupal/pantheon-robots-txt.md) — custom disallow rules via Composer scaffold append
+- [`%2e` in a path runs PHP on Pantheon](memory/drupal/pantheon-encoded-dot-php.md) — `/index%2ephp/` links in cached menus, or a scanner reaching `settings%2ephp`; ddev won't reproduce it
 - [Favicon 404 cluster with the icons all present](memory/drupal/favicon-docroot-icons.md) — thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - [Pantheon Quicksilver cache warmer](memory/drupal/pantheon-quicksilver-cache-warmer.md) — deploy hook that pre-curls heavy pages to beat the cold-cache dogpile
 - [Cron off-path page_cache re-prime](memory/drupal/page-cache-cron-reprime.md) — keeping an uncacheable form page warm through a mid-day cache eviction
@@ -158,6 +172,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Exo slider mobile overflow](memory/drupal/exo-alchemist-slider-mobile-overflow.md) — a slider that overflows on mobile only
 - [exo_icon breaks kernel tests](memory/drupal/exo-icon-kernel-tests.md) — a KernelTestBase fatals on a missing `node_type`, or enabling commerce_rug dies on a cascade of unrelated missing plugins
 - [Every hierarchical select on the site renders empty](memory/drupal/shs-d11-bundle-cache-tags.md) — shs options vanish across bundles with the data intact; the form shows no error, the AJAX endpoint 500s
+- [charts 5.2.4 moved data-chart](memory/drupal/charts-data-chart-moved.md) — custom chart colours or types quietly revert after a charts bump, with #attributes warnings per chart
 - [Detecting a click into a cross-origin iframe](memory/drupal/cross-origin-iframe-click-detection.md) — reacting to a click inside a third-party embed; also when a focus-based handler works on first load and dies after a refresh
 - [A third-party map iframe eats one-finger page scroll](memory/drupal/third-party-iframe-touch-scroll-trap.md) — embedding a vendor map or similar interactive iframe; on a phone the page can't be scrolled past it, and exo has nothing to reuse
 - [An inline head script is HTML-escaped, so >= and && break it](memory/drupal/html-head-inline-script-escaped.md) — a pre-paint gate silently stops running after you add a comparison or an AND; what you see is the feature misbehaving
@@ -168,7 +183,8 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 #### Augustash internal modules
 
-- [POM plans](memory/pom/levels.md) — at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+, and AshenRayne having none
+- [POM plans](memory/pom/levels.md) — at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+
+- [AshenRayne sites](memory/ashenrayne/sites.md) — at the start of a round on an AshenRayne site; which sites they are and the few things that differ from August Ash
 - [Augustash repositories](memory/augustash/repositories.md) — GitHub orgs to check before building from scratch; also who a handle is, before naming a module's maintainer
 - [Deploys run through launcher](memory/augustash/launcher-deploy.md) — before any Pantheon deploy, or reaching for raw `terminus env:deploy`; the tool, its invocation, and running live when asked
 - [Neo module skills sync](memory/augustash/neo-skills-sync.md) — after bumping a neo module, the project's `.claude/skills/` copies still hold the old text
@@ -311,6 +327,7 @@ authoritative trigger is each SKILL.md's own `description:` frontmatter — that
 what Claude Code actually loads for discovery, so keep it sharp there.
 
 - [accessibility-audit](skills/accessibility-audit/SKILL.md) — testing a site's accessibility and writing a defensible record: an ADA demand letter, a compliance question, or a pre-launch check; also the quarterly POM+ scan
+- [accessibility-compliance](skills/accessibility-compliance/SKILL.md) — a client's accessibility standing or plan is being reported: what the law asks of this site, all 50 criteria, ranking, and their "Your requirements" page
 - [client-proposal-review](skills/client-proposal-review/SKILL.md) — a client hands over a set of decisions (a menu, a design round, a feature list) and some of it would make the site worse
 - [client-report](skills/client-report/SKILL.md) — writing any client doc: a pitch, an audit, a request response or the monthly maintenance record; owns the doc design system
 - [content-audit](skills/content-audit/SKILL.md) — reducing a legacy CMS's content before migrating it, plus the overlap sweeps for both sides of the migration

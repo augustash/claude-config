@@ -35,5 +35,34 @@ the same treatment to comment voice, formatting and naming.
 commit, push. Then hand the developer the repo and branch so they raise the PR. Reach for a
 branch only when there is a real reason the change cannot sit on `develop` — and say what it is.
 
+## Ship the compiled output with the source
+
+If the module commits built assets (exo commits `*/js/*.js` compiled from `src/ts`), rebuild and
+commit them **in the same change** as the source. Check with `git log -- <compiled file>`: if
+earlier fixes touched it, so must yours. The site loads the compiled file, so a TS-only commit
+can be merged and released while fixing nothing (exo 2.0.32, 2026-10-26).
+
+exo's exported gulp tasks need a Drupal bootstrap, so build one module with the TS pipeline
+alone: [templates/exo-ts-build/gulpfile.js](../../templates/exo-ts-build/gulpfile.js), run as
+`node -e "require('<path>').default(e => e && process.exit(1))"` from the clone after
+`npm install`. Confirm only the files you touched change: untouched scripts rebuild identically
+when the toolchain matches.
+
+## Forks: sync before you apply
+
+When the clone is a fork (e.g. `kazajhodo/exo` of `jacerider/exo`), bring it current **before**
+writing anything into it: `git pull --no-rebase origin develop`, then merge the upstream's
+`develop` (add the upstream as a remote if it is missing). Only then apply the change. A fork
+that is behind upstream produces a PR built on stale code, and a version or context line that
+moved upstream turns a clean fix into a conflict for the maintainer.
+
+If the change was already made before syncing, stash it, sync, and pop it. Never rewrite a pushed
+commit to tidy up (`--amend` + force push): put the correction in a follow-up commit. The PR's net
+diff is what the maintainer reviews, and they can squash on merge.
+
+**Why:** (Kaza, 2026-10-26) an exo fix was committed onto a fork one upstream version behind,
+then narrowed. Tidying it meant a force push, which was refused; syncing first and following up
+with a normal commit gave the same one-line PR without rewriting anything.
+
 Note the clones are **snake_case** (`~/Projects/neo_toolbar`), matching the package name rather
 than the kebab-case path used for augustash packages.

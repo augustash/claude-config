@@ -198,7 +198,7 @@ focused and actionable, and the dev can fix something before it muddies the next
 
 | | Log | What it tends to surface |
 |---|---|---|
-| 1 | nginx access | Traffic and status-code distribution, abusive clients (scanners, path enumeration, injection attempts in query strings), high-frequency IPs, bot/UA anomalies |
+| 1 | nginx access | Traffic and status-code distribution, abusive clients (scanners, path enumeration, injection attempts in query strings), high-frequency IPs, bot/UA anomalies. Behind a login wall probes 302 to login instead of 404ing — see [login-wall-scanner-probes](../../memory/drupal/login-wall-scanner-probes.md) |
 | 2 | nginx error | Usually low-volume. Mostly blocked scans (`access forbidden by rule`) and forbidden directory listings — benign, and confirmation the block rules work. What matters is the web-server view of 502/504s: `recv() failed`, `connection reset by peer`, `timed out` from the FPM upstream |
 | 3 | php-error | Recurring warnings, notices, fatals, deprecations, repeated stack traces |
 | 4 | php-fpm-error | Pool health, `max_children` saturation |

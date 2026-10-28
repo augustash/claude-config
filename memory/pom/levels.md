@@ -17,19 +17,20 @@ Each plan includes everything in the one before it.
 
 ## Clients on POM+
 
-ABDO, CAL, GIF, LOFT, NORTH, TCF
+ABDO, CAL, GIF, LOFT, MACE, METRO, MSP, MYMSPCONNECT, NORTH, TCF
+
+The four airport sites (MACE, METRO, MSP, MYMSPCONNECT, all MAC) are handled as POM+ without a
+POM+ subscription: their POM fee already covers it (Kaza, metro 2026-10-23). Run the POM+ passes
+every round, and never offer them a plan in a record.
 
 The code is the project's short name, upper-cased (`cal` → CAL). Every other client is on
 POM. When a client moves plans, edit this list; the accessibility tracker
 ([accessibility.json](accessibility.json)) gains or loses their key at the same time.
 
-## AshenRayne clients have no plans
+## AshenRayne sites
 
-POM is an August Ash offering. AshenRayne sites (Pantheon `ar-` sites, tests tagged `ar` —
-see [[test-tags]]) are not tiered: every round covers everything — the updates plus the
-POM+ passes — and the client gets one report, billed monthly. So on an AshenRayne site, run
-the whole round and never name POM, POM+ or a plan in the record or offer an upgrade (Kaza,
-2026-10-19). Work is priced as a flat amount, never hours × rate (client-report's Work row).
+They have no plans and run every pass each round. Which sites they are, and what else differs,
+is in [ashenrayne/sites](../ashenrayne/sites.md).
 
 ## Offering the next plan
 

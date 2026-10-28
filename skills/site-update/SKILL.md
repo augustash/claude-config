@@ -34,8 +34,9 @@ Before anything else, look the client up in
 [memory/pom/levels.md](../../memory/pom/levels.md). On **POM** this skill is the whole
 round. On **POM+**, load [pom-plus](../pom-plus/SKILL.md) after Phase 5: it adds a log,
 performance, bot and search pass every round, and an accessibility scan every quarter.
-**AshenRayne sites (`ar-` on Pantheon) have no plans**: run the pom-plus passes every round,
-and keep plan names out of the record.
+**AshenRayne sites have no plans**: run the pom-plus passes every round, and keep plan names
+out of the record. Which sites they are, and what else differs, is in
+[memory/ashenrayne/sites.md](../../memory/ashenrayne/sites.md).
 
 ---
 
@@ -906,6 +907,11 @@ itself. The launcher deploy above does both on each environment, running
 `wc update` only where WooCommerce is active. It stops the chain if either fails to
 print `Success:`, because `terminus wp` can exit 0 silently. First run on Meridian
 Display, 2026-09-28: five WooCommerce migrations on each of dev, test and live.
+After the updates it flushes the object cache (`wp cache flush`) and Pantheon's edge
+(`env:clear-cache`) on each environment, since nothing else does on WordPress (added on
+atr, 2026-10-21). If the launcher prompts *"What project are we building?"*, the site
+name didn't map to a folder (`aaiatrix` lives in `atr`); run it from inside the project
+and it takes the folder you're in.
 
 ## Reporting back
 
