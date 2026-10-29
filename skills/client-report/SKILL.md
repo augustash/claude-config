@@ -1111,6 +1111,13 @@ for the client's own team) is not.
   marks the whole item approved (brand-green outline and tint) and swaps the ? for a
   checkmark; clicking again undoes it. It's a `<button aria-pressed>` whose
   `aria-label` names the item.
+- **Answering a choice inside approvable work approves the work** (Kaza, sal
+  2026-10-29). sal's client pressed *Please handle it* on LearnDash and sent it back
+  with the item itself unapproved, which reads as a no. Any answer to a `.decision`
+  inside an `.approvable` item sets its `data-approved`; clearing the answer leaves the
+  approval alone. The same rule runs on load, so a copy saved with an answer and no
+  approval opens approved and *Saved*. A decision whose panel has no Work row (sal's
+  WPBakery) stays a plain choice: there's no parent to select.
 - The first approval or answer opens a short note (a `<dialog>`, never `alert()`):
   once they've chosen, they press Save and email the doc back. Keep it generic, since
   the same note serves approvals, decisions and anything else the client can press.
