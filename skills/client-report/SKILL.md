@@ -1187,6 +1187,8 @@ anything with neither (a task for the client's own team) is not.
     to centre, outlines it in the urgent colour with *"You approved this work. Choose
     one before saving."* (`role="alert"`), and focuses its first option. Answering, or
     unapproving the item, clears the mark; the snapshot strips it.
+  - **Unapproving the parent clears its child** (Kaza, sal 2026-10-29): the answer
+    belonged to the work, so deselecting the item deselects its choice too.
   - **A choice and no Work row** (WPBakery): approvable *only* through its answer. It
     still shows the ? (a disabled button, `.derived`, the item itself not clickable),
     and it is approved exactly while the question is answered. Selecting the parent
