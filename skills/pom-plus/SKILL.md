@@ -151,12 +151,13 @@ the scan runs in the first update round of January, April, July and October. A c
 missed in that round runs in its next round inside the same quarter. One shared window,
 rather than a date per client, keeps the schedule in one head.
 
-**Is it due?** The tracker, [memory/pom/accessibility.json](../../memory/pom/accessibility.json),
-lists the quarters done per client (`"CAL": ["2026-Q4"]`). If the current quarter isn't in
-the client's list, it is due.
+**Is it due?** The tracker lists the quarters done per client (`"CAL": ["2026-Q4"]`):
+[memory/pom/accessibility.json](../../memory/pom/accessibility.json) for August Ash clients,
+[memory/ashenrayne/accessibility.json](../../memory/ashenrayne/accessibility.json) for
+AshenRayne sites. If the current quarter isn't in the client's list, it is due.
 
 ```bash
-python3 -c "import json,datetime as d;t=d.date.today();q=f'{t.year}-Q{(t.month-1)//3+1}';j=json.load(open('vendor/augustash/claude-config/memory/pom/accessibility.json'));print(q,{k:q in v for k,v in j.items()})"
+python3 -c "import json,datetime as d;t=d.date.today();q=f'{t.year}-Q{(t.month-1)//3+1}';[print(f,q,{k:q in v for k,v in json.load(open('vendor/augustash/claude-config/memory/'+f+'/accessibility.json')).items()}) for f in ('pom','ashenrayne')]"
 ```
 
 ### The first quarter of a POM+ year: audit and plan
@@ -176,6 +177,13 @@ quarter opens a year:
    approve them one at a time.
    Expect the dev to cut the hours. The audit agent priced cal's first quarter at 16 h, and
    Kaza quoted 4.
+
+### The client's requirements govern the plan
+
+Every accessibility quarter runs [accessibility-compliance](../accessibility-compliance/SKILL.md)
+on top of the audit: establish what the law asks of this site, mark all 50 criteria, rank the
+plan by those rules, and write the client's "Your requirements" page. The audit finds the
+defects; that skill decides what they're measured against and the order they're fixed in.
 
 ### Later quarters
 

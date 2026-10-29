@@ -65,7 +65,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Git merge over rebase** — `vendor/augustash/claude-config/memory/preferences/git-merge-not-rebase.md`  
   `pull --no-rebase` by default
 - **Fix modules on develop** — `vendor/augustash/claude-config/memory/preferences/module-fixes-on-develop.md`  
-  before branching, committing or writing a commit message in a module clone; the rules differ from the consuming project
+  before branching, committing or writing a commit message in a module clone or fork; the rules differ from the consuming project
 - **Commit handoff** — `vendor/augustash/claude-config/memory/preferences/commit-handoff.md`  
   before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - **Confirm before live terminus** — `vendor/augustash/claude-config/memory/preferences/confirm-before-live-terminus.md`  
@@ -89,6 +89,11 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **Prove code is dead against its consumers** — `vendor/augustash/claude-config/memory/preferences/prove-code-is-dead.md`  
   before deleting code that looks dead, or concluding a change is a no-op because saved state is unchanged
 
+## Pricing
+
+- **Quote the tooling, not the minutes** — `vendor/augustash/claude-config/memory/pricing/quote-the-tooling.md`  
+  before putting hours on a Work row, especially when our module or harness makes the fix quick
+
 ## August Ash standards
 
 - **How standards work** — `vendor/augustash/claude-config/memory/standards/how-they-work.md`  
@@ -97,6 +102,22 @@ These files are authoritative and kept current by the team. Prefer conventions h
   any call to a vendor during a page request; also php-slow led by a third-party call, or workers maxing out
 - **Drupal log settings** — `vendor/augustash/claude-config/memory/standards/drupal-log-settings.md`  
   cron logging off, 10,000-row dblog; also a log that reaches back only hours
+- **Sitemap base URL** — `vendor/augustash/claude-config/memory/standards/sitemap-base-url.md`  
+  every round; also sitemap links on http, on a host that redirects, or on http://default
+- **Turnstile replaces antibot** — `vendor/augustash/claude-config/memory/standards/turnstile-replaces-antibot.md`  
+  every round on a site with Turnstile; also antibot still installed, or a form left with no challenge
+
+## Accessibility
+
+- **ADA Title II web rule** — `vendor/augustash/claude-config/memory/accessibility/ada-title-ii-web-rule.md`  
+  a public-sector client asks whether they meet the requirement, or when reporting their accessibility standing
+- **ADA Title I: employers and unions** — `vendor/augustash/claude-config/memory/accessibility/ada-title-i-employment.md`  
+  an employer or labor union asks what accessibility law requires of their site, or when reporting their standing
+
+## Seo
+
+- **A readable PDF that search engines can't read** — `vendor/augustash/claude-config/memory/seo/pdf-vector-text-ocr.md`  
+  a manual extracts only its headings, or `ocrmypdf --skip-text` succeeds and adds nothing
 
 ## Cloudflare
 
@@ -151,6 +172,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   giving one page a shorter edge TTL, or the edge a longer one than browsers; and why TTL beats tag-purge
 - **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- **Solr rejects every document with "inconsistent index options"** — `vendor/augustash/claude-config/memory/drupal/solr-inconsistent-index-options.md`  
+  an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  
@@ -191,6 +214,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a customer backs out at PayPal or Affirm and returns to an empty cart; also before tidying an order while someone is at a gateway
 - **A guest cannot view their own shipment** — `vendor/augustash/claude-config/memory/drupal/guest-order-shipment-access.md`  
   a receipt heading with nothing under it, or a missing address, on guest orders only
+- **Submitting forms locally after a live pull** — `vendor/augustash/claude-config/memory/drupal/local-form-submission.md`  
+  before submitting forms on ddev: captcha fails on localhost, antibot never unlocks, or Mailpit is empty though watchdog says sent
 - **mailsystem resolves a per-module sender before its defaults** — `vendor/augustash/claude-config/memory/drupal/mailsystem-per-module-overrides-defaults.md`  
   one module's mail vanishes with no error while everything else reaches Mailpit
 - **A hidden contact Subject breaks every submission on D11** — `vendor/augustash/claude-config/memory/drupal/contact-hidden-subject-d11.md`  
@@ -207,8 +232,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
   before reading a form's setup from `config/`, or when a webform fix we remember has no trace in git
 - **Webform drops '#attached' from an element's YAML** — `vendor/augustash/claude-config/memory/drupal/webform-element-attached-dropped.md`  
   a field renders with its data attributes and nothing listening to them
+- **entity_print saves a failed render as an empty PDF** — `vendor/augustash/claude-config/memory/drupal/entity-print-empty-pdf.md`  
+  a generated PDF opens blank and is 0 bytes on disk while the log says it was created; also before a PHP or core upgrade on a wkhtmltopdf site
 - **Drupal PHPUnit testing** — `vendor/augustash/claude-config/memory/drupal/phpunit-testing.md`  
   DDEV setup; D9/10 vs D11 phpunit.xml; PHPUnit 11 metadata; fixtures that pass or fail for the wrong reason
+- **Unticking the last facet reloads the page unchanged on D11.4** — `vendor/augustash/claude-config/memory/drupal/facets-last-filter-d11-4.md`  
+  the only active filter won't deselect, but deselects fine once a second filter or any query param is present
 - **An exposed taxonomy filter reads as a list that repeats** — `vendor/augustash/claude-config/memory/drupal/exposed-taxonomy-filter-options.md`  
   a views dropdown restarts alphabetically partway down, or offers terms with no content; also before trusting #default_value in an exposed form alter
 - **A required element with no #title announces an empty error** — `vendor/augustash/claude-config/memory/drupal/form-element-title-drives-error-message.md`  
@@ -231,6 +260,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   a deploy or post-deploy script straight after a push reports success against the previous code
 - **Pantheon robots.txt** — `vendor/augustash/claude-config/memory/drupal/pantheon-robots-txt.md`  
   custom disallow rules via Composer scaffold append
+- **`%2e` in a path runs PHP on Pantheon** — `vendor/augustash/claude-config/memory/drupal/pantheon-encoded-dot-php.md`  
+  `/index%2ephp/` links in cached menus, or a scanner reaching `settings%2ephp`; ddev won't reproduce it
 - **Favicon 404 cluster with the icons all present** — `vendor/augustash/claude-config/memory/drupal/favicon-docroot-icons.md`  
   thousands of icon 404s while the generated set sits there serving 200s; don't patch the module
 - **Pantheon Quicksilver cache warmer** — `vendor/augustash/claude-config/memory/drupal/pantheon-quicksilver-cache-warmer.md`  
@@ -277,7 +308,12 @@ These files are authoritative and kept current by the team. Prefer conventions h
 ## Augustash internal modules
 
 - **POM plans** — `vendor/augustash/claude-config/memory/pom/levels.md`  
-  at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+, and AshenRayne having none
+  at the start of every update round, and before offering a client a higher maintenance plan; who is on POM+
+
+## Ashenrayne
+
+- **AshenRayne sites** — `vendor/augustash/claude-config/memory/ashenrayne/sites.md`  
+  at the start of a round on an AshenRayne site; which sites they are and the few things that differ from August Ash
 
 ## Augustash internal modules
 

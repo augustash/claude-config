@@ -397,7 +397,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
 **The HTML is sent; a Markdown summary is kept.**
 
 - **To send:** `.claude/docs/pom/<Client> Website Maintenance - <Month Year>.html` in
-  the project, **committed** (Kaza, cal 2026-10-19). It has a readable filename with
+  the project, **committed** (Kaza, cal 2026-10-19), once it's done, like code: after
+  the dev's review, together with its round summary and ideas log, not a commit per
+  review note. It has a readable filename with
   spaces, because it gets attached to an email. Once the dev has signed off, copy it to
   `~/Desktop/` for them to send, and keep the committed copy as the record (Kaza, atr
   2026-10-21). A doc with companion files (screenshots,
@@ -489,15 +491,16 @@ smaller genre.
    asked, and it was struck on ilc (2026-09-25).
 
    **Close every held item with an urgency line** (Kaza, Meridian Display
-   2026-09-28): a tag (*Urgent* / *All good*) and one sentence on why. Grade it
+   2026-09-28): a tag (*Urgent* / *Good*) and one sentence on why. Grade it
    from a vulnerability database against the held version, not from memory
    (WPScan and Patchstack pages; the Wordfence JSON feed now needs a key), then
    against the site's exposure: if registration is closed and only admins have
    accounts, a flaw needing a login is out of reach, so only unauthenticated ones
    make an item urgent. A known exploitable flaw means update it, and when the
    update is walled, the Action names what unblocks it (the licence to buy). No
-   known issue means *All good* (Kaza's change from *No rush*, kow
-   2026-09-29), and saying so plainly is what keeps the client from
+   known issue means *Good* (Kaza: *No rush* became *All good* on kow
+   2026-09-29, then *Good* on wps 2026-10-27, "better than all good, for all of
+   them"), and saying so plainly is what keeps the client from
    treating every held item as an emergency. If an urgent item exists, it goes in
    the header's *Action required* cell, displacing a routine licence ask. Render it
    as a §7 **severity panel**, ending in an **Action** row with a checked link
@@ -522,12 +525,11 @@ smaller genre.
    heading reads as a template (Kaza). Explanation belongs on the item in *Next*,
    not here. Work already done gets a clause, not a paragraph. The section ends in one centred **Fix**
    button that opens *Next*; a Fix per heading read as duplicates (Kaza). *Accessibility* says what was
-   tested and what already works. The year plan isn't shown: it's ours, in the
-   project's `.claude/memory/accessibility-plan.md`.
-   **Every AshenRayne client gets this section too**, untiered and unnamed: a plain
-   one-word heading (*Health* on dmx) and never the word POM. When nothing is quoted
-   there is no *Next*, so a finding that needs action gets its own right-aligned Fix
-   pointing at the item that acts on it, usually the Idea (dmx 2026.10).
+   tested and what already works, then shows the whole path to the client's requirement
+   (accessibility-compliance §7); our pacing notes stay in the project's
+   `.claude/memory/accessibility-plan.md`.
+   **Every AshenRayne client gets the passes too**, untiered and unnamed, in the *Health*
+   bar (§7, *AshenRayne records: the Health bar*) and never the word POM.
 5. **Next**: where the action is (Kaza, cal 2026-10-19). Work from the ordinary POM
    round comes first, Urgent first and then by importance. Then come the POM+ headings
    that have work, mirrored from *POM+* in the same order, each holding its own items
@@ -1000,6 +1002,10 @@ title block and lists them:
 
 **Every section collapses, and the nav opens what it jumps to** (Kaza, cal 2026-10-19).
 The reader closes what they've read and keeps the page to what they're working through.
+**Short docs too.** A four-section advice sheet shipped without them on the reasoning that it
+was a two-minute read; Kaza put them back: *"I often find myself just clicking through the nav
+and reading the content"* (md LinkedIn sheet, 2026-10-29). The nav-as-reader is the use case,
+whatever the length.
 - The `h2` holds a `<button type="button" aria-expanded aria-controls>` wrapping the
   heading text and a chevron to its right. Down means open, rotated -90° means closed.
   The chevron sits **directly after the heading text** (a small gap, ~6px), not pushed to
@@ -1049,15 +1055,73 @@ The reader closes what they've read and keeps the page to what they're working t
 
 ### Components
 
+**POM+ lives in its own place: a bar at the foot of the record** (Kaza, metro 2026-10-23,
+"POM is clearly in its own area and POM+ carries some serious punching weight"). Metro's
+October 2026 record is the reference implementation. This replaces a POM+ section in the
+page and POM+ headings in *Next*:
+- **The bar.** A fixed bottom bar: the client code and an italic *POM+* on the left (the plus
+  enlarged to the cap height of POM), one tab per pass, and a running total of everything
+  selected on the right, visible open or closed. Navy ground with a faint tiled pattern of
+  italic pluses and a soft inset shadow.
+- **Opening a pass slides the whole bar up** to just under the site bar (or the top of the
+  screen), covering the report: the pass reads on the bar's own ground, in a dark scheme
+  (translucent panels, light text, the brand's bright blue for tags, light red for Urgent,
+  light green for approved). Close or Escape slides it down; focus returns to the tab.
+- **POM+ is a state, not a place.** In a combined file, switching sites while POM+ is open
+  lands on the new site's POM+, on the same pass when it has one, without the slide.
+- **Each pass holds its own items.** Findings and the Work items that act on them sit together
+  under the pass, each Work row carrying a *POM+* chip so it reads as POM+ spend. The client's
+  own tasks sit at the end of a pass as a done-toggle list headed *For your team*, introduced
+  with "Recommendations to check."
+- **Save shows a summary first**: what's selected, grouped (per site in a combined file, then
+  POM+ / Work), with the total, ending "Send us the saved document and we'll get it done."
+  Then the file saves.
+- **The client copy can drop POM+ wholesale**: remove the `<aside class="pom">` (and any
+  `dialog.rules`) and nothing else references it. A dev-review copy keeps it (metro 2026.10:
+  the full file went to the reviewer, the stripped one to the client).
+
+**AshenRayne records: the Health bar** (Kaza, local49 2026-10-24). The same bar and the same
+passes, carried in AshenRayne's own way. The August Ash bar above doesn't change, and the two
+don't share styling. local49's October 2026 record is the reference implementation.
+- **The label** is the client code, a beating heart and an italic *Health*. The heart is
+  AshenRayne's sign that a site is being looked after (the deploy status line uses it too):
+  a double beat about every 1.2s, and still under reduced motion.
+- **The ground is the client's brand primary**, so the bar is noticed. White lettering and
+  translucent white panels on it, with the brand's second colour as the accent (tags,
+  kickers, the "not yet" segment). Approved items, answered questions and done tasks turn
+  solid white with the approval green, so a choice stands out on the colour.
+- **The pattern is the client's own mark**, traced from their logo, not a generic shape:
+  `templates/client-report/trace-logo-mark.py` isolates it from the largest raster on the
+  site and potrace turns it into a path. Tile it diagonally, small and faint (local49: 21.7px
+  wide, a 60 × 35px tile so three rows show in the closed bar, 8% white). Keep the traced
+  mark and tile in the project's `.claude/docs/pom/brand/` for the next round.
+- **One brand colour throughout the doc.** Checks, arrows, tags and the bar all take the
+  brand primary itself, never a darker or lighter cousin of it.
+- **Work rows state the price alone**, with no plan chip.
+- Everything else works as on the POM+ bar: each pass holds its findings, Work items,
+  questions and team checklists; the running *Selected* total; the slide-up sheet; and Save's
+  summary. The Accessibility pass follows accessibility-compliance §7, and its requirements
+  page opens on the bar's ground.
+
+**Several sites, one file.** A client with several sites gets one combined record built by
+`templates/client-report/combine.py`: a site bar of client codes across the top (not domains;
+a row of *.com*s is noise), each site's own record underneath, and a returned copy splits back
+into each site's record. Each site keeps its own POM+ bar, which follows the site bar.
+
+
 The standing parts our docs are built from. Each one was settled through review, so
 reach for these before inventing a new device, and extend this list when a new one
 earns its place.
 
 **Markers: a tag and hanging copy.** A row with a small solid pill tag (*Action*,
-*Work*, *Urgent*, *All good*) followed by the copy, laid out as a grid:
+*Work*, *Urgent*, *Good*) followed by the copy, laid out as a grid:
 - The tag sits in a fixed-width column (about 84px), so every row's copy and link
   start at the same x down the whole panel. Wrapped text hangs under the copy, not
   under the tag.
+- A panel holding a single marker sizes the column to its tag instead
+  (`auto`, ~12px gap). With nothing to align against, the 84px column only leaves
+  dead space after a short tag like *Good*, which Kaza called a wonky gap (wps
+  2026-10-27).
 - The tag takes the colour of the panel it sits in, so the same markup reads red in
   an urgent panel and blue in an idea.
 - A link goes on its own line under the copy, bold, underlined, with a trailing
@@ -1153,11 +1217,12 @@ for the client's own team) is not.
 need a call from them, ask it where the topic lives, not only in a closing question list,
 and let them answer on the page.
 - The panel: the question as its heading and one line of context. Then a *Recommended*
-  marker with our answer and a **Choose** button, a centred **or** between rules, and
-  a labelled textarea for their own answer.
+  marker with our answer and a **Confirm** button (*Confirmed* once pressed; Kaza, wps
+  2026-10-29, replacing *Choose*), a centred **or** between rules, and
+  a textarea for their own answer, labelled *Answer* (not *Your answer*; Kaza, wps 2026-10-29).
 - Picking one hides the other: choosing the recommendation hides the textarea and the
   *or*, and typing in the textarea hides the recommendation and the *or*. Clicking
-  *Chosen* again, or clearing the text, brings both back. Answered, the panel turns
+  *Confirmed* again, or clearing the text, brings both back. Answered, the panel turns
   green. Keep `[hidden]` winning over the panel's own `display` rules
   (`.decision [hidden]{display:none!important}`), or the toggle silently does nothing.
 - It saves through the same Save button and snapshot as approvals. The choice is stored
@@ -1166,7 +1231,7 @@ and let them answer on the page.
   both back, and Save starts as *Saved*. The first answer opens the same short note.
 - Once a decision covers a question, take it out of the Questions list. Asking twice
   invites two different answers.
-- Print shows only the answer given: an unpressed *Choose* is hidden.
+- Print shows only the answer given: an unpressed *Confirm* is hidden.
 - **A yes/no that gates content** (gif's *"Are we moving the store off Klaviyo?"*): Yes
   and No buttons, and everything that only matters on a yes carries
   `data-gate="<panel id>"` and stays hidden until Yes, including a follow-up item in
@@ -1178,8 +1243,17 @@ and let them answer on the page.
   2026-10-20). No panel and no buttons labelled Yes/No: two round icon buttons, green when
   the check is pressed, red when the X is. Each carries an `aria-label` that says what the
   answer means (*"Yes, remove it"*). Same `data-answer` state and Save as the panel version.
+- **A question that asks for a fact gets the field alone** (Kaza, metro 2026-10-23). When
+  the answer is something only the client has, like an address to notify, there's nothing
+  for us to recommend: the panel is the question, its line of context, and a labelled input
+  (`type="email"` for an address, with a placeholder in the client's own mail domain). No
+  *Recommended* row, no *Confirm*, no *or*. Typing marks it answered, and the snapshot
+  writes the input's `value` attribute.
   Keep a Questions list to what the client must answer. Questions we can settle with them
   directly, or that only matter to our build, stay out of the doc.
+  Don't ask who to send it to: a doc meant for someone on their side, such as their
+  developer, gets forwarded by the client (Kaza, wps 2026-10-29). Address that reader in
+  the doc instead.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
@@ -1188,7 +1262,7 @@ green for no rush.
   about 9%, via `color-mix`), the text (a dark shade of the same hue) and the solid
   tag. Retuning a level is then one line.
 - A panel ends with an Action row only when the client has something to do. Plain
-  green *All good* panels matter as much as the red one: they stop the client treating
+  green *Good* panels matter as much as the red one: they stop the client treating
   everything held as an emergency.
 
 **Flow strips.** A process becomes numbered cards in a grid: mono `01`–`08`, an
