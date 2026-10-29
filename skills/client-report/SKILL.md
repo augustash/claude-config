@@ -1163,8 +1163,8 @@ earns its place.
 2026-10-19). The colours below are cal's; carry the concept, not the hexes. Approved
 takes the client's strongest affirming colour, Save uses their own attention colour and
 their confirm colour, and the to-do toggles use a clear stop and go pair drawn from the
-palette wherever it allows. Every item carrying a Work row is approvable; anything without one (a task
-for the client's own team) is not.
+palette wherever it allows. Every item carrying a Work row or a choice (`.decision`) is approvable;
+anything with neither (a task for the client's own team) is not.
 - **Approved, the whole item turns one affirming brand colour** (cal: its deep green),
   whatever severity it started as (Kaza): outline, heading, tags, the price, and the divider lines. Set the dividers
   to that colour at full strength, because a 1px line in a tint of it reads as grey.
@@ -1175,13 +1175,13 @@ for the client's own team) is not.
   marks the whole item approved (brand-green outline and tint) and swaps the ? for a
   checkmark; clicking again undoes it. It's a `<button aria-pressed>` whose
   `aria-label` names the item.
-- **Answering a choice inside approvable work approves the work** (Kaza, sal
-  2026-10-29). sal's client pressed *Please handle it* on LearnDash and sent it back
-  with the item itself unapproved, which reads as a no. Any answer to a `.decision`
-  inside an `.approvable` item sets its `data-approved`; clearing the answer leaves the
-  approval alone. The same rule runs on load, so a copy saved with an answer and no
-  approval opens approved and *Saved*. A decision whose panel has no Work row (sal's
-  WPBakery) stays a plain choice: there's no parent to select.
+- **Answering a choice approves the item it sits in** (Kaza, sal 2026-10-29): the
+  parent inherits the yes. sal's client pressed *Please handle it* on LearnDash and
+  WPBakery and sent both back unapproved, which reads as a no; WPBakery had no ? at
+  all, because it had a choice but no Work row. So a choice alone makes its item
+  approvable, and any answer sets the item's `data-approved`. Clearing the answer leaves
+  the approval alone. The same rule runs on load, so a copy saved with an answer and no
+  approval opens approved and *Saved*.
 - The first approval or answer opens a short note (a `<dialog>`, never `alert()`):
   once they've chosen, they press Save and email the doc back. Keep it generic, since
   the same note serves approvals, decisions and anything else the client can press.
