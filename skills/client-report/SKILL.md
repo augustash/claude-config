@@ -1181,7 +1181,12 @@ anything with neither (a task for the client's own team) is not.
   `.decision` sets its item's `data-approved`, on click and on load, so a copy saved
   with an answer and no approval opens approved and *Saved*.
   - **Work row plus a choice** (LearnDash): approvable on its own as usual; answering
-    approves it, and clearing the answer leaves the approval alone.
+    approves it, and clearing the answer leaves the approval alone. But approving it
+    makes the choice required (Kaza, sal 2026-10-29): Save refuses while any approved
+    item holds an unanswered `.decision`, reopens its section if collapsed, scrolls it
+    to centre, outlines it in the urgent colour with *"You approved this work. Choose
+    one before saving."* (`role="alert"`), and focuses its first option. Answering, or
+    unapproving the item, clears the mark; the snapshot strips it.
   - **A choice and no Work row** (WPBakery): approvable *only* through its answer. It
     still shows the ? (a disabled button, `.derived`, the item itself not clickable),
     and it is approved exactly while the question is answered. Selecting the parent
