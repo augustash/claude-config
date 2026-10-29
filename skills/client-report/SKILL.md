@@ -1212,7 +1212,7 @@ and let them answer on the page.
 - The panel: the question as its heading and one line of context. Then a *Recommended*
   marker with our answer and a **Confirm** button (*Confirmed* once pressed; Kaza, wps
   2026-10-29, replacing *Choose*), a centred **or** between rules, and
-  a labelled textarea for their own answer.
+  a textarea for their own answer, labelled *Answer* (not *Your answer*; Kaza, wps 2026-10-29).
 - Picking one hides the other: choosing the recommendation hides the textarea and the
   *or*, and typing in the textarea hides the recommendation and the *or*. Clicking
   *Confirmed* again, or clearing the text, brings both back. Answered, the panel turns
