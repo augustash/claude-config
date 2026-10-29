@@ -1002,6 +1002,10 @@ title block and lists them:
 
 **Every section collapses, and the nav opens what it jumps to** (Kaza, cal 2026-10-19).
 The reader closes what they've read and keeps the page to what they're working through.
+**Short docs too.** A four-section advice sheet shipped without them on the reasoning that it
+was a two-minute read; Kaza put them back: *"I often find myself just clicking through the nav
+and reading the content"* (md LinkedIn sheet, 2026-10-29). The nav-as-reader is the use case,
+whatever the length.
 - The `h2` holds a `<button type="button" aria-expanded aria-controls>` wrapping the
   heading text and a chevron to its right. Down means open, rotated -90° means closed.
   The chevron sits **directly after the heading text** (a small gap, ~6px), not pushed to
