@@ -123,7 +123,8 @@ python3 vendor/augustash/claude-config/templates/ai-visibility/crawl.py --cf .cl
 ```
 
 `watch.json` lists `{path, since, note}`; add a row with every changelog entry that touches a
-page. A flat report with ✓s across the row means *crawled, not chosen* — the page is the
+page. For a redirect batch, add the URLs crawlers were requesting with a shared
+`group` and `since` set to the deploy hour: they report as one row, and 301 is the success. A flat report with ✓s across the row means *crawled, not chosen* — the page is the
 problem. A row of dashes means *not seen yet* — wait, or push it (Bing Webmaster Tools /
 IndexNow, Search Console request indexing). Cloudflare keeps ~8 days, so run it each round.
 Crawlers are matched by user agent; non-Enterprise zones don't expose verified-bot identity. Browser engines: drive the query in firefox-solo, save

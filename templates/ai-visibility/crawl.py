@@ -10,7 +10,9 @@ means "crawled, not chosen" if the crawlers came, and "not seen yet" if they did
     crawl.py --cf .cloudflare --watch docs/seo/ai-visibility/watch.json [--out FILE]
 
 watch.json is a list of {"path": "/as/requested", "since": "YYYY-MM-DD", "note": "..."};
-add a row whenever a changelog.md entry touches a page. Paths match exactly, as
+add a row whenever a changelog.md entry touches a page. Rows that also carry "group" (a
+redirect batch) report as one line: per engine, how many of the group's URLs it fetched.
+For redirects, a 301 is the success; a 404 means the redirect isn't there. Paths match exactly, as
 requested (percent-encoded the way the crawler sends them).
 
 <cf-dir>/cf.env supplies CF_API_TOKEN and CF_ZONE_ID (templates/cloudflare/cf.env.example);
@@ -119,7 +121,24 @@ def main():
              "Engines: " + ", ".join(KEY) + " — ✓ means at least one of that engine's crawlers fetched it.", "",
              "| Page | Changed | " + " | ".join(KEY) + " | Crawlers (last fetch, status) |",
              "|---|---|" + "---|" * len(KEY) + "---|"]
+    # Rows sharing a "group" (a batch of redirects, say) collapse into one line: how many
+    # of its URLs each engine has fetched, and the statuses seen.
+    groups = collections.OrderedDict()
     for w in watch:
+        if w.get("group"):
+            groups.setdefault(w["group"], []).append(w)
+    for g, ws in groups.items():
+        marks = [f"{sum(any((w['path'], n) in seen for n in KEY[v]) for w in ws)}/{len(ws)}" for v in KEY]
+        st = collections.Counter()
+        for w in ws:
+            for _, n, _ in BOTS:
+                if (w["path"], n) in seen:
+                    st.update(seen[(w["path"], n)]["status"])
+        detail = ", ".join(f"{s} ×{c}" for s, c in sorted(st.items())) or "none yet"
+        lines.append(f"| {g} ({len(ws)} URLs) | {ws[0]['since']} | " + " | ".join(marks) + f" | statuses: {detail} |")
+    for w in watch:
+        if w.get("group"):
+            continue
         p = w["path"]
         hits = {name: seen[(p, name)] for _, name, _ in BOTS if (p, name) in seen}
         marks = ["✓" if any(n in hits for n in KEY[v]) else "—" for v in KEY]
@@ -127,9 +146,9 @@ def main():
                            for n, h in sorted(hits.items(), key=lambda x: x[1]["last"], reverse=True))
         label = p if not w.get("note") else f"{p} ({w['note']})"
         lines.append(f"| {label} | {w['since']} | " + " | ".join(marks) + f" | {detail or 'none yet'} |")
-    total = len(watch)
-    lines += ["", "Seen by engine: " + ", ".join(
-        f"{v} {sum(any((w['path'], n) in seen for n in KEY[v]) for w in watch)}/{total}" for v in KEY)]
+    pages = [w for w in watch if not w.get("group")]
+    lines += ["", "Pages seen by engine: " + ", ".join(
+        f"{v} {sum(any((w['path'], n) in seen for n in KEY[v]) for w in pages)}/{len(pages)}" for v in KEY)]
     report = "\n".join(lines) + "\n"
     print(report)
     if a.out:
