@@ -1210,11 +1210,12 @@ for the client's own team) is not.
 need a call from them, ask it where the topic lives, not only in a closing question list,
 and let them answer on the page.
 - The panel: the question as its heading and one line of context. Then a *Recommended*
-  marker with our answer and a **Choose** button, a centred **or** between rules, and
-  a labelled textarea for their own answer.
+  marker with our answer and a **Confirm** button (*Confirmed* once pressed; Kaza, wps
+  2026-10-29, replacing *Choose*), a centred **or** between rules, and
+  a textarea for their own answer, labelled *Answer* (not *Your answer*; Kaza, wps 2026-10-29).
 - Picking one hides the other: choosing the recommendation hides the textarea and the
   *or*, and typing in the textarea hides the recommendation and the *or*. Clicking
-  *Chosen* again, or clearing the text, brings both back. Answered, the panel turns
+  *Confirmed* again, or clearing the text, brings both back. Answered, the panel turns
   green. Keep `[hidden]` winning over the panel's own `display` rules
   (`.decision [hidden]{display:none!important}`), or the toggle silently does nothing.
 - It saves through the same Save button and snapshot as approvals. The choice is stored
@@ -1223,7 +1224,7 @@ and let them answer on the page.
   both back, and Save starts as *Saved*. The first answer opens the same short note.
 - Once a decision covers a question, take it out of the Questions list. Asking twice
   invites two different answers.
-- Print shows only the answer given: an unpressed *Choose* is hidden.
+- Print shows only the answer given: an unpressed *Confirm* is hidden.
 - **A yes/no that gates content** (gif's *"Are we moving the store off Klaviyo?"*): Yes
   and No buttons, and everything that only matters on a yes carries
   `data-gate="<panel id>"` and stays hidden until Yes, including a follow-up item in
@@ -1239,10 +1240,13 @@ and let them answer on the page.
   the answer is something only the client has, like an address to notify, there's nothing
   for us to recommend: the panel is the question, its line of context, and a labelled input
   (`type="email"` for an address, with a placeholder in the client's own mail domain). No
-  *Recommended* row, no *Choose*, no *or*. Typing marks it answered, and the snapshot
+  *Recommended* row, no *Confirm*, no *or*. Typing marks it answered, and the snapshot
   writes the input's `value` attribute.
   Keep a Questions list to what the client must answer. Questions we can settle with them
   directly, or that only matter to our build, stay out of the doc.
+  Don't ask who to send it to: a doc meant for someone on their side, such as their
+  developer, gets forwarded by the client (Kaza, wps 2026-10-29). Address that reader in
+  the doc instead.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
