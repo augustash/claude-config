@@ -172,6 +172,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   giving one page a shorter edge TTL, or the edge a longer one than browsers; and why TTL beats tag-purge
 - **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- **Solr rejects every document with "inconsistent index options"** — `vendor/augustash/claude-config/memory/drupal/solr-inconsistent-index-options.md`  
+  an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  

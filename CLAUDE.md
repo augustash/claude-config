@@ -119,6 +119,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush
 - [Edge TTL apart from the browser TTL](memory/drupal/edge-ttl-vs-tag-purge.md) — giving one page a shorter edge TTL, or the edge a longer one than browsers; and why TTL beats tag-purge
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- [Solr rejects every document with "inconsistent index options"](memory/drupal/solr-inconsistent-index-options.md) — an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - [An autocomplete endpoint is a PHP worker per keystroke](memory/drupal/autocomplete-per-keystroke.md) — building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - [On a login-walled site every probe is a full render](memory/drupal/login-wall-scanner-probes.md) — a log sweep finds no 404s on a site behind anonymous_redirect; also before testing a probe block on ddev
