@@ -213,6 +213,14 @@ augustash/ddev-pantheon-db` + `ddev db`), the legacy `PANTHEON_SITE` →
 PHP < 8.2, `settings.local.php` / `wp-config-local.php`, the WP Engine deploy
 hooks, `.gitignore` appends, the browsersync compose file.
 
+**Check the installed package has the `update` mode before you run it.** An old
+copy ignores the argument and runs the bare setup with no prompts, so every
+answer falls back to its default. On tcc (2026-10-29) ddev-wordpress 1.0.14 set
+`name: null`, `project=aai.live` and PHP 8.1, and the only report was that ddev
+restarted on the wrong PHP. If `grep -n update vendor/augustash/ddev-*/src/*.php`
+shows no update path, bump the package or leave the scaffolding alone, and run
+`git diff .ddev/` after any `ddev-setup` call.
+
 It ends with either *"Scaffolding refreshed — run `ddev restart`"* or
 *"Everything up-to-date."* — decided by hashing the managed files before and
 after, so a no-op says so instead of sending you into a pointless restart.
