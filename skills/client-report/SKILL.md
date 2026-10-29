@@ -1177,11 +1177,15 @@ anything with neither (a task for the client's own team) is not.
   `aria-label` names the item.
 - **Answering a choice approves the item it sits in** (Kaza, sal 2026-10-29): the
   parent inherits the yes. sal's client pressed *Please handle it* on LearnDash and
-  WPBakery and sent both back unapproved, which reads as a no; WPBakery had no ? at
-  all, because it had a choice but no Work row. So a choice alone makes its item
-  approvable, and any answer sets the item's `data-approved`. Clearing the answer leaves
-  the approval alone. The same rule runs on load, so a copy saved with an answer and no
-  approval opens approved and *Saved*.
+  WPBakery and sent both back unapproved, which reads as a no. Any answer to a
+  `.decision` sets its item's `data-approved`, on click and on load, so a copy saved
+  with an answer and no approval opens approved and *Saved*.
+  - **Work row plus a choice** (LearnDash): approvable on its own as usual; answering
+    approves it, and clearing the answer leaves the approval alone.
+  - **A choice and no Work row** (WPBakery): approvable *only* through its answer. It
+    still shows the ? (a disabled button, `.derived`, the item itself not clickable),
+    and it is approved exactly while the question is answered. Selecting the parent
+    alone would tell us they want something done but not what, so it isn't offered.
 - The first approval or answer opens a short note (a `<dialog>`, never `alert()`):
   once they've chosen, they press Save and email the doc back. Keep it generic, since
   the same note serves approvals, decisions and anything else the client can press.
