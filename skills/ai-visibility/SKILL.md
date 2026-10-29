@@ -24,7 +24,13 @@ What moves retrieval, roughly in order:
    a maker describing itself. The cited-domains list per segment is the off-site to-do list.
 2. **Crawlability.** Check first: robots.txt, Cloudflare's AI-crawler blocking (on by default
    for new zones since mid-2025), and a fetch of the homepage as OAI-SearchBot, PerplexityBot,
-   ClaudeBot and GPTBot. Nothing else matters if they're blocked.
+   ClaudeBot and GPTBot. Nothing else matters if they're blocked. A faked user agent only
+   proves the origin; Cloudflare identifies real crawlers by network, so read **AI Crawl
+   Control** in the dashboard for what each one is actually allowed. Its "Unsuccessful" count
+   is any non-2xx — mostly 301s and 404s, not blocks — so break it down by status and path
+   (Cloudflare GraphQL `httpRequestsAdaptiveGroups`, token needs Zone Analytics Read) before
+   calling it a block. The 404s are the find: old document URLs that distributors and forums
+   still link, which the crawlers follow to nothing.
 3. **Classic SEO.** Retrieval is a search; authority still counts.
 4. **Machine-readable product truth.** Product/ProductGroup schema with specs, certifications
    (`hasCertification`) and applications, mirrored in visible page text. Datasheets and
@@ -106,7 +112,21 @@ python3 vendor/augustash/claude-config/templates/ai-visibility/run.py run    --d
 python3 vendor/augustash/claude-config/templates/ai-visibility/run.py report --dir docs/seo/ai-visibility
 ```
 
-`--limit 2 --runs 1` for a smoke test. Browser engines: drive the query in firefox-solo, save
+`--limit 2 --runs 1` for a smoke test.
+
+**Crawl check** — has each crawler re-read a changed page yet? Answers lag the change by one
+to four weeks; the crawl that has to come first shows within days:
+
+```
+python3 vendor/augustash/claude-config/templates/ai-visibility/crawl.py --cf .cloudflare \
+  --watch docs/seo/ai-visibility/watch.json --out docs/seo/ai-visibility/reports/crawl-<date>.md
+```
+
+`watch.json` lists `{path, since, note}`; add a row with every changelog entry that touches a
+page. A flat report with ✓s across the row means *crawled, not chosen* — the page is the
+problem. A row of dashes means *not seen yet* — wait, or push it (Bing Webmaster Tools /
+IndexNow, Search Console request indexing). Cloudflare keeps ~8 days, so run it each round.
+Crawlers are matched by user agent; non-Enterprise zones don't expose verified-bot identity. Browser engines: drive the query in firefox-solo, save
 the answer text, then `run.py ingest --engine copilot --query-id t01 --run 1 --text-file f
 --url <cited> ...` so it is scored by the same function as the API rows.
 
@@ -126,3 +146,6 @@ Measure weekly; change at whatever pace the work allows — weekly changes blur 
 
 - 2026-10-28 (DMX): treated `ocrmypdf --skip-text` exiting clean as "already searchable"; four
   manuals had vector-outline body text and gained 8–13× extractable text under `--redo-ocr`.
+- 2026-10-29 (DMX): read AI Crawl Control's "Unsuccessful" share (Bingbot ~40%) as possible
+  blocking. Broken down it was 301s, exploit probes under faked crawler names (403, correct),
+  and ~1,900 404s on old datasheet and manual URLs a week — the real gap, fixed by redirect.
