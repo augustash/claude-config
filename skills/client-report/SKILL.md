@@ -1244,6 +1244,9 @@ and let them answer on the page.
   writes the input's `value` attribute.
   Keep a Questions list to what the client must answer. Questions we can settle with them
   directly, or that only matter to our build, stay out of the doc.
+  Don't ask who to send it to: a doc meant for someone on their side, such as their
+  developer, gets forwarded by the client (Kaza, wps 2026-10-29). Address that reader in
+  the doc instead.
 
 **Severity panels.** A note that grades something (urgency, risk, status) becomes a
 tinted panel of its own, coloured by severity: red for urgent, amber for plan-for-it,
