@@ -12,6 +12,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   how Claude stewards this corpus; read first, it shapes how every other memory is written
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
+- **Data gets the house treatment** — `vendor/augustash/claude-config/memory/preferences/house-data-treatments.md`  
+  before rendering a phone number or email on any site, mock or proposal; settled across projects
 - **Check what already exists before writing code we maintain** — `vendor/augustash/claude-config/memory/preferences/prefer-existing-tooling.md`  
   before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
@@ -172,6 +174,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   giving one page a shorter edge TTL, or the edge a longer one than browsers; and why TTL beats tag-purge
 - **A Solr core keeps documents under an old site hash** — `vendor/augustash/claude-config/memory/drupal/solr-stale-site-hash.md`  
   a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- **Solr rejects every document with "inconsistent index options"** — `vendor/augustash/claude-config/memory/drupal/solr-inconsistent-index-options.md`  
+  an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  

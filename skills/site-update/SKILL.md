@@ -66,6 +66,14 @@ skill later in the round, re-run the update rather than copying again**: a copy 
 lock is rewritten by the Pantheon build, which then fails on modified tracked files (kow
 2026-09-29).
 
+**If the update moved claude-config, reload before going further.** The session read this
+skill and the memory index in `CLAUDE.md` when it started, and the update just changed both on
+disk. What comes back mid-session is a diff, and it arrives truncated, so you keep working
+from last month's text. Invoke `/site-update` again for the current skill, and read
+`vendor/augustash/claude-config/CLAUDE.md` in full for the current index. On tcc
+(2026-10-29) a round worked from the pre-update copy and missed both the launcher deploy
+and its index entry, which the same update had brought in.
+
 The update refreshes every adopted skill, but you are reading this one *now*, so
 a stale copy runs the whole round on stale text. Adoption is manual and
 per-project, and this round needs both skills: this one, and
@@ -212,6 +220,14 @@ augustash/ddev-pantheon-db` + `ddev db`), the legacy `PANTHEON_SITE` →
 `DDEV_PANTHEON_SITE` env rename, the terminus 3 downgrade Dockerfile for
 PHP < 8.2, `settings.local.php` / `wp-config-local.php`, the WP Engine deploy
 hooks, `.gitignore` appends, the browsersync compose file.
+
+**Check the installed package has the `update` mode before you run it.** An old
+copy ignores the argument and runs the bare setup with no prompts, so every
+answer falls back to its default. On tcc (2026-10-29) ddev-wordpress 1.0.14 set
+`name: null`, `project=aai.live` and PHP 8.1, and the only report was that ddev
+restarted on the wrong PHP. If `grep -n update vendor/augustash/ddev-*/src/*.php`
+shows no update path, bump the package or leave the scaffolding alone, and run
+`git diff .ddev/` after any `ddev-setup` call.
 
 It ends with either *"Scaffolding refreshed — run `ddev restart`"* or
 *"Everything up-to-date."* — decided by hashing the managed files before and

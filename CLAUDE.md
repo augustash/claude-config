@@ -12,6 +12,11 @@ directly to these locations.** Prefer them over Claude's local auto-memory
   transcends any single project; ships into every project requiring this package.
 - **Per-project** — `.claude/memory/` in the project repo. Knowledge specific to one codebase.
 
+**This file and the skills change under a running session.** A `composer update` of this
+package mid-session rewrites them on disk, and the change reaches the session as a diff,
+often truncated. Don't work from the diff: re-read the file in full, and re-invoke a skill
+you are following. Otherwise the session keeps acting on the text it loaded at the start.
+
 > **Writing, curating, or auditing a memory? Load the
 > [memory-management](skills/memory-management/SKILL.md) skill first.** It owns the decisions
 > (does this qualify, which tier, is it really a skill), the index-entry form, the
@@ -33,6 +38,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 - [Mission](memory/preferences/mission.md) — how Claude stewards this corpus; read first, it shapes how every other memory is written
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is already handled here before writing in it
+- [Data gets the house treatment](memory/preferences/house-data-treatments.md) — before rendering a phone number or email on any site, mock or proposal; settled across projects
 - [Check what already exists before writing code we maintain](memory/preferences/prefer-existing-tooling.md) — before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - [Memory structure](memory/preferences/memory-structure.md) — topic/specific.md layout and organization rules
 - [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — scripts live in templates/ and are linked by path, never pasted into a note
@@ -119,6 +125,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cache bin that survives drush cr](memory/drupal/persistent-cache-bin.md) — keeping a warm store from being wiped by a full cache flush
 - [Edge TTL apart from the browser TTL](memory/drupal/edge-ttl-vs-tag-purge.md) — giving one page a shorter edge TTL, or the edge a longer one than browsers; and why TTL beats tag-purge
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
+- [Solr rejects every document with "inconsistent index options"](memory/drupal/solr-inconsistent-index-options.md) — an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
 - [An autocomplete endpoint is a PHP worker per keystroke](memory/drupal/autocomplete-per-keystroke.md) — building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - [On a login-walled site every probe is a full render](memory/drupal/login-wall-scanner-probes.md) — a log sweep finds no 404s on a site behind anonymous_redirect; also before testing a probe block on ddev

@@ -455,7 +455,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
   committed and indexed in the project's `MEMORY.md`. It holds:
   - what was updated
   - each held item, with the urgency and action the client was given
-  - what *Next* promised
+  - what *Next* recommended, and whether the client agreed to it. A recommendation is not
+    approval: tcc's 2026.09 summary filed the PHP move under "Promised", and the next round
+    started the move with no client yes behind it
   - the idea (with its quote) and any Horizon pitch
   - what's still awaiting the client
 
@@ -1185,8 +1187,8 @@ earns its place.
 2026-10-19). The colours below are cal's; carry the concept, not the hexes. Approved
 takes the client's strongest affirming colour, Save uses their own attention colour and
 their confirm colour, and the to-do toggles use a clear stop and go pair drawn from the
-palette wherever it allows. Every item carrying a Work row is approvable; anything without one (a task
-for the client's own team) is not.
+palette wherever it allows. Every item carrying a Work row or a choice (`.decision`) is approvable;
+anything with neither (a task for the client's own team) is not.
 - **Approved, the whole item turns one affirming brand colour** (cal: its deep green),
   whatever severity it started as (Kaza): outline, heading, tags, the price, and the divider lines. Set the dividers
   to that colour at full strength, because a 1px line in a tint of it reads as grey.
@@ -1197,6 +1199,24 @@ for the client's own team) is not.
   marks the whole item approved (brand-green outline and tint) and swaps the ? for a
   checkmark; clicking again undoes it. It's a `<button aria-pressed>` whose
   `aria-label` names the item.
+- **Answering a choice approves the item it sits in** (Kaza, sal 2026-10-29): the
+  parent inherits the yes. sal's client pressed *Please handle it* on LearnDash and
+  WPBakery and sent both back unapproved, which reads as a no. Any answer to a
+  `.decision` sets its item's `data-approved`, on click and on load, so a copy saved
+  with an answer and no approval opens approved and *Saved*.
+  - **Work row plus a choice** (LearnDash): approvable on its own as usual; answering
+    approves it, and clearing the answer leaves the approval alone. But approving it
+    makes the choice required (Kaza, sal 2026-10-29): Save refuses while any approved
+    item holds an unanswered `.decision`, reopens its section if collapsed, scrolls it
+    to centre, outlines it in the urgent colour with *"You approved this work. Choose
+    one before saving."* (`role="alert"`), and focuses its first option. Answering, or
+    unapproving the item, clears the mark; the snapshot strips it.
+  - **Unapproving the parent clears its child** (Kaza, sal 2026-10-29): the answer
+    belonged to the work, so deselecting the item deselects its choice too.
+  - **A choice and no Work row** (WPBakery): approvable *only* through its answer. It
+    still shows the ? (a disabled button, `.derived`, the item itself not clickable),
+    and it is approved exactly while the question is answered. Selecting the parent
+    alone would tell us they want something done but not what, so it isn't offered.
 - The first approval or answer opens a short note (a `<dialog>`, never `alert()`):
   once they've chosen, they press Save and email the doc back. Keep it generic, since
   the same note serves approvals, decisions and anything else the client can press.
