@@ -1193,6 +1193,10 @@ anything with neither (a task for the client's own team) is not.
   whatever severity it started as (Kaza): outline, heading, tags, the price, and the divider lines. Set the dividers
   to that colour at full strength, because a 1px line in a tint of it reads as grey.
   An Urgent red item that stayed red once approved looked unapproved.
+- **Unapproved, the item must not wear the approved colour.** A pitch item on a green
+  tint read as already approved, though it was still asking (Kaza, md 2026-10-30). Give
+  an awaiting item an amber tint, tag and **?** (md: `#fff7e0` panel, `#b77d00` tag and
+  glyph), so the only green on the page is work the client said yes to, plus billed work.
 - A large plain **?** in the item's top-right corner, grey, with no circle or border
   behind it (Kaza), `title` "Approve this work". The approved checkmark matches it:
   plain, same size, in the brand green. Keep a ~40px click area around the glyph. Clicking it
