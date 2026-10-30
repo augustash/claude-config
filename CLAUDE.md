@@ -33,6 +33,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 
 - [Mission](memory/preferences/mission.md) — how Claude stewards this corpus; read first, it shapes how every other memory is written
 - [Follow site conventions](memory/preferences/follow-site-conventions.md) — scan how a domain is already handled here before writing in it
+- [Data gets the house treatment](memory/preferences/house-data-treatments.md) — before rendering a phone number or email on any site, mock or proposal; settled across projects
 - [Check what already exists before writing code we maintain](memory/preferences/prefer-existing-tooling.md) — before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - [Memory structure](memory/preferences/memory-structure.md) — topic/specific.md layout and organization rules
 - [Reference scripts, don't embed](memory/preferences/reference-scripts-not-embeds.md) — scripts live in templates/ and are linked by path, never pasted into a note

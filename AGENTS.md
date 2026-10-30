@@ -12,6 +12,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   how Claude stewards this corpus; read first, it shapes how every other memory is written
 - **Follow site conventions** — `vendor/augustash/claude-config/memory/preferences/follow-site-conventions.md`  
   scan how a domain is already handled here before writing in it
+- **Data gets the house treatment** — `vendor/augustash/claude-config/memory/preferences/house-data-treatments.md`  
+  before rendering a phone number or email on any site, mock or proposal; settled across projects
 - **Check what already exists before writing code we maintain** — `vendor/augustash/claude-config/memory/preferences/prefer-existing-tooling.md`  
   before building a cron, queue, cleanup or expiry mechanism; and before reporting a setting as unconfigured
 - **Memory structure** — `vendor/augustash/claude-config/memory/preferences/memory-structure.md`  
