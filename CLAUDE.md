@@ -53,6 +53,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Write client copy in the client's English](memory/preferences/us-spelling-in-client-copy.md) — before writing any copy a visitor or editor reads, or sweeping finished copy before it ships; also a client flagging British spelling
 - [Use scale classes, not arbitrary Tailwind values](memory/preferences/tailwind-no-arbitrary-values.md) — Cyle's rule: no bracket utilities like `text-[2rem]`, snap to the scale
 - [Check mobile on every CSS change](memory/preferences/mobile-breakpoint-check.md) — before calling any CSS done; Neo previews each component at its breakpoints, so look rather than reason
+- [Cap a full-bleed photo at its own width](memory/preferences/hero-image-blurred-backfill.md) — before giving a hero or photo band `background-size:cover`; ultra-wide screens upscale it soft
 - [Tables sidescroll, never restack into records](memory/preferences/table-sidescroll-default.md) — reach for a scroll cue, not a mobile card layout, whenever a table meets a narrow screen
 - [Sidescroll dead zones](memory/preferences/sidescroll-dead-zones.md) — a strip that scrolls over its middle but not its edges, or won't drag; also: never hijack a plain vertical wheel
 - [Comment style](memory/preferences/comments.md) — concise; explain the WHY, skip the obvious
