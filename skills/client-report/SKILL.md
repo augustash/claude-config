@@ -206,6 +206,28 @@ not just what's affordable — and it routinely surfaces assets nobody remembere
 pull it immediately and replace it with the defensible version, even if the wrong
 version was stronger. One bad claim in the room costs the whole document.
 
+**Show the site, don't describe it.** When the doc says something is live on their
+site, put a screenshot there instead of a paragraph about it: the reader believes what
+they can see, and it proves the work exists. Capture logged out, or hide the editor
+tabs and admin toolbar first; crop to the feature; embed as a compressed WebP data URI
+so the file stays self-contained. A description stays only for what has no face, such
+as structured data. Kaza, md 2026-10-30.
+
+**Name the SEO when it's SEO work.** "The data search engines read" leaves the reader
+to work out the benefit. Say *this is SEO work* and what search it wins: the terms
+buyers type, and why the page can now compete for them where it couldn't before.
+Promise the chance to compete, never a ranking. Kaza, md 2026-10-30.
+
+**"Wasn't obvious" is not "wasn't there."** If the fact sat in a downloadable PDF, the
+site *had* it; writing "until now the website didn't" understates their own documents.
+Say what changed: it was there for whoever opened the right file, and now it's on the
+page. The same goes for search: their PDFs may already be indexed, so the gain is the
+structured statement, not the first appearance.
+
+**An ambition is a goal, not a claim.** "The best X site there is" is a direction
+worth writing down, but stated as fact it's the one line the reader can't check. Write
+it as the goal and let the screenshots beside it carry the evidence.
+
 ---
 
 ## 3. Weighting — what earns space, and in what order
