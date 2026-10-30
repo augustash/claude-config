@@ -12,6 +12,11 @@ directly to these locations.** Prefer them over Claude's local auto-memory
   transcends any single project; ships into every project requiring this package.
 - **Per-project** — `.claude/memory/` in the project repo. Knowledge specific to one codebase.
 
+**This file and the skills change under a running session.** A `composer update` of this
+package mid-session rewrites them on disk, and the change reaches the session as a diff,
+often truncated. Don't work from the diff: re-read the file in full, and re-invoke a skill
+you are following. Otherwise the session keeps acting on the text it loaded at the start.
+
 > **Writing, curating, or auditing a memory? Load the
 > [memory-management](skills/memory-management/SKILL.md) skill first.** It owns the decisions
 > (does this qualify, which tier, is it really a skill), the index-entry form, the

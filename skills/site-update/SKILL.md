@@ -66,6 +66,14 @@ skill later in the round, re-run the update rather than copying again**: a copy 
 lock is rewritten by the Pantheon build, which then fails on modified tracked files (kow
 2026-09-29).
 
+**If the update moved claude-config, reload before going further.** The session read this
+skill and the memory index in `CLAUDE.md` when it started, and the update just changed both on
+disk. What comes back mid-session is a diff, and it arrives truncated, so you keep working
+from last month's text. Invoke `/site-update` again for the current skill, and read
+`vendor/augustash/claude-config/CLAUDE.md` in full for the current index. On tcc
+(2026-10-29) a round worked from the pre-update copy and missed both the launcher deploy
+and its index entry, which the same update had brought in.
+
 The update refreshes every adopted skill, but you are reading this one *now*, so
 a stale copy runs the whole round on stale text. Adoption is manual and
 per-project, and this round needs both skills: this one, and
