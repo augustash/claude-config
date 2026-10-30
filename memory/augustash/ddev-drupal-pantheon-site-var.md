@@ -17,6 +17,8 @@ All point at the same value (the Pantheon dashboard slug, used in `terminus drus
 
 **Why the `DDEV_` prefix (current gen):** these track ddev's *stock* `pantheon.yaml` provider, which renamed its vars because the unprefixed names **collide with Pantheon's own server-side env vars** (Pantheon's platform sets `PANTHEON_ENVIRONMENT` to dev/test/live on its containers). ddev namespaced everything under `DDEV_` to kill the collision; augustash followed (ddev-drupal "Update to use new Pantheon variables", 2026-03). The source of truth for the current names is `Ddev::migratePantheonEnv()` in `src/Ddev.php` — not the stock `pantheon.yaml`, which is the upstream ancestor and sits vestigial/unused in projects (pulls go through the augustash `pantheon-db` provider, not stock `pantheon`).
 
+**Pull with `ddev db -f`.** `ddev pull pantheon` hits the vestigial stock provider and fails with "Please make sure you have set PANTHEON_SITE". That reads like a var-migration gap, but the vars are fine. If they really are an old generation, `ddev composer ddev-setup -- -u` migrates them.
+
 **Looks like a migration gap but isn't:** ddev passed through an intermediate env name `PANTHEON_ENVIRONMENT` (the colliding one) before `DDEV_PANTHEON_ENVIRONMENT`. **augustash never shipped `PANTHEON_ENVIRONMENT`** — its lineage went `WORKING_ENVIRONMENT` → `DDEV_PANTHEON_ENVIRONMENT` directly. So `migratePantheonEnv()`'s rename map (`project=`, `PANTHEON_SITE=`, `WORKING_ENVIRONMENT=` → `DDEV_*`) is **exhaustive for augustash configs** even though it omits `PANTHEON_ENVIRONMENT`. Don't "fix" that omission — no augustash project carries that name.
 
 **Producer / consumer split:**

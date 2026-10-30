@@ -34,8 +34,9 @@ Before anything else, look the client up in
 [memory/pom/levels.md](../../memory/pom/levels.md). On **POM** this skill is the whole
 round. On **POM+**, load [pom-plus](../pom-plus/SKILL.md) after Phase 5: it adds a log,
 performance, bot and search pass every round, and an accessibility scan every quarter.
-**AshenRayne sites (`ar-` on Pantheon) have no plans**: run the pom-plus passes every round,
-and keep plan names out of the record.
+**AshenRayne sites have no plans**: run the pom-plus passes every round, and keep plan names
+out of the record. Which sites they are, and what else differs, is in
+[memory/ashenrayne/sites.md](../../memory/ashenrayne/sites.md).
 
 ---
 
@@ -64,6 +65,14 @@ The `cp` is safe only because the update just put the lock on vendor's HEAD. **I
 skill later in the round, re-run the update rather than copying again**: a copy newer than the
 lock is rewritten by the Pantheon build, which then fails on modified tracked files (kow
 2026-09-29).
+
+**If the update moved claude-config, reload before going further.** The session read this
+skill and the memory index in `CLAUDE.md` when it started, and the update just changed both on
+disk. What comes back mid-session is a diff, and it arrives truncated, so you keep working
+from last month's text. Invoke `/site-update` again for the current skill, and read
+`vendor/augustash/claude-config/CLAUDE.md` in full for the current index. On tcc
+(2026-10-29) a round worked from the pre-update copy and missed both the launcher deploy
+and its index entry, which the same update had brought in.
 
 The update refreshes every adopted skill, but you are reading this one *now*, so
 a stale copy runs the whole round on stale text. Adoption is manual and
@@ -211,6 +220,14 @@ augustash/ddev-pantheon-db` + `ddev db`), the legacy `PANTHEON_SITE` →
 `DDEV_PANTHEON_SITE` env rename, the terminus 3 downgrade Dockerfile for
 PHP < 8.2, `settings.local.php` / `wp-config-local.php`, the WP Engine deploy
 hooks, `.gitignore` appends, the browsersync compose file.
+
+**Check the installed package has the `update` mode before you run it.** An old
+copy ignores the argument and runs the bare setup with no prompts, so every
+answer falls back to its default. On tcc (2026-10-29) ddev-wordpress 1.0.14 set
+`name: null`, `project=aai.live` and PHP 8.1, and the only report was that ddev
+restarted on the wrong PHP. If `grep -n update vendor/augustash/ddev-*/src/*.php`
+shows no update path, bump the package or leave the scaffolding alone, and run
+`git diff .ddev/` after any `ddev-setup` call.
 
 It ends with either *"Scaffolding refreshed — run `ddev restart`"* or
 *"Everything up-to-date."* — decided by hashing the managed files before and
@@ -906,6 +923,11 @@ itself. The launcher deploy above does both on each environment, running
 `wc update` only where WooCommerce is active. It stops the chain if either fails to
 print `Success:`, because `terminus wp` can exit 0 silently. First run on Meridian
 Display, 2026-09-28: five WooCommerce migrations on each of dev, test and live.
+After the updates it flushes the object cache (`wp cache flush`) and Pantheon's edge
+(`env:clear-cache`) on each environment, since nothing else does on WordPress (added on
+atr, 2026-10-21). If the launcher prompts *"What project are we building?"*, the site
+name didn't map to a folder (`aaiatrix` lives in `atr`); run it from inside the project
+and it takes the folder you're in.
 
 ## Reporting back
 
