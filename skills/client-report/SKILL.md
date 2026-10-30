@@ -433,7 +433,9 @@ regardless, so "what did you do to our site last month" has a file to point at.
   committed and indexed in the project's `MEMORY.md`. It holds:
   - what was updated
   - each held item, with the urgency and action the client was given
-  - what *Next* promised
+  - what *Next* recommended, and whether the client agreed to it. A recommendation is not
+    approval: tcc's 2026.09 summary filed the PHP move under "Promised", and the next round
+    started the move with no client yes behind it
   - the idea (with its quote) and any Horizon pitch
   - what's still awaiting the client
 
