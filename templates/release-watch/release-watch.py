@@ -170,7 +170,8 @@ def write_status(red):
         live = [c for c in top['clients'] if c['live']]
         more = f' +{len(live) - 1}' if len(live) > 1 else ''
         lead = f'{len(red)} critical · {top["id"]}' if len(red) > 1 else f'{top["id"]} critical'
-        status = f'{BOLD}{RED}⚠ {lead} · {live[0]["name"]}{more}{RESET}'
+        # Double-width, so it reads at twice the size of the text around it.
+        status = f'🚨 {BOLD}{RED}{lead} · {live[0]["name"]}{more}{RESET}'
     (CACHE / 'status').write_text(status)
 
 
