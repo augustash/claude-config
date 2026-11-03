@@ -416,6 +416,13 @@ blocked ones. The page written for atr existed because the client had to *act* o
 a lapsed subscription, but the standing habit is one short record per round
 regardless, so "what did you do to our site last month" has a file to point at.
 
+**Work the client approved from a record doesn't get a record of its own.** The record that
+offered it is its paper trail: the client's approval lives in their returned copy, and the
+work rides to the next round's record only where it changed something they'll see. On sal
+2026-11-03, after the approved LearnDash 5 / PHP 8.3 work shipped, Claude started rewriting
+the October record from plan to done. Kaza: *"We don't need to do a report on this work, this
+is work from a report."* Update the round's memory record instead.
+
 **The HTML is sent; a Markdown summary is kept.**
 
 - **To send:** `.claude/docs/pom/<Client> Website Maintenance - <Month Year>.html` in
