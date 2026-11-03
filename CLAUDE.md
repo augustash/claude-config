@@ -230,6 +230,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [ddev-wordpress WP Engine gate](memory/augustash/ddev-wordpress-wpengine-gate.md) — what it rewrites in wp-config.php and .gitignore on every composer update
 - [WP Engine git deploy](memory/augustash/wpengine-git-deploy.md) — reconcile live plugin drift before deploying or the push reverts it
 - [ddev-setup post-update-cmd wiring](memory/augustash/ddev-setup-post-update-cmd.md) — the hook set via `ddev composer config --json` fails to autoload
+- [Release watch](memory/augustash/release-watch.md) — installing the morning check for critical client releases, or a red ⚠ in your status line
 - [New Relic audit tool](memory/augustash/newrelic-audit-tool.md) — NerdGraph puller + report generator for Pantheon worker-saturation exhibits
 
 #### WordPress

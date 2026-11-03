@@ -387,6 +387,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   reconcile live plugin drift before deploying or the push reverts it
 - **ddev-setup post-update-cmd wiring** — `vendor/augustash/claude-config/memory/augustash/ddev-setup-post-update-cmd.md`  
   the hook set via `ddev composer config --json` fails to autoload
+- **Release watch** — `vendor/augustash/claude-config/memory/augustash/release-watch.md`  
+  installing the morning check for critical client releases, or a red ⚠ in your status line
 - **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
   NerdGraph puller + report generator for Pantheon worker-saturation exhibits
 
