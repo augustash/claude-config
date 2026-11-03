@@ -2,7 +2,7 @@
 name: release-watch
 description: The weekday-morning check for published security advisories reaching a client site, its red status-line alert, and installing it
 metadata:
-  type: project
+  type: reference
 ---
 
 # Release watch: hear about critical releases before the client does

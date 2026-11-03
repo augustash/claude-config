@@ -26,6 +26,8 @@ every round, and never offer them a plan in a record.
 The code is the project's short name, upper-cased (`cal` → CAL). Every other client is on
 POM. When a client moves plans, edit this list; the accessibility tracker
 ([accessibility.json](accessibility.json)) gains or loses their key at the same time.
+Keep the roster one comma-separated line straight under the heading: [release-watch](../augustash/release-watch.md)
+parses it to rank clients, and a wrapped or bulleted list silently drops POM+ from that ranking.
 
 ## AshenRayne sites
 
