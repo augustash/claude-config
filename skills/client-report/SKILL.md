@@ -474,6 +474,18 @@ Evidence, framing, design and components (§1–2, §7) all apply, as does the �
 integrity check. **Ignore §4's ten-section pitch structure**: this is a much
 smaller genre.
 
+**Build from the template, not from another client's record.**
+[templates/client-report/maintenance-record.html](../../templates/client-report/maintenance-record.html)
+holds every component below in working form: the title block, nav and Save, each section,
+severity panels, Work rows and approval, every decision shape, gates, to-dos and the
+snapshot. Its one `:root` block is the brand, and each optional block says when to cut it.
+The POM+ and Health bars are drop-in partials beside it
+([pom-plus-bar.html](../../templates/client-report/pom-plus-bar.html),
+[health-bar.html](../../templates/client-report/health-bar.html)). Past records sit in
+other projects, on one dev's machine, so a variant that lives only in one of them is lost
+to everyone else. When review settles a new variant, add it to the template in the same
+session (Kaza, sisal 2026-11-03).
+
 **The layout:**
 
 1. **Title block** — one band: the client logo on the left, and on the right
@@ -1075,13 +1087,13 @@ whatever the length.
 - A nav click opens its section in the click handler, before the browser's own jump,
   so the anchor lands on content rather than a closed heading. Do the same for a
   `#hash` on load.
-- Cal's October 2026 record is the reference implementation.
+- The template carries this behaviour; build from it.
 
 ### Components
 
 **POM+ lives in its own place: a bar at the foot of the record** (Kaza, metro 2026-10-23,
-"POM is clearly in its own area and POM+ carries some serious punching weight"). Metro's
-October 2026 record is the reference implementation. This replaces a POM+ section in the
+"POM is clearly in its own area and POM+ carries some serious punching weight"). [pom-plus-bar.html](../../templates/client-report/pom-plus-bar.html)
+carries it, extracted from metro's October 2026 record. This replaces a POM+ section in the
 page and POM+ headings in *Next*:
 - **The bar.** A fixed bottom bar: the client code and an italic *POM+* on the left (the plus
   enlarged to the cap height of POM), one tab per pass, and a running total of everything
@@ -1106,7 +1118,8 @@ page and POM+ headings in *Next*:
 
 **AshenRayne records: the Health bar** (Kaza, local49 2026-10-24). The same bar and the same
 passes, carried in AshenRayne's own way. The August Ash bar above doesn't change, and the two
-don't share styling. local49's October 2026 record is the reference implementation.
+don't share styling. [health-bar.html](../../templates/client-report/health-bar.html) carries it, extracted
+from local49's October 2026 record.
 - **The label** is the client code, a beating heart and an italic *Health*. The heart is
   AshenRayne's sign that a site is being looked after (the deploy status line uses it too):
   a double beat about every 1.2s, and still under reduced motion.
@@ -1128,7 +1141,8 @@ don't share styling. local49's October 2026 record is the reference implementati
   page opens on the bar's ground.
 
 **Several sites, one file.** A client with several sites gets one combined record built by
-`templates/client-report/combine.py`: a site bar of client codes across the top (not domains;
+`templates/client-report/combine.py` (⚠ not in this package yet: it was built for metro and
+never committed here, so extract it the next time a combined record is built): a site bar of client codes across the top (not domains;
 a row of *.com*s is noise), each site's own record underneath, and a returned copy splits back
 into each site's record. Each site keeps its own POM+ bar, which follows the site bar.
 
@@ -1256,8 +1270,7 @@ anything with neither (a task for the client's own team) is not.
   the tint to green, and clicking again reverts it. It's stored as `data-done`, counts
   toward Save's unsaved state, and doesn't trigger the approval note.
 - Print shows only the approved checks.
-- Cal's October 2026 record is the reference implementation, tested through a full
-  save-and-reopen round trip.
+- The template carries this, tested through a full save-and-reopen round trip.
 
 **Decisions: a question the client answers in the doc** (Kaza, gif 2026-10-20). When we
 need a call from them, ask it where the topic lives, not only in a closing question list,
@@ -1272,7 +1285,8 @@ and let them answer on the page.
   green. Keep `[hidden]` winning over the panel's own `display` rules
   (`.decision [hidden]{display:none!important}`), or the toggle silently does nothing.
 - It saves through the same Save button and snapshot as approvals. The choice is stored
-  as `data-choice="recommended"`, and the typed answer is written into the textarea's
+  in `data-answer` like every other decision (`recommended`, or `typed` for their own
+  answer), and the typed answer is written into the textarea's
   text in the snapshot, since `.value` never reaches the markup. On load the script reads
   both back, and Save starts as *Saved*. The first answer opens the same short note.
 - Once a decision covers a question, take it out of the Questions list. Asking twice

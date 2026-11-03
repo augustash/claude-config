@@ -1,0 +1,430 @@
+<!--
+  Health bar: a drop-in for maintenance-record.html, for every AshenRayne client. The
+  client-report skill, §7 Components, "AshenRayne records: the Health bar", says why it
+  looks and behaves the way it does; this file is how. It carries the same passes as the
+  August Ash POM+ bar (pom-plus-bar.html), untiered and unnamed: never the word POM. The
+  two bars share behaviour, not styling, and never appear in the same record.
+
+  Three blocks, each pasted once into the record:
+
+    1. STYLE   the <style> below, at the end of <head>, after the record's own <style>.
+    2. MARKUP  the <aside class="hb">, after <footer class="mark"> and before the
+               record's <script>. After the mark, because the live aside is the spacer
+               that keeps the fixed bar off the last thing on the page (placed above it,
+               the bar covers the studio mark). Before the script, because that script
+               finds every approvable .panel, .decision and .todo at load, the bar's too.
+    3. SCRIPT  the <script> below, after the record's <script>, before </body>.
+
+  Then:
+    - Set CODE (the client code, not the domain) in the aria-label, the bar label and
+      each kicker.
+    - One brand colour throughout the doc: set the record's --brand to the client's
+      brand primary itself. Checks, arrows, tags and this bar all take it, never a darker
+      or lighter cousin. --hb-accent is the brand's second colour.
+    - Replace the placeholder --hb-tile with the client's own mark: trace it with
+      templates/client-report/trace-logo-mark.py (isolates the mark from the largest
+      raster on the site; potrace turns it into a path), then tile it diagonally, small
+      and faint. Keep the traced mark and tile in the project's .claude/docs/pom/brand/
+      for the next round.
+    - Work rows state the price alone ("$400"): no hours, no rate, no plan chip.
+    - Swap the studio mark for Ashen Rayne's (memory/preferences/doc-studio-mark.md).
+
+  The bar adds no approval logic of its own. Its items are ordinary .panel / .decision /
+  .todo markup that the record's script makes approvable; the bar reads the same
+  data-approved state for its Selected total and Save's summary, and hears about changes
+  through the record's document events (record:change, record:save, record:snapshot,
+  record:reveal).
+
+  Client copy without the bar: delete the <aside class="hb"> and nothing else. The style
+  and script go inert without it; Save then writes straight away, as on any record.
+
+  Self-contained: nothing here loads from the network.
+-->
+
+<!-- ===================== 1. STYLE: end of <head> ===================== -->
+<style>
+/* Health: a bar at the foot of the page, on the client's brand primary so it's noticed.
+   Opening a pass slides the whole bar up, so the pass fills the screen on that ground,
+   tiled with the client's own mark. White lettering and translucent white panels; a
+   choice turns solid white with the approval green, so it stands out on the colour. */
+.hb{
+  --hb-ground:var(--brand);  /* BRAND: the brand primary itself */
+  --hb-accent:var(--deep);   /* BRAND: the brand's second colour (tags, kickers, the total) */
+  /* PLACEHOLDER: replace with the client's traced mark (see the header). local49's sizing:
+     a 60 × 35 tile with the mark 21.7px wide, twice on a diagonal, 8% white, so three rows
+     show in the closed bar. */
+  --hb-tile:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='35' viewBox='0 0 60 35'%3E%3Cdefs%3E%3Cpath id='m' d='M0 7a10.85 7 0 1 0 21.7 0a10.85 7 0 1 0-21.7 0z'/%3E%3C/defs%3E%3Cg fill='%23fff' fill-opacity='.08'%3E%3Cuse href='%23m' transform='translate(4.15 1.73)'/%3E%3Cuse href='%23m' transform='translate(34.15 19.23)'/%3E%3C/g%3E%3C/svg%3E");
+  --hb-ink:#fff;
+  --hb-muted:rgba(255,255,255,.86);
+  --hb-line:rgba(255,255,255,.32);
+  --hb-panel:rgba(255,255,255,.13);
+  margin-top:48px;
+}
+.hb-shell{background-color:var(--hb-ground);background-image:var(--hb-tile);background-size:60px 35px;color:var(--hb-ink);
+  box-shadow:inset 0 0 18px 2px rgba(0,0,0,.16),inset 22px 0 22px -14px rgba(0,0,0,.18),inset -22px 0 22px -14px rgba(0,0,0,.18)}
+
+/* Without script (and in a saved copy before it runs) the passes read in order on the ground. */
+.hb-bar,.hb-close,.hb-total{display:none}
+.hb-pass{max-width:1080px;margin:0 auto;padding:28px var(--page-pad) 8px}
+.hb-pass [id]{scroll-margin-top:16px}
+.hb-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.hb-head h2{display:block;margin:0;font-size:26px;color:#fff}
+.hb-head h2::before{display:none}
+.hb-kicker{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--hb-accent);margin-bottom:2px}
+.hb-kicker i{text-transform:none;letter-spacing:.02em;font-size:13px}
+.hb-body > p{color:var(--hb-ink)}
+.hb-pass a{color:#fff}
+.hb-sub{margin:30px 0 4px;font-size:19px;color:#fff}
+.hb-note{color:var(--hb-muted);font-size:15px;margin-bottom:10px}
+
+/* The label: client code, a beating heart, an italic Health. */
+.hb-label{flex:none;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#fff}
+.hb-label i{font-weight:800;font-size:16px;letter-spacing:.01em}
+/* AshenRayne's sign that a site is being looked after: a double beat about every 1.2s. */
+.heart{width:17px;height:17px;flex:none;color:#fff;transform-origin:50% 55%;animation:hb-beat 1.2s ease-in-out infinite}
+@keyframes hb-beat{0%,40%,100%{transform:scale(1)}10%{transform:scale(1.2)}20%{transform:scale(1.02)}30%{transform:scale(1.14)}}
+@media (prefers-reduced-motion:reduce){.heart{animation:none}}
+.hb-bar ul{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.hb-bar ul::-webkit-scrollbar{display:none}
+.hb-tab{padding:7px 14px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font:600 14px/1.3 var(--sans);white-space:nowrap;cursor:pointer}
+.hb-tab:hover{background:rgba(255,255,255,.28)}
+.hb-tab[aria-expanded="true"]{background:#fff;color:var(--hb-ground)}
+.hb-close svg{width:20px;height:20px}
+/* The record's amber focus ring disappears on some brand grounds; white never does. */
+.hb-shell :focus-visible{outline-color:#fff}
+
+/* The record's components on the brand ground. Scoped to .hb-pass so the summary dialog
+   (light, in the top layer) keeps the record's own colours. */
+.hb-pass .panel{--u:var(--hb-accent);background:var(--hb-panel);box-shadow:inset 0 0 0 1px var(--hb-line)}
+.hb-pass .panel.urgent{box-shadow:inset 0 0 0 2px #fff}
+.hb-pass .panel.urgent .tag{background:#fff;color:var(--urgent)}
+.hb-pass .panel h3{color:#fff}
+.hb-pass .panel p{color:var(--hb-ink)}
+.hb-pass .marker{border-top-color:var(--hb-line)}
+.hb-pass .tag{background:var(--hb-accent);color:#fff}
+.hb-pass .marker .price{color:#fff}
+.hb-pass .approve{color:rgba(255,255,255,.7)}
+.hb-pass .approve:hover:not(:disabled){color:#fff}
+/* Chosen: solid white with the approval green. */
+.hb-pass .approvable.approved{--u:var(--approve);background:#fff;box-shadow:inset 0 0 0 3px var(--approve)}
+.hb-pass .approvable.approved h3,.hb-pass .approvable.approved .price,.hb-pass .approvable.approved .approve{color:var(--approve)}
+.hb-pass .approvable.approved p{color:var(--ink)}
+.hb-pass .approvable.approved .tag{background:var(--approve);color:#fff}
+.hb-pass .approvable.approved .marker{border-top-color:var(--approve)}
+.hb-pass .decision{background:var(--hb-panel);box-shadow:inset 0 0 0 1px var(--hb-line)}
+.hb-pass .decision h4{color:#fff}
+.hb-pass .decision .context,.hb-pass .decision label,.hb-pass .decision .or{color:var(--hb-muted)}
+.hb-pass .decision .or::before,.hb-pass .decision .or::after{border-top-color:var(--hb-line)}
+.hb-pass .choice{background:transparent;border-color:rgba(255,255,255,.75);color:#fff}
+.hb-pass .decision[data-answer]{background:#fff;box-shadow:inset 0 0 0 3px var(--approve)}
+.hb-pass .decision[data-answer] h4{color:var(--approve)}
+.hb-pass .decision[data-answer] .context,.hb-pass .decision[data-answer] label{color:var(--muted)}
+.hb-pass .decision[data-answer] .choice{border-color:var(--rule);color:var(--ink)}
+.hb-pass .choice[aria-pressed="true"],.hb-pass .decision[data-answer] .choice[aria-pressed="true"]{background:var(--approve);border-color:var(--approve);color:#fff}
+.hb-pass .decision.missing{background:#fff;box-shadow:inset 0 0 0 3px var(--urgent)}
+.hb-pass .decision.missing h4{color:var(--ink)}
+.hb-pass .decision.missing .choice{border-color:var(--rule);color:var(--ink)}
+.hb-pass .todo{background:var(--hb-panel);box-shadow:inset 0 0 0 1px var(--hb-line);color:var(--hb-ink)}
+.hb-pass .todo a{color:#fff}
+.hb-pass .todo.is-done{background:#fff;box-shadow:inset 0 0 0 3px var(--approve);color:var(--ink)}
+.hb-pass .todo.is-done a{color:var(--approve)}
+.hb-pass .done{color:#fff}
+.hb-pass .done[aria-pressed="true"]{color:var(--approve)}
+.hb-pass .xref a{background:#fff;color:var(--hb-ground)}
+.hb-pass .xref a:hover{background:var(--hb-accent);color:#fff}
+
+/* Live: the aside keeps the bar's room at the foot of the page; the shell is fixed and
+   slides between a strip at the bottom and the full screen. --bar-h is measured. */
+.hb.live{margin:0;height:72px}
+.hb.live .hb-shell{position:fixed;left:0;right:0;top:var(--site-bar-h,0px);bottom:0;z-index:20;display:flex;flex-direction:column;
+  transform:translateY(calc(100% - var(--bar-h,58px)));transition:transform .38s cubic-bezier(.2,.7,.2,1)}
+.hb.live.is-open .hb-shell{transform:none}
+.hb.live .hb-bar{display:flex;flex:none;align-items:center;gap:18px;padding:10px var(--page-pad)}
+.hb.live.is-open .hb-bar{border-bottom:1px solid var(--hb-line)}
+.hb.live .hb-pass{display:none;flex:1;min-height:0;max-width:none;margin:0;padding:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+.hb.live .hb-pass.open{display:block}
+.hb.live .hb-head{max-width:1080px;margin:0 auto;padding:26px var(--page-pad) 12px}
+.hb.live .hb-body{max-width:1080px;margin:0 auto;padding:0 var(--page-pad) 40px}
+.hb.live .hb-close{display:grid;place-items:center;flex:none;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;cursor:pointer}
+.hb.live .hb-close:hover{background:rgba(255,255,255,.32)}
+.hb.live.no-slide .hb-shell{transition:none}
+@media (prefers-reduced-motion:reduce){.hb.live .hb-shell{transition:none}}
+/* Running total, right end of the bar: visible open or closed. */
+.hb.live .hb-total{display:flex;align-items:baseline;gap:8px;margin-left:auto;flex:none;padding-left:12px;white-space:nowrap;font-size:13px;color:var(--hb-muted)}
+.hb-total b{font-family:var(--mono);font-size:16px;color:#fff;padding:2px 10px;border-radius:999px;transition:background .3s}
+.hb-total.has b{background:var(--hb-accent)}
+
+/* Save's summary: light, like the record's note. Colours set outright, since a dialog
+   still inherits from the coloured shell it sits in. */
+dialog.summary{width:min(34rem,calc(100vw - 32px));border:0;border-radius:12px;padding:26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.25);background:#fff;color:var(--ink);font:16px/1.5 var(--sans)}
+dialog.summary::backdrop{background:rgba(0,0,0,.4)}
+dialog.summary h3{margin:0 0 14px;color:var(--deep);font-size:20px}
+.summary-list h4{margin:14px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.summary-list ul{list-style:none;margin:0;padding:0}
+.summary-list li{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.summary-list li span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--deep)}
+.summary-list li span.text{font-family:var(--sans);white-space:normal;text-align:right}
+.summary-empty{color:var(--muted)}
+.summary-total{display:flex;justify-content:space-between;margin:14px 0 6px;font-weight:800;color:var(--deep)}
+.summary-total span:last-child{font-family:var(--mono)}
+.summary-send{margin:10px 0 18px}
+.summary-actions{display:flex;gap:10px;flex-wrap:wrap}
+.summary-actions button{padding:8px 20px;border-radius:999px;font:700 15px/1.4 var(--sans);cursor:pointer}
+.summary-save{border:0;background:var(--brand);color:#fff}
+.summary-back{border:2px solid var(--rule);background:#fff;color:var(--deep)}
+
+@media (max-width:720px){
+  .hb.live .hb-bar{gap:10px;padding-inline:12px}
+  .hb-label .word,.hb-total-label{display:none}
+  .hb-tab{padding:6px 11px;font-size:13px}
+  .hb-pass .todos{grid-template-columns:1fr}
+}
+@media print{
+  .hb-bar,.hb-close{display:none!important}
+  .hb.live{height:auto}
+  .hb-shell,.hb.live .hb-shell{position:static;transform:none;background:#fff;color:var(--ink);box-shadow:none}
+  .hb.live .hb-pass{display:block!important;overflow:visible}
+  .hb-pass .panel,.hb-pass .decision,.hb-pass .todo{background:#fff;box-shadow:inset 0 0 0 1px var(--rule)}
+  .hb-pass .panel h3,.hb-head h2,.hb-sub,.hb-pass .decision h4,.hb-pass .marker .price{color:var(--deep)}
+  .hb-pass .panel p,.hb-body > p,.hb-pass .todo{color:var(--ink)}
+}
+</style>
+
+<!-- ===================== 2. MARKUP: after footer.mark, before the record's <script> ===================== -->
+<!-- CODE: the client code (e.g. ACME), in the aria-label, the bar label and each kicker. -->
+<aside class="hb" aria-label="CODE Health">
+<div class="hb-shell">
+  <div class="hb-bar">
+    <span class="hb-label"><span class="word">CODE</span> <svg class="heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.8 8.1 3 4 6.9 4c2.2 0 3.9 1.2 5.1 3 1.2-1.8 2.9-3 5.1-3 3.9 0 6.1 4.1 4.5 7.7C19.5 16.4 12 21 12 21z"/></svg><i>Health</i></span>
+    <!-- One tab per pass the round ran, in this order. Cut a pass and its tab together. -->
+    <ul>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-access">Access log</button></li>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-errors">Error log</button></li>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-performance">Performance</button></li>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-bots">Bot protection</button></li>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-search">Search</button></li>
+      <li><button type="button" class="hb-tab" aria-expanded="false" aria-controls="hb-a11y">Accessibility</button></li>
+    </ul>
+    <!-- Everything selected in the record, bar or not. The script fills it. -->
+    <span class="hb-total" aria-live="polite"><span class="hb-total-label">Selected</span> <b>$0</b></span>
+  </div>
+
+  <!-- A pass: the problem in one plain sentence, then a short line that turns it to action
+       (vary it pass to pass), then its Work items, questions, then the team's own tasks. -->
+  <section class="hb-pass" id="hb-access" aria-labelledby="hb-access-h">
+    <header class="hb-head"><h2 id="hb-access-h"><span class="hb-kicker">CODE · <i>Health</i></span>Access log</h2><button type="button" class="hb-close" aria-label="Close Access log"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>What the pass found, in one plain sentence about what visitors meet. Let's fix that first.</p>
+      <div class="items">
+        <!-- A finding and the Work that acts on it, together. The price alone. -->
+        <div class="panel urgent" id="hb-example-urgent">
+          <h3>An urgent fix, named by its outcome</h3>
+          <p>What is happening, with one measured figure and when it happens.</p>
+          <p>What we'll change, and what stays the same for the client.</p>
+          <div class="marker"><span class="tag">Urgent</span><p>What it costs visitors while it lasts.</p></div>
+          <div class="marker"><span class="tag">Work</span><p><span class="price">$400</span></p></div>
+        </div>
+        <div class="panel" id="hb-example-work">
+          <h3>A smaller fix the log turned up</h3>
+          <p>What is wrong and where, in their terms.</p>
+          <div class="marker"><span class="tag">Work</span><p><span class="price">$200</span></p></div>
+        </div>
+      </div>
+      <!-- The client's own tasks: a done-toggle list, at the end of the pass. -->
+      <h3 class="hb-sub">For your team</h3>
+      <p class="hb-note">Recommendations to check.</p>
+      <ul class="todos">
+        <li class="todo">Confirm whether a recurring scan in the log is one your organization runs.</li>
+        <li class="todo">Check the second item on your side.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="hb-pass" id="hb-errors" aria-labelledby="hb-errors-h">
+    <header class="hb-head"><h2 id="hb-errors-h"><span class="hb-kicker">CODE · <i>Health</i></span>Error log</h2><button type="button" class="hb-close" aria-label="Close Error log"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>One real error stands out, and it needs a call from you. That's a quick fix once you've chosen.</p>
+      <div class="items">
+        <!-- Work plus a choice: the record's script requires the answer once it's approved. -->
+        <div class="panel" id="hb-example-choice">
+          <h3>Fix a form that ends on an error page</h3>
+          <p>What fails, since when, and who it reaches.</p>
+          <div class="decision" id="hb-decide-example">
+            <h4>The question, as a question?</h4>
+            <div class="choices"><button type="button" class="choice" data-value="a">First option</button><button type="button" class="choice" data-value="b">Second option</button></div>
+          </div>
+          <div class="marker"><span class="tag">Work</span><p><span class="price">$400</span></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A pass with nothing to act on is a paragraph: what was checked and what was done. -->
+  <section class="hb-pass" id="hb-performance" aria-labelledby="hb-performance-h">
+    <header class="hb-head"><h2 id="hb-performance-h"><span class="hb-kicker">CODE · <i>Health</i></span>Performance</h2><button type="button" class="hb-close" aria-label="Close Performance"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>What the pass measured, and what changed in the round, in a clause.</p>
+    </div>
+  </section>
+
+  <section class="hb-pass" id="hb-bots" aria-labelledby="hb-bots-h">
+    <header class="hb-head"><h2 id="hb-bots-h"><span class="hb-kicker">CODE · <i>Health</i></span>Bot protection</h2><button type="button" class="hb-close" aria-label="Close Bot protection"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>What reached the site, what was stopped, and what still gets through.</p>
+    </div>
+  </section>
+
+  <section class="hb-pass" id="hb-search" aria-labelledby="hb-search-h">
+    <header class="hb-head"><h2 id="hb-search-h"><span class="hb-kicker">CODE · <i>Health</i></span>Search</h2><button type="button" class="hb-close" aria-label="Close Search"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>What visitors searched for and whether they found it.</p>
+      <!-- A link back into the record closes the bar and opens that section. -->
+      <p class="xref"><a href="#ideas">See the idea</a></p>
+    </div>
+  </section>
+
+  <!-- Accessibility follows accessibility-compliance §7: what was tested, what already works,
+       and the whole path to the requirement (the criteria, the goal bar, and a dialog.rules
+       requirements page that opens on the bar's ground). Those parts are not in this partial. -->
+  <section class="hb-pass" id="hb-a11y" aria-labelledby="hb-a11y-h">
+    <header class="hb-head"><h2 id="hb-a11y-h"><span class="hb-kicker">CODE · <i>Health</i></span>Accessibility</h2><button type="button" class="hb-close" aria-label="Close Accessibility"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="hb-body">
+      <p>What was tested, and what already works.</p>
+    </div>
+  </section>
+</div>
+<!-- Save's summary. Inside the aside so dropping the bar drops it too; as a modal it opens
+     in the top layer, clear of the shell. -->
+<dialog class="summary" aria-labelledby="summary-title">
+  <h3 id="summary-title">Here's what you've chosen</h3>
+  <div class="summary-list"></div>
+  <p class="summary-send">Send us the saved document and we'll get it done.</p>
+  <div class="summary-actions"><button type="button" class="summary-save">Save</button><button type="button" class="summary-back">Keep reviewing</button></div>
+</dialog>
+</aside>
+
+<!-- ===================== 3. SCRIPT: after the record's <script> ===================== -->
+<script>
+/* Health bar: one pass open at a time, as a sheet over the record. Approval state belongs
+   to the record's script; this reads data-approved for the total and the summary. */
+(function(){
+  var bar=document.querySelector('aside.hb');if(!bar)return;
+  var GROUP='Health'; // the summary's heading for work chosen in the bar
+  var strip=bar.querySelector('.hb-bar'),tabs=[].slice.call(bar.querySelectorAll('.hb-tab'));
+  var motion=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)'),hideT;
+  bar.classList.add('live');
+  function setBarH(){bar.style.setProperty('--bar-h',strip.getBoundingClientRect().height+'px');}
+  setBarH();window.addEventListener('resize',setBarH);
+
+  function passOf(t){return document.getElementById(t.getAttribute('aria-controls'));}
+  function tabOf(p){return tabs.filter(function(t){return passOf(t)===p})[0];}
+  function openTab(){return tabs.filter(function(t){return t.getAttribute('aria-expanded')==='true'})[0];}
+  // Closing slides the bar down first; the pass stays painted until it's out of sight.
+  function closeAll(){
+    tabs.forEach(function(t){t.setAttribute('aria-expanded','false')});
+    bar.classList.remove('is-open');clearTimeout(hideT);
+    hideT=setTimeout(function(){
+      if(!bar.classList.contains('is-open'))[].forEach.call(bar.querySelectorAll('.hb-pass.open'),function(p){p.classList.remove('open')});
+    },motion&&motion.matches?0:400);
+  }
+  function openPass(tab,focusClose){
+    clearTimeout(hideT);
+    tabs.forEach(function(t){t.setAttribute('aria-expanded',t===tab?'true':'false');var p=passOf(t);if(p)p.classList.toggle('open',t===tab);});
+    if(tab.scrollIntoView)tab.scrollIntoView({block:'nearest',inline:'nearest'});
+    bar.classList.add('is-open');
+    var p=passOf(tab);if(p){p.scrollTop=0;if(focusClose!==false){var c=p.querySelector('.hb-close');if(c)c.focus({preventScroll:true});}}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){if(t.getAttribute('aria-expanded')==='true')closeAll();else openPass(t);})});
+  [].forEach.call(bar.querySelectorAll('.hb-close'),function(c){c.addEventListener('click',function(){
+    var t=tabOf(c.closest('.hb-pass'));closeAll();if(t)t.focus();
+  })});
+  // Escape closes the sheet and returns focus to its tab; an open dialog takes it first.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape'||document.querySelector('dialog[open]'))return;
+    var t=openTab();if(t){closeAll();t.focus();}
+  });
+  // A link to something in a pass opens that pass and scrolls to it; a link from the bar
+  // out to the record closes the sheet. Capture phase, ahead of the record's own handler,
+  // which still flashes the target.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');if(!a)return;
+    var t=document.getElementById(a.getAttribute('href').slice(1));if(!t)return;
+    var p=t.closest('.hb-pass');
+    if(p){
+      e.preventDefault();var was=bar.classList.contains('is-open');openPass(tabOf(p),false);
+      setTimeout(function(){t.scrollIntoView({block:'start',behavior:motion&&motion.matches?'auto':'smooth'})},was?0:420);
+    }else if(bar.contains(a))closeAll();
+  },true);
+  // Save found an unanswered choice in a pass: open it before the record scrolls there.
+  bar.addEventListener('record:reveal',function(e){var p=e.target.closest('.hb-pass');if(p&&!p.classList.contains('open'))openPass(tabOf(p),false);});
+
+  // ---- What's selected, read from the record's own data-approved state.
+  function hasWork(el){return [].some.call(el.querySelectorAll('.marker .tag'),function(t){return t.textContent.trim()==='Work'});}
+  function priceOf(el){var m=((el.querySelector('.marker .price')||{}).textContent||'').match(/\$[\d,]+/g);return m?+m[m.length-1].slice(1).replace(/,/g,''):0;}
+  function titleOf(el){return ((el.querySelector('h3')||{}).textContent||'').trim();}
+  function money(n){return '$'+n.toLocaleString('en-US');}
+  // Billed work is already paid for, so it never counts toward what's being chosen.
+  function chosen(){return [].filter.call(document.querySelectorAll('.panel[data-approved="true"],.idea[data-approved="true"]'),function(el){return hasWork(el)&&!el.querySelector('.marker.billed')});}
+  var total=bar.querySelector('.hb-total');
+  function updateTotal(){
+    var sum=chosen().reduce(function(s,el){return s+priceOf(el)},0);
+    total.querySelector('b').textContent=money(sum);total.classList.toggle('has',sum>0);
+  }
+  document.addEventListener('record:change',updateTotal);updateTotal();
+
+  // ---- Save shows a summary first, then the record writes the file.
+  var dlg=bar.querySelector('dialog.summary'),write;
+  // A to-do's own words, without the record's done button.
+  function textOf(li){return [].filter.call(li.childNodes,function(n){return !(n.classList&&n.classList.contains('done'))}).map(function(n){return n.textContent}).join('');}
+  function clip(s){s=s.replace(/\s+/g,' ').trim();return s.length>90?s.slice(0,88)+'…':s;}
+  function answerOf(d){
+    var a=d.getAttribute('data-answer');
+    if(a==='typed'){var f=d.querySelector('.answer');return f?f.value:'';}
+    var b=[].filter.call(d.querySelectorAll('.choice'),function(c){return c.getAttribute('data-value')===a})[0];
+    if(!b)return a;if(b.classList.contains('confirm'))return 'Recommended';
+    return (b.textContent.trim()||b.getAttribute('aria-label')||a);
+  }
+  function questionOf(d){
+    var h=d.querySelector('h4');if(h)return h.textContent;
+    var p=d.closest('.panel,.idea'),t=p&&p.querySelector('h3');if(t)return t.textContent;
+    return (d.parentNode.textContent||'');
+  }
+  function row(ul,label,value,text){
+    var li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');
+    a.textContent=label;b.textContent=value;if(text)b.className='text';li.appendChild(a);li.appendChild(b);ul.appendChild(li);
+  }
+  function fill(){
+    var list=dlg.querySelector('.summary-list'),items=chosen(),sum=0;list.textContent='';
+    var groups=[
+      [GROUP,items.filter(function(el){return bar.contains(el)}).map(function(el){var p=priceOf(el);sum+=p;return [titleOf(el),money(p)]})],
+      ['Work',items.filter(function(el){return !bar.contains(el)}).map(function(el){var p=priceOf(el);sum+=p;return [titleOf(el),money(p)]})],
+      ['Answers',[].filter.call(document.querySelectorAll('.decision[data-answer]'),function(d){return answerOf(d).trim()}).map(function(d){return [clip(questionOf(d)),clip(answerOf(d)),1]})],
+      ['Done by your team',[].map.call(document.querySelectorAll('.todo[data-done="true"]'),function(li){return [clip(textOf(li)),'Done',1]})]
+    ];
+    groups.forEach(function(g){
+      if(!g[1].length)return;
+      var h=document.createElement('h4');h.textContent=g[0];var ul=document.createElement('ul');
+      g[1].forEach(function(r){row(ul,r[0],r[1],r[2])});list.appendChild(h);list.appendChild(ul);
+    });
+    if(!list.childNodes.length){var e=document.createElement('p');e.className='summary-empty';e.textContent='Nothing selected. Your choices are saved with the document.';list.appendChild(e);}
+    if(items.length){var t=document.createElement('p');t.className='summary-total';t.innerHTML='<span>Total</span><span></span>';t.lastChild.textContent=money(sum);list.appendChild(t);}
+  }
+  document.addEventListener('record:save',function(e){
+    if(!dlg||!dlg.showModal)return;
+    e.preventDefault();write=e.detail.write;fill();dlg.showModal();dlg.querySelector('.summary-save').focus();
+  });
+  dlg.querySelector('.summary-back').addEventListener('click',function(){dlg.close()});
+  // The file picker needs this click, so the write starts inside it.
+  dlg.querySelector('.summary-save').addEventListener('click',function(){dlg.close();if(write)write();});
+
+  // ---- The saved copy ships closed, unmeasured and at $0; the script rebuilds the rest.
+  document.addEventListener('record:snapshot',function(e){
+    var r=e.detail.root.querySelector('aside.hb');if(!r)return;
+    r.classList.remove('live','is-open','no-slide');r.removeAttribute('style');
+    [].forEach.call(r.querySelectorAll('.hb-tab'),function(n){n.setAttribute('aria-expanded','false')});
+    [].forEach.call(r.querySelectorAll('.hb-pass.open'),function(n){n.classList.remove('open')});
+    var b=r.querySelector('.hb-total');if(b){b.classList.remove('has');b.querySelector('b').textContent='$0';}
+    var l=r.querySelector('.summary-list');if(l)l.textContent='';
+  });
+})();
+</script>
