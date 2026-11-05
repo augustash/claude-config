@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example Client Website Maintenance - Month Year</title>
+<!--
+  Maintenance record template. The client-report skill (§6, §7) says why each part
+  looks and behaves the way it does; this file is how. Build a record by copying it:
+
+    1. Set the brand block in :root from the client's theme variables file.
+    2. Inline the client logo (fill="currentColor" on the brand parts).
+    3. Re-derive the heading bullet (h2::before) from the client's logo.
+    4. Fill or delete each block marked OPTIONAL. Delete its nav item with it.
+    5. Every <section> needs a matching nav <a href="#id">.
+
+  Everything approvable, answerable or tickable is found by the script from its
+  markup, so a record with none of it ships no Save button. Nothing here loads from
+  the network: keep it that way (skill §8, integrity check).
+
+  POM+ clients take pom-plus-bar.html, AshenRayne clients health-bar.html (skill §7,
+  Components); each partial's header says where its three blocks go. The script
+  below speaks to them through four document events: record:change, record:save,
+  record:snapshot and record:reveal. A record without a bar ignores them.
+-->
+<style>
+:root{
+  /* BRAND: from the client's theme, never from memory or the logo file. */
+  --ink:#2b2b2b;          /* body text */
+  --muted:#636363;        /* labels, captions, glosses */
+  --deep:#1f3b47;         /* headings, values, the darkest brand tone */
+  --brand:#2f7d8c;        /* accents: arrows, checks, tags, links */
+  --brand-soft:#e3eef0;   /* active nav pill */
+  --ground:#f5f3ef;       /* quiet panels (the security note) */
+  --focus:#e0a040;        /* focus rings and the cross-reference flash */
+  --approve:#1f6b4f;      /* approved work: the client's strongest affirming colour */
+  --attention:#f2b705;    /* unsaved Save: the client's own yellow where they have one */
+  --urgent:#b3261e;       /* severity: urgent */
+  --plan:#a36a00;         /* severity: plan for it */
+  --good:#3d7a4a;         /* severity: good */
+  --client:#8a5a1f;       /* the client's own tasks */
+  --rule:#d8d8d8;
+  --bg:#fff;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  /* Heading bullet: its width plus gap is the indent everything steps in by. */
+  --bm:18px; --bm-gap:14px;
+  --indent:calc(var(--bm) + var(--bm-gap));
+  --panel-pad:24px 28px; --panel-radius:10px;
+  --page-pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+.sheet{max-width:1080px;margin:0 auto;padding:0 var(--page-pad)}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:3px}
+p{max-width:46em;margin:0 0 1em}
+[hidden]{display:none!important}
+
+/* Title block: logo left; Project / Sheet / Round on the right. */
+.title{display:flex;align-items:center;gap:40px;flex-wrap:wrap;padding:56px 0 40px;border-bottom:1px solid var(--rule)}
+.title .logo{color:var(--deep);width:220px;flex:none}
+.title .logo svg{display:block;width:100%;height:auto}
+.meta{display:flex;margin-left:auto}
+.meta div{padding:0 28px;border-left:1px solid var(--rule)}
+.meta div:first-child{border-left:0;padding-left:0}
+.meta div:last-child{padding-right:0}
+.label{display:block;font-size:13px;font-weight:600;letter-spacing:.06em;font-variant:all-small-caps;color:var(--muted);line-height:1.3}
+.val{display:block;font-weight:700;font-size:17px;color:var(--deep)}
+.val.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.meta .action .val{color:var(--urgent)}
+
+/* Sticky nav. The hairline appears only once stuck (sentinel observer). */
+.sentinel{height:1px}
+.nav{position:sticky;top:0;z-index:5;background:var(--bg);transition:box-shadow .2s}
+.nav.stuck{box-shadow:0 1px 0 var(--rule)}
+.nav ul{list-style:none;margin:0 auto;padding:12px var(--page-pad);max-width:1080px;display:flex;justify-content:center;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;position:relative}
+/* The row still scrolls on a phone; Firefox would draw a bar under it. */
+.nav ul::-webkit-scrollbar{display:none}
+.nav a{display:block;padding:6px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:15px;white-space:nowrap}
+.nav a.active{background:var(--brand-soft);color:var(--deep)}
+/* Save sits at the right edge while the section links stay centred. */
+.save-li{position:absolute;right:var(--page-pad);top:50%;transform:translateY(-50%)}
+.save{padding:6px 16px;border:0;border-radius:999px;font:700 14px/1.4 var(--sans);cursor:pointer;background:var(--approve);color:#fff}
+.save.dirty{background:var(--attention);color:#2b2200}
+
+/* Sections. The space above a heading never changes, so toggling never moves it. */
+section{padding:28px 0 0;scroll-margin-top:8px}
+section:has(> h2 .toggle[aria-expanded="true"]){padding-bottom:32px}
+.sec-body{margin-left:calc(var(--indent) * 1.5)}
+h2{display:flex;align-items:center;gap:var(--bm-gap);margin:0 0 18px;font-size:26px;line-height:1.2;font-weight:800;letter-spacing:-.01em;color:var(--deep)}
+/* BRAND: re-derive this shape from the client's logo (skill §7, small marks). */
+h2::before{content:"";flex:none;width:var(--bm);height:var(--bm);border-radius:50%;background:var(--b,var(--brand))}
+h2 .toggle{all:unset;display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit;border-radius:4px}
+h2 .toggle:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.chev{width:22px;height:22px;flex:none;color:var(--muted);transition:transform .2s ease}
+.toggle[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.toggle:hover .chev{color:var(--deep)}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+/* A description line hugs its heading, and stays visible when the section closes. */
+section > .desc{margin:-16px 0 18px var(--indent);color:var(--muted);font-size:15px;line-height:1.3;max-width:46em}
+.sec-body [id]{scroll-margin-top:76px}
+
+/* Updated: the version table. */
+.tablewrap{margin-right:var(--indent);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:16px}
+thead th{text-align:left;font-size:13px;font-weight:600;letter-spacing:.06em;font-variant:all-small-caps;color:var(--muted);padding:0 12px 10px;border-bottom:1px solid var(--rule)}
+thead th:first-child,tbody td:first-child{padding-left:0}
+tbody td{padding:14px 12px;border-bottom:1px solid #ecebe8;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+td .name{font-weight:700;color:var(--ink)}
+td .gloss{display:block;color:var(--muted);font-size:15px;line-height:1.4}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+td.num.from{color:var(--muted)}
+td.num.to::before{content:"→ ";color:var(--brand)}
+.caption{margin:14px var(--indent) 0 0;color:var(--muted);font-size:15px}
+.secure{margin-top:22px;max-width:46em;padding:var(--panel-pad);border-radius:var(--panel-radius);background:var(--ground);border-left:4px solid var(--deep)}
+.secure p:last-child{margin-bottom:0}
+
+/* Checked: a two-column checklist. */
+.checks{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 40px}
+.checks li{position:relative;padding-left:30px}
+.checks li::before{content:"";position:absolute;left:2px;top:.42em;width:12px;height:7px;border-left:3px solid var(--brand);border-bottom:3px solid var(--brand);transform:rotate(-45deg)}
+
+/* Panels: one --u per kind drives fill, ink and tag. */
+.items{display:grid;gap:18px}
+.panel{--u:var(--brand);position:relative;padding:var(--panel-pad);border-radius:var(--panel-radius);background:color-mix(in srgb,var(--u) 9%,#fff);max-width:56em}
+.panel.urgent{--u:var(--urgent)}
+.panel.plan{--u:var(--plan)}
+.panel.good{--u:var(--good)}
+.panel.client{--u:var(--client)}
+.panel h3{margin:0 0 10px;font-size:20px;line-height:1.3;color:color-mix(in srgb,var(--u) 72%,#000)}
+.panel h3 .ver{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--muted);margin-left:8px}
+.panel p{margin:0 0 .8em}
+.panel > p:last-of-type{margin-bottom:0}
+
+/* Markers: a tag in a fixed column, copy hanging beside it. */
+.marker{display:grid;grid-template-columns:84px 1fr;align-items:baseline;gap:0 4px;margin-top:18px;padding-top:16px;border-top:1px solid color-mix(in srgb,var(--u) 25%,#fff)}
+.marker + .marker{margin-top:10px;padding-top:10px}
+.marker.solo{grid-template-columns:auto 1fr;gap:0 12px} /* a lone marker sizes to its tag */
+.marker p{margin:0}
+.tag{justify-self:start;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--u);color:#fff;white-space:nowrap}
+.marker .price{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:color-mix(in srgb,var(--u) 72%,#000)}
+.marker .go{display:block;margin-top:4px;font-weight:700}
+.marker .go::after{content:" →"}
+/* Billed work: always green, a tinted row, no rule. */
+.marker.billed{--u:var(--good);border-top:0;padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--good) 12%,transparent)}
+
+/* Next: groups, each heading over its own items. */
+.next-group + .next-group{margin-top:43px}
+h3.subh{margin:0 0 14px;font-size:19px;line-height:1.3;color:var(--deep)}
+.next-group > .items{margin-left:calc(var(--indent) / 2)}
+
+/* Ideas */
+.idea{--u:var(--brand);position:relative;padding:28px 30px;border-radius:var(--panel-radius);background:color-mix(in srgb,var(--brand) 7%,#fff)}
+.idea + .idea{margin-top:18px}
+.idea h3{margin:0 0 12px;font-size:21px;line-height:1.25;color:var(--deep)}
+
+/* Fix button: a follow-up link on its own line, never inside a sentence. */
+.xref{margin:12px 0 0!important;text-align:right;max-width:none}
+.xref a{display:inline-block;padding:6px 18px;border-radius:999px;background:var(--brand);color:#fff;font-weight:700;font-size:15px;text-decoration:none;line-height:1.4}
+.xref a:hover{background:var(--deep)}
+@keyframes xref-flash{0%,35%{outline-color:var(--focus)}100%{outline-color:transparent}}
+.flash{outline:4px solid transparent;outline-offset:10px;border-radius:var(--panel-radius);animation:xref-flash 1.6s ease-out 1}
+@media (prefers-reduced-motion:reduce){.flash{animation:none;outline-color:var(--focus)}}
+
+/* Approving work. The script adds .approvable and the ? button. */
+.approvable{cursor:pointer}
+.approvable.derived{cursor:auto}
+.approvable > h3{padding-right:48px}
+.approve{position:absolute;top:14px;right:14px;width:40px;height:40px;border:0;border-radius:8px;background:none;color:#9aa0a3;font:800 34px/1 var(--sans);cursor:pointer;display:grid;place-items:center;padding:0}
+.approve:hover:not(:disabled){color:var(--deep)}
+.approve:disabled{cursor:auto}
+.approve svg{width:30px;height:30px}
+.approve .check{display:none}
+.approve[aria-pressed="true"] .q{display:none}
+.approve[aria-pressed="true"] .check{display:block}
+/* Approved: the whole item takes the approve colour, whatever it started as. */
+.approvable.approved{--u:var(--approve);box-shadow:inset 0 0 0 3px var(--approve);background:color-mix(in srgb,var(--approve) 12%,#fff)}
+.approvable.approved h3{color:var(--approve)}
+.approvable.approved .marker{border-top-color:var(--approve)}
+.approvable.approved .approve{color:var(--approve)}
+
+/* Decisions. One element, state in data-answer; the script wires every shape. */
+.decision{display:block;margin-top:16px;padding:16px 18px;border-radius:8px;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px var(--rule)}
+.decision[data-answer]{box-shadow:inset 0 0 0 2px var(--approve);background:color-mix(in srgb,var(--approve) 8%,#fff)}
+.decision h4{margin:0 0 4px;font-size:17px;color:var(--deep)}
+.decision .context{margin:0 0 12px;color:var(--muted);font-size:15px}
+.decision .or{display:flex;align-items:center;gap:12px;margin:12px 0;color:var(--muted);font-size:14px}
+.decision .or::before,.decision .or::after{content:"";flex:1;border-top:1px solid var(--rule)}
+.decision label{display:block;font-size:13px;font-weight:600;letter-spacing:.06em;font-variant:all-small-caps;color:var(--muted)}
+.decision textarea,.decision input{width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--rule);border-radius:6px;font:inherit;font-size:16px;background:#fff}
+.decision textarea{min-height:5em;resize:vertical}
+.choice{padding:6px 16px;border:2px solid var(--brand);border-radius:999px;background:#fff;color:var(--brand);font:700 14px/1.4 var(--sans);cursor:pointer}
+.choice[aria-pressed="true"]{background:var(--approve);border-color:var(--approve);color:#fff}
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+/* The plain yes/no: a check and an X after the sentence. */
+.yn{display:inline-flex;gap:6px;vertical-align:middle;margin-left:8px}
+.yn .choice{width:32px;height:32px;padding:0;display:inline-grid;place-items:center;border-radius:50%}
+.yn .choice svg{width:16px;height:16px}
+.yn .choice.no{border-color:var(--urgent);color:var(--urgent)}
+.yn .choice.no[aria-pressed="true"]{background:var(--urgent);color:#fff}
+.yn.decision{padding:0;margin:0;background:none;box-shadow:none}
+.decision.missing{box-shadow:inset 0 0 0 2px var(--urgent);background:color-mix(in srgb,var(--urgent) 8%,#fff)}
+.decision .need{display:block;margin-bottom:10px;color:var(--urgent);font-weight:700}
+
+/* The client's own tasks: a red x until done, then a check on green. */
+.todos{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.todo{position:relative;padding:12px 40px 12px 14px;border-radius:8px;background:color-mix(in srgb,var(--urgent) 12%,#fff);cursor:pointer;font-size:15px;line-height:1.45}
+.todo.is-done{background:color-mix(in srgb,var(--good) 18%,#fff);color:var(--muted)}
+.done{position:absolute;top:6px;right:6px;width:28px;height:28px;border:0;padding:0;border-radius:6px;background:none;color:var(--urgent);cursor:pointer;display:grid;place-items:center}
+.done .x{font:400 22px/1 var(--sans)}
+.done svg{width:18px;height:18px;display:none}
+.done[aria-pressed="true"]{color:var(--good)}
+.done[aria-pressed="true"] .x{display:none}
+.done[aria-pressed="true"] svg{display:block}
+
+/* The note after the first choice. */
+dialog.note{max-width:30rem;border:0;border-radius:12px;padding:26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.25);color:var(--ink)}
+dialog.note::backdrop{background:rgba(0,0,0,.35)}
+dialog.note h3{margin:0 0 10px;color:var(--deep);font-size:20px}
+dialog.note p{margin:0 0 18px}
+dialog.note button{padding:8px 20px;border:0;border-radius:999px;background:var(--brand);color:#fff;font:700 15px/1.4 var(--sans);cursor:pointer}
+
+/* Send-off line and studio mark. */
+.sendoff{text-align:center;font-weight:800;font-size:20px;color:var(--deep);margin:56px auto 0;max-width:none}
+.mark{display:flex;justify-content:center;padding-block:64px}
+.mark svg{width:56px;height:auto}
+
+@media (max-width:720px){
+  body{font-size:16px}
+  .title{gap:24px;padding-top:36px}
+  .meta{margin-left:0;width:100%}
+  .meta div{padding:0 10px}
+  .val{font-size:14px;letter-spacing:-.01em}
+  .sec-body{margin-left:12px;font-size:15px}
+  section > .desc{margin-left:0}
+  .next-group > .items{margin-left:0}
+  .nav ul{justify-content:flex-start}
+  .save-li{position:static;transform:none;margin-left:auto;padding-left:8px}
+  .tablewrap,.caption{margin-right:0}
+  tbody td{padding:12px 6px}
+  thead th{padding:0 6px 10px}
+  td.num{font-size:13px}
+  td.num.to::before{content:"→"}
+  td .gloss{font-size:14px}
+  .checks,.todos{grid-template-columns:1fr}
+  .panel,.idea{padding:22px 20px}
+  h2{font-size:23px}
+}
+@media print{
+  .nav,.sentinel,.save,.chev,.approve:not([aria-pressed="true"]),.done{display:none!important}
+  .sec-body[hidden],[data-gate][hidden]{display:block!important}
+  .decision:not([data-answer]) .confirm,.decision[data-answer] .or{display:none}
+  body{font-size:12pt}
+  section{break-inside:avoid}
+  .panel,.idea,.secure{background:#fff;border:1px solid var(--rule)}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="title">
+    <!-- BRAND: inline the client's logo SVG here; aria-label names the client. -->
+    <div class="logo" role="img" aria-label="Example Client"><svg viewBox="0 0 220 48" aria-hidden="true" focusable="false"><text x="0" y="36" font-family="system-ui" font-size="34" font-weight="800" fill="currentColor">Example</text></svg></div>
+    <div class="meta">
+      <div><span class="label">Project</span><span class="val">example.com</span></div>
+      <div><span class="label">Sheet</span><span class="val">Maintenance</span></div>
+      <div><span class="label">Round</span><span class="val mono">2026.11</span></div>
+      <!-- OPTIONAL: only when something is on the client and not already in motion.
+      <div class="action"><span class="label">Action required</span><span class="val">Renew the licence</span></div> -->
+    </div>
+  </header>
+</div>
+<div class="sentinel" aria-hidden="true"></div>
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="#updated">Updated</a></li>
+    <li><a href="#held">Held</a></li>
+    <li><a href="#checked">Checked</a></li>
+    <li><a href="#next">Next</a></li>
+    <li><a href="#ideas">Ideas</a></li>
+    <li class="save-li"><button type="button" class="save">Saved</button></li>
+  </ul>
+</nav>
+<main class="sheet">
+
+  <section id="updated">
+    <h2><button type="button" class="toggle" aria-expanded="true" aria-controls="updated-body"><span>Updated</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+    <div class="sec-body" id="updated-body">
+      <!-- The ten or so components a non-developer recognises, each with a plain gloss. -->
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Component</th><th>From</th><th>To</th></tr></thead>
+          <tbody>
+            <tr><td><span class="name">Core</span><span class="gloss">The platform the whole site runs on</span></td><td class="num from">11.4.7</td><td class="num to">11.4.11</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">Plus 40 supporting libraries.</p>
+      <!-- OPTIONAL: when the round closed published advisories. -->
+      <div class="secure"><p>The updates closed 12 published security advisories, two of them rated critical.</p></div>
+    </div>
+  </section>
+
+  <!-- OPTIONAL: only when something was held. Cut heading and nav item otherwise. -->
+  <section id="held">
+    <h2><button type="button" class="toggle" aria-expanded="true" aria-controls="held-body"><span>Held</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+    <div class="sec-body" id="held-body">
+      <div class="items">
+        <!-- Urgent: graded from a vulnerability database against the held version. Ends in an Action only when the client has something to do. -->
+        <div class="panel urgent">
+          <h3>Forms plugin<span class="ver">1.8.1 → 1.9.5</span></h3>
+          <p>Why it was held, in the client's terms.</p>
+          <div class="marker"><span class="tag">Urgent</span><p>The version on the site carries a flaw that is being exploited.</p></div>
+          <div class="marker"><span class="tag">Action</span><p>Renew the licence so the update can install.<a class="go" href="https://example.com/renew">Renew the licence</a></p></div>
+        </div>
+        <!-- Good: no known issue. A lone marker sizes its tag column with .solo. -->
+        <div class="panel good">
+          <h3>Mapping module<span class="ver">3.15 → 4.1</span></h3>
+          <p>Why it was held.</p>
+          <div class="marker solo"><span class="tag">Good</span><p>No known security issues in the version the site runs.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="checked">
+    <h2><button type="button" class="toggle" aria-expanded="true" aria-controls="checked-body"><span>Checked</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+    <div class="sec-body" id="checked-body">
+      <!-- In their vocabulary: what a visitor or editor does, not a URL and a status code. -->
+      <ul class="checks">
+        <li>Home page</li>
+        <li>Scheduled background tasks run to completion</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- OPTIONAL: only when something is coming that the client needs to know about. -->
+  <section id="next">
+    <h2><button type="button" class="toggle" aria-expanded="true" aria-controls="next-body"><span>Next</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+    <div class="sec-body" id="next-body">
+      <!-- Ordinary round work first, Urgent first. A plain .items list needs no group;
+           use .next-group + h3.subh when work falls under named headings. -->
+      <div class="items">
+        <!-- A Work row makes the item approvable. Price from memory/pricing/hourly-rate.json;
+             AshenRayne docs state the price alone. -->
+        <div class="panel" id="next-example">
+          <h3>An item of work we'd do</h3>
+          <p>What it fixes for the client, in their terms.</p>
+          <div class="marker"><span class="tag">Work</span><p><span class="price">Approximately 1 hr @ $200 = $200</span></p></div>
+        </div>
+        <!-- Work plus a choice. Answering approves the item; approving makes the choice
+             required before Save. Unapproving clears the answer. -->
+        <div class="panel">
+          <h3>Work that needs a call from the client</h3>
+          <p>Context.</p>
+          <div class="decision" id="decide-example">
+            <h4>The question, as a question?</h4>
+            <p class="context">One line of context.</p>
+            <div class="rec"><div class="marker solo"><span class="tag">Recommended</span><p>Our answer.</p></div>
+              <p class="choices" style="margin:10px 0 0"><button type="button" class="choice confirm" data-value="recommended">Confirm</button></p></div>
+            <div class="or">or</div>
+            <div class="typed"><label for="decide-example-answer">Answer</label><textarea id="decide-example-answer" class="answer"></textarea></div>
+          </div>
+          <div class="marker"><span class="tag">Work</span><p><span class="price">Approximately 2 hrs @ $200 = $400</span></p></div>
+        </div>
+        <!-- A choice and no Work row: approvable only through its answer (the ? is disabled). -->
+        <div class="panel">
+          <h3>A choice with nothing to price</h3>
+          <div class="decision" id="decide-who">
+            <div class="choices"><button type="button" class="choice" data-value="us">Please handle it</button><button type="button" class="choice" data-value="team">Our team will</button></div>
+          </div>
+        </div>
+        <!-- A yes/no that gates content: anything with data-gate="<decision id>" stays hidden
+             until the answer is yes (or data-gate-value). -->
+        <div class="panel">
+          <h3>A question that opens more of the doc</h3>
+          <div class="decision" id="decide-move">
+            <div class="choices"><button type="button" class="choice" data-value="yes">Yes</button><button type="button" class="choice" data-value="no">No</button></div>
+            <p data-gate="decide-move" data-gate-value="no" style="margin:10px 0 0">Our one-line answer to a no.</p>
+          </div>
+        </div>
+        <div class="panel" data-gate="decide-move"><h3>Only shown on a yes</h3><p>Follow-up work.</p></div>
+        <!-- A plain yes/no in a sentence: a check and an X. -->
+        <div class="panel">
+          <p>Should we remove the old page?<span class="decision yn" id="decide-remove"><button type="button" class="choice yes" data-value="yes" aria-label="Yes, remove it"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="choice no" data-value="no" aria-label="No, keep it"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button></span></p>
+        </div>
+        <!-- A question that asks for a fact: the field alone. -->
+        <div class="panel">
+          <div class="decision fact" id="decide-email">
+            <h4>Who should hear about new orders?</h4>
+            <p class="context">One line of context.</p>
+            <label for="decide-email-answer">Email</label><input type="email" id="decide-email-answer" class="answer" placeholder="name@example.com">
+          </div>
+        </div>
+        <!-- The client's own tasks: not approvable, but tickable. -->
+        <div class="panel client">
+          <h3>A list for your team to work through</h3>
+          <p>Recommendations to check.</p>
+          <ul class="todos">
+            <li class="todo"><a href="https://example.com/node/1/edit">First item</a></li>
+            <li class="todo">Second item</li>
+          </ul>
+          <div class="marker solo"><span class="tag">Action</span><p>Your team's review.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ideas">
+    <h2><button type="button" class="toggle" aria-expanded="true" aria-controls="ideas-body"><span>Ideas</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+    <!-- An invitation to improve something for their visitors together. -->
+    <p class="desc">Let's help visitors find what they came for.</p>
+    <div class="sec-body" id="ideas-body">
+      <!-- Three paragraphs: the problem with a number and one visitor; the change; the offer as a Work row. -->
+      <div class="idea" id="idea-example">
+        <h3>A title that names the outcome</h3>
+        <p>The problem, in their terms.</p>
+        <p>The change, who it serves, and what makes it cheap.</p>
+        <div class="marker"><span class="tag">Work</span><p><span class="price">Approximately 2 hrs @ $200 = $400</span></p></div>
+      </div>
+      <!-- A finding elsewhere links here with a Fix button:
+      <p class="xref"><a href="#idea-example" aria-label="Fix: A title that names the outcome">Fix</a></p> -->
+    </div>
+  </section>
+
+  <!-- OPTIONAL: one short send-off line, only when a Horizon has opened the door. -->
+</main>
+<dialog class="note" aria-labelledby="note-title">
+  <h3 id="note-title">Your choices are marked</h3>
+  <p>When you've finished, press <strong>Save</strong> in the bar at the top, then email the saved document back.</p>
+  <form method="dialog"><button>Got it</button></form>
+</dialog>
+<!-- Studio mark: August Ash below (templates/brand/august-ash-mark.svg). For Ashen Rayne
+     see memory/preferences/doc-studio-mark.md. -->
+<footer class="mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46.49 32.98" role="img" aria-label="August Ash"><path fill="#1898c1" d="M0,33H16.84a6.57,6.57,0,0,1,6.4-5.11V0Z"/><path fill="#36b8e3" d="M46.49,33H29.65a6.57,6.57,0,0,0-6.4-5.11V0Z"/></svg></footer>
+<script>
+/* Sections and nav: one section open at a time, the first (or the #hash) on load.
+   The markup ships open so the doc reads in full without script. */
+(function(){
+  var nav=document.querySelector('.nav'),sentinel=document.querySelector('.sentinel');
+  var toggles=[].slice.call(document.querySelectorAll('h2 .toggle'));
+  function setOpen(btn,open){
+    btn.setAttribute('aria-expanded',open);
+    document.getElementById(btn.getAttribute('aria-controls')).hidden=!open;
+    if(!open){var l=document.querySelector('.nav a[href="#'+btn.closest('section').id+'"]');if(l)l.classList.remove('active');}
+  }
+  function openOnly(btn){toggles.forEach(function(t){setOpen(t,t===btn)});}
+  toggles.forEach(function(b){b.addEventListener('click',function(){
+    var y=b.getBoundingClientRect().top;
+    if(b.getAttribute('aria-expanded')==='true')setOpen(b,false);else openOnly(b);
+    // Hold the clicked heading still when a section above it closes.
+    window.scrollBy(0,b.getBoundingClientRect().top-y);
+  })});
+  function sectionToggleOf(id){var t=document.getElementById(id);var sec=t&&(t.tagName==='SECTION'?t:t.closest('section'));return sec&&sec.querySelector('h2 .toggle');}
+  // Any in-page link opens the section holding its target before the browser's jump,
+  // and a target that isn't a whole section flashes once it lands.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');if(!a)return;
+    var id=a.getAttribute('href').slice(1),b=sectionToggleOf(id);
+    if(b&&b.getAttribute('aria-expanded')!=='true')openOnly(b);
+    var t=document.getElementById(id);if(!t||t.tagName==='SECTION')return;
+    t.classList.remove('flash');var done=false;
+    function go(){if(done)return;done=true;t.classList.add('flash');t.addEventListener('animationend',function(){t.classList.remove('flash')},{once:true});}
+    if('onscrollend' in window)window.addEventListener('scrollend',go,{once:true});
+    setTimeout(go,900);
+  });
+  if(toggles.length)openOnly((location.hash&&sectionToggleOf(location.hash.slice(1)))||toggles[0]);
+  if(!('IntersectionObserver' in window))return;
+  new IntersectionObserver(function(e){nav.classList.toggle('stuck',!e[0].isIntersecting)}).observe(sentinel);
+  var links={};document.querySelectorAll('.nav a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    var t=e.target.querySelector('h2 .toggle');
+    if(e.isIntersecting&&t&&t.getAttribute('aria-expanded')==='true'){Object.values(links).forEach(function(a){a.classList.remove('active')});if(links[e.target.id])links[e.target.id].classList.add('active');}
+  })},{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('main section').forEach(function(sec){io.observe(sec)});
+})();
+
+/* Approvals, decisions and to-dos. All state lives in the markup (data-approved,
+   data-answer, data-done, typed text), so a saved copy reopens as the client left it. */
+(function(){
+  var save=document.querySelector('.save'),note=document.querySelector('dialog.note');
+  function hasWork(el){return [].some.call(el.querySelectorAll('.marker .tag'),function(t){return t.textContent.trim()==='Work'});}
+  var items=[].slice.call(document.querySelectorAll('.panel,.idea')).filter(function(el){return hasWork(el)||el.querySelector('.decision:not(.fact):not(.yn)');});
+  var decisions=[].slice.call(document.querySelectorAll('.decision'));
+  var todos=[].slice.call(document.querySelectorAll('.todo'));
+  // Nothing to answer: no Save at all.
+  if(!items.length&&!decisions.length&&!todos.length){save.closest('li').hidden=true;return;}
+  var GLYPH='<span class="q" aria-hidden="true">?</span><svg class="check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function field(d){return d.querySelector('.answer');}
+  function state(){
+    return items.map(function(el){return el.getAttribute('data-approved')==='true'?'1':'0'}).join('')+'|'+
+      decisions.map(function(d){var f=field(d);return (d.getAttribute('data-answer')||'')+':'+(f?f.value:'')}).join(',')+'|'+
+      todos.map(function(el){return el.getAttribute('data-done')==='true'?'1':'0'}).join('');
+  }
+  var saved,noted=false;
+  function showNote(){if(!noted&&note&&note.showModal){noted=true;note.showModal();}}
+  // record:change tells a partial (the POM+ or Health bar) that some choice moved.
+  function refresh(){var dirty=state()!==saved;save.classList.toggle('dirty',dirty);save.textContent=dirty?'Save':'Saved';document.dispatchEvent(new CustomEvent('record:change'));}
+  function unmark(d){d.classList.remove('missing');var n=d.querySelector('.need');if(n)n.remove();}
+
+  // Gates: content shown only for one answer of one decision (default "yes").
+  function syncGates(){
+    [].forEach.call(document.querySelectorAll('[data-gate]'),function(g){
+      var d=document.getElementById(g.getAttribute('data-gate'));
+      g.hidden=!d||d.getAttribute('data-answer')!==(g.getAttribute('data-gate-value')||'yes');
+    });
+  }
+
+  decisions.forEach(function(d){
+    var btns=[].slice.call(d.querySelectorAll('.choice')),f=field(d);
+    var rec=d.querySelector('.rec'),or=d.querySelector('.or'),typed=d.querySelector('.typed');
+    function sync(){
+      var a=d.getAttribute('data-answer');
+      btns.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-value')===a)});
+      // Recommended vs. their own answer: picking one hides the other.
+      if(rec&&typed){rec.hidden=a==='typed';typed.hidden=a==='recommended';if(or)or.hidden=!!a;}
+      btns.forEach(function(b){if(b.classList.contains('confirm'))b.textContent=a==='recommended'?'Confirmed':'Confirm';});
+      syncGates();
+    }
+    function changed(){unmark(d);var p=d.closest('.approvable');if(p)p.dispatchEvent(new Event('answerchange'));sync();refresh();}
+    btns.forEach(function(b){b.addEventListener('click',function(){
+      var v=b.getAttribute('data-value');
+      if(d.getAttribute('data-answer')===v)d.removeAttribute('data-answer');else{d.setAttribute('data-answer',v);showNote();}
+      changed();
+    })});
+    if(f){
+      // The snapshot writes typed text into the markup; read it back on load.
+      if(f.tagName==='TEXTAREA'&&!f.value&&f.textContent)f.value=f.textContent;
+      f.addEventListener('input',function(){
+        if(f.value.trim()){if(!d.hasAttribute('data-answer'))showNote();d.setAttribute('data-answer','typed');}
+        else if(d.getAttribute('data-answer')==='typed')d.removeAttribute('data-answer');
+        changed();
+      });
+    }
+    d.addEventListener('answersync',sync);
+    sync();
+  });
+
+  items.forEach(function(el){
+    // With no Work row the item has nothing of its own to approve; its answer approves it.
+    var derived=!hasWork(el);
+    el.classList.add('approvable');el.classList.toggle('derived',derived);
+    var title=((el.querySelector('h3')||{}).textContent||'this work').trim();
+    var b=document.createElement('button');b.type='button';b.className='approve';b.innerHTML=GLYPH;b.disabled=derived;
+    function answered(){return !!el.querySelector('.decision[data-answer]');}
+    function inherit(){if(answered())el.setAttribute('data-approved','true');else if(derived)el.removeAttribute('data-approved');}
+    function sync(){
+      var on=el.getAttribute('data-approved')==='true';
+      el.classList.toggle('approved',on);b.setAttribute('aria-pressed',on);
+      var tip=derived?(on?'Approved by your answer':'Answer the question to approve'):(on?'Approved. Click to undo.':'Approve this work');
+      b.title=tip;b.setAttribute('aria-label',tip+': '+title);
+    }
+    b.addEventListener('click',function(){
+      var on=el.getAttribute('data-approved')!=='true';
+      if(on)el.setAttribute('data-approved','true');else{
+        // Unapproving clears the item's choice too: the answer belonged to the work.
+        el.removeAttribute('data-approved');
+        [].forEach.call(el.querySelectorAll('.decision'),function(d){d.removeAttribute('data-answer');var f=field(d);if(f)f.value='';unmark(d);d.dispatchEvent(new Event('answersync'));});
+      }
+      sync();refresh();if(on)showNote();
+    });
+    el.addEventListener('answerchange',function(){inherit();sync();});
+    inherit();el.insertBefore(b,el.firstChild);sync();
+    if(derived)return;
+    // The whole item approves, except controls, links and a click that ends a selection.
+    el.addEventListener('click',function(e){
+      if(e.target.closest('a,button,input,textarea,select,label,.decision,.todo'))return;
+      if(window.getSelection&&String(window.getSelection()))return;
+      b.click();
+    });
+  });
+
+  var XC='<span class="x" aria-hidden="true">×</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  todos.forEach(function(li){
+    var label=((li.querySelector('a')||li).textContent||'').trim();
+    var b=document.createElement('button');b.type='button';b.className='done';b.innerHTML=XC;
+    function sync(){var on=li.getAttribute('data-done')==='true';li.classList.toggle('is-done',on);b.setAttribute('aria-pressed',on);var tip=on?'Done. Click to undo.':'Mark as done';b.title=tip;b.setAttribute('aria-label',tip+': '+label);}
+    b.addEventListener('click',function(){if(li.getAttribute('data-done')==='true')li.removeAttribute('data-done');else li.setAttribute('data-done','true');sync();refresh();});
+    li.appendChild(b);sync();
+    li.addEventListener('click',function(e){if(e.target.closest('a,button'))return;if(window.getSelection&&String(window.getSelection()))return;b.click();});
+  });
+
+  saved=state();refresh();
+
+  // Approved work needs its choice answered, or we'd know to act but not how.
+  function missing(){return decisions.filter(function(d){var p=d.closest('.approvable');return !d.hasAttribute('data-answer')&&p&&!p.classList.contains('derived')&&p.getAttribute('data-approved')==='true';});}
+
+  // The saved copy is reset to how the page ships, with the choices baked in.
+  function snapshot(){
+    var root=document.documentElement.cloneNode(true);
+    [].forEach.call(root.querySelectorAll('.approve,.done,.decision .need'),function(n){n.remove()});
+    [].forEach.call(root.querySelectorAll('.decision.missing'),function(n){n.classList.remove('missing')});
+    [].forEach.call(root.querySelectorAll('.approvable'),function(n){n.classList.remove('approvable','approved','derived','flash');if(!n.className)n.removeAttribute('class');});
+    [].forEach.call(root.querySelectorAll('.todo'),function(n){n.classList.remove('is-done')});
+    // Typed answers live in .value, which never reaches the markup.
+    decisions.forEach(function(d){var f=field(d);if(!f)return;var c=root.querySelector('#'+CSS.escape(f.id));if(!c)return;if(c.tagName==='TEXTAREA')c.textContent=f.value;else c.setAttribute('value',f.value);});
+    [].forEach.call(root.querySelectorAll('[hidden]'),function(n){if(!n.classList.contains('save-li'))n.hidden=false});
+    [].forEach.call(root.querySelectorAll('h2 .toggle'),function(n){n.setAttribute('aria-expanded','true')});
+    [].forEach.call(root.querySelectorAll('.nav a.active'),function(n){n.classList.remove('active')});
+    var n=root.querySelector('.nav');if(n)n.classList.remove('stuck');
+    var s=root.querySelector('.save');if(s){s.classList.remove('dirty');s.textContent='Saved';}
+    [].forEach.call(root.querySelectorAll('dialog'),function(n){n.removeAttribute('open')});
+    // A partial resets its own script-added state in the copy.
+    document.dispatchEvent(new CustomEvent('record:snapshot',{detail:{root:root}}));
+    return '<!DOCTYPE html>\n'+root.outerHTML;
+  }
+  var name=decodeURIComponent(location.pathname.split('/').pop()||'Maintenance record.html');
+  save.addEventListener('click',function(){
+    if(!save.classList.contains('dirty'))return;
+    var open=missing();
+    if(open.length){
+      open.forEach(function(d){
+        if(d.classList.contains('missing'))return;
+        d.classList.add('missing');
+        var n=document.createElement('span');n.className='need';n.setAttribute('role','alert');
+        n.textContent='You approved this work. Choose one before saving.';
+        d.insertBefore(n,d.firstChild);
+      });
+      var body=open[0].closest('.sec-body');
+      if(body&&body.hidden){var t=document.querySelector('[aria-controls="'+body.id+'"]');if(t)t.click();}
+      // Bubbles, so a bar can open the pass that holds it first.
+      open[0].dispatchEvent(new CustomEvent('record:reveal',{bubbles:true}));
+      open[0].scrollIntoView({block:'center'});
+      var first=open[0].querySelector('.choice,.answer');if(first)first.focus({preventScroll:true});
+      return;
+    }
+    // A partial may cancel record:save to show a summary first, then call detail.write()
+    // from its own button's click (the file picker needs a click to open).
+    if(document.dispatchEvent(new CustomEvent('record:save',{cancelable:true,detail:{write:write}})))write();
+  });
+  function write(){
+    var blob=new Blob([snapshot()],{type:'text/html'});
+    function done(){saved=state();refresh();}
+    function download(){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},0);done();}
+    if(window.showSaveFilePicker){
+      window.showSaveFilePicker({suggestedName:name,types:[{description:'Web page',accept:{'text/html':['.html']}}]})
+        .then(function(h){return h.createWritable()})
+        .then(function(w){return w.write(blob).then(function(){return w.close()})})
+        .then(done).catch(function(e){if(e&&e.name!=='AbortError')download();});
+    } else download();
+  }
+  window.addEventListener('beforeunload',function(e){if(state()!==saved){e.preventDefault();e.returnValue='';}});
+})();
+</script>
+</body>
+</html>

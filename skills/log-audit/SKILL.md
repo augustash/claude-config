@@ -103,6 +103,9 @@ that `ls -l` and the downloaded size disagree — and that repeating the downloa
 So pull repeatedly until sizes stop changing, concatenate the samples, and dedupe — or
 state plainly that the figures are a sample of one container. The failure mode is
 quietly reporting "no occurrences" from one server's log as though it covered the site.
+On md (2026-10-19) a round recorded "FPM log clean, slow log empty"; both files were the
+idle container's. The serving one had reached `max_children` 60 times. Name the
+appserver each figure came from in the round record.
 
 **Analyze locally. Log contents — IPs, session identifiers, PII, request bodies — must
 never be sent to an external service.** Shell tools (grep/awk/sort/uniq) over a local

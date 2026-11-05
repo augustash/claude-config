@@ -128,6 +128,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [A Solr core keeps documents under an old site hash](memory/drupal/solr-stale-site-hash.md) — a Search API view returns far more results than the site has content, while status says 100% and clear + reindex change nothing
 - [Solr rejects every document with "inconsistent index options"](memory/drupal/solr-inconsistent-index-options.md) — an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - [A cloned environment reports 100% indexed and returns nothing](memory/drupal/solr-empty-after-content-clone.md) — search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
+- [search_api's post-request indexing dies without a request](memory/drupal/search-api-post-request-indexing-no-request.md) — an item saved to index at once stays pending till cron, with isCleanUrl() given null in the PHP log
 - [An autocomplete endpoint is a PHP worker per keystroke](memory/drupal/autocomplete-per-keystroke.md) — building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - [On a login-walled site every probe is a full render](memory/drupal/login-wall-scanner-probes.md) — a log sweep finds no 404s on a site behind anonymous_redirect; also before testing a probe block on ddev
 - [Search API / Solr convention](memory/drupal/search-api-solr-convention.md) — standard index/server names and the DDEV Solr build; also solr1–solr3 containers still running, or a collection refusing 3 shards
@@ -230,6 +231,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [ddev-wordpress WP Engine gate](memory/augustash/ddev-wordpress-wpengine-gate.md) — what it rewrites in wp-config.php and .gitignore on every composer update
 - [WP Engine git deploy](memory/augustash/wpengine-git-deploy.md) — reconcile live plugin drift before deploying or the push reverts it
 - [ddev-setup post-update-cmd wiring](memory/augustash/ddev-setup-post-update-cmd.md) — the hook set via `ddev composer config --json` fails to autoload
+- [Release watch](memory/augustash/release-watch.md) — installing the morning check for critical client releases, or a red 🚨 in your status line
 - [New Relic audit tool](memory/augustash/newrelic-audit-tool.md) — NerdGraph puller + report generator for Pantheon worker-saturation exhibits
 
 #### WordPress
