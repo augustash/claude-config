@@ -104,6 +104,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Cloudflare WAF and event tool](memory/cloudflare/waf-rule-tool.md) — before hand-rolling Cloudflare API calls, when a valid token reads as Invalid API Token, or for Free-plan rate limiting limits
 - [A Single Redirect needs its own token permission](memory/cloudflare/single-redirect-permission.md) — a redirect rule 403s on a token that works for everything else; also before pointing a retired domain at its replacement
 - [A WAF rule keyed on http.referer inverts](memory/cloudflare/referer-is-not-a-security-condition.md) — before gating a rule on referer, or when a bot rule fires far less than the traffic it targets
+- [A Pantheon site's own loopback arrives through Cloudflare](memory/cloudflare/pantheon-loopback-through-cloudflare.md) — before challenging or blocking a cloud ASN (Google Cloud, Azure) on a Pantheon site; also Action Scheduler quietly backing up
 - [Proxying a Pantheon site through Cloudflare](memory/cloudflare/proxying-pantheon-ssl-mode.md) — before orange-clouding a Pantheon domain; a 301 to the identical URL; or trusting a rule on a zone that may be DNS-only
 
 #### Drupal
