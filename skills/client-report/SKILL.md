@@ -198,6 +198,13 @@ platform the site never calls, data already synced but never displayed, a metric
 already calculated and sent to analytics instead of to users. These are cheap,
 credible and flattering to propose.
 
+**Connect or build is the client's choice; say what tips it.** When a pitch offers to read
+from a system they already run or build them one of their own, don't frame the build as the
+fallback for having nothing. Name the reasons a client would choose to own it: high license
+fees, the software making them work its way, wanting control of where it goes. The core of it,
+in Kaza's words (su 2026-11-04): *"it's about making a system around you, not you fitting a
+system with everyone else."* Connecting stays the default when what they have works.
+
 **Lead the questions with the generative one.** Ask what data, APIs and systems they
 already have access to *before* the scoping questions. It changes what's possible,
 not just what's affordable — and it routinely surfaces assets nobody remembered.
