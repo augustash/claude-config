@@ -180,6 +180,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   an index stuck short of 100% with that 400 on every write, and clear + reindex failing identically
 - **A cloned environment reports 100% indexed and returns nothing** — `vendor/augustash/claude-config/memory/drupal/solr-empty-after-content-clone.md`  
   search is dead on a freshly cloned environment while status says 100%; also before trusting search-api:status after any DB copy
+- **search_api's post-request indexing dies without a request** — `vendor/augustash/claude-config/memory/drupal/search-api-post-request-indexing-no-request.md`  
+  an item saved to index at once stays pending till cron, with isCleanUrl() given null in the PHP log
 - **An autocomplete endpoint is a PHP worker per keystroke** — `vendor/augustash/claude-config/memory/drupal/autocomplete-per-keystroke.md`  
   building or reviewing an as-you-type search box, or worker saturation traced to a suggest URL
 - **On a login-walled site every probe is a full render** — `vendor/augustash/claude-config/memory/drupal/login-wall-scanner-probes.md`  

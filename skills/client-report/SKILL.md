@@ -198,6 +198,13 @@ platform the site never calls, data already synced but never displayed, a metric
 already calculated and sent to analytics instead of to users. These are cheap,
 credible and flattering to propose.
 
+**Connect or build is the client's choice; say what tips it.** When a pitch offers to read
+from a system they already run or build them one of their own, don't frame the build as the
+fallback for having nothing. Name the reasons a client would choose to own it: high license
+fees, the software making them work its way, wanting control of where it goes. The core of it,
+in Kaza's words (su 2026-11-04): *"it's about making a system around you, not you fitting a
+system with everyone else."* Connecting stays the default when what they have works.
+
 **Lead the questions with the generative one.** Ask what data, APIs and systems they
 already have access to *before* the scoping questions. It changes what's possible,
 not just what's affordable — and it routinely surfaces assets nobody remembered.
@@ -1270,6 +1277,14 @@ anything with neither (a task for the client's own team) is not.
 - State lives in the markup as `data-approved="true"`, and the saved file is a snapshot
   reset to how the page ships (sections open, script-added controls stripped), so the
   returned copy opens with their choices marked and still reads in full without script.
+  **On a page whose scripts draw into it, snapshot the source, not the live DOM** (su
+  proposal 2026-11-04). Cloning `document.documentElement` there saves every scene, clip-path
+  and inserted element the scripts added, and they run again on reopen and draw a second
+  copy. Capture the page as it shipped in the first statement of the main script
+  (`var DOC_SRC='<!DOCTYPE html>\n'+document.documentElement.outerHTML`, before anything
+  writes to the page), then on Save parse it with `DOMParser`, write each answer into its
+  textarea's `textContent` by id, and serialize. Prove it with a reopen: load the snapshot
+  with `document.write` and check the drawn elements count the same as a fresh load.
 - **The client's own tasks get a done toggle instead** (Kaza, cal 2026-10-19). A list
   they work through themselves, like cal's 37 listings to check, isn't approvable work,
   but they should be able to tick it off. Each entry is a small card with a red **×**
