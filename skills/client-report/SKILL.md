@@ -1249,6 +1249,14 @@ anything with neither (a task for the client's own team) is not.
 - State lives in the markup as `data-approved="true"`, and the saved file is a snapshot
   reset to how the page ships (sections open, script-added controls stripped), so the
   returned copy opens with their choices marked and still reads in full without script.
+  **On a page whose scripts draw into it, snapshot the source, not the live DOM** (su
+  proposal 2026-11-04). Cloning `document.documentElement` there saves every scene, clip-path
+  and inserted element the scripts added, and they run again on reopen and draw a second
+  copy. Capture the page as it shipped in the first statement of the main script
+  (`var DOC_SRC='<!DOCTYPE html>\n'+document.documentElement.outerHTML`, before anything
+  writes to the page), then on Save parse it with `DOMParser`, write each answer into its
+  textarea's `textContent` by id, and serialize. Prove it with a reopen: load the snapshot
+  with `document.write` and check the drawn elements count the same as a fresh load.
 - **The client's own tasks get a done toggle instead** (Kaza, cal 2026-10-19). A list
   they work through themselves, like cal's 37 listings to check, isn't approvable work,
   but they should be able to tick it off. Each entry is a small card with a red **×**
