@@ -35,7 +35,9 @@ ASNs: real people browse from Azure Virtual Desktop and Windows 365, and a brows
 `not cf.client.bot` keeps Bingbot (on AS8075) out of it.
 
 Case: sal, 2026-11-05 — four US scanners on Google Cloud and Azure caused every remaining
-`max_children` hit once the login brute force was blocked; ~800 loopback calls in the same log
-came from the same ASN as two of them.
+`max_children` hit once the login brute force was blocked. The loopback came from the same ASN as
+two of them: ~800 calls over four months, only a handful a day, so a challenged loopback would take
+days to notice. Verified the next day: self-calls still 200, scanner 404 bursts and `max_children`
+hits gone.
 
 Related: [[proxying-pantheon-ssl-mode]], [[waf-rule-tool]], [[login-wall-scanner-probes]].
