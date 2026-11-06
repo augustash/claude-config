@@ -205,6 +205,18 @@ fees, the software making them work its way, wanting control of where it goes. T
 in Kaza's words (su 2026-11-04): *"it's about making a system around you, not you fitting a
 system with everyone else."* Connecting stays the default when what they have works.
 
+**A first concept pitch proposes ideas; it doesn't scope them.** When the client hasn't
+committed to anything yet, the page's one job is for them to like what we made and start
+building with us. Keep each idea to what it would do for them, keep the demos, and leave
+out the spec and the questions: they may not want the idea at all, and a page of question
+boxes asks for work before they've said yes. The sequence goes in the page instead: the
+site and its framework first, then one idea at a time in the order they choose, each with
+its own doc where the detail and the questions live. Hold the questions in the appendix for
+those docs. On su (2026-11-06) the page had grown nine question boxes with Save, and the
+ideas had grown specs; Kaza's call: *"There's not really a reason to ask questions here,
+they may not even be interested… we just need them to like what we made and start building
+with us."* The questions and the answers-in-file Save (§7) belong to the docs that follow.
+
 **Lead the questions with the generative one.** Ask what data, APIs and systems they
 already have access to *before* the scoping questions. It changes what's possible,
 not just what's affordable — and it routinely surfaces assets nobody remembered.
@@ -321,7 +333,8 @@ temptation is always to over-write.
    first at no cost, then fast visible wins, then foundation, then differentiators.
 7. **What we already have** — the inventory of their own data and integrations, and
    what combining them unlocks. Sets up the questions.
-8. **What we need from you** — questions, generative one first.
+8. **What we need from you** — questions, generative one first. Not in a first concept
+   pitch (see *A first concept pitch proposes ideas* in §2).
 9. **Why this team** — a specific, dated, verifiable story. See below.
 10. **Why this is the moment** — close on possibility, built only from findings
     already established above.
