@@ -1077,6 +1077,10 @@ whatever the length.
   Everything after the heading sits in one `.sec-body` wrapper, which carries the
   heading indent in place of the per-child `section > :not(h2)` rule. A caption that
   set its own left indent then has to drop it, or it doubles.
+- **Groups nested inside a section fold the same way, one level down** (Kaza, su 2026-11-07):
+  a chevron after the subheading, one group open at a time, the first one open when the
+  parent opens. Returning from a detail opened out of a group (a contact card) keeps that
+  group open rather than resetting to the first.
 - **One section open at a time, the first one on load** (Kaza, cal 2026-10-19).
   Opening a section, by its heading or the nav, closes whichever was open, and clicking
   an open heading closes it. A `#hash` on load opens that section instead of the first.
