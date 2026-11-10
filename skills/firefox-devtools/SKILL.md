@@ -176,6 +176,21 @@ The same stale browser is left behind when the solo server **disconnects mid-ses
 tools vanish from the session). Run `firefox-reap.sh` first (it kills only orphans), then ask the dev to run
 `/mcp` and reconnect `firefox-solo`. Claude cannot reconnect an MCP server itself.
 
+**Close solo's tabs when the check is done.** Headless still paints every frame. A days-old
+solo Firefox with About Us (an autoplaying video) open in three tabs ran a core at ~100% and
+spun up Kaza's fans (md, 2026-10-12). Navigate the work tab back to `about:blank` or close it.
+
+**Signing in on solo** (a page behind a login, such as a LinkedIn company page). Solo starts
+logged out, headless, in this session's own profile (`~/.firefox-devtools-mcp/solo-<claude
+pid>`), and the reaper deletes that profile when the session ends, so a login lasts one
+session. To sign in: kill this session's solo Firefox (find it with `firefox-reap.sh --dry`),
+open the same profile visibly with
+`/Applications/Firefox.app/Contents/MacOS/firefox --no-remote --profile <that dir> <login url>`,
+let the dev sign in, and have them quit with **⌘Q** (closing the window leaves the app
+running and the profile locked). The next solo call relaunches headless with the login. For a
+Drupal site, `ddev drush uli` in solo needs none of this. Use the dev's own browser only when
+the work must happen in their session.
+
 The first screenshot after a navigation may be mid-page, because Firefox restores
 scroll position. It can look like a solid block of colour. `window.scrollTo(0, 0)`
 before capturing.

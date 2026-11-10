@@ -77,6 +77,11 @@ gating on the list's own access-checked total before probing. If entries appear
 from a version below that, check the message for a `Page:` field — its absence
 dates them to 1.0.20.
 
+**A malformed `f` 500'd before 1.0.25.** The facets middleware read `f` with
+`ParameterBag::all('f')`, which throws on a scalar (`?f=abc`) or nested value, so bots probing
+with one logged `BadRequestException ... expecting "array", got "string"` as a php error.
+1.0.25 answers both with the same 400 as any invalid filter (wac, 2026-10-26).
+
 ## The rename trap: robots rules that never reach robots.txt
 
 Composer scaffold ignores the file mappings of any package missing from the root's

@@ -104,6 +104,24 @@ So pull repeatedly until sizes stop changing, concatenate the samples, and dedup
 state plainly that the figures are a sample of one container. The failure mode is
 quietly reporting "no occurrences" from one server's log as though it covered the site.
 
+On Pantheon, skip the guesswork and address each container directly — one rsync per IP:
+
+```bash
+U=$(terminus site:info <site> --field=id)
+for ip in $(dig +short appserver.live.${U}.drush.in); do
+  mkdir -p logs/${ip}
+  rsync -rlz -e 'ssh -p 2222' "live.${U}@${ip}:logs/" "logs/${ip}/"
+done
+```
+
+Brace the variables: in zsh, `$ip:logs` parses as `$ip` with the `:l` (lowercase) modifier
+and rsync fails on a mangled path. The idle container is obvious once both are local —
+its access log stops weeks back.
+
+On md (2026-10-19) a round recorded "FPM log clean, slow log empty"; both files were the
+idle container's. The serving one had reached `max_children` 60 times. Name the
+appserver each figure came from in the round record.
+
 **Analyze locally. Log contents — IPs, session identifiers, PII, request bodies — must
 never be sent to an external service.** Shell tools (grep/awk/sort/uniq) over a local
 copy are the justified case for reaching past the file tools. Where an aggregator is

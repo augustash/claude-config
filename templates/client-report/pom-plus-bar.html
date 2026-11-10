@@ -1,0 +1,408 @@
+<!--
+  POM+ bar: a drop-in for maintenance-record.html, for POM+ clients only (roster in
+  memory/pom/levels.md). The client-report skill, §7 Components, "POM+ lives in its own
+  place", says why it looks and behaves the way it does; this file is how.
+
+  Three blocks, each pasted once into the record:
+
+    1. STYLE   the <style> below, at the end of <head>, after the record's own <style>.
+    2. MARKUP  the <aside class="pom">, after <footer class="mark"> and before the
+               record's <script>. After the mark, because the live aside is the spacer
+               that keeps the fixed bar off the last thing on the page (placed above it,
+               the bar covers the studio mark). Before the script, because that script
+               finds every approvable .panel, .decision and .todo at load, the bar's too.
+    3. SCRIPT  the <script> below, after the record's <script>, before </body>.
+
+  Then set CODE (the client code, not the domain) in the four places it appears, keep the
+  passes the round ran, and fill each from the round's findings.
+
+  The bar adds no approval logic of its own. Its items are ordinary .panel / .decision /
+  .todo markup that the record's script makes approvable; the bar reads the same
+  data-approved state for its Selected total and Save's summary, and hears about changes
+  through the record's document events (record:change, record:save, record:snapshot,
+  record:reveal).
+
+  Client copy without POM+ (a dev-review copy keeps it): delete the <aside class="pom">
+  and nothing else. The style and script go inert without it; Save then writes straight
+  away, as on any record.
+
+  Self-contained: nothing here loads from the network.
+-->
+
+<!-- ===================== 1. STYLE: end of <head> ===================== -->
+<style>
+/* POM+: a bar at the foot of the page. Opening a pass slides the whole bar up to the
+   top (under the site bar in a combined file), so the pass fills the screen on its own
+   ground: the deepest brand tone with faint italic pluses, everything inside recoloured. */
+.pom{
+  /* BRAND: the dark scheme. Ground is the brand's darkest tone; the accent is its bright
+     blue (tags, kickers, links). Urgent and approved are light enough to read on it. */
+  --pom-ground:var(--deep);
+  --pom-accent:#6cc6e0;
+  --pom-urgent:#ff8a80;
+  --pom-plan:#f5c451;
+  --pom-ok:#8fdc6a;
+  --pom-ink:#e8eef6;
+  --pom-muted:#a9b7c9;
+  --pom-line:rgba(255,255,255,.14);
+  --pom-panel:rgba(255,255,255,.065);
+  margin-top:48px;
+}
+.pom-shell{background-color:var(--pom-ground);color:var(--pom-ink);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cg fill='%23fff' fill-opacity='.045' transform='skewX(-12)'%3E%3Cpath d='M13.65 5.5h2.7v4.15h4.15v2.7h-4.15v4.15h-2.7v-4.15h-4.15v-2.7h4.15z'/%3E%3Cpath d='M35.65 27.5h2.7v4.15h4.15v2.7h-4.15v4.15h-2.7v-4.15h-4.15v-2.7h4.15z'/%3E%3C/g%3E%3C/svg%3E");background-size:44px 44px;
+  box-shadow:inset 0 0 18px 2px rgba(0,0,0,.25),inset 22px 0 22px -14px rgba(0,0,0,.28),inset -22px 0 22px -14px rgba(0,0,0,.28)}
+
+/* Without script (and in a saved copy before it runs) the passes read in order on the ground. */
+.pom-bar,.pom-close,.pom-total{display:none}
+.pom-pass{max-width:1080px;margin:0 auto;padding:28px var(--page-pad) 8px}
+.pom-pass [id]{scroll-margin-top:16px}
+.pom-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.pom-head h2{display:block;margin:0;font-size:26px;color:#fff}
+.pom-head h2::before{display:none}
+.pom-kicker{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--pom-accent);margin-bottom:2px;font-style:italic}
+.pom-body > p{color:var(--pom-ink)}
+.pom-pass a{color:var(--pom-accent)}
+.pom-sub{margin:30px 0 4px;font-size:19px;color:#fff}
+.pom-note{color:var(--pom-muted);font-size:15px;margin-bottom:8px}
+
+/* The label: the client code and an italic POM, the + as tall as its capitals. */
+.pom-label{flex:none;font-size:14px;font-weight:600;letter-spacing:.04em;white-space:nowrap;color:#fff}
+.pom-label b,.pom-kicker b{color:var(--pom-accent);font-weight:800;font-style:italic}
+.pom-label .plus{display:inline-block;font-size:1.42em;line-height:0;vertical-align:-.03em;margin-left:.04em}
+.pom-bar ul{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.pom-bar ul::-webkit-scrollbar{display:none}
+.pom-tab{padding:7px 14px;border:0;border-radius:999px;background:rgba(255,255,255,.08);color:#dfe8f2;font:600 14px/1.3 var(--sans);white-space:nowrap;cursor:pointer}
+.pom-tab:hover{background:rgba(255,255,255,.16);color:#fff}
+.pom-tab[aria-expanded="true"]{background:#fff;color:var(--pom-ground)}
+.pom-close svg{width:20px;height:20px}
+
+/* The record's components, recoloured for the dark ground. Scoped to .pom-pass so the
+   summary dialog (light, in the top layer) keeps the record's own colours. */
+.pom-pass .panel{--u:var(--pom-accent);background:var(--pom-panel);box-shadow:inset 0 0 0 1px var(--pom-line)}
+.pom-pass .panel.urgent{--u:var(--pom-urgent);box-shadow:inset 0 0 0 1px rgba(255,138,128,.45)}
+.pom-pass .panel.plan{--u:var(--pom-plan)}
+.pom-pass .panel.good{--u:var(--pom-ok)}
+.pom-pass .panel h3{color:#fff}
+.pom-pass .panel p{color:var(--pom-ink)}
+.pom-pass .marker{border-top-color:var(--pom-line)}
+.pom-pass .tag{color:var(--pom-ground)}
+.pom-pass .marker .price{color:#fff}
+/* The POM+ chip on a Work row: this is POM+ spend. */
+.spend{display:inline-block;margin-right:12px;padding:2px 8px;border-radius:4px;border:1.5px solid var(--u);color:var(--u);font:700 11px/1.4 var(--sans);letter-spacing:.06em;vertical-align:2px;white-space:nowrap}
+.pom-pass .approve{color:rgba(255,255,255,.45)}
+.pom-pass .approve:hover:not(:disabled){color:#fff}
+.pom-pass .approvable.approved{--u:var(--pom-ok);background:rgba(143,220,106,.13);box-shadow:inset 0 0 0 3px var(--pom-ok)}
+.pom-pass .approvable.approved h3,.pom-pass .approvable.approved .price,.pom-pass .approvable.approved .approve{color:var(--pom-ok)}
+.pom-pass .approvable.approved .marker{border-top-color:rgba(143,220,106,.5)}
+.pom-pass .decision{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--pom-line)}
+.pom-pass .decision h4{color:#fff}
+.pom-pass .decision .context,.pom-pass .decision label,.pom-pass .decision .or{color:var(--pom-muted)}
+.pom-pass .decision .or::before,.pom-pass .decision .or::after{border-top-color:var(--pom-line)}
+.pom-pass .decision[data-answer]{background:rgba(143,220,106,.1);box-shadow:inset 0 0 0 2px var(--pom-ok)}
+.pom-pass .decision.missing{background:rgba(255,138,128,.12);box-shadow:inset 0 0 0 2px var(--pom-urgent)}
+.pom-pass .decision .need{color:var(--pom-urgent)}
+.pom-pass .choice{background:transparent;border-color:var(--pom-accent);color:#fff}
+.pom-pass .choice[aria-pressed="true"]{background:var(--pom-ok);border-color:var(--pom-ok);color:var(--pom-ground)}
+.pom-pass .todo{background:rgba(255,138,128,.12);color:var(--pom-ink)}
+.pom-pass .todo.is-done{background:rgba(143,220,106,.14);color:var(--pom-muted)}
+.pom-pass .done{color:var(--pom-urgent)}
+.pom-pass .done[aria-pressed="true"]{color:var(--pom-ok)}
+.pom-pass .xref a{background:var(--pom-accent);color:var(--pom-ground)}
+.pom-pass .xref a:hover{background:#fff}
+
+/* Live: the aside keeps the bar's room at the foot of the page; the shell is fixed and
+   slides between a strip at the bottom and the full screen. --bar-h is measured. */
+.pom.live{margin:0;height:72px}
+.pom.live .pom-shell{position:fixed;left:0;right:0;top:var(--site-bar-h,0px);bottom:0;z-index:20;display:flex;flex-direction:column;
+  transform:translateY(calc(100% - var(--bar-h,58px)));transition:transform .38s cubic-bezier(.2,.7,.2,1)}
+.pom.live.is-open .pom-shell{transform:none}
+.pom.live .pom-bar{display:flex;flex:none;align-items:center;gap:18px;padding:10px var(--page-pad)}
+.pom.live.is-open .pom-bar{border-bottom:1px solid var(--pom-line)}
+.pom.live .pom-pass{display:none;flex:1;min-height:0;max-width:none;margin:0;padding:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+.pom.live .pom-pass.open{display:block}
+.pom.live .pom-head{max-width:1080px;margin:0 auto;padding:26px var(--page-pad) 12px}
+.pom.live .pom-body{max-width:1080px;margin:0 auto;padding:0 var(--page-pad) 40px}
+.pom.live .pom-close{display:grid;place-items:center;flex:none;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.pom.live .pom-close:hover{background:rgba(255,255,255,.18)}
+.pom.live.no-slide .pom-shell{transition:none}
+@media (prefers-reduced-motion:reduce){.pom.live .pom-shell{transition:none}}
+/* Running total, right end of the bar: visible open or closed. */
+.pom.live .pom-total{display:flex;align-items:baseline;gap:8px;margin-left:auto;flex:none;padding-left:12px;white-space:nowrap;font-size:13px;color:var(--pom-muted)}
+.pom-total b{font-family:var(--mono);font-size:16px;color:#fff;transition:color .3s}
+.pom-total.has b{color:var(--pom-ok)}
+
+/* Save's summary: light, like the record's note. Colours set outright, since a dialog
+   still inherits from the dark shell it sits in. */
+dialog.summary{width:min(34rem,calc(100vw - 32px));border:0;border-radius:12px;padding:26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.25);background:#fff;color:var(--ink);font:16px/1.5 var(--sans)}
+dialog.summary::backdrop{background:rgba(0,0,0,.35)}
+dialog.summary h3{margin:0 0 14px;color:var(--deep);font-size:20px}
+.summary-list h4{margin:14px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.summary-list ul{list-style:none;margin:0;padding:0}
+.summary-list li{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.summary-list li span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--deep)}
+.summary-list li span.text{font-family:var(--sans);white-space:normal;text-align:right}
+.summary-empty{color:var(--muted)}
+.summary-total{display:flex;justify-content:space-between;margin:14px 0 6px;font-weight:800;color:var(--deep)}
+.summary-total span:last-child{font-family:var(--mono)}
+.summary-send{margin:10px 0 18px}
+.summary-actions{display:flex;gap:10px;flex-wrap:wrap}
+.summary-actions button{padding:8px 20px;border-radius:999px;font:700 15px/1.4 var(--sans);cursor:pointer}
+.summary-save{border:0;background:var(--brand);color:#fff}
+.summary-back{border:2px solid var(--rule);background:#fff;color:var(--deep)}
+
+@media (max-width:720px){
+  .pom.live .pom-bar{gap:10px}
+  .pom-label{font-size:12px}
+  .pom-tab{padding:6px 11px;font-size:13px}
+  .pom-total-label{display:none}
+  .pom-pass .todos{grid-template-columns:1fr}
+}
+@media print{
+  .pom-bar,.pom-close{display:none!important}
+  .pom.live{height:auto}
+  .pom-shell,.pom.live .pom-shell{position:static;transform:none;background:#fff;color:var(--ink);box-shadow:none}
+  .pom.live .pom-pass{display:block!important;overflow:visible}
+  .pom-pass .panel,.pom-pass .decision,.pom-pass .todo{background:#fff;box-shadow:inset 0 0 0 1px var(--rule)}
+  .pom-pass .panel h3,.pom-head h2,.pom-sub,.pom-pass .decision h4,.pom-pass .marker .price{color:var(--deep)}
+  .pom-pass .panel p,.pom-body > p,.pom-pass .todo{color:var(--ink)}
+}
+</style>
+
+<!-- ===================== 2. MARKUP: after footer.mark, before the record's <script> ===================== -->
+<!-- CODE: the client code (e.g. ACME), in the aria-label, the bar label and each kicker. -->
+<aside class="pom" aria-label="CODE POM+">
+<div class="pom-shell">
+  <div class="pom-bar">
+    <span class="pom-label">CODE <b>POM<span class="plus">+</span></b></span>
+    <!-- One tab per pass the round ran, in this order. Cut a pass and its tab together. -->
+    <ul>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-access">Access log</button></li>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-errors">Error log</button></li>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-performance">Performance</button></li>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-bots">Bot protection</button></li>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-search">Search</button></li>
+      <li><button type="button" class="pom-tab" aria-expanded="false" aria-controls="pom-a11y">Accessibility</button></li>
+    </ul>
+    <!-- Everything selected in the record, bar or not. The script fills it. -->
+    <span class="pom-total" aria-live="polite"><span class="pom-total-label">Selected</span> <b>$0</b></span>
+  </div>
+
+  <!-- A pass: the problem in one plain sentence, then a short line that turns it to action
+       (vary it pass to pass), then its Work items, then the team's own tasks. -->
+  <section class="pom-pass" id="pom-access" aria-labelledby="pom-access-h">
+    <header class="pom-head"><h2 id="pom-access-h"><span class="pom-kicker">CODE <b>POM+</b></span>Access log</h2><button type="button" class="pom-close" aria-label="Close Access log"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>What the pass found, in one plain sentence about what visitors meet. Let's fix that first.</p>
+      <div class="items">
+        <!-- A finding and the Work that acts on it, together. The POM+ chip marks POM+ spend. -->
+        <div class="panel urgent" id="pom-example-urgent">
+          <h3>An urgent fix, named by its outcome</h3>
+          <p>What is happening, with one measured figure and when it happens.</p>
+          <p>What we'll change, and what stays the same for the client.</p>
+          <div class="marker"><span class="tag">Urgent</span><p>What it costs visitors while it lasts.</p></div>
+          <div class="marker"><span class="tag">Work</span><p><span class="spend">POM+</span><span class="price">Approximately 2 hrs @ $200 = $400</span></p></div>
+        </div>
+        <div class="panel" id="pom-example-work">
+          <h3>A smaller fix the log turned up</h3>
+          <p>What is wrong and where, in their terms.</p>
+          <div class="marker"><span class="tag">Work</span><p><span class="spend">POM+</span><span class="price">Approximately 1 hr @ $200 = $200</span></p></div>
+        </div>
+      </div>
+      <!-- The client's own tasks: a done-toggle list, at the end of the pass. -->
+      <h3 class="pom-sub">For your team</h3>
+      <p class="pom-note">Recommendations to check.</p>
+      <ul class="todos">
+        <li class="todo">Confirm whether a recurring scan in the log is one your organization runs.</li>
+        <li class="todo">Check the second item on your side.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="pom-pass" id="pom-errors" aria-labelledby="pom-errors-h">
+    <header class="pom-head"><h2 id="pom-errors-h"><span class="pom-kicker">CODE <b>POM+</b></span>Error log</h2><button type="button" class="pom-close" aria-label="Close Error log"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>One real error stands out, and it needs a call from you. That's a quick fix once you've chosen.</p>
+      <div class="items">
+        <!-- Work plus a choice: the record's script requires the answer once it's approved. -->
+        <div class="panel" id="pom-example-choice">
+          <h3>Fix a form that ends on an error page</h3>
+          <p>What fails, since when, and who it reaches.</p>
+          <div class="decision" id="pom-decide-example">
+            <h4>The question, as a question?</h4>
+            <div class="choices"><button type="button" class="choice" data-value="a">First option</button><button type="button" class="choice" data-value="b">Second option</button></div>
+          </div>
+          <div class="marker"><span class="tag">Work</span><p><span class="spend">POM+</span><span class="price">Approximately 2 hrs @ $200 = $400</span></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A pass with nothing to act on is a paragraph: what was checked and what was done. -->
+  <section class="pom-pass" id="pom-performance" aria-labelledby="pom-performance-h">
+    <header class="pom-head"><h2 id="pom-performance-h"><span class="pom-kicker">CODE <b>POM+</b></span>Performance</h2><button type="button" class="pom-close" aria-label="Close Performance"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>What the pass measured, and what changed in the round, in a clause.</p>
+    </div>
+  </section>
+
+  <section class="pom-pass" id="pom-bots" aria-labelledby="pom-bots-h">
+    <header class="pom-head"><h2 id="pom-bots-h"><span class="pom-kicker">CODE <b>POM+</b></span>Bot protection</h2><button type="button" class="pom-close" aria-label="Close Bot protection"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>What reached the site, what was stopped, and what still gets through.</p>
+    </div>
+  </section>
+
+  <section class="pom-pass" id="pom-search" aria-labelledby="pom-search-h">
+    <header class="pom-head"><h2 id="pom-search-h"><span class="pom-kicker">CODE <b>POM+</b></span>Search</h2><button type="button" class="pom-close" aria-label="Close Search"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>What visitors searched for and whether they found it.</p>
+      <!-- A link back into the record closes the bar and opens that section. -->
+      <p class="xref"><a href="#ideas">See the idea</a></p>
+    </div>
+  </section>
+
+  <!-- Accessibility follows accessibility-compliance §7: what was tested, what already works,
+       and the whole path to the requirement (the criteria, the goal bar, and a dialog.rules
+       requirements page on the bar's ground). Those parts are not in this partial. -->
+  <section class="pom-pass" id="pom-a11y" aria-labelledby="pom-a11y-h">
+    <header class="pom-head"><h2 id="pom-a11y-h"><span class="pom-kicker">CODE <b>POM+</b></span>Accessibility</h2><button type="button" class="pom-close" aria-label="Close Accessibility"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></header>
+    <div class="pom-body">
+      <p>What was tested, and what already works.</p>
+    </div>
+  </section>
+</div>
+<!-- Save's summary. Inside the aside so dropping POM+ drops it too; as a modal it opens
+     in the top layer, clear of the shell. -->
+<dialog class="summary" aria-labelledby="summary-title">
+  <h3 id="summary-title">Here's what you've chosen</h3>
+  <div class="summary-list"></div>
+  <p class="summary-send">Send us the saved document and we'll get it done.</p>
+  <div class="summary-actions"><button type="button" class="summary-save">Save</button><button type="button" class="summary-back">Keep reviewing</button></div>
+</dialog>
+</aside>
+
+<!-- ===================== 3. SCRIPT: after the record's <script> ===================== -->
+<script>
+/* POM+ bar: one pass open at a time, as a sheet over the record. Approval state belongs
+   to the record's script; this reads data-approved for the total and the summary. */
+(function(){
+  var bar=document.querySelector('aside.pom');if(!bar)return;
+  var GROUP='POM+'; // the summary's heading for work chosen in the bar
+  var strip=bar.querySelector('.pom-bar'),tabs=[].slice.call(bar.querySelectorAll('.pom-tab'));
+  var motion=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)'),hideT;
+  bar.classList.add('live');
+  function setBarH(){bar.style.setProperty('--bar-h',strip.getBoundingClientRect().height+'px');}
+  setBarH();window.addEventListener('resize',setBarH);
+
+  function passOf(t){return document.getElementById(t.getAttribute('aria-controls'));}
+  function tabOf(p){return tabs.filter(function(t){return passOf(t)===p})[0];}
+  function openTab(){return tabs.filter(function(t){return t.getAttribute('aria-expanded')==='true'})[0];}
+  // Closing slides the bar down first; the pass stays painted until it's out of sight.
+  function closeAll(){
+    tabs.forEach(function(t){t.setAttribute('aria-expanded','false')});
+    bar.classList.remove('is-open');clearTimeout(hideT);
+    hideT=setTimeout(function(){
+      if(!bar.classList.contains('is-open'))[].forEach.call(bar.querySelectorAll('.pom-pass.open'),function(p){p.classList.remove('open')});
+    },motion&&motion.matches?0:400);
+  }
+  function openPass(tab,focusClose){
+    clearTimeout(hideT);
+    tabs.forEach(function(t){t.setAttribute('aria-expanded',t===tab?'true':'false');var p=passOf(t);if(p)p.classList.toggle('open',t===tab);});
+    if(tab.scrollIntoView)tab.scrollIntoView({block:'nearest',inline:'nearest'});
+    bar.classList.add('is-open');
+    var p=passOf(tab);if(p){p.scrollTop=0;if(focusClose!==false){var c=p.querySelector('.pom-close');if(c)c.focus({preventScroll:true});}}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){if(t.getAttribute('aria-expanded')==='true')closeAll();else openPass(t);})});
+  [].forEach.call(bar.querySelectorAll('.pom-close'),function(c){c.addEventListener('click',function(){
+    var t=tabOf(c.closest('.pom-pass'));closeAll();if(t)t.focus();
+  })});
+  // Escape closes the sheet and returns focus to its tab; an open dialog takes it first.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape'||document.querySelector('dialog[open]'))return;
+    var t=openTab();if(t){closeAll();t.focus();}
+  });
+  // A link to something in a pass opens that pass and scrolls to it; a link from the bar
+  // out to the record closes the sheet. Capture phase, ahead of the record's own handler,
+  // which still flashes the target.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');if(!a)return;
+    var t=document.getElementById(a.getAttribute('href').slice(1));if(!t)return;
+    var p=t.closest('.pom-pass');
+    if(p){
+      e.preventDefault();var was=bar.classList.contains('is-open');openPass(tabOf(p),false);
+      setTimeout(function(){t.scrollIntoView({block:'start',behavior:motion&&motion.matches?'auto':'smooth'})},was?0:420);
+    }else if(bar.contains(a))closeAll();
+  },true);
+  // Save found an unanswered choice in a pass: open it before the record scrolls there.
+  bar.addEventListener('record:reveal',function(e){var p=e.target.closest('.pom-pass');if(p&&!p.classList.contains('open'))openPass(tabOf(p),false);});
+
+  // ---- What's selected, read from the record's own data-approved state.
+  function hasWork(el){return [].some.call(el.querySelectorAll('.marker .tag'),function(t){return t.textContent.trim()==='Work'});}
+  function priceOf(el){var m=((el.querySelector('.marker .price')||{}).textContent||'').match(/\$[\d,]+/g);return m?+m[m.length-1].slice(1).replace(/,/g,''):0;}
+  function titleOf(el){return ((el.querySelector('h3')||{}).textContent||'').trim();}
+  function money(n){return '$'+n.toLocaleString('en-US');}
+  // Billed work is already paid for, so it never counts toward what's being chosen.
+  function chosen(){return [].filter.call(document.querySelectorAll('.panel[data-approved="true"],.idea[data-approved="true"]'),function(el){return hasWork(el)&&!el.querySelector('.marker.billed')});}
+  var total=bar.querySelector('.pom-total');
+  function updateTotal(){
+    var sum=chosen().reduce(function(s,el){return s+priceOf(el)},0);
+    total.querySelector('b').textContent=money(sum);total.classList.toggle('has',sum>0);
+  }
+  document.addEventListener('record:change',updateTotal);updateTotal();
+
+  // ---- Save shows a summary first, then the record writes the file.
+  var dlg=bar.querySelector('dialog.summary'),write;
+  // A to-do's own words, without the record's done button.
+  function textOf(li){return [].filter.call(li.childNodes,function(n){return !(n.classList&&n.classList.contains('done'))}).map(function(n){return n.textContent}).join('');}
+  function clip(s){s=s.replace(/\s+/g,' ').trim();return s.length>90?s.slice(0,88)+'…':s;}
+  function answerOf(d){
+    var a=d.getAttribute('data-answer');
+    if(a==='typed'){var f=d.querySelector('.answer');return f?f.value:'';}
+    var b=[].filter.call(d.querySelectorAll('.choice'),function(c){return c.getAttribute('data-value')===a})[0];
+    if(!b)return a;if(b.classList.contains('confirm'))return 'Recommended';
+    return (b.textContent.trim()||b.getAttribute('aria-label')||a);
+  }
+  function questionOf(d){
+    var h=d.querySelector('h4');if(h)return h.textContent;
+    var p=d.closest('.panel,.idea'),t=p&&p.querySelector('h3');if(t)return t.textContent;
+    return (d.parentNode.textContent||'');
+  }
+  function row(ul,label,value,text){
+    var li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');
+    a.textContent=label;b.textContent=value;if(text)b.className='text';li.appendChild(a);li.appendChild(b);ul.appendChild(li);
+  }
+  function fill(){
+    var list=dlg.querySelector('.summary-list'),items=chosen(),sum=0;list.textContent='';
+    var groups=[
+      [GROUP,items.filter(function(el){return bar.contains(el)}).map(function(el){var p=priceOf(el);sum+=p;return [titleOf(el),money(p)]})],
+      ['Work',items.filter(function(el){return !bar.contains(el)}).map(function(el){var p=priceOf(el);sum+=p;return [titleOf(el),money(p)]})],
+      ['Answers',[].filter.call(document.querySelectorAll('.decision[data-answer]'),function(d){return answerOf(d).trim()}).map(function(d){return [clip(questionOf(d)),clip(answerOf(d)),1]})],
+      ['Done by your team',[].map.call(document.querySelectorAll('.todo[data-done="true"]'),function(li){return [clip(textOf(li)),'Done',1]})]
+    ];
+    groups.forEach(function(g){
+      if(!g[1].length)return;
+      var h=document.createElement('h4');h.textContent=g[0];var ul=document.createElement('ul');
+      g[1].forEach(function(r){row(ul,r[0],r[1],r[2])});list.appendChild(h);list.appendChild(ul);
+    });
+    if(!list.childNodes.length){var e=document.createElement('p');e.className='summary-empty';e.textContent='Nothing selected. Your choices are saved with the document.';list.appendChild(e);}
+    if(items.length){var t=document.createElement('p');t.className='summary-total';t.innerHTML='<span>Total</span><span></span>';t.lastChild.textContent=money(sum);list.appendChild(t);}
+  }
+  document.addEventListener('record:save',function(e){
+    if(!dlg||!dlg.showModal)return;
+    e.preventDefault();write=e.detail.write;fill();dlg.showModal();dlg.querySelector('.summary-save').focus();
+  });
+  dlg.querySelector('.summary-back').addEventListener('click',function(){dlg.close()});
+  // The file picker needs this click, so the write starts inside it.
+  dlg.querySelector('.summary-save').addEventListener('click',function(){dlg.close();if(write)write();});
+
+  // ---- The saved copy ships closed, unmeasured and at $0; the script rebuilds the rest.
+  document.addEventListener('record:snapshot',function(e){
+    var r=e.detail.root.querySelector('aside.pom');if(!r)return;
+    r.classList.remove('live','is-open','no-slide');r.removeAttribute('style');
+    [].forEach.call(r.querySelectorAll('.pom-tab'),function(n){n.setAttribute('aria-expanded','false')});
+    [].forEach.call(r.querySelectorAll('.pom-pass.open'),function(n){n.classList.remove('open')});
+    var b=r.querySelector('.pom-total');if(b){b.classList.remove('has');b.querySelector('b').textContent='$0';}
+    var l=r.querySelector('.summary-list');if(l)l.textContent='';
+  });
+})();
+</script>
