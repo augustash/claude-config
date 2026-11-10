@@ -289,7 +289,7 @@ The package copy is canonical, so a local edit to a project copy gets overwritte
 here instead. Commit the refreshed copy with the bump.
 
 **A project's skill copies must equal the skill in the commit its `composer.lock` pins.** A
-hosting build (Pantheon installs require-dev) runs the same sync from the *locked* ref, so any
+hosting build (Pantheon installs require-dev on Dev and Multidev) runs the same sync from the *locked* ref, so any
 copy that differs gets rewritten and the build fails with `The build step affected files that
 are not ignored by git`. Only `composer update augustash/claude-config` moves the lock and the
 copies together. So never `cp` a skill while vendor is ahead of the lock: after refining a skill
