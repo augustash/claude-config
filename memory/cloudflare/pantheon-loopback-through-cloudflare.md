@@ -41,3 +41,6 @@ days to notice. Verified the next day: self-calls still 200, scanner 404 bursts 
 hits gone.
 
 Related: [[proxying-pantheon-ssl-mode]], [[waf-rule-tool]], [[login-wall-scanner-probes]].
+
+The same self-calls also cost PHP workers even with no rule in the way — see
+[[background-loopback-holds-workers]].

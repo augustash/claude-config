@@ -425,5 +425,7 @@ These files are authoritative and kept current by the team. Prefer conventions h
   wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
 - **AIOSEO nulls its Head object in AJAX and cron** — `vendor/augustash/claude-config/memory/wordpress/aioseo-rest-head-null-ajax-cron.md`  
   WooCommerce product webhooks fail and it reads as a broken scheduler; the queue looks healthy while events silently stop
+- **A plugin calling the site on itself holds PHP workers** — `vendor/augustash/claude-config/memory/wordpress/background-loopback-holds-workers.md`  
+  max_children clumps while staff edit; slow log parked in wp_remote_post; SearchWP indexing on a small Pantheon plan
 - **PHP session GC never runs on Pantheon** — `vendor/augustash/claude-config/memory/wordpress/pantheon-session-gc-never-runs.md`  
   the database is mostly one session table; also before reserving a quiet window to rebuild a bloated table
