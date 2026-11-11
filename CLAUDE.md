@@ -235,8 +235,14 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Release watch](memory/augustash/release-watch.md) — installing the morning check for critical client releases, or a red 🚨 in your status line
 - [New Relic audit tool](memory/augustash/newrelic-audit-tool.md) — NerdGraph puller + report generator for Pantheon worker-saturation exhibits
 
+#### Site chat
+
+- [Text (LiveChat) Customer Chat API in your own window](memory/chat/text-customer-chat-api.md) — wiring Text/LiveChat live chat into your own UI; a reader token 401s `identity_exception`, or availability reads online with nobody there
+- [Anthropic PHP SDK in a WordPress plugin](memory/chat/anthropic-php-sdk-wordpress.md) — adding the Claude SDK to a WordPress plugin; "No PSR-18 HTTP client" on the first call, or deciding where its 24 MB vendor lives
+
 #### WordPress
 
+- [FoundationPress header breaks on wide portrait windows](memory/wordpress/foundationpress-portrait-header.md) — a desktop window taller than wide shows the hamburger beside the full menu and loses search; also CSS changes reaching visitors a week late
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — cart cookies bust edge cache site-wide; before installing the fix, check it is even reachable and read the safety interaction
 - [WooCommerce purchase gate seams](memory/wordpress/woocommerce-purchase-gate-seams.md) — forcing login before purchase takes four hooks, only one of them a real rule
 - [LearnDash closed-course button URL](memory/wordpress/learndash-closed-course-button-url.md) — a closed course's buy button points at live from every other environment
@@ -353,4 +359,5 @@ what Claude Code actually loads for discovery, so keep it sharp there.
 - [log-audit](skills/log-audit/SKILL.md) — auditing site traffic: an integration broke, a client reports errors from a system you can't see, or a dev drops a log export for a health-and-security sweep; also sizing a facet-crawler challenge threshold
 - [memory-management](skills/memory-management/SKILL.md) — writing, curating, or auditing a memory: qualification, tier, index-entry form, and the commit steps
 - [pom-plus](skills/pom-plus/SKILL.md) — an update round for a POM+ client: the per-round log, performance, bot and search passes, and the quarterly accessibility scan
+- [site-chat](skills/site-chat/SKILL.md) — building or extending an AI chat that answers from a client's own pages and data and brings qualified readers to an advisor, live or as a lead
 - [site-update](skills/site-update/SKILL.md) — a dependency round on a site (Drupal or WordPress); owns patch triage, so also when a patch fails to apply or an edited one seems ignored; and after upgrading ddev

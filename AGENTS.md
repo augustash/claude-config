@@ -396,8 +396,17 @@ These files are authoritative and kept current by the team. Prefer conventions h
 - **New Relic audit tool** — `vendor/augustash/claude-config/memory/augustash/newrelic-audit-tool.md`  
   NerdGraph puller + report generator for Pantheon worker-saturation exhibits
 
+## Chat
+
+- **Text (LiveChat) Customer Chat API in your own window** — `vendor/augustash/claude-config/memory/chat/text-customer-chat-api.md`  
+  wiring Text/LiveChat live chat into your own UI; a reader token 401s `identity_exception`, or availability reads online with nobody there
+- **Anthropic PHP SDK in a WordPress plugin** — `vendor/augustash/claude-config/memory/chat/anthropic-php-sdk-wordpress.md`  
+  adding the Claude SDK to a WordPress plugin; "No PSR-18 HTTP client" on the first call, or deciding where its 24 MB vendor lives
+
 ## WordPress
 
+- **FoundationPress header breaks on wide portrait windows** — `vendor/augustash/claude-config/memory/wordpress/foundationpress-portrait-header.md`  
+  a desktop window taller than wide shows the hamburger beside the full menu and loses search; also CSS changes reaching visitors a week late
 - **WooCommerce Pantheon cache** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-pantheon-cache.md`  
   cart cookies bust edge cache site-wide; before installing the fix, check it is even reachable and read the safety interaction
 - **WooCommerce purchase gate seams** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-purchase-gate-seams.md`  
