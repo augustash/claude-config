@@ -253,6 +253,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Object Cache Pro survives a database clone](memory/wordpress/object-cache-survives-db-clone.md) — wp-admin and get_option() show pre-clone settings, and the site behaves that way too; also before guarding a destructive script on an option
 - [AIOSEO nulls its Head object in AJAX and cron](memory/wordpress/aioseo-rest-head-null-ajax-cron.md) — WooCommerce product webhooks fail and it reads as a broken scheduler; the queue looks healthy while events silently stop
 - [A plugin calling the site on itself holds PHP workers](memory/wordpress/background-loopback-holds-workers.md) — max_children clumps while staff edit; slow log parked in wp_remote_post; SearchWP indexing on a small Pantheon plan
+- [WordPress robots.txt on Pantheon](memory/wordpress/robots-txt-on-pantheon.md) — before changing robots rules on a WordPress site, or a rule that shows in robots.txt yet crawlers ignore
 - [PHP session GC never runs on Pantheon](memory/wordpress/pantheon-session-gc-never-runs.md) — the database is mostly one session table; also before reserving a quiet window to rebuild a bloated table
 
 ---
