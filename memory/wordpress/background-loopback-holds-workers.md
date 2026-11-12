@@ -26,7 +26,8 @@ On ent (2026-11-11, 61 days): 562 SearchWP runs at 3.6s, the clumps landing when
 
 Pantheon sets `DISABLE_WP_CRON` and runs WP-Cron **hourly through WP-CLI**, in a container
 outside the web pool — free for background work, but an hour of lag is too slow for search
-(Kaza's call). The shape that shipped on ent (`wp-content/mu-plugins/searchwp-cli-indexing.php`):
+(Kaza's call). **The fix ships in `augustash/wordpress-cache-protection` ≥ 1.1.0** (`SearchwpIndexing`,
+on by default when SearchWP 4 is active; first on ent). Install that rather than copying code. Its shape:
 
 - `searchwp\index\process\enabled` → only under WP-CLI. Web requests never dispatch.
 - `searchwp\indexer\alternate` → true. Skips the blocking 0.5s HTTP self-test SearchWP runs on
@@ -49,7 +50,13 @@ Traps met building it:
 - **`drop_post` checks `current_user_can('edit_post')`.** A logged-out test save does nothing,
   which reads as the hook not firing.
 - SearchWP's settings screen then says the indexer is **paused** — true for web requests. Expected.
+- **A WP-CLI test can't simulate a web save.** SearchWP reads `process\enabled` once, building its
+  indexer at `init` 99999, so an `add_filter` in `wp eval` lands too late; the CLI indexer then
+  queues the entry itself and the re-index looks broken. Test with a real web request: a
+  throwaway ddev mu-plugin endpoint that does `wp_set_current_user(1)` + `wp_update_post()`.
+- **Deploying the code doesn't activate the plugin.** Activate it on each environment right
+  after the deploy; until then SearchWP is back on self-calls.
 
 Other loopback plugins need their own seam; the principle carries: do the work in a request
 already holding a worker (after `fastcgi_finish_request()`) or under WP-CLI, never by calling
-yourself. A shared package for this is under discussion; until it exists, copy the mu-plugin.
+yourself. New seams for other plugins belong in wordpress-cache-protection beside SearchWP's.
