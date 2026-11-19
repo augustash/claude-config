@@ -45,22 +45,14 @@ debug the saved-card UI on a site whose settings predate 11.x without checking t
 inside `#cc-form`. Flatsome fades `.woocommerce-checkout-review-order:has(.blockUI)` to 0.5,
 and `:has()` matches a hidden element, so the payment fields, Save Card and Place Order all
 look disabled for good. The fields still work, so a dev who clicks through sees nothing wrong.
-Fix in the child theme so the fade only applies to WooCommerce's own refresh overlay, which
-lands on the review table and `#payment`, never inside `#cc-form`:
 
-```css
-body.woocommerce-checkout #order_review:not(:has(.blockUI:not(#cc-form > .blockUI))) {
-	opacity: 1;
-}
-```
+**Fix: drop the fade and restyle the overlay as busy** (atr, 2026-11-17). Even the legitimate
+refresh fade reads as *disabled*, and on a slow connection the block lasts long enough for
+customers to call it broken. Set `#order_review { opacity: 1 }`, then restyle the blockUI
+overlay: `opacity: 1 !important` (so Flatsome's spinner isn't faded too), a light translucent
+background, `cursor: progress`, the spinner `position: sticky; top: calc(50vh - 20px)` so a tall
+payment box keeps it in view, and an "Updating your order…" label on
+`#payment > .blockUI::after`. See atr's `themes/atrix/style.css`.
 
-A rule keyed on `> .blockUI` is wrong: WooCommerce never blocks `#order_review` itself, so
-that version removes the refresh fade altogether.
-
-**The better fix is to drop the fade entirely** (atr, 2026-11-17). Even the legitimate refresh
-fade reads as *disabled*, and on a slow connection the block lasts long enough for customers to
-call it broken. Set `#order_review { opacity: 1 }`, then restyle the blockUI overlay as busy:
-`opacity: 1 !important` (so Flatsome's spinner isn't faded too), a light translucent background,
-`cursor: progress`, the spinner `position: sticky; top: calc(50vh - 20px)` so a tall payment box
-keeps it in view, and an "Updating your order…" label on `#payment > .blockUI::after`. The
-`:has()` override above becomes unnecessary. See atr's `themes/atrix/style.css`.
+Narrowing Flatsome's `:has()` rule to skip `#cc-form` also clears the permanent fade, but it
+keeps the refresh fade customers read as broken, so it is not worth carrying.

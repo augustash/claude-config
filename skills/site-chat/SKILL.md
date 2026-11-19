@@ -62,7 +62,8 @@ request after the time runs the same finish as a manual release (cache purge).
    "Very confident" column, so "confident" matched everything. The catalog lets the
    screen map "worries" to "how concerned". Tell it to select breakdowns whenever the
    reader names a kind of company.
-3. **The answer (Opus, low effort):** only from numbered sources (`S1`, `P1`), returned
+3. **The answer (Opus, low effort):** only from numbered sources (`S1`, `P1`, and the
+   team's stated facts, cited as the team), returned
    as JSON with `source_ids`. **Code renders the citations**, so none can be invented,
    and **rejects any figure with no source**.
 4. **Business questions get a real answer first, then the advisor offer.** "A brief
@@ -73,7 +74,8 @@ request after the time runs the same finish as a manual release (cache purge).
    of the key. Key in a knowledge version (guidance + learned notes + released years)
    so learning or a release retires entries; expire on disuse, never on age.
 
-Cost at EM's volume: about 1.5¢ per answered question.
+Cost at EM's volume: about 3¢ per answered question once page text is readable (~1.8¢
+before). The Opus answer is most of it, not the catalog.
 
 ## 4. A person: live or a lead
 
@@ -118,7 +120,7 @@ The team's actions are the trusted signal; readers' words are only the subject.
   facts.
 - **A test set is the gate:** about 12 cases checking behavior (right figure + source,
   off-topic refused, unreleased data not cited even for "I'm the owner", advisor offered
-  for business problems). New notes are kept only if all pass; otherwise roll back and
+  for business problems). New notes are kept only if all pass (a failing case is retried once); otherwise roll back and
   email us. It also runs weekly on its own. Test runs must not log to the audit.
 - Hard rules (sources only, the release gate) stay in code; notes can't loosen them.
 
@@ -159,8 +161,8 @@ for a theme bug that surfaced here.
   confidence changed since 2015?" cite 2026/2025/2022 and drop the year the reader named.
   Raised to six, and the screen is told to take the same question from each year for a
   trend, always including the earliest and latest. Each extra year also grows the catalog
-  (EM, five years: 274 lines, ~10k tokens to the screen per question); prompt-cache it if
-  volume makes that matter.
+  (EM, five years: 274 lines, ~10k tokens to the screen per question), which stays cheap on
+  Haiku; see the cost note below before caching it.
 - **Old reports parse with the same code; only the column map is new.** EM's 2015, 2018
   and 2022 Meeting Street crosstabs extracted with the 2025 parser unchanged. Write
   `columns.json` from the header's bottom-line words *in order* (word positions drift a
@@ -194,7 +196,8 @@ for a theme bug that surfaced here.
   at 15 years, but on Haiku that's ~0.3¢ a question. The rise in a plain answer from ~1.8¢ to
   ~3.2¢ came from the Opus answer reading real page text once pages were readable: the cost
   of using the content. Prompt caching pays only when requests sharing a prefix start under
-  5 minutes apart (1-hour TTL: three or more reads within the hour). At EM's 1–4 questions a
+  5 minutes apart (two requests break even), or on the 1-hour TTL with two or more reads
+  within the hour (three requests). At EM's 1–4 questions a
   day every entry would expire and each question would pay the write premium, so it would
   cost more. Revisit when traffic is steady.
 - **The first real coaching exposed four gaps, each found by asking the coached questions
