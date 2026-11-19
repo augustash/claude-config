@@ -190,6 +190,27 @@ for a theme bug that surfaced here.
   statewide/oversample columns (take the first), and trend tables with one column per
   wave (take the last). Encoding junk (`&`, `$`, `!` or `"` for spaces) cleans with sed. A trend
   topline also holds top-line results for waves you have no crosstabs for.
+- **A year with only a topline is still worth loading**: overall figures, no breakdowns. Tag
+  each row with its report and tell the model when a question has no breakdowns. EM's chat
+  then says "only overall results were published for 2011" instead of inventing a split.
+  Pick the year's column by its wave label (the latest wave heading any column), not by
+  position: Skip/Total pairs put this year's Skip mid-line, and grids prefix each row with
+  its wave. A first row labeled with a wave no column carries ("1/13", "3/12" in EM 2013)
+  is a typo for this year. Say so in the report, and confirm it against the summary table.
+- **A topline layout bug can load the wrong year's figure with no error.** After a rating
+  grid, EM 2011 Q18 was read as a grid item. When it turned out to be a plain question,
+  the switch back dropped the wave headings already read, so the line "13% 37% 36% YES"
+  loaded 2008's 13% as 2011's and put the rest into the answer text. Guard: two or more
+  figures left in front of an answer means a missed header, so skip the line and report it.
+  Never let leftover figures become a label. Only the cross-check caught this one.
+- **Cross-check a topline by value agreement, not text similarity.** Matching questions by
+  wording pairs the wrong ones (2008 "retention factors" vs 2011 "recruitment factors" read as
+  dozens of false conflicts). Instead, find the question in the other document whose shared
+  answers all carry the same figure. That is a coincidence only with fewer than three
+  answers. Sources of a second reading: later toplines' trend columns (read with the wave
+  forced), the year's own summary tables (grids' % 10, % 8-10 and mean), and, for the rest,
+  a dumb positional read of the raw line scoped to the question's block. Check what's left
+  by eye. EM's three years: 1,141 figures, all confirmed, zero conflicts.
 - **Measure where the money goes before reaching for a fix.** EM's catalog grew to ~29k tokens
   at 15 years, but on Haiku that's ~0.3¢ a question. The rise in a plain answer from ~1.8¢ to
   ~3.2¢ came from the Opus answer reading real page text once pages were readable: the cost
