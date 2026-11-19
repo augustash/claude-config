@@ -119,10 +119,9 @@ do anything:
   a time, and an MCP server from an older Claude session — still running,
   possibly in a terminal nobody is looking at — keeps it until that process dies.
   Every call then fails with a bare `unknown error` while 2828 is plainly
-  listening and the address bar shows its remote-control stripes. Find the
-  holder: `lsof -nP -iTCP:2828 -iTCP:9222 | grep -v LISTEN` names a geckodriver
-  whose parent is the other session's MCP node process. With the dev's OK, kill
-  that node process; the next call here connects.
+  listening and the address bar shows its remote-control stripes. Run
+  `firefox-reap.sh --others` without asking (see "If solo fails anyway" below):
+  it kills the other session's geckodriver, and the next call here connects.
 
 ## Opening a page: a window, not new_page
 
@@ -156,16 +155,27 @@ session `~/.firefox-devtools-mcp/solo-<claude pid>` and reaps profiles whose
 owner has exited, with any Firefox still on them. Registration is printed by
 `templates/firefox-mcp-patch/install.sh`.
 
-**If solo fails anyway, find the owner before killing anything.** Run
-`~/.local/share/firefox-devtools-mcp-patched/firefox-reap.sh --dry`. It walks each
-headless MCP Firefox up its chain (firefox → geckodriver → MCP node → claude) and
-prints the owning Claude pid and `--session-id`:
+**If solo fails anyway, rule out a certificate first.** A page whose certificate
+Firefox rejects fails with the same bare BiDi `unknown error` as a hung session, and
+the tab is left on "Warning: Security Risk". So when one site fails and
+`https://example.com/` opens, it's the certificate. Find out who issued it with
+`openssl s_client -connect 127.0.0.1:443 -servername <host> | openssl x509 -noout -issuer`.
+On ddev it should be your own mkcert CA (`mkcert -CAROOT`). If the issuer is another
+developer, the project has their cert committed under `.ddev/traefik/` (often from an
+old project name), and the router serves it over yours. Delete it from the repo and
+from `~/.ddev/traefik/{certs,config}/`, then `ddev restart` (atr, 2026-11-19: Ben's
+`atrix.crt`, committed in 2024). Importing the CA into solo's profile does not help
+when it's the wrong CA.
 
-- **orphan** — the chain reached launchd before any claude. Its session is gone;
-  kill it (drop `--dry`). No need to ask.
-- **in use by another claude** — a live session, possibly a forked background one
-  the dev isn't watching. Killing it breaks that session. Tell the dev which
-  session holds it and let them decide.
+**Otherwise, a hung or held session: kill it and start yours.** No need to ask; this
+is Kaza's standing rule (2026-11-19), because stale servers from idle sessions pile
+up and the dev never wants them kept. Run
+`~/.local/share/firefox-devtools-mcp-patched/firefox-reap.sh --others`. It walks each
+headless MCP Firefox, and each geckodriver holding the dev's Marionette port, up to
+its claude process, and kills every one that isn't this session's: orphans and
+other live sessions alike. A killed solo Firefox relaunches on that session's next
+call, so nothing is lost. `--dry` reports without killing, and a bare run kills only
+orphans.
 
 The dev's own Firefox is never a candidate: it runs neither `--marionette
 -headless` nor an MCP profile, and a GUI Firefox with a parent of launchd is
@@ -173,7 +183,7 @@ normal, not an orphan. Do not fall back to curl or to the dev's browser because
 of this error.
 
 The same stale browser is left behind when the solo server **disconnects mid-session** (the
-tools vanish from the session). Run `firefox-reap.sh` first (it kills only orphans), then ask the dev to run
+tools vanish from the session). Run `firefox-reap.sh --others` first, then ask the dev to run
 `/mcp` and reconnect `firefox-solo`. Claude cannot reconnect an MCP server itself.
 
 **Close solo's tabs when the check is done.** Headless still paints every frame. A days-old
