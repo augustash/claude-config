@@ -16,6 +16,7 @@ misattributing someone's work to an invented maintainer, out loud.
 
 - **jacerider = Cyle.** The `neo*` modules are his, so a `jacerider/*` PR is a PR to Cyle.
 - **KazaJhodo = Kaza.**
+- **ischelzel = Ingrid.** A git author is often only the handle; don't guess a first name from it.
 
 A personal fork sits between the two: work is committed to `kazajhodo/<module>` and PR'd to
 `jacerider/<module>`, so a module's clone typically has `origin` = the fork and `upstream` =
