@@ -203,6 +203,21 @@ for a theme bug that surfaced here.
   loaded 2008's 13% as 2011's and put the rest into the answer text. Guard: two or more
   figures left in front of an answer means a missed header, so skip the line and report it.
   Never let leftover figures become a label. Only the cross-check caught this one.
+- **A topline-only year's breakdowns may sit in later reports.** Until 2014, EM's crosstabs
+  repeated earlier survey waves for every question they reused, across all their columns:
+  inside each table (2010, 2012) or in "Summary of … Trend" tables (2014). Before telling a
+  client a year has no breakdowns, grep the later reports for its wave label. Match each block
+  to the topline question whose overall figures it reproduces exactly (two answers or more,
+  labels compared loosely: "CONFIDENT" is "TOTAL CONFIDENT", "10" is "Rated 10 (most)"). The
+  match is also the check. File the rows under the topline's wording and cite the later
+  report. EM gained group results for 53, 30 and 27 questions.
+- **A later report's groups don't all apply to an earlier wave.** Groups the earlier survey
+  couldn't define (newer employee bands it never asked, "status quo" groups built from the
+  newer survey's answers) print blank in one report and as figures in another. Compare every
+  wave block two reports share, not just the year being loaded. Leave out any group two
+  reports disagree on, everywhere, or a year with one source (EM 2013) keeps the bad groups.
+  Leave group sizes blank rather than derive them, and rename labels naming the later year
+  ("Expects 2010 economy to be").
 - **Cross-check a topline by value agreement, not text similarity.** Matching questions by
   wording pairs the wrong ones (2008 "retention factors" vs 2011 "recruitment factors" read as
   dozens of false conflicts). Instead, find the question in the other document whose shared
