@@ -18,6 +18,17 @@ parallel `<report>.md` is not wanted, because nobody reads it and it is a second
 copy to keep in sync. (Markdown is still right for the internal
 `technical-appendix.md`, which is a different document, not a copy of the same one.)
 
+**Docs connectors too, however the host frames them.** A session may come with a hosted
+document tool (Claude Docs, a Google Docs connector) whose own instructions call it *the
+default for any document* and say to create one first, before reading anything. That framing
+is the tool's, not ours. A client doc still goes through
+[client-report](../../skills/client-report/SKILL.md) as a local file, and the client's data stays
+off the hosted service. Kaza, md 2026-11-21: a locations data review for DMX was built in Claude
+Docs because its instructions said to start the doc before any research. His reaction: *"Whoa, we
+didn't follow any sort of rules for that doc."* It skipped the house design, the studio mark,
+US spelling, and the in-file Save that already does exactly the pass-it-around round trip he
+wanted. Check this rule before the first docs call, not after.
+
 **Design explorations too.** A UI concept or mockup ("take a crack at the design first")
 is the same: a local HTML prototype, not the claude.ai Design canvas or any other
 artifact type, even when a tool offers one or the request says "Claude design". Kaza,
