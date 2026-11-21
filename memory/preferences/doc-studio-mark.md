@@ -17,7 +17,8 @@ text.
 
   This replaced the earlier mark on record, a hover credit (colour shield sliding out a
   wordmark, from the dmx-power.com footer sprite) and its 35×44 PNG shield. Docs built
-  before 2026-11-21 still carry that one inline.
+  before 2026-11-21 still carry that one inline: swap it in when a doc is next edited,
+  not in a sweep of its own (Kaza, md 2026-11-21).
 
 Which studio a project belongs to is a per-project fact. When it isn't recorded, ask.
 
