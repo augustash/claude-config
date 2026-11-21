@@ -8,15 +8,16 @@ text.
 - **August Ash work** → the A mark:
   [templates/brand/august-ash-mark.svg](../../templates/brand/august-ash-mark.svg)
   (two-tone blue, from the augustash.com `logo_mark` block). Inline the SVG as-is.
-- **Ashen Rayne work** → the hover credit:
-  [templates/brand/ashen-rayne-credit.html](../../templates/brand/ashen-rayne-credit.html).
-  It is the colour shield at rest; on hover the wordmark slides out, then *IMAGINED*,
-  after the dmx-power.com footer credit (Kaza, su 2026-09-27). The plain shield below
-  remains the static fallback.
-- **Ashen Rayne, static** → the shield:
-  [templates/brand/ashen-rayne-shield.png](../../templates/brand/ashen-rayne-shield.png),
-  the colour shield cropped from the DMX Power footer-credit sprite. Inline it as a
-  `data:image/png;base64` URI.
+- **Ashen Rayne work** → the shield:
+  [templates/brand/ashen-rayne-shield.svg](../../templates/brand/ashen-rayne-shield.svg),
+  the shield alone from the new Ashen Rayne logo (Kaza, md 2026-11-21: "use just the shield").
+  A vector, so it stays sharp at any size. Inline the SVG as-is; its IDs carry an `ar-`
+  prefix so it can't collide with a page's own. The wordmark is left out on purpose: it is
+  set in a light cream meant for a dark ground and would vanish on a white doc.
+
+  This replaced the earlier mark on record, a hover credit (colour shield sliding out a
+  wordmark, from the dmx-power.com footer sprite) and its 35×44 PNG shield. Docs built
+  before 2026-11-21 still carry that one inline.
 
 Which studio a project belongs to is a per-project fact. When it isn't recorded, ask.
 
@@ -35,6 +36,3 @@ consistent without adding a masthead that competes with the content.
   so never link the file.
 - Both marks are full colour and read on light and dark grounds. Don't recolour them to
   the client's palette.
-- ⚠ The shield source is only **35×44px**, the best available (ashenrayne.com serves the
-  same 218px logo). Don't show it above 44px tall or it goes soft on retina. Replace the
-  file here if a vector turns up.
