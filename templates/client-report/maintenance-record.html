@@ -218,6 +218,8 @@ h3.subh{margin:0 0 14px;font-size:19px;line-height:1.3;color:var(--deep)}
 .done[aria-pressed="true"] svg{display:block}
 
 /* The note after the first choice. */
+.nosave{margin:24px 0 0;padding:12px 16px;border-left:4px solid #e0a800;background:#fff8e1;color:var(--deep);font-size:16px;line-height:1.5;max-width:46em}
+.nosave[hidden]{display:none}
 dialog.note{max-width:30rem;border:0;border-radius:12px;padding:26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.25);color:var(--ink)}
 dialog.note::backdrop{background:rgba(0,0,0,.35)}
 dialog.note h3{margin:0 0 10px;color:var(--deep);font-size:20px}
@@ -273,6 +275,7 @@ dialog.note button{padding:8px 20px;border:0;border-radius:999px;background:var(
       <div class="action"><span class="label">Action required</span><span class="val">Renew the licence</span></div> -->
     </div>
   </header>
+  <p class="nosave" role="note" hidden>To save your answers, open this file in <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>. This browser can’t save them back into the document.</p>
 </div>
 <div class="sentinel" aria-hidden="true"></div>
 <nav class="nav" aria-label="Sections">
@@ -604,6 +607,7 @@ dialog.note button{padding:8px 20px;border:0;border-radius:999px;background:var(
     var n=root.querySelector('.nav');if(n)n.classList.remove('stuck');
     var s=root.querySelector('.save');if(s){s.classList.remove('dirty');s.textContent='Saved';}
     [].forEach.call(root.querySelectorAll('dialog'),function(n){n.removeAttribute('open')});
+    var ns=root.querySelector('.nosave');if(ns)ns.hidden=true;
     // A partial resets its own script-added state in the copy.
     document.dispatchEvent(new CustomEvent('record:snapshot',{detail:{root:root}}));
     return '<!DOCTYPE html>\n'+root.outerHTML;
@@ -632,16 +636,18 @@ dialog.note button{padding:8px 20px;border:0;border-radius:999px;background:var(
     // from its own button's click (the file picker needs a click to open).
     if(document.dispatchEvent(new CustomEvent('record:save',{cancelable:true,detail:{write:write}})))write();
   });
+  // The browser's own save dialog, and nothing else. A script-built download (a Blob through
+  // a link) is the HTML-smuggling pattern: Gmail refuses the attachment and 365 flags it.
+  var nosave=document.querySelector('.nosave');
+  if(nosave&&!window.showSaveFilePicker)nosave.hidden=false;
   function write(){
-    var blob=new Blob([snapshot()],{type:'text/html'});
-    function done(){saved=state();refresh();}
-    function download(){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},0);done();}
-    if(window.showSaveFilePicker){
-      window.showSaveFilePicker({suggestedName:name,types:[{description:'Web page',accept:{'text/html':['.html']}}]})
-        .then(function(h){return h.createWritable()})
-        .then(function(w){return w.write(blob).then(function(){return w.close()})})
-        .then(done).catch(function(e){if(e&&e.name!=='AbortError')download();});
-    } else download();
+    if(!window.showSaveFilePicker){if(nosave){nosave.hidden=false;nosave.scrollIntoView({block:'center'});}return;}
+    var html=snapshot();
+    window.showSaveFilePicker({suggestedName:name,types:[{description:'Web page',accept:{'text/html':['.html']}}]})
+      .then(function(h){return h.createWritable()})
+      .then(function(w){return w.write(html).then(function(){return w.close()})})
+      .then(function(){saved=state();refresh();})
+      .catch(function(e){if(e&&e.name!=='AbortError'&&nosave)nosave.hidden=false;});
   }
   window.addEventListener('beforeunload',function(e){if(state()!==saved){e.preventDefault();e.returnValue='';}});
 })();

@@ -1296,8 +1296,17 @@ anything with neither (a task for the client's own team) is not.
   the script hides it when no `.decision`, `.approve` or `[data-done]` is on the page.
   Hiding it until the first choice, as cal's record did, left the reviewer asking where
   saving was. The snapshot writes it back as green *Saved*, not hidden. It uses `showSaveFilePicker`
-  where the browser has it (Chrome, Edge) and downloads a copy everywhere else, and a
-  `beforeunload` prompt guards unsaved choices.
+  (Chrome, Edge) **and nothing else**, and a `beforeunload` prompt guards unsaved choices.
+  **Never fall back to a script-built download** (a `Blob` through `createObjectURL` and an
+  `<a download>`). That is the HTML-smuggling pattern malware uses to slip past mail filters,
+  and Gmail refuses the attachment as a virus. Microsoft 365's Defender flags it too. Ashen
+  Rayne sends through Gmail and August Ash through 365, so it blocks both (Kaza, md
+  2026-11-22: both DMX review docs were refused in Gmail. A copy with only that fallback
+  removed went through). Where the browser has no picker (Firefox, Safari), the template
+  un-hides a `.nosave` notice on load, before anyone answers, saying to open the file in
+  Chrome or Edge. The snapshot re-hides it. Test the save by stubbing
+  `window.showSaveFilePicker` in Playwright and capturing what it writes, not by waiting
+  for a download.
 - State lives in the markup as `data-approved="true"`, and the saved file is a snapshot
   reset to how the page ships (sections open, script-added controls stripped), so the
   returned copy opens with their choices marked and still reads in full without script.
