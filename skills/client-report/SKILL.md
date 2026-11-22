@@ -1307,6 +1307,17 @@ anything with neither (a task for the client's own team) is not.
   Chrome or Edge. The snapshot re-hides it. Test the save by stubbing
   `window.showSaveFilePicker` in Playwright and capturing what it writes, not by waiting
   for a download.
+- **For an Ashen Rayne client on Drupal, host the doc instead of attaching it.** The
+  [`ashenrayne/ar_docs`](https://github.com/ashenrayne/ar_docs) module serves the doc
+  unchanged at a private link per recipient. Save posts the answers to the site, so it works in
+  every browser and there's no file to send back. The tally on Save becomes **Finish** at 100%,
+  and that first complete save emails support@ashenrayne.com. Pipe the built file in with
+  `cat doc.html | drush ar-docs:add <slug> - --recipient=<name> --uri=<public address>`, and
+  read the answers with `ar-docs:answers` or `ar-docs:render`. It needs nothing from the doc:
+  answers are already in its markup, which is why that convention matters. Kaza, md
+  2026-11-22: after the Gmail refusal, *"what if we host the docs … and have them fill them out
+  there?"* First use: the DMX locations reviews, one doc per rep. A one-person doc says
+  "your", not their name.
 - State lives in the markup as `data-approved="true"`, and the saved file is a snapshot
   reset to how the page ships (sections open, script-added controls stripped), so the
   returned copy opens with their choices marked and still reads in full without script.
