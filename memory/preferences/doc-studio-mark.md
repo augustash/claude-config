@@ -32,7 +32,8 @@ consistent without adding a masthead that competes with the content.
   The mark pads **both** sides itself. Leaving the bottom to "the page's own padding" once
   left the shield flush against the bottom edge, because the credit sat after the padded
   content column, outside it (Kaza, DMX catalog questions, 2026-09-30). About **56px wide** for
-  the A mark and **44px tall** for the shield.
+  the A mark and **88px tall** for the shield (Kaza doubled it from 44px, DMX locations
+  review, 2026-11-22).
 - Inline it either way. [[deliverables-as-html-files]] requires a doc that opens offline,
   so never link the file.
 - Both marks are full colour and read on light and dark grounds. Don't recolour them to
