@@ -1069,6 +1069,10 @@ title block and lists them:
 - No bottom border at rest. The hairline appears only once the nav is stuck, toggled
   by an `IntersectionObserver` on a 1px sentinel just above it. At rest the title
   block's rule already separates it.
+- **A doc with one section gets no nav links** (Kaza, md location types, 2026-11-23). A
+  single item jumps nowhere and reads like a stray label. If the doc has a Save, keep the
+  bar anyway as its home: give the empty list a min-height so the bar doesn't collapse
+  around the absolutely-placed button. With no Save either, drop the bar.
 
 **Every section collapses, and the nav opens what it jumps to** (Kaza, cal 2026-10-19).
 The reader closes what they've read and keeps the page to what they're working through.
