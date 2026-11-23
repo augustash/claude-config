@@ -132,7 +132,8 @@ where (Kaza, 2026-10-19).
   what they are.
 - **Does it answer what people ask?** The main pages should state the offer the way
   someone asking an AI would need to read it ("how do I sell my business in Minnesota").
-  Plain answers and FAQ-shaped content get quoted, and marketing copy doesn't.
+  Plain answers and FAQ-shaped content get quoted, and marketing copy doesn't. When a page's
+  copy is the problem, the method is [content-seo-review](../content-seo-review/SKILL.md).
 - **The technical basics still count:** unique titles and meta descriptions, canonicals,
   the sitemap ([pantheon-robots-txt](../../memory/drupal/pantheon-robots-txt.md)), share
   cards ([neo-metatag-description-slogan](../../memory/augustash/neo-metatag-description-slogan.md)),

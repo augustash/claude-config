@@ -134,6 +134,15 @@ the answer text, then `run.py ingest --engine copilot --query-id t01 --run 1 --t
 Every site or off-site change goes in `docs/seo/ai-visibility/changelog.md` with its date.
 Effects lag one to four weeks (re-crawl); without the log no movement can be attributed.
 
+**Per-page citations** — which of the site's pages the answers cite, against last round:
+
+```
+python3 vendor/augustash/claude-config/templates/ai-visibility/run.py pages --dir docs/seo/ai-visibility [--path /catalog/]
+```
+
+Counts answers citing each page once, over engines present in both rounds (a new engine
+otherwise reads as growth). This is the outcome a content edit is judged on.
+
 ## Reading the report
 
 Per segment and engine: **mention rate** (headline), **site cited**, **share of voice** (brand ÷
@@ -142,9 +151,20 @@ top cited domains. Δ is bolded only past two standard errors; at ~240 answers a
 ~6 points is noise. Act on a bolded move or a three-week trend, never one round.
 
 Measure weekly; change at whatever pace the work allows — weekly changes blur attribution.
+**Don't let the measuring lapse.** A change shipped with no round after it can't be graded,
+and the next round can't separate it from whatever shipped later.
+
+## Changing the copy
+
+When the levers above are in place and a page is crawled but not chosen, the copy is the
+problem: hand it to [content-seo-review](../content-seo-review/SKILL.md). That skill writes
+its edits into this skill's `changelog.md` and `watch.json` and is judged by `run.py pages`,
+so both skills share one log and one measure.
 
 ## Corrections log
 
+- 2026-11-23 (DMX): no round ran for four weeks after the 10-28/29 changes shipped, so none of
+  them could be graded until the catch-up round. Weekly means weekly.
 - 2026-10-28 (DMX): treated `ocrmypdf --skip-text` exiting clean as "already searchable"; four
   manuals had vector-outline body text and gained 8–13× extractable text under `--redo-ocr`.
 - 2026-10-29 (DMX): read AI Crawl Control's "Unsuccessful" share (Bingbot ~40%) as possible

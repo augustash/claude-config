@@ -23,6 +23,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -329,6 +330,61 @@ def cmd_report(a):
     print(report)
 
 
+def page_key(u, site_domains):
+    """Normalise a cited URL to a site path, or None if it isn't ours."""
+    pu = urllib.parse.urlsplit(u)
+    host = (pu.hostname or "").lower()
+    if not any(host == d or host.endswith("." + d) for d in site_domains):
+        return None
+    return urllib.parse.unquote(pu.path).rstrip("/") or "/"
+
+
+def page_counts(rows, site_domains, engines):
+    """Answers citing each site path, counted once per answer, over the given engines."""
+    hits, queries, n = Counter(), defaultdict(set), 0
+    for r in rows:
+        if "error" in r or r["engine"] not in engines:
+            continue
+        n += 1
+        for path in {page_key(u, site_domains) for u in r.get("urls", []) if u} - {None}:
+            hits[path] += 1
+            queries[path].add(r["query_id"])
+    return hits, queries, n
+
+
+def cmd_pages(a):
+    """Per-page citations, this round against the last: the outcome a content edit is judged on."""
+    d = Path(a.dir)
+    cfg, _ = load_cfg(d)
+    files = sorted((d / "results").glob("*.jsonl"))
+    cur = Path(a.file) if a.file else files[-1]
+    prev = Path(a.against) if a.against else next((f for f in reversed(files) if f.name < cur.name), None)
+    cr, pr = rows_of(cur), rows_of(prev) if prev else []
+    # Only engines answered in both rounds, or a newly added engine reads as growth.
+    engines = {r["engine"] for r in cr if "error" not in r}
+    if pr:
+        engines &= {r["engine"] for r in pr if "error" not in r}
+    doms = cfg["brand"]["domains"]
+    ch, cq, cn = page_counts(cr, doms, engines)
+    ph, _, pn = page_counts(pr, doms, engines)
+    paths = sorted(set(ch) | set(ph), key=lambda k: (-ch[k], -ph[k], k))
+    if a.path:
+        paths = [k for k in paths if any(f in k for f in a.path)]
+    lines = [f"# Cited pages — {cur.stem}", "",
+             f"Against: {prev.stem if prev else 'nothing (baseline)'}. Engines compared: {', '.join(sorted(engines))}. "
+             f"Answers: {cn} now, {pn} then. A count is answers citing the page at least once.", "",
+             "| Page | Now | Then | Δ | Queries citing it |", "|---|---|---|---|---|"]
+    for k in paths[: a.top]:
+        c, p = pct(ch[k], cn), pct(ph[k], pn)
+        sig = pn and abs(c - p) > noise(c, cn, p, pn)
+        dl = f"{ch[k] - round(ph[k] * cn / pn) if pn else ch[k]:+d}" + (" **↑**" if sig and c > p else " **↓**" if sig else "")
+        lines.append(f"| {k} | {ch[k]} | {ph[k]} | {dl} | {', '.join(sorted(cq[k])) or '—'} |")
+    out = "\n".join(lines)
+    (d / "reports").mkdir(exist_ok=True)
+    (d / "reports" / f"pages-{cur.stem}.md").write_text(out + "\n")
+    print(out)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -350,8 +406,14 @@ def main():
     p.add_argument("--dir", required=True)
     p.add_argument("--file")
     p.add_argument("--against")
+    g = sub.add_parser("pages", help="citations per site page, against the previous round")
+    g.add_argument("--dir", required=True)
+    g.add_argument("--file")
+    g.add_argument("--against")
+    g.add_argument("--path", action="append", help="only paths containing this (repeatable)")
+    g.add_argument("--top", type=int, default=40)
     a = ap.parse_args()
-    {"run": cmd_run, "ingest": cmd_ingest, "report": cmd_report}[a.cmd](a)
+    {"run": cmd_run, "ingest": cmd_ingest, "report": cmd_report, "pages": cmd_pages}[a.cmd](a)
 
 
 if __name__ == "__main__":
