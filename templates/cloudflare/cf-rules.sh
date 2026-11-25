@@ -246,12 +246,13 @@ case "$CMD" in
     verify
     rid="$(ruleset_id)"
 
-    # Always snapshot before a write — this is the rollback.
+    # Always snapshot before a write: the record of what the rules were. A reference,
+    # not a fallback; the change should already be right (memory/preferences/test-before-live.md).
     ts="$(date -u +%Y%m%dT%H%M%SZ)"
     fetch_ruleset > "$OUT/ruleset-before-$ts.json"
 
     printf '\nAbout to REPLACE all custom rules on zone %s.\n' "$CF_ZONE_ID"
-    printf 'Rollback snapshot: %s/ruleset-before-%s.json\n\n' "$OUT" "$ts"
+    printf 'Rules before this change: %s/ruleset-before-%s.json\n\n' "$OUT" "$ts"
     printf 'Current order:\n'
     jq -r '.result.rules[]? | "  \(.action | ascii_upcase)  \(.description // "(none)")"' \
       "$OUT/ruleset-before-$ts.json"

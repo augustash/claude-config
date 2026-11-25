@@ -69,6 +69,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [Fix modules on develop](memory/preferences/module-fixes-on-develop.md) — before branching, committing or writing a commit message in a module clone or fork; the rules differ from the consuming project
 - [Commit handoff](memory/preferences/commit-handoff.md) — before committing or pushing anything; Claude commits in every zone, it's *pushing* that differs
 - [Confirm before live terminus](memory/preferences/confirm-before-live-terminus.md) — always confirm before terminus against `.live`/`.test`
+- [What goes live is already tested](memory/preferences/test-before-live.md) — before applying anything to production, or calling a pre-change backup or snapshot a rollback or fallback
 - [Don't narrate the deploy](memory/preferences/dont-narrate-the-deploy.md) — before listing post-push updb/cim steps; the payload is useful, the procedure isn't
 - [Local config in settings.local.php](memory/preferences/local-config-in-settings-local.md) — dev-only overrides never go through `cset`/UI
 - [Test reminders](memory/preferences/test-reminders.md) — surface existing tests when changing covered code, flag coverage gaps
