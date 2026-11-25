@@ -1302,21 +1302,26 @@ anything with neither (a task for the client's own team) is not.
   the script hides it when no `.decision`, `.approve` or `[data-done]` is on the page.
   Hiding it until the first choice, as cal's record did, left the reviewer asking where
   saving was. The snapshot writes it back as green *Saved*, not hidden. It uses `showSaveFilePicker`
-  (Chrome, Edge) **and nothing else**, and a `beforeunload` prompt guards unsaved choices.
-  **Never fall back to a script-built download** (a `Blob` through `createObjectURL` and an
-  `<a download>`). That is the HTML-smuggling pattern malware uses to slip past mail filters,
-  and Gmail refuses the attachment as a virus. Microsoft 365's Defender flags it too. Ashen
-  Rayne sends through Gmail and August Ash through 365, so it blocks both (Kaza, md
-  2026-11-22: both DMX review docs were refused in Gmail. A copy with only that fallback
-  removed went through). **A doc that slips through with the fallback proves nothing.** Gmail's
-  verdict varies by doc: local49's November record carried the fallback and sent fine, so Kaza
-  questioned the rule. OF's record, a 500 KB doc full of embedded photos, was then refused with
-  the fallback and accepted without it (2026-11-25). The rule stands for every doc.
-  Where the browser has no picker (Firefox, Safari), the template
-  un-hides a `.nosave` notice on load, before anyone answers, saying to open the file in
-  Chrome or Edge. The snapshot re-hides it. Test the save by stubbing
-  `window.showSaveFilePicker` in Playwright and capturing what it writes, not by waiting
-  for a download.
+  where the browser has it (Chrome, Edge) and downloads a copy everywhere else (a `Blob`
+  through `createObjectURL` and an `<a download>`), and a `beforeunload` prompt guards unsaved
+  choices.
+
+  **All of a doc's script lives in one `<script>` block.** A bar partial's code goes inside
+  the record's block, never in a block of its own. Gmail refuses the attachment as a virus
+  when the save-and-download code sits in a block where it is a large share of the code: OF's
+  record split into the record's script and the Health bar's script was refused every time, and
+  the same code merged into one block went through (Kaza, OF 2026-11-25). A failing block stays
+  refused even with a passing block beside it, so Gmail appears to score each block on its own.
+  Before this was found, the download fallback itself was blamed. Both DMX review docs
+  (md, 2026-11-22) were refused, a copy without the fallback went through, and the fallback was
+  removed in favour of a Chrome/Edge-only notice. Local49's one-block record then sent fine with
+  the fallback, and twenty-odd isolated sends on OF ruled out the photos, the custom events,
+  `CSS.escape`, the function names and the comments. What remained was the split. **When a doc
+  is refused, check its block count first.** Then halve it, with a control the dev resends at
+  each step: one send changing one thing, and every file attached at once to one draft, since
+  Gmail flags each attachment separately and its verdicts repeat. Test the save in
+  firefox-solo by stubbing `window.showSaveFilePicker` and capturing what it writes, and by
+  capturing the `Blob` from `URL.createObjectURL` for the fallback.
 - **For an Ashen Rayne client on Drupal, host the doc instead of attaching it.** The
   [`ashenrayne/ar_docs`](https://github.com/ashenrayne/ar_docs) module serves the doc
   unchanged at a private link per recipient. Save posts the answers to the site, so it works in
