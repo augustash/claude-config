@@ -1167,8 +1167,10 @@ from local49's October 2026 record.
   a double beat about every 1.2s, and still under reduced motion.
 - **The ground is the client's brand primary**, so the bar is noticed. White lettering and
   translucent white panels on it, with the brand's second colour as the accent (tags,
-  kickers, the "not yet" segment). Approved items, answered questions and done tasks turn
-  solid white with the approval green, so a choice stands out on the colour.
+  kickers, the "not yet" segment). Approved items, answered questions and done tasks stay
+  on the ground: a heavier white wash (34%) and a solid white edge, with the tile showing
+  through; a pressed button or an approved item's tag turns solid white with brand text. Green
+  on the brand read as foreign (Kaza, local49 2026-11-25, replacing solid white with green).
 - **The pattern is the client's own mark**, traced from their logo, not a generic shape:
   `templates/client-report/trace-logo-mark.py` isolates it from the largest raster on the
   site and potrace turns it into a path. Tile it diagonally, small and faint (local49: 21.7px
