@@ -21,7 +21,11 @@ curl -sI -H 'Cookie: totally_unrelated=1' "$U"           # HIT — proves it's t
 
 **Fix:** `ash-woocommerce-cookies` (atrix.com, eqlearn.com; reusable on any augustash
 Pantheon/WooCommerce site). Four interdependent parts — don't modify in isolation.
-Paired with a Cloudflare WAF rule blocking GET `add-to-cart=` and `add_to_wishlist=` params.
+Pair it with a Cloudflare WAF rule against crawlers following GET `add-to-cart=` and
+`add_to_wishlist=` links, and **gate it on ASN, not user agent**: on atrix the Meta crawl
+(ASN 32934) uses ordinary browser UAs, so a UA-gated rule let ~1,500 cart-link renders a day
+through (2026-11-24) while reading as protection. `add_to_wishlist=` alone is safe to block
+outright, since YITH adds over AJAX and only crawlers follow the href.
 `remove_item=` is intentionally excluded — it's nonce-protected and Cloudflare was blocking
 legitimate cart-page removals (mini-cart POSTs, full cart GETs).
 
