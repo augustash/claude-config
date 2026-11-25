@@ -1,6 +1,6 @@
 ---
 name: ai-visibility
-description: Track whether a client's brand shows up when buyers ask AI answer engines (ChatGPT, Google/Gemini, Copilot, Perplexity) about what they sell, at a weekly cadence, and turn the result into site and off-site changes. Use when setting up AI or "GEO/AEO" visibility tracking for a site, running a round, reading a round's report, or deciding what to change to show up in AI answers. NOT classic rank tracking (use Search Console), and NOT a content-generation exercise — the method explicitly refuses doorway pages per market.
+description: Track whether a client's brand shows up when buyers ask AI answer engines (ChatGPT, Google/Gemini, Copilot, Perplexity) about what they sell, at a weekly cadence, and turn the result into site and off-site changes. Use when setting up AI or "GEO/AEO" visibility tracking for a site, running a round, reading a round's report, counting the visitors AI answers send (referrers miss most of them), or deciding what to change to show up in AI answers. NOT classic rank tracking (use Search Console), and NOT a content-generation exercise — the method explicitly refuses doorway pages per market.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -154,6 +154,37 @@ Measure weekly; change at whatever pace the work allows — weekly changes blur 
 **Don't let the measuring lapse.** A change shipped with no round after it can't be graded,
 and the next round can't separate it from whatever shipped later.
 
+## Visits: the outcome the mentions are for
+
+Mentions and citations are inputs; buyers arriving from an answer are the outcome. **Counting
+by referrer misses most of them.** AI apps usually send no referrer, so the visit lands in
+"direct". The arrival page is usually served from the edge cache, so the origin log never
+sees it. On atrix (2026-11-25), referrer-only counting showed **14** ChatGPT visits in two
+months. The real figure was **454 distinct visitors**, onto specific product pages.
+
+What does show up:
+
+- **`utm_source=chatgpt.com`**, which ChatGPT adds to the links it gives. Also seen:
+  `utm_source=openai` and `utm_source=perplexity`. An engine that doesn't tag its links stays
+  invisible; this count is a floor.
+- **In GA4** (client-side, so the cache doesn't matter): Acquisition → Session source. Start
+  here when the site runs it; visitors who decline consent or block trackers drop out.
+- **In the origin log**, only through the background calls the cached page makes afterwards
+  (`wc-ajax` fragments and similar), which carry the arrival URL as referrer. Grep the whole
+  line for the UTM, take the client IP from X-Forwarded-For (see
+  [log-audit](../log-audit/SKILL.md)), exclude `ChatGPT-User`/`OAI-SearchBot`, and count
+  distinct IP per landing path. A grep on the request URL alone returns zero.
+- **Cloudflare Web Analytics** (free, cookieless, injected at the edge): a cross-check on
+  GA4's consent gap.
+
+Report visitors per month and the top landing pages next to the mention rate. A landing page
+an answer sends buyers to is one to keep crawlable and accurate first.
+
+**An engine with reach but no visits isn't worth a crawl budget.** Meta AI sent atrix zero
+visits in two months, while Meta's `meta-webindexer` made ~2,000 requests a day into cart
+links that robots.txt disallows. It was blocked at Cloudflare by ASN, keeping
+`facebookexternalhit` share previews. Meta AI isn't in the engine table for the same reason.
+
 ## Changing the copy
 
 When the levers above are in place and a page is crawled but not chosen, the copy is the
@@ -163,6 +194,9 @@ so both skills share one log and one measure.
 
 ## Corrections log
 
+- 2026-11-25 (atrix): counted AI visits by referrer and reported ChatGPT at 14 in two months.
+  Its links carry `utm_source=chatgpt.com` and the arrival pages are edge-cached; counted by
+  the UTM in background-call referrers it was 454 visitors. See *Visits*.
 - 2026-11-23 (DMX): no round ran for four weeks after the 10-28/29 changes shipped, so none of
   them could be graded until the catch-up round. Weekly means weekly.
 - 2026-10-28 (DMX): treated `ocrmypdf --skip-text` exiting clean as "already searchable"; four
