@@ -1164,7 +1164,9 @@ don't share styling. [health-bar.html](../../templates/client-report/health-bar.
 from local49's October 2026 record.
 - **The label** is the client code, a beating heart and an italic *Health*. The heart is
   AshenRayne's sign that a site is being looked after (the deploy status line uses it too):
-  a double beat about every 1.2s, and still under reduced motion.
+  a double beat about every 1.2s, and still under reduced motion. It is always heart red
+  (`#ff3b5c`), whatever the client's colours: it's ours, not part of their palette (Kaza, OF
+  2026-11-25, after it was recoloured to OF's gold with the rest of the bar).
 - **The ground is the client's brand primary**, so the bar is noticed. White lettering and
   translucent white panels on it, with the brand's second colour as the accent (tags,
   kickers, the "not yet" segment). Approved items, answered questions and done tasks stay
@@ -1381,8 +1383,9 @@ and let them answer on the page.
   worded conditionally (*"if the store moves…"*). Saved as `data-answer`. The snapshot
   strips `hidden` from gated content, so the file still reads in full without script.
 - **A plain yes/no question gets a check and an X after the sentence** (Kaza, gif
-  2026-10-20). No panel and no buttons labelled Yes/No: two round icon buttons, green when
-  the check is pressed, red when the X is. Each carries an `aria-label` that says what the
+  2026-10-20). No panel, no box around the icons, and no buttons labelled Yes/No: two bare
+  icons in the text colour, both faint (about 35% opacity) until one is chosen, and the chosen
+  one at full strength. No green or red (Kaza, OF 2026-11-25, replacing green check / red X). Each carries an `aria-label` that says what the
   answer means (*"Yes, remove it"*). Same `data-answer` state and Save as the panel version.
 - **A question that asks for a fact gets the field alone** (Kaza, metro 2026-10-23). When
   the answer is something only the client has, like an address to notify, there's nothing
