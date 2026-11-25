@@ -246,6 +246,7 @@ no more. Open the file the moment a line looks relevant; that's the whole design
 - [WooCommerce Pantheon cache](memory/wordpress/woocommerce-pantheon-cache.md) — cart cookies bust edge cache site-wide; before installing the fix, check it is even reachable and read the safety interaction
 - [EBizCharge 11 upgrade traps](memory/wordpress/ebizcharge-11-upgrade-traps.md) — after upgrading EBizCharge from 5.x; also customers can't type a card, can't untick Save Card, or checkout looks faded
 - [WooCommerce purchase gate seams](memory/wordpress/woocommerce-purchase-gate-seams.md) — forcing login before purchase takes four hooks, only one of them a real rule
+- [WooCommerce Back button re-adds to cart](memory/wordpress/woocommerce-add-to-cart-resubmit.md) — a customer's cart quantity doubles or a removed item returns "on its own"; reads as caching, isn't
 - [LearnDash closed-course button URL](memory/wordpress/learndash-closed-course-button-url.md) — a closed course's buy button points at live from every other environment
 - [WP security-header CSP silently breaks analytics](memory/wordpress/rsssl-csp-enforce-analytics.md) — analytics cliffs overnight while the site looks fine; two header plugins intersect
 - [Pass CSP Evaluator on WordPress with nonce + strict-dynamic](memory/wordpress/csp-nonce-strict-dynamic.md) — clearing the `script-src` HIGH without a host allowlist, and where WP leaks un-nonced inline scripts

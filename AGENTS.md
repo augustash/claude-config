@@ -413,6 +413,8 @@ These files are authoritative and kept current by the team. Prefer conventions h
   after upgrading EBizCharge from 5.x; also customers can't type a card, can't untick Save Card, or checkout looks faded
 - **WooCommerce purchase gate seams** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-purchase-gate-seams.md`  
   forcing login before purchase takes four hooks, only one of them a real rule
+- **WooCommerce Back button re-adds to cart** — `vendor/augustash/claude-config/memory/wordpress/woocommerce-add-to-cart-resubmit.md`  
+  a customer's cart quantity doubles or a removed item returns "on its own"; reads as caching, isn't
 - **LearnDash closed-course button URL** — `vendor/augustash/claude-config/memory/wordpress/learndash-closed-course-button-url.md`  
   a closed course's buy button points at live from every other environment
 - **WP security-header CSP silently breaks analytics** — `vendor/augustash/claude-config/memory/wordpress/rsssl-csp-enforce-analytics.md`  
