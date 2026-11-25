@@ -1308,7 +1308,11 @@ anything with neither (a task for the client's own team) is not.
   and Gmail refuses the attachment as a virus. Microsoft 365's Defender flags it too. Ashen
   Rayne sends through Gmail and August Ash through 365, so it blocks both (Kaza, md
   2026-11-22: both DMX review docs were refused in Gmail. A copy with only that fallback
-  removed went through). Where the browser has no picker (Firefox, Safari), the template
+  removed went through). **A doc that slips through with the fallback proves nothing.** Gmail's
+  verdict varies by doc: local49's November record carried the fallback and sent fine, so Kaza
+  questioned the rule. OF's record, a 500 KB doc full of embedded photos, was then refused with
+  the fallback and accepted without it (2026-11-25). The rule stands for every doc.
+  Where the browser has no picker (Firefox, Safari), the template
   un-hides a `.nosave` notice on load, before anyone answers, saying to open the file in
   Chrome or Edge. The snapshot re-hides it. Test the save by stubbing
   `window.showSaveFilePicker` in Playwright and capturing what it writes, not by waiting
