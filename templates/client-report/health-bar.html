@@ -83,9 +83,8 @@
 /* The label: client code, a beating heart, an italic Health. */
 .hb-label{flex:none;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#fff}
 .hb-label i{font-weight:800;font-size:16px;letter-spacing:.01em}
-/* AshenRayne's sign that a site is being looked after: a double beat about every 1.2s.
-   Always this red, whatever the client's colours: it's ours, not part of their palette. */
-.heart{width:17px;height:17px;flex:none;color:#ff3b5c;transform-origin:50% 55%;animation:hb-beat 1.2s ease-in-out infinite}
+/* AshenRayne's sign that a site is being looked after: a double beat about every 1.2s. */
+.heart{width:17px;height:17px;flex:none;color:#fff;transform-origin:50% 55%;animation:hb-beat 1.2s ease-in-out infinite}
 @keyframes hb-beat{0%,40%,100%{transform:scale(1)}10%{transform:scale(1.2)}20%{transform:scale(1.02)}30%{transform:scale(1.14)}}
 @media (prefers-reduced-motion:reduce){.heart{animation:none}}
 .hb-bar ul{list-style:none;margin:0;padding:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}

@@ -1164,9 +1164,7 @@ don't share styling. [health-bar.html](../../templates/client-report/health-bar.
 from local49's October 2026 record.
 - **The label** is the client code, a beating heart and an italic *Health*. The heart is
   AshenRayne's sign that a site is being looked after (the deploy status line uses it too):
-  a double beat about every 1.2s, and still under reduced motion. It is always heart red
-  (`#ff3b5c`), whatever the client's colours: it's ours, not part of their palette (Kaza, OF
-  2026-11-25, after it was recoloured to OF's gold with the rest of the bar).
+  a double beat about every 1.2s, and still under reduced motion.
 - **The ground is the client's brand primary**, so the bar is noticed. White lettering and
   translucent white panels on it, with the brand's second colour as the accent (tags,
   kickers, the "not yet" segment). Approved items, answered questions and done tasks stay
