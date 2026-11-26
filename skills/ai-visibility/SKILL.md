@@ -109,7 +109,19 @@ separately because different levers move them (plus an optional fourth):
   question now gets asked. Kaza (DMX, 2026-11-25): make them specific enough that showing up
   is the test.
 
-Keep queries fixed between rounds; a changed query is a new series. To drop one, don't delete
+**Ask each query in more than one wording.** Different buyers word the same need
+differently, and an engine can answer one wording and miss another, so one fixed sentence
+measures that sentence. Give each query `"variants": [...]`: other wordings of the same
+premise, keeping its specifics (wattage, voltage, standard) so `expect` still holds. Vary the
+voice, not the need: a fleet buyer's shorthand, an owner thinking aloud, a terse search-box
+string. Run *r* asks wording *(r−1) mod n*, the query first, so with `runs: 3` and two
+variants each wording is asked once a round. The rotation is fixed, not random, so every
+round asks the same mix and the answer count, and the cost, don't change. Rows record the
+wording asked (`query`) and its index (`phrasing`); scores aggregate by `query_id`. For a
+browser engine, ask the wording that `ingest --run` will record. Kaza (DMX, 2026-11-25).
+
+Keep queries and their variants fixed between rounds; a changed query, or a changed set of
+variants, is a new series. To drop one, don't delete
 it: add `"retired": "<date>"` (and a `why_retired`). It stops being asked and leaves both sides
 of every comparison, so a segment's rate doesn't jump because its contents changed. Retire a
 query nobody would ask ("vehicle inverter manufacturers in Minnesota" flattered the mention

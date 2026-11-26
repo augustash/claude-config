@@ -196,6 +196,18 @@ def load_cfg(d):
     return cfg, queries
 
 
+def phrasing(q, run):
+    """The wording asked on this run: the query, then each of its `variants`, in turn.
+
+    Buyers ask the same thing in different words, and an engine can answer one wording
+    and miss another. Rotating by run number (not at random) asks every round the same
+    mix, so rounds still compare like for like and the answer count doesn't change.
+    """
+    texts = [q["q"]] + q.get("variants", [])
+    i = (run - 1) % len(texts)
+    return i, texts[i]
+
+
 def active(rows, queries):
     """Rows for queries still in the set, so a round compares like for like."""
     ids = {q["id"] for q in queries}
@@ -226,10 +238,11 @@ def cmd_run(a):
 
     def work(job):
         e, q, r = job
+        i, text = phrasing(q, r)
         base = {"date": dt.date.today().isoformat(), "engine": e, "segment": q["segment"],
-                "query_id": q["id"], "query": q["q"], "run": r, "source": "api"}
+                "query_id": q["id"], "query": text, "phrasing": i, "run": r, "source": "api"}
         try:
-            ans = ENGINES[e][0](cfg["engines"][e], keys, q["q"])
+            ans = ENGINES[e][0](cfg["engines"][e], keys, text)
             return {**base, **ans, **score(cfg, q, ans)}
         except Exception as ex:
             return {**base, "error": str(ex)}
@@ -250,9 +263,10 @@ def cmd_ingest(a):
     d = Path(a.dir)
     cfg, queries = load_cfg(d)
     q = next(q for q in queries if q["id"] == a.query_id)
+    i, text = phrasing(q, a.run)
     ans = {"text": Path(a.text_file).read_text(), "urls": a.url or [], "searches": [], "model": a.model, "tokens": None}
     row = {"date": dt.date.today().isoformat(), "engine": a.engine, "segment": q["segment"], "query_id": q["id"],
-           "query": q["q"], "run": a.run, "source": "browser", **ans, **score(cfg, q, ans)}
+           "query": text, "phrasing": i, "run": a.run, "source": "browser", **ans, **score(cfg, q, ans)}
     out = d / "results" / f"{dt.date.today().isoformat()}.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("a") as f:
