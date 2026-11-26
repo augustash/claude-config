@@ -94,16 +94,27 @@ text-searchable datasheet earns its keep.
 
 Per project at `docs/seo/ai-visibility/queries.json`: `site`, `brand` (name, regex patterns,
 domains), `competitors`, `engines` (pinned models), `runs`, and three segments scored
-separately because different levers move them:
+separately because different levers move them (plus an optional fourth):
 
 - **technical** — what a qualified buyer types: specs, standards, certifications. Moved mostly
   by the site.
 - **generic** — "best X for Y". Moved mostly off-site. Track it; don't chase it with pages.
 - **branded** — scored for **accuracy** (`expect` / `reject` regexes), not mention: catches the
   engine confusing the brand with something else, or quoting retired products.
+- **needs** (optional) — a buyer's need in their own words, specific enough to have a right
+  answer: "I need a 2000 watt 12V pure sine inverter charger certified for boat use", "we're
+  speccing inverters for a fleet of Type III ambulances". Tag each with `fits`, the client's
+  product that should win it, so a miss points at a page. Technical queries read like a spec
+  sheet; these read like the conversation a buyer has with ChatGPT, which is where the
+  question now gets asked. Kaza (DMX, 2026-11-25): make them specific enough that showing up
+  is the test.
 
-Keep queries fixed between rounds; a changed query is a new series. Brand patterns must exclude
-collisions (DMX vs the DMX512 lighting protocol).
+Keep queries fixed between rounds; a changed query is a new series. To drop one, don't delete
+it: add `"retired": "<date>"` (and a `why_retired`). It stops being asked and leaves both sides
+of every comparison, so a segment's rate doesn't jump because its contents changed. Retire a
+query nobody would ask ("vehicle inverter manufacturers in Minnesota" flattered the mention
+rate and measured nothing). Brand patterns must exclude collisions (DMX vs the DMX512 lighting
+protocol).
 
 ## A round
 

@@ -186,8 +186,17 @@ def load_cfg(d):
     queries = []
     for seg, items in cfg["segments"].items():
         for q in items:
-            queries.append({**q, "segment": seg})
+            # A retired query stays in the file for its history but is no longer asked,
+            # and drops out of both sides of every comparison (see active()).
+            if not q.get("retired"):
+                queries.append({**q, "segment": seg})
     return cfg, queries
+
+
+def active(rows, queries):
+    """Rows for queries still in the set, so a round compares like for like."""
+    ids = {q["id"] for q in queries}
+    return [r for r in rows if r.get("query_id") in ids]
 
 
 def cmd_run(a):
@@ -284,12 +293,12 @@ def noise(p1, n1, p2, n2):
 
 def cmd_report(a):
     d = Path(a.dir)
-    cfg, _ = load_cfg(d)
+    cfg, queries = load_cfg(d)
     files = sorted((d / "results").glob("*.jsonl"))
     cur = Path(a.file) if a.file else files[-1]
     prev = Path(a.against) if a.against else next((f for f in reversed(files) if f.name < cur.name), None)
-    s = summarize(rows_of(cur), cfg["brand"]["name"])
-    p = summarize(rows_of(prev), cfg["brand"]["name"]) if prev else {}
+    s = summarize(active(rows_of(cur), queries), cfg["brand"]["name"])
+    p = summarize(active(rows_of(prev), queries), cfg["brand"]["name"]) if prev else {}
     errs = sum("error" in r for r in rows_of(cur))
     tok, usd = Counter(), Counter()
     for r in rows_of(cur):
@@ -355,11 +364,11 @@ def page_counts(rows, site_domains, engines):
 def cmd_pages(a):
     """Per-page citations, this round against the last: the outcome a content edit is judged on."""
     d = Path(a.dir)
-    cfg, _ = load_cfg(d)
+    cfg, queries = load_cfg(d)
     files = sorted((d / "results").glob("*.jsonl"))
     cur = Path(a.file) if a.file else files[-1]
     prev = Path(a.against) if a.against else next((f for f in reversed(files) if f.name < cur.name), None)
-    cr, pr = rows_of(cur), rows_of(prev) if prev else []
+    cr, pr = active(rows_of(cur), queries), active(rows_of(prev), queries) if prev else []
     # Only engines answered in both rounds, or a newly added engine reads as growth.
     engines = {r["engine"] for r in cr if "error" not in r}
     if pr:
