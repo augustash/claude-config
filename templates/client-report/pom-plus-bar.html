@@ -11,7 +11,9 @@
                that keeps the fixed bar off the last thing on the page (placed above it,
                the bar covers the studio mark). Before the script, because that script
                finds every approvable .panel, .decision and .todo at load, the bar's too.
-    3. SCRIPT  the <script> below, after the record's <script>, before </body>.
+    3. SCRIPT  the code between the <script> tags below, pasted inside the record's own
+               <script>, after its code. Never as a second <script> block (see
+               client-report, Save).
 
   Then set CODE (the client code, not the domain) in the four places it appears, keep the
   passes the round ran, and fill each from the round's findings.
@@ -281,7 +283,7 @@ dialog.summary h3{margin:0 0 14px;color:var(--deep);font-size:20px}
 </dialog>
 </aside>
 
-<!-- ===================== 3. SCRIPT: after the record's <script> ===================== -->
+<!-- ===================== 3. SCRIPT: its body goes inside the record's <script> ===================== -->
 <script>
 /* POM+ bar: one pass open at a time, as a sheet over the record. Approval state belongs
    to the record's script; this reads data-approved for the total and the summary. */

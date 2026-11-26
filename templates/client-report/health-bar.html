@@ -13,7 +13,9 @@
                that keeps the fixed bar off the last thing on the page (placed above it,
                the bar covers the studio mark). Before the script, because that script
                finds every approvable .panel, .decision and .todo at load, the bar's too.
-    3. SCRIPT  the <script> below, after the record's <script>, before </body>.
+    3. SCRIPT  the code between the <script> tags below, pasted inside the record's own
+               <script>, after its code. Never as a second <script> block (see
+               client-report, Save).
 
   Then:
     - Set CODE (the client code, not the domain) in the aria-label, the bar label and
@@ -46,7 +48,7 @@
 /* Health: a bar at the foot of the page, on the client's brand primary so it's noticed.
    Opening a pass slides the whole bar up, so the pass fills the screen on that ground,
    tiled with the client's own mark. White lettering and translucent white panels; a
-   choice turns solid white with the approval green, so it stands out on the colour. */
+   choice takes a heavier white wash and a white edge, staying on the brand colour. */
 .hb{
   --hb-ground:var(--brand);  /* BRAND: the brand primary itself */
   --hb-accent:var(--deep);   /* BRAND: the brand's second colour (tags, kickers, the total) */
@@ -58,6 +60,7 @@
   --hb-muted:rgba(255,255,255,.86);
   --hb-line:rgba(255,255,255,.32);
   --hb-panel:rgba(255,255,255,.13);
+  --hb-chosen:rgba(255,255,255,.34); /* approved, answered, done */
   margin-top:48px;
 }
 .hb-shell{background-color:var(--hb-ground);background-image:var(--hb-tile);background-size:60px 35px;color:var(--hb-ink);
@@ -105,31 +108,26 @@
 .hb-pass .marker .price{color:#fff}
 .hb-pass .approve{color:rgba(255,255,255,.7)}
 .hb-pass .approve:hover:not(:disabled){color:#fff}
-/* Chosen: solid white with the approval green. */
-.hb-pass .approvable.approved{--u:var(--approve);background:#fff;box-shadow:inset 0 0 0 3px var(--approve)}
-.hb-pass .approvable.approved h3,.hb-pass .approvable.approved .price,.hb-pass .approvable.approved .approve{color:var(--approve)}
-.hb-pass .approvable.approved p{color:var(--ink)}
-.hb-pass .approvable.approved .tag{background:var(--approve);color:#fff}
-.hb-pass .approvable.approved .marker{border-top-color:var(--approve)}
+/* Chosen, answered or done: stays on the brand ground, a heavier white wash and a solid white
+   edge with the tile showing through. Green on the brand read as foreign (Kaza, local49 2026-11-25). */
+.hb-pass .approvable.approved{--u:#fff;background:var(--hb-chosen);box-shadow:inset 0 0 0 2px #fff}
+.hb-pass .approvable.approved h3,.hb-pass .approvable.approved .price,.hb-pass .approvable.approved .approve{color:#fff}
+.hb-pass .approvable.approved .tag{background:#fff;color:var(--hb-ground)}
+.hb-pass .approvable.approved .marker{border-top-color:rgba(255,255,255,.7)}
 .hb-pass .decision{background:var(--hb-panel);box-shadow:inset 0 0 0 1px var(--hb-line)}
 .hb-pass .decision h4{color:#fff}
 .hb-pass .decision .context,.hb-pass .decision label,.hb-pass .decision .or{color:var(--hb-muted)}
 .hb-pass .decision .or::before,.hb-pass .decision .or::after{border-top-color:var(--hb-line)}
 .hb-pass .choice{background:transparent;border-color:rgba(255,255,255,.75);color:#fff}
-.hb-pass .decision[data-answer]{background:#fff;box-shadow:inset 0 0 0 3px var(--approve)}
-.hb-pass .decision[data-answer] h4{color:var(--approve)}
-.hb-pass .decision[data-answer] .context,.hb-pass .decision[data-answer] label{color:var(--muted)}
-.hb-pass .decision[data-answer] .choice{border-color:var(--rule);color:var(--ink)}
-.hb-pass .choice[aria-pressed="true"],.hb-pass .decision[data-answer] .choice[aria-pressed="true"]{background:var(--approve);border-color:var(--approve);color:#fff}
+.hb-pass .decision[data-answer]{background:var(--hb-chosen);box-shadow:inset 0 0 0 2px #fff}
+.hb-pass .choice[aria-pressed="true"]{background:#fff;border-color:#fff;color:var(--hb-ground)}
 .hb-pass .decision.missing{background:#fff;box-shadow:inset 0 0 0 3px var(--urgent)}
 .hb-pass .decision.missing h4{color:var(--ink)}
 .hb-pass .decision.missing .choice{border-color:var(--rule);color:var(--ink)}
 .hb-pass .todo{background:var(--hb-panel);box-shadow:inset 0 0 0 1px var(--hb-line);color:var(--hb-ink)}
 .hb-pass .todo a{color:#fff}
-.hb-pass .todo.is-done{background:#fff;box-shadow:inset 0 0 0 3px var(--approve);color:var(--ink)}
-.hb-pass .todo.is-done a{color:var(--approve)}
+.hb-pass .todo.is-done{background:var(--hb-chosen);box-shadow:inset 0 0 0 2px #fff;color:#fff}
 .hb-pass .done{color:#fff}
-.hb-pass .done[aria-pressed="true"]{color:var(--approve)}
 .hb-pass .xref a{background:#fff;color:var(--hb-ground)}
 .hb-pass .xref a:hover{background:var(--hb-accent);color:#fff}
 
@@ -303,7 +301,7 @@ dialog.summary h3{margin:0 0 14px;color:var(--deep);font-size:20px}
 </dialog>
 </aside>
 
-<!-- ===================== 3. SCRIPT: after the record's <script> ===================== -->
+<!-- ===================== 3. SCRIPT: its body goes inside the record's <script> ===================== -->
 <script>
 /* Health bar: one pass open at a time, as a sheet over the record. Approval state belongs
    to the record's script; this reads data-approved for the total and the summary. */
