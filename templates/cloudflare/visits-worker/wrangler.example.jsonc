@@ -1,0 +1,40 @@
+// Per-site wrangler config for the visits Worker. Copy into the site's gitignored
+// .cloudflare/visits-worker/ as wrangler.jsonc and fill in the placeholders; `main` points
+// back at the shared worker.js in vendor so every site runs the same code.
+//
+// Deploy from the site root:
+//   bash vendor/augustash/claude-config/templates/cloudflare/visits-worker/visits.sh .cloudflare deploy
+// (reads CF_API_TOKEN and CF_ACCOUNT_ID from .cloudflare/cf.env; wrangler is run via npx).
+{
+  "name": "visits-<site>",
+  "main": "../../vendor/augustash/claude-config/templates/cloudflare/visits-worker/worker.js",
+  "compatibility_date": "2026-11-01",
+  "account_id": "<CF_ACCOUNT_ID>",
+
+  "analytics_engine_datasets": [
+    // One dataset per site keeps each client's data, and its deletion, separate.
+    { "binding": "VISITS", "dataset": "visits_<site>" }
+  ],
+
+  // STAGE 1 (test): workers.dev only, no route on the real zone. TEST_ORIGIN makes the
+  // Worker proxy to the live site, so a request to the workers.dev URL returns the real
+  // page and writes a real data point. Nobody but us reaches it.
+  "workers_dev": true,
+  "vars": { "TEST_ORIGIN": "<example.com>" },
+  "routes": []
+
+  // STAGE 2 (one narrow route): remove TEST_ORIGIN, set workers_dev false, and route a
+  // single path first, e.g.
+  //   "routes": [{ "pattern": "<example.com>/about-us", "zone_id": "<CF_ZONE_ID>" }]
+  //
+  // STAGE 3 (all pages): "<example.com>/*", plus script-less routes for the asset paths
+  // (sites/*, core/*, modules/*, themes/*, libraries/*). wrangler can't declare a
+  // script-less route, so visits.sh `exclude-assets` creates them through the API.
+  //
+  // Set every route's failure mode to fail open in the dashboard (Workers Routes → the
+  // route → Request limit failure mode). On Workers Free, past 100k requests a day the
+  // Worker is then skipped instead of serving error 1027.
+  //
+  // The visitor-hash key, once per site (never in this file):
+  //   npx wrangler secret put VISITOR_SECRET --config .cloudflare/visits-worker/wrangler.jsonc
+}
