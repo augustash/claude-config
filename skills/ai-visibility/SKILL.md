@@ -128,6 +128,22 @@ query nobody would ask ("vehicle inverter manufacturers in Minnesota" flattered 
 rate and measured nothing). Brand patterns must exclude collisions (DMX vs the DMX512 lighting
 protocol).
 
+**A brand's former names are the brand, not a competitor.** If the client bought a product
+line or renamed, give `brand` a `former` block (`name`, `patterns`, `domains`, `why`). The
+report then counts *Former name*, *Either* (the brand by any name) and *Old site* apart, and
+share of voice includes it. The first DMX baseline (2026-11-25) scored "Magnum/Sensata" as a
+competitor: DMX bought those lines in 2025, so engines recommending Magnum in 36% of buyer
+answers were recommending DMX's products, while the DMX mention rate read 2–3%. That gap is
+the finding, not a rounding error: the products' reputation carried over and the new name
+didn't, and the engines still cite the old domain. Before scoring a round, check every
+competitor against the client's history (acquisitions, renames, distributors). After changing
+patterns, `run.py rescore` re-scores every saved round, so they still compare.
+
+**A new API account starts on its lowest rate limit.** A full round at 6 workers hit
+Perplexity's 429s on about 1 answer in 12 even with backoff. Finish it with
+`run --engines <e> --redo-errors --workers 1`, which re-asks only today's failed answers
+and replaces them.
+
 ## A round
 
 ```

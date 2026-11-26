@@ -5,6 +5,8 @@ Asks a fixed query set of the answer engines, scores every answer the same way, 
 reports per-segment rates against the previous round. See skills/ai-visibility/SKILL.md.
 
   run.py run    --dir docs/seo/ai-visibility [--engines openai,gemini] [--runs 3] [--limit N]
+  run.py run    --dir ... --engines perplexity --redo-errors --workers 1   # fill a round's gaps
+  run.py rescore --dir ...    # re-score saved answers after changing brand/competitor patterns
   run.py ingest --dir ... --engine copilot --query-id t01 --run 1 --text-file answer.txt [--url U ...]
   run.py report --dir ... [--file results/2026-10-28.jsonl] [--against results/2026-10-21.jsonl]
 
@@ -163,8 +165,12 @@ def first_hit(patterns, text):
 def score(cfg, query, ans):
     text = ans.get("text") or ""
     brand = cfg["brand"]
+    former = brand.get("former") or {}
     order = []  # brands by first appearance; position = how early DMX is recommended
-    for name, pats in [(brand["name"], brand["patterns"])] + [(c["name"], c["patterns"]) for c in cfg["competitors"]]:
+    names = [(brand["name"], brand["patterns"])] + [(c["name"], c["patterns"]) for c in cfg["competitors"]]
+    if former:
+        names.append((former["name"], former["patterns"]))
+    for name, pats in names:
         at = first_hit(pats, text)
         if at is not None:
             order.append((at, name))
@@ -175,6 +181,12 @@ def score(cfg, query, ans):
            "brands": order,
            "cited_domains": domains,
            "site_cited": any(d == s or d.endswith("." + s) for d in domains for s in brand["domains"])}
+    if former:
+        # The brand's own products under a name it has since replaced (an acquired line, a
+        # rename). Scored apart, never as a competitor: an engine recommending them is
+        # recommending the client, under a name that no longer leads to the client.
+        row["former_mentioned"] = former["name"] in order
+        row["former_cited"] = any(d == s or d.endswith("." + s) for d in domains for s in former.get("domains", []))
     if query.get("expect") or query.get("reject"):
         exp = query.get("expect", [])
         row["accuracy"] = {"expect_hit": [p for p in exp if re.search(p, text, re.I)],
@@ -234,6 +246,14 @@ def cmd_run(a):
     jobs = [(e, q, r) for e in usable for q in queries for r in range(1, runs + 1)]
     out = d / "results" / f"{dt.date.today().isoformat()}.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
+    kept = None
+    if a.redo_errors:
+        # Re-ask only today's failed answers (a rate limit, an outage) and replace them,
+        # so a round ends complete instead of carrying gaps into the report.
+        rows = rows_of(out) if out.exists() else []
+        failed = {(r["engine"], r["query_id"], r["run"]) for r in rows if "error" in r}
+        jobs = [j for j in jobs if (j[0], j[1]["id"], j[2]) in failed]
+        kept = [r for r in rows if not ("error" in r and (r["engine"], r["query_id"], r["run"]) in failed)]
     print(f"{len(jobs)} answers: {len(queries)} queries x {runs} runs x {usable} -> {out}", file=sys.stderr)
 
     def work(job):
@@ -248,6 +268,8 @@ def cmd_run(a):
             return {**base, "error": str(ex)}
 
     n_err = 0
+    if kept is not None:
+        out.write_text("".join(json.dumps(r) + "\n" for r in kept))
     with cf.ThreadPoolExecutor(max_workers=a.workers) as pool, out.open("a") as f:
         for i, row in enumerate(pool.map(work, jobs), 1):
             f.write(json.dumps(row) + "\n")
@@ -256,6 +278,22 @@ def cmd_run(a):
             mark = "ERR " + row["error"][:60] if "error" in row else ("DMX" if row["brand_mentioned"] else "-")
             print(f"[{i}/{len(jobs)}] {row['engine']:<10} {row['query_id']:<5} r{row['run']} {mark}", file=sys.stderr)
     print(f"done, {n_err} errors", file=sys.stderr)
+
+
+def cmd_rescore(a):
+    """Re-score every saved answer under the current queries.json (brand, former name,
+    competitors, expect/reject), so a scoring fix reaches past rounds and they still compare."""
+    d = Path(a.dir)
+    cfg, _ = load_cfg(d)
+    every = {q["id"]: {**q, "segment": seg} for seg, items in cfg["segments"].items() for q in items}
+    for f in sorted((d / "results").glob("*.jsonl")):
+        rows = rows_of(f)
+        for r in rows:
+            if "error" not in r and r.get("query_id") in every:
+                r.pop("accuracy", None); r.pop("accurate", None)
+                r.update(score(cfg, every[r["query_id"]], r))
+        f.write_text("".join(json.dumps(r) + "\n" for r in rows))
+        print(f"rescored {f.name}: {len(rows)} rows", file=sys.stderr)
 
 
 def cmd_ingest(a):
@@ -278,9 +316,9 @@ def rows_of(path):
     return [json.loads(l) for l in Path(path).read_text().splitlines() if l.strip()]
 
 
-def summarize(rows, brand):
+def summarize(rows, brand, former=None):
     s = defaultdict(lambda: {"n": 0, "mention": 0, "cited": 0, "brand_m": 0, "all_m": 0, "acc_n": 0, "acc": 0,
-                             "domains": Counter(), "competitors": Counter()})
+                             "former": 0, "former_cited": 0, "either": 0, "domains": Counter(), "competitors": Counter()})
     for r in rows:
         if "error" in r:
             continue
@@ -290,9 +328,12 @@ def summarize(rows, brand):
             x["mention"] += r["brand_mentioned"]
             x["cited"] += r["site_cited"]
             x["all_m"] += len(r["brands"])
-            x["brand_m"] += r["brand_mentioned"]
+            x["brand_m"] += r["brand_mentioned"] + r.get("former_mentioned", False)
+            x["former"] += r.get("former_mentioned", False)
+            x["former_cited"] += r.get("former_cited", False)
+            x["either"] += r["brand_mentioned"] or r.get("former_mentioned", False)
             x["domains"].update(r["cited_domains"])
-            x["competitors"].update(b for b in r["brands"] if b != brand)
+            x["competitors"].update(b for b in r["brands"] if b not in (brand, former))
             if "accurate" in r:
                 x["acc_n"] += 1
                 x["acc"] += r["accurate"]
@@ -314,8 +355,9 @@ def cmd_report(a):
     files = sorted((d / "results").glob("*.jsonl"))
     cur = Path(a.file) if a.file else files[-1]
     prev = Path(a.against) if a.against else next((f for f in reversed(files) if f.name < cur.name), None)
-    s = summarize(active(rows_of(cur), queries), cfg["brand"]["name"])
-    p = summarize(active(rows_of(prev), queries), cfg["brand"]["name"]) if prev else {}
+    bn, fn = cfg["brand"]["name"], (cfg["brand"].get("former") or {}).get("name")
+    s = summarize(active(rows_of(cur), queries), bn, fn)
+    p = summarize(active(rows_of(prev), queries), bn, fn) if prev else {}
     errs = sum("error" in r for r in rows_of(cur))
     tok, usd = Counter(), Counter()
     for r in rows_of(cur):
@@ -326,12 +368,17 @@ def cmd_report(a):
     lines = [f"# AI visibility — {cur.stem}", "",
              f"Compared against: {prev.stem if prev else 'nothing (baseline)'}. Errors this round: {errs}.", "",
              "Δ is marked **↑/↓** only when it beats two standard errors; anything smaller is run-to-run noise.", ""]
+    if fn:
+        lines += [f"*{fn}* is the brand's own line under its former name: *Former name* and *Old site* "
+                  f"count it, *Either* is the brand by any name, and share of voice includes it.", ""]
+    fcols = " Former name | Either | Old site |" if fn else ""
+    fsep = "---|---|---|" if fn else ""
     for seg in cfg["segments"]:
         keys = sorted([k for k in s if k[0] == seg], key=lambda k: (k[1] != "ALL", k[1]))
         if not keys:
             continue
-        lines += [f"## {seg}", "", "| Engine | Answers | Mention rate | Δ | Site cited | Share of voice | Accurate |",
-                  "|---|---|---|---|---|---|---|"]
+        lines += [f"## {seg}", "", f"| Engine | Answers | Mention rate | Δ |{fcols} Site cited | Share of voice | Accurate |",
+                  f"|---|---|---|---|{fsep}---|---|---|"]
         for k in keys:
             x = s[k]
             m = pct(x["mention"], x["n"])
@@ -342,7 +389,9 @@ def cmd_report(a):
                 sig = abs(dlt) > noise(m, x["n"], pm, p[k]["n"])
                 delta = f"{dlt:+.0%}" + (" **↑**" if sig and dlt > 0 else " **↓**" if sig else "")
             acc = f"{pct(x['acc'], x['acc_n']):.0%}" if x["acc_n"] else "—"
-            lines.append(f"| {k[1]} | {x['n']} | {m:.0%} | {delta} | {pct(x['cited'], x['n']):.0%} | "
+            fv = (f" {pct(x['former'], x['n']):.0%} | {pct(x['either'], x['n']):.0%} | "
+                  f"{pct(x['former_cited'], x['n']):.0%} |") if fn else ""
+            lines.append(f"| {k[1]} | {x['n']} | {m:.0%} | {delta} |{fv} {pct(x['cited'], x['n']):.0%} | "
                          f"{pct(x['brand_m'], x['all_m']):.0%} | {acc} |")
         allx = s[(seg, "ALL")]
         lines += ["", "Competitors named: " + ", ".join(f"{b} {c}" for b, c in allx["competitors"].most_common(8)),
@@ -419,7 +468,12 @@ def main():
     r.add_argument("--engines")
     r.add_argument("--runs", type=int)
     r.add_argument("--limit", type=int, help="first N queries only, for a smoke test")
-    r.add_argument("--workers", type=int, default=6)
+    r.add_argument("--workers", type=int, default=6,
+                   help="parallel requests; a new account's rate limit may need 1-2")
+    r.add_argument("--redo-errors", action="store_true",
+                   help="re-ask only today's failed answers and replace them")
+    rs = sub.add_parser("rescore")
+    rs.add_argument("--dir", required=True)
     i = sub.add_parser("ingest")
     i.add_argument("--dir", required=True)
     i.add_argument("--engine", required=True)
@@ -439,7 +493,7 @@ def main():
     g.add_argument("--path", action="append", help="only paths containing this (repeatable)")
     g.add_argument("--top", type=int, default=40)
     a = ap.parse_args()
-    {"run": cmd_run, "ingest": cmd_ingest, "report": cmd_report, "pages": cmd_pages}[a.cmd](a)
+    {"run": cmd_run, "rescore": cmd_rescore, "ingest": cmd_ingest, "report": cmd_report, "pages": cmd_pages}[a.cmd](a)
 
 
 if __name__ == "__main__":
