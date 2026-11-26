@@ -107,8 +107,11 @@ def ask_gemini(cfg, keys, q):
     if cfg.get("grounded"):
         # Google Search grounding: needs billing on the key; a free key gets a 429.
         body["tools"] = [{"google_search": {}}]
-    d = post(f"https://generativelanguage.googleapis.com/v1beta/models/{cfg['model']}:generateContent",
-             body, {"x-goog-api-key": keys["GEMINI_API_KEY"]})
+    # ⚠ The key goes in the query string. Google's newer keys (AQ.…) are refused
+    # on v1beta in the x-goog-api-key header with a bare 404 and no body, while
+    # ?key= works for both key formats (DMX, 2026-11-25).
+    d = post(f"https://generativelanguage.googleapis.com/v1beta/models/{cfg['model']}:generateContent"
+             f"?key={keys['GEMINI_API_KEY']}", body, {})
     c = (d.get("candidates") or [{}])[0]
     text = "".join(p.get("text", "") for p in (c.get("content") or {}).get("parts", []) if not p.get("thought"))
     g = c.get("groundingMetadata") or {}
