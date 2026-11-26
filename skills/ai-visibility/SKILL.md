@@ -139,6 +139,14 @@ didn't, and the engines still cite the old domain. Before scoring a round, check
 competitor against the client's history (acquisitions, renames, distributors). After changing
 patterns, `run.py rescore` re-scores every saved round, so they still compare.
 
+When answers cite the former domain, file the move with the search indexes the engines
+search: Google Search Console's **Change of address** (both domains verified as Domain
+properties by DNS TXT, from any account of ours, no client login needed), and in Bing import
+both from Search Console and submit the new site's sitemap. **Bing has no Site Move any more:**
+it went from the console in 2024, and the API's `SubmitSiteMove` / `GetSiteMoves` now 404
+like a made-up method (checked 2026-11-25). There, the path-for-path 301s are the move. Bing
+matters as much as Google: ChatGPT and Copilot search through it.
+
 **A new API account starts on its lowest rate limit.** A full round at 6 workers hit
 Perplexity's 429s on about 1 answer in 12 even with backoff. Finish it with
 `run --engines <e> --redo-errors --workers 1`, which re-asks only today's failed answers
