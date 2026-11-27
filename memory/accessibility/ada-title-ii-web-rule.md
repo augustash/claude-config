@@ -10,7 +10,7 @@ metadata:
 # ADA Title II web rule (28 CFR 35, Subpart H)
 
 Read from the regulation itself (28 CFR 35.104 and 35.200–35.205, as amended by the interim
-final rule of 2026-04-20, 91 FR 20912), on metro 2026-10-23. Not legal advice; the client's
+final rule of 2026-04-20, 91 FR 20902), on metro 2026-10-23. Not legal advice; the client's
 counsel decides which provisions they rely on.
 
 **The requirement (§ 35.200).** A state or local government entity must make the web content
